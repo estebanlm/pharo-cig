@@ -1,14 +1,6 @@
 Class {
 	#name : 'CXCallback',
 	#superclass : 'FFICallback',
-	#category : 'LibClang-',
-	#package : 'LibClang',
-	#tag : ''
+	#category : 'LibClang',
+	#package : 'LibClang'
 }
-
-{ #category : 'evaluating' }
-CXCallback >> valueWithArguments: anArray [
-
-	^ super valueWithArguments: anArray
-	
-]

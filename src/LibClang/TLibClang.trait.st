@@ -1,8 +1,7 @@
 Trait {
 	#name : 'TLibClang',
-	#category : 'LibClang-',
-	#package : 'LibClang',
-	#tag : ''
+	#category : 'LibClang',
+	#package : 'LibClang'
 }
 
 { #category : 'library path' }

@@ -19,3 +19,9 @@ CXIndex class >> createIndex: excludeDeclarationsFromPCH diagnostics: displayDia
 
 	^ (self clang_createIndex: excludeDeclarationsFromPCH diagnostics: displayDiagnostics) initialize
 ]
+
+{ #category : 'accessing' }
+CXIndex >> dispose [
+
+	self ffiCall: #(void clang_disposeIndex(self))
+]

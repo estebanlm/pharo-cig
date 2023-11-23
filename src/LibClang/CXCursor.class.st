@@ -1,7 +1,6 @@
 Class {
 	#name : 'CXCursor',
-	#superclass : 'FFIExternalStructure',
-	#traits : 'TLibClang',
+	#superclass : 'CXStructure',
 	#classTraits : 'TLibClang classTrait',
 	#classVars : [
 		'OFFSET_DATA_1',
@@ -9,6 +8,9 @@ Class {
 		'OFFSET_DATA_3',
 		'OFFSET_KIND',
 		'OFFSET_XDATA'
+	],
+	#pools : [
+		'CXCursorKind'
 	],
 	#category : 'LibClang',
 	#package : 'LibClang'
@@ -34,10 +36,34 @@ CXCursor class >> newTranslationUnit: tu [
 ]
 
 { #category : 'private' }
+CXCursor >> clang_getCursorDisplayName [
+
+	^ self ffiCall: #(CXString clang_getCursorDisplayName(CXCursor self))
+]
+
+{ #category : 'private' }
+CXCursor >> clang_getCursorKindSpelling: kind [
+
+	self ffiCall: #(CXString clang_getCursorKindSpelling(int kind))
+]
+
+{ #category : 'private' }
+CXCursor >> clang_getCursorLocation [
+
+	self ffiCall: #(CXSourceLocation clang_getCursorLocation(CXCursor self))
+]
+
+{ #category : 'private' }
+CXCursor >> clang_getCursorSpelling [
+
+	self ffiCall: #(CXString clang_getCursorSpelling(CXCursor self))
+]
+
+{ #category : 'private' }
 CXCursor >> clang_visitChildren: visitor [
 
 	^ self ffiCall: #(uint clang_visitChildren(
-		self,
+		CXCursor self,
 		FFICallback visitor,
 		NULL))
 ]
@@ -78,16 +104,91 @@ CXCursor >> data_3: anObject [
 	handle pointerAt: OFFSET_DATA_3 put: anObject getHandle.
 ]
 
-{ #category : 'accessing - structure variables' }
+{ #category : 'accessing' }
+CXCursor >> displayName [
+	| string |
+	
+	string := self clang_getCursorDisplayName.
+	^ [ string cString ]
+		ensure: [ string dispose ]
+]
+
+{ #category : 'accessing' }
+CXCursor >> enumConstantValue [
+
+	^ self ffiCall: #(longlong clang_getEnumConstantDeclValue (CXCursor self))
+]
+
+{ #category : 'testing' }
+CXCursor >> isEnumConstantDeclaration [
+
+	^ self kind = CXCursor_EnumConstantDecl
+]
+
+{ #category : 'testing' }
+CXCursor >> isEnumDeclaration [
+
+	^ self kind = CXCursor_EnumDecl
+]
+
+{ #category : 'testing' }
+CXCursor >> isFunctionDeclaration [
+
+	^ self kind = CXCursor_FunctionDecl
+]
+
+{ #category : 'testing' }
+CXCursor >> isNamespace [
+
+	^ self kind = CXCursor_Namespace
+]
+
+{ #category : 'testing' }
+CXCursor >> isParameterDeclaration [
+
+	^ self kind = CXCursor_ParmDecl
+]
+
+{ #category : 'accessing' }
 CXCursor >> kind [
-	"This method was automatically generated"
-	^handle signedLongLongAt: OFFSET_KIND
+
+	^ self ffiCall: #(int clang_getCursorKind(CXCursor self))
 ]
 
 { #category : 'accessing - structure variables' }
 CXCursor >> kind: anObject [
 	"This method was automatically generated"
 	handle signedLongLongAt: OFFSET_KIND put: anObject
+]
+
+{ #category : 'accessing' }
+CXCursor >> kindSpelling [
+	| string |
+	
+	string := self clang_getCursorKindSpelling: self kind.
+	^ [ string cString ]
+		ensure: [ string dispose ]
+]
+
+{ #category : 'accessing' }
+CXCursor >> location [
+
+	^ self clang_getCursorLocation
+]
+
+{ #category : 'accessing' }
+CXCursor >> spelling [
+	| string |
+	
+	string := self clang_getCursorSpelling.
+	^ [ string cString ]
+		ensure: [ string dispose ]
+]
+
+{ #category : 'accessing' }
+CXCursor >> type [
+
+	^ self ffiCall: #(CXType clang_getCursorType(CXCursor self))
 ]
 
 { #category : 'visiting' }
