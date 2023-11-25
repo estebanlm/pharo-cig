@@ -69,13 +69,13 @@ IGParameter >> fromCursor: aCursor [
 { #category : 'testing' }
 IGParameter >> isElaborated [
 
-	^ self kind = CXType_Elaborated
+	^ self typeKind = CXType_Elaborated
 ]
 
 { #category : 'accessing' }
 IGParameter >> typeKind [
 
-	^ kind
+	^ typeKind
 ]
 
 { #category : 'accessing' }

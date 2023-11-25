@@ -1,6 +1,6 @@
 Class {
 	#name : 'IGDestructor',
-	#superclass : 'IGClassElement',
+	#superclass : 'IGClassMember',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'

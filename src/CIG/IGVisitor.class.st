@@ -22,6 +22,12 @@ IGVisitor >> file: aHeaderFile [
 ]
 
 { #category : 'visiting' }
+IGVisitor >> visit: anObject [
+
+	anObject accept: self
+]
+
+{ #category : 'visiting' }
 IGVisitor >> visitAll: aCollection [
 
 	aCollection do: [ :each | 
@@ -30,6 +36,8 @@ IGVisitor >> visitAll: aCollection [
 
 { #category : 'visiting' }
 IGVisitor >> visitClass: aClass [
+
+	self visitAll: aClass elements
 ]
 
 { #category : 'visiting' }
@@ -55,8 +63,15 @@ IGVisitor >> visitMethod: aMethod [
 { #category : 'visiting' }
 IGVisitor >> visitNamespace: aNamespace [
 
-	aNamespace elements
-		do: [ :each | each accept: self ]
+	self visitAll: aNamespace elements
+]
+
+{ #category : 'visiting' }
+IGVisitor >> visitStructure: aStructure [
+]
+
+{ #category : 'visiting' }
+IGVisitor >> visitUnit: aUnit [
 ]
 
 { #category : 'visiting' }

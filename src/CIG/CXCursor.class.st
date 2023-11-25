@@ -69,6 +69,12 @@ CXCursor >> clang_visitChildren: visitor [
 		NULL))
 ]
 
+{ #category : 'accessing' }
+CXCursor >> cxxAccessSpecifier [
+	
+	self ffiCall: #("enum CX_CXXAccessSpecifier"int clang_getCXXAccessSpecifier(CXCursor self))
+]
+
 { #category : 'accessing - structure variables' }
 CXCursor >> data_1 [
 	"This method was automatically generated"

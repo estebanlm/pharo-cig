@@ -22,6 +22,12 @@ IGElement class >> allNodes [
 	^ self allSubclasses reject: [ :each | each kind isNil ]
 ]
 
+{ #category : 'accessing' }
+IGElement class >> delimiter [
+
+	^ '_'
+]
+
 { #category : 'instance creation' }
 IGElement class >> fromCursor: aCursor [
 
@@ -66,9 +72,13 @@ IGElement >> addElement: anElement [
 { #category : 'accessing' }
 IGElement >> findElementMatching: aBlock [
 
-	^ (aBlock value: self)
-		ifTrue: [ self ]
-		ifFalse: [ nil ]
+	(aBlock value: self) ifTrue: [ ^ self ].
+	
+	self elements do: [ :each | 
+		(each findElementMatching: aBlock) 
+			ifNotNil: [ :found | ^ found ] ].
+	
+	^ nil
 ]
 
 { #category : 'initialization' }
@@ -76,6 +86,13 @@ IGElement >> fromCursor: aCursor [
 
 	name := aCursor displayName.
 	kind := aCursor kind
+]
+
+{ #category : 'accessing' }
+IGElement >> fullName [
+
+	^ String streamContents: [ :stream |
+		 self path asStringOn: stream  delimiter: self class delimiter ]
 ]
 
 { #category : 'comparing' }
@@ -112,6 +129,13 @@ IGElement >> parent [
 IGElement >> parent: anElement [
 
 	parent := anElement
+]
+
+{ #category : 'accessing' }
+IGElement >> path [
+
+	self parent ifNil: [ ^ { self name } ].
+	^ self parent path copyWith: self name
 ]
 
 { #category : 'printing' }

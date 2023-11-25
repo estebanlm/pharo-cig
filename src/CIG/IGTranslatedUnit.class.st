@@ -14,14 +14,20 @@ Class {
 	#tag : 'Base'
 }
 
+{ #category : 'visiting' }
+IGTranslatedUnit >> accept: aVisitor [ 
+
+	aVisitor visitUnit: self
+]
+
 { #category : 'private' }
 IGTranslatedUnit >> addNode: currentNode parent: parentNode [
 	| parent current |
 
-	(self findNode: currentNode ifAbsent: [ nil ]) 
+	parent := self findNode: parentNode.	
+	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
 		ifNotNil: [ ^ self ].
 	
-	parent := self findNode: parentNode.
 	current := self newNode: currentNode.
 	parent addElement: current
 ]
@@ -45,13 +51,22 @@ IGTranslatedUnit >> findNode: parentNode [
 ]
 
 { #category : 'private' }
-IGTranslatedUnit >> findNode: parentNode ifAbsent: aBlock [
+IGTranslatedUnit >> findNode: aCursor ifAbsent: aBlock [
+
+	^ self 
+		findNode: aCursor 
+		startingAt: self 
+		ifAbsent: aBlock
+]
+
+{ #category : 'private' }
+IGTranslatedUnit >> findNode: aCursor startingAt: aNode ifAbsent: aBlock [
 	| kind name result |
 	
-	kind := parentNode kind.
-	name := parentNode displayName.
+	kind := aCursor kind.
+	name := aCursor displayName.
 	
-	result := self findElementMatching: [ :each | 
+	result := aNode findElementMatching: [ :each | 
 		each kind = kind and: [ each name = name ] ].
 	
 	result ifNil: [ ^ aBlock value ].
@@ -59,7 +74,7 @@ IGTranslatedUnit >> findNode: parentNode ifAbsent: aBlock [
 	^ result
 ]
 
-{ #category : 'private' }
+{ #category : 'generating' }
 IGTranslatedUnit >> generateFrom: aHeader [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
 	| cursor tu index |

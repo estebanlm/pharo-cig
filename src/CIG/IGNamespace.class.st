@@ -23,13 +23,3 @@ IGNamespace >> accept: aVisitor [
 
 	aVisitor visitNamespace: self
 ]
-
-{ #category : 'accessing' }
-IGNamespace >> findElementMatching: aBlock [
-		
-	(super findElementMatching: aBlock) ifNotNil: [ ^ self ].
-	self elements do: [ :each | 
-		(each findElementMatching: aBlock) 
-			ifNotNil: [ :found | ^ found ] ].
-	^ nil
-]
