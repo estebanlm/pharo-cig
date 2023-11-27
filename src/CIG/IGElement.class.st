@@ -161,6 +161,12 @@ IGElement >> isClass [
 ]
 
 { #category : 'testing' }
+IGElement >> isMethod [
+
+	^ false
+]
+
+{ #category : 'testing' }
 IGElement >> isNamespace [
 
 	^ false

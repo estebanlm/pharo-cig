@@ -6,9 +6,9 @@ Class {
 		'stack',
 		'outStream'
 	],
-	#category : 'CIG-C',
+	#category : 'CIG-Generate-C',
 	#package : 'CIG',
-	#tag : 'C'
+	#tag : 'Generate-C'
 }
 
 { #category : 'private' }
@@ -109,6 +109,11 @@ IGCVisitor >> visitClass: aClass [
 { #category : 'visiting' }
 IGCVisitor >> visitConstructor: aConstructor [
 
+	"abstract classes do not have public constructors"
+	aConstructor parent isAbstract
+		ifTrue: [ ^ self ].
+	(IGCClassGenerator on: self) generateConstructor: aConstructor.
+	self outStream cr
 ]
 
 { #category : 'visiting' }
@@ -134,7 +139,8 @@ IGCVisitor >> visitFunction: aFunction [
 IGCVisitor >> visitMethod: aMethod [
 
 	(aMethod isPublic not
-		or: [ aMethod isOperator ]) 
+		or: [ aMethod isVirtual 
+		or: [ aMethod isOperator ] ]) 
 		ifTrue: [ ^ self ].
 
 	"outStream << (aMethod asFunctionSourceWithPrefix: self prefix delimiter: '_')."

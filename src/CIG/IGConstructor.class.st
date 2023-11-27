@@ -17,3 +17,28 @@ IGConstructor >> accept: aVisitor [
 
 	aVisitor visitConstructor: self
 ]
+
+{ #category : 'accessing' }
+IGConstructor >> cDeclaration [
+
+	^ String streamContents: [ :stream | 
+		stream 
+			<<  (self parent fullNameWith: '_')
+			<< '_new' ]
+]
+
+{ #category : 'accessing' }
+IGConstructor >> cppDeclaration [
+
+	^ self parent cppDeclaration
+]
+
+{ #category : 'handling' }
+IGConstructor >> resolveReturnType [
+
+	^ IGType new
+		parent: self;
+		name: self parent cppDeclaration, '*';
+		reference: (IGTypeReference newName: 'class ', self parent cppDeclaration);
+		yourself	
+]

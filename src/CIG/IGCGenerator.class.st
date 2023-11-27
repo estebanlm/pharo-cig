@@ -5,9 +5,9 @@ Class {
 		'root',
 		'visitor'
 	],
-	#category : 'CIG-C',
+	#category : 'CIG-Generate-C',
 	#package : 'CIG',
-	#tag : 'C'
+	#tag : 'Generate-C'
 }
 
 { #category : 'instance creation' }

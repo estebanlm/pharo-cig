@@ -1,10 +1,22 @@
 Class {
 	#name : 'IGCClassGenerator',
 	#superclass : 'IGCGenerator',
-	#category : 'CIG-C',
+	#category : 'CIG-Generate-C',
 	#package : 'CIG',
-	#tag : 'C'
+	#tag : 'Generate-C'
 }
+
+{ #category : 'private' }
+IGCClassGenerator >> addClassDelete: aClass [
+
+	self outStream << ('void {cClass}_delete({cClass}* self) \{
+	delete ({cppClass} *)self;
+\}' format: { 
+	#cClass -> aClass cDeclaration.
+	#cppClass -> aClass cppDeclaration. 
+	} asDictionary).
+	self outStream cr
+]
 
 { #category : 'private' }
 IGCClassGenerator >> addClassTypedef: aClass [
@@ -30,7 +42,32 @@ IGCClassGenerator >> generateClass: aClass [
 	
 	self root: aClass root.
 	self addClassTypedef: aClass.
-	self outStream cr
+	self outStream cr.
+	self addClassDelete: aClass.
+	self outStream cr	
+]
+
+{ #category : 'generating' }
+IGCClassGenerator >> generateConstructor: aConstructor [
+	| body |
+	
+	self root: aConstructor root.
+
+	body := '{type} {methodName}({parameters}) \{
+	{return}{returnCast}(new {func}({arguments}\));
+\}' format: { 
+		#type -> (self cDeclarationOf: aConstructor resolveReturnType).
+		#methodName -> (self methodDeclarationOf: aConstructor).
+		#parameters -> (self parametersList: aConstructor).
+		#func -> aConstructor cppDeclaration.
+		#arguments -> (self argumentsListToCPP: aConstructor).
+		#returnCast -> (self cCastToReturn: aConstructor resolveReturnType).
+		#classCast -> (self cppCastForSelf: aConstructor parent).
+		#return -> 'return ' }
+		asDictionary	.
+			
+	self outStream << body << String cr.
+	
 ]
 
 { #category : 'generating' }
@@ -44,7 +81,7 @@ IGCClassGenerator >> generateMethod: aMethod [
 \}' format: { 
 		#type -> (self cDeclarationOf: aMethod resolveReturnType).
 		#methodName -> (self methodDeclarationOf: aMethod).
-		#parameters -> (self parametersList: aMethod).
+		#parameters -> (self selfParametersList: aMethod).
 		#func -> aMethod spelling.
 		#arguments -> (self argumentsListToCPP: aMethod).
 		#returnCast -> (self cCastToReturn: aMethod resolveReturnType).
@@ -72,11 +109,11 @@ IGCClassGenerator >> methodDeclarationOf: aMethod [
 ]
 
 { #category : 'private' }
-IGCClassGenerator >> parametersList: anElement [
+IGCClassGenerator >> selfParametersList: anElement [
 
 	^ String streamContents: [ :stream |
 		stream 
-			<< anElement parent fullName
+			<< anElement parent cDeclaration
 			<< '* self'.
 		(super parametersList: anElement) 
 			ifNotEmpty: [ :aString | stream << ', ' << aString ] ]

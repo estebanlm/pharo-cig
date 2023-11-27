@@ -19,7 +19,19 @@ IGClass >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
+IGClass >> isAbstract [
+
+	^ self methods anySatisfy: [ :each | each isVirtual ]
+]
+
+{ #category : 'testing' }
 IGClass >> isClass [
 
 	^ true
+]
+
+{ #category : 'testing' }
+IGClass >> methods [
+
+	^ self elements select: [ :each | each isMethod ]
 ]

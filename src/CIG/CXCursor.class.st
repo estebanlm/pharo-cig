@@ -87,6 +87,12 @@ CXCursor >> cxxAccessSpecifier [
 	self ffiCall: #("enum CX_CXXAccessSpecifier"int clang_getCXXAccessSpecifier(CXCursor self))
 ]
 
+{ #category : 'testing' }
+CXCursor >> cxxMethodIsVirtual [
+
+	^ self ffiCall: #(Boolean clang_CXXMethod_isVirtual(CXCursor self))
+]
+
 { #category : 'accessing - structure variables' }
 CXCursor >> data_1 [
 	"This method was automatically generated"

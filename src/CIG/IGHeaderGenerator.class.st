@@ -7,7 +7,8 @@ Class {
 		'withMakefile',
 		'withCBindings',
 		'withClasses',
-		'libs'
+		'libs',
+		'prefix'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -15,10 +16,22 @@ Class {
 }
 
 { #category : 'accessing' }
+IGHeaderGenerator >> bindingsName [
+
+	^ self fileReference basenameWithoutExtension
+]
+
+{ #category : 'accessing' }
 IGHeaderGenerator >> cFileReference [
 	"where the wrapper functions will be placed"
 	
-	^ (FileLocator imageDirectory / (self fileReference basenameWithoutExtension, '_bindings')) withExtension: 'cpp'
+	^ (FileLocator imageDirectory / (self bindingsName, '_bindings')) withExtension: 'cpp'
+]
+
+{ #category : 'private' }
+IGHeaderGenerator >> defaultPrefix [
+
+	^ (self bindingsName first: 2) capitalized
 ]
 
 { #category : 'accessing' }
@@ -68,9 +81,9 @@ INCLUDE_DIRS={2}
 LIBS={3}
 
 {1}.so: {1}.cpp
-	clang -xc++ --shared $(INCLUDE_DIRS) $(LIBS) {1}.cpp -o {1}.so
+	clang -xc++ -fPIC --shared $(INCLUDE_DIRS) $(LIBS) {1}.cpp -o {1}.so
 ' format: { 
-	self cFileReference basenameWithoutExtension.
+	self libraryName.
 	(String streamContents: [ :s | 
 		self includePathsAsArguments asStringOn: s delimiter: ' ' ]).
 	(String streamContents: [ :s | 
@@ -83,12 +96,12 @@ LIBS={3}
 ]
 
 { #category : 'generating' }
-IGHeaderGenerator >> generatePharoClassesWith: elements [
+IGHeaderGenerator >> generatePharoClassesWith: aUnit [
 	
 	'Generating Pharo classes.' asBeaconSignal emit.
-	IGClassVisitor new
+	IGPharoVisitor new
 		file: self;
-		visitAll: elements
+		visit: aUnit
 ]
 
 { #category : 'testing' }
@@ -146,6 +159,12 @@ IGHeaderGenerator >> libraryClassName [
 ]
 
 { #category : 'accessing' }
+IGHeaderGenerator >> libraryName [
+
+	^ self cFileReference basenameWithoutExtension
+]
+
+{ #category : 'accessing' }
 IGHeaderGenerator >> libs [
 
 	^ libs
@@ -195,6 +214,18 @@ IGHeaderGenerator >> listElements [
 IGHeaderGenerator >> makefileReference [
 	
 	^ FileLocator imageDirectory / 'Makefile'
+]
+
+{ #category : 'accessing' }
+IGHeaderGenerator >> prefix [
+
+	^ prefix ifNil: [ prefix := self defaultPrefix ]
+]
+
+{ #category : 'accessing' }
+IGHeaderGenerator >> prefix: aPrefix [
+	
+prefix := aPrefix
 ]
 
 { #category : 'generating' }

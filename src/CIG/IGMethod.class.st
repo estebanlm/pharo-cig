@@ -2,7 +2,8 @@ Class {
 	#name : 'IGMethod',
 	#superclass : 'IGClassMember',
 	#instVars : [
-		'isPublic'
+		'isPublic',
+		'isVirtual'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -25,7 +26,14 @@ IGMethod >> accept: aVisitor [
 IGMethod >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
-	isPublic := aCursor cxxAccessSpecifier = 1
+	isPublic := aCursor cxxAccessSpecifier = 1.
+	isVirtual := aCursor cxxMethodIsVirtual
+]
+
+{ #category : 'testing' }
+IGMethod >> isMethod [
+
+	^ true
 ]
 
 { #category : 'testing' }
@@ -39,6 +47,12 @@ IGMethod >> isOperator [
 IGMethod >> isPublic [
 
 	^ isPublic
+]
+
+{ #category : 'testing' }
+IGMethod >> isVirtual [
+
+	^ isVirtual
 ]
 
 { #category : 'converting' }

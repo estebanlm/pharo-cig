@@ -18,14 +18,6 @@ IGEnum >> accept: aVisitor [
 	aVisitor visitEnum: self
 ]
 
-{ #category : 'accessing' }
-IGEnum >> fullName [
-
-	^ self parent
-		ifNotNil: [ self parent name, '::', self name ] 
-		ifNil: [ self name ]
-]
-
 { #category : 'testing' }
 IGEnum >> isEnum [
 
