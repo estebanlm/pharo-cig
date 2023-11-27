@@ -37,6 +37,12 @@ CXCursor class >> newTranslationUnit: tu [
 ]
 
 { #category : 'private' }
+CXCursor >> clang_Cursor_isNull [
+
+	self ffiCall: #(Boolean clang_Cursor_isNull(CXCursor self))
+]
+
+{ #category : 'private' }
 CXCursor >> clang_getCursorDisplayName [
 
 	^ self ffiCall: #(CXString clang_getCursorDisplayName(CXCursor self))
@@ -52,6 +58,12 @@ CXCursor >> clang_getCursorKindSpelling: kind [
 CXCursor >> clang_getCursorLocation [
 
 	self ffiCall: #(CXSourceLocation clang_getCursorLocation(CXCursor self))
+]
+
+{ #category : 'private' }
+CXCursor >> clang_getCursorSemanticParent [
+
+	self ffiCall: #(CXCursor clang_getCursorSemanticParent(CXCursor self))
 ]
 
 { #category : 'private' }
@@ -184,6 +196,16 @@ CXCursor >> location [
 ]
 
 { #category : 'accessing' }
+CXCursor >> parent [
+	| parent |
+	
+	parent := self clang_getCursorSemanticParent.
+	^ (parent clang_Cursor_isNull)
+		ifTrue: [ nil ]
+		ifFalse: [ parent ]
+]
+
+{ #category : 'accessing' }
 CXCursor >> spelling [
 	| string |
 	
@@ -207,6 +229,20 @@ CXCursor >> visitChildren: aBlock [
 		block: aBlock.
 		
 	^ self clang_visitChildren: callback
+]
+
+{ #category : 'accessing' }
+CXCursor >> withAllParents [
+	| parents current |
+	
+	parents := OrderedCollection new.
+	current := self.
+	[ current notNil and: [ current clang_Cursor_isNull not ] ] 
+	whileTrue: [ 
+		parents add: current.
+		current := current parent ].
+	
+	^ parents reversed
 ]
 
 { #category : 'accessing - structure variables' }

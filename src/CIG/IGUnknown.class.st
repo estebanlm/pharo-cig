@@ -27,3 +27,9 @@ IGUnknown >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	kindSpelling := aCursor kindSpelling
 ]
+
+{ #category : 'testing' }
+IGUnknown >> isUnknown [
+
+	^ true
+]

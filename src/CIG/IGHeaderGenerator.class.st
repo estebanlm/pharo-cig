@@ -205,6 +205,15 @@ IGHeaderGenerator >> translateUnit [
 		yourself
 ]
 
+{ #category : 'generating' }
+IGHeaderGenerator >> translateUnitWithoutUnkown [
+	
+	^ IGTranslatedUnit new
+		withoutUnknown;
+		generateFrom: self;
+		yourself
+]
+
 { #category : 'accessing - configuration' }
 IGHeaderGenerator >> withCBindings [
 

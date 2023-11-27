@@ -22,6 +22,12 @@ IGClassMember >> fromCursor: aCursor [
 ]
 
 { #category : 'accessing' }
+IGClassMember >> pathName [
+
+	^ self spelling
+]
+
+{ #category : 'accessing' }
 IGClassMember >> returnTypeName [
 
 	^ returnTypeName

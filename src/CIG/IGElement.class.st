@@ -40,6 +40,16 @@ IGElement class >> kind [
 	^ self subclassResponsibility
 ]
 
+{ #category : 'instance creation' }
+IGElement class >> newName: aString [
+	"This is for testing purposes"
+
+	^ self new
+		name: aString;
+		kind: self kind;
+		yourself
+]
+
 { #category : 'accessing' }
 IGElement class >> nodesDictionary [
 
@@ -62,23 +72,59 @@ IGElement >> accept: aVisitor [
 ]
 
 { #category : 'accessing' }
-IGElement >> addElement: anElement [
-
-	elements ifNil: [ elements := OrderedCollection new ].
-	anElement parent: self.
-	elements add: anElement
+IGElement >> basename [
+	"remove the basic name"
+	
+	^ self pathName
 ]
 
 { #category : 'accessing' }
-IGElement >> findElementMatching: aBlock [
+IGElement >> cDeclaration [
+
+	^ self fullNameWith: '_'
+]
+
+{ #category : 'accessing' }
+IGElement >> cppDeclaration [
+
+	^ self fullNameWith: '::'
+]
+
+{ #category : 'accessing' }
+IGElement >> elementAtPath: aPath [
+	| current |
+
+	current := self.
+	aPath do: [ :each |
+		current := current findElementMatching: [ :eachElement | eachElement name = each ] ].
+	^ current
+]
+
+{ #category : 'accessing' }
+IGElement >> findDeepElementMatching: aBlock [
 
 	(aBlock value: self) ifTrue: [ ^ self ].
 	
 	self elements do: [ :each | 
-		(each findElementMatching: aBlock) 
+		(each findDeepElementMatching: aBlock) 
 			ifNotNil: [ :found | ^ found ] ].
 	
 	^ nil
+]
+
+{ #category : 'private' }
+IGElement >> findElementMatching: aBlock [
+
+	self elements do: [ :each | (aBlock value: each) ifTrue: [ ^ each ] ].
+	^ nil
+]
+
+{ #category : 'accessing' }
+IGElement >> findReversedElementMatching: aBlock [
+
+	(self findElementMatching: aBlock) ifNotNil: [ :aNode | ^ aNode ].
+	self parent ifNil: [ ^ nil ].
+	^ self parent findReversedElementMatching: aBlock
 ]
 
 { #category : 'initialization' }
@@ -91,8 +137,15 @@ IGElement >> fromCursor: aCursor [
 { #category : 'accessing' }
 IGElement >> fullName [
 
+	^ self fullNameWith: self class delimiter
+]
+
+{ #category : 'accessing' }
+IGElement >> fullNameWith: delim [ 
+
 	^ String streamContents: [ :stream |
-		 self path asStringOn: stream  delimiter: self class delimiter ]
+		"first element is the unit and we do not want that" 
+		self path allButFirst asStringOn: stream delimiter: delim ]
 ]
 
 { #category : 'comparing' }
@@ -101,10 +154,40 @@ IGElement >> hash [
 	^ self species hash bitXor: self name hash
 ]
 
+{ #category : 'testing' }
+IGElement >> isClass [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isNamespace [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isTypeReference [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isUnknown [
+
+	^ false
+]
+
 { #category : 'accessing' }
 IGElement >> kind [
 
 	^ kind
+]
+
+{ #category : 'private - utils' }
+IGElement >> kind: aKind [
+	
+	kind := aKind
 ]
 
 { #category : 'accessing' }
@@ -113,9 +196,9 @@ IGElement >> name [
 	^ name
 ]
 
-{ #category : 'accessing' }
+{ #category : 'private - utils' }
 IGElement >> name: aString [
-
+	
 	name := aString
 ]
 
@@ -134,8 +217,14 @@ IGElement >> parent: anElement [
 { #category : 'accessing' }
 IGElement >> path [
 
-	self parent ifNil: [ ^ { self name } ].
-	^ self parent path copyWith: self name
+	self parent ifNil: [ ^ { self pathName } ].
+	^ self parent path copyWith: self pathName
+]
+
+{ #category : 'accessing' }
+IGElement >> pathName [
+
+	^ self name
 ]
 
 { #category : 'printing' }

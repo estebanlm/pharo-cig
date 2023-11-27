@@ -98,10 +98,10 @@ IGCVisitor >> visitClass: aClass [
 	self push: aClass.
 	[  
 		self indentDo: [  
-			outStream << '/* BEGIN CLASS: ' << aClass name << '*/' << String cr << String cr.
+			outStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr << String cr.
 			(IGCClassGenerator on: self) generateClass: aClass.
 			super visitClass: aClass.
-			outStream << '/* END CLASS: ' << aClass name << '*/' << String cr << String cr ] ]
+			outStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
 	ensure: [
 		self pop ]
 ]
@@ -119,22 +119,14 @@ IGCVisitor >> visitDestructor: aDestructor [
 { #category : 'visiting' }
 IGCVisitor >> visitEnum: anEnum [
 
-	"C files do not contain enum declarations (they will be taken from the hpp definition)"
-	outStream << 'enum ' << anEnum name << ' {
-'.
-
-	anEnum elements do: [ :each | 
-		outStream << '    ' << each name << ' = ' << each value asString << ',
-' ].
-	outStream << '};
-
-'
+	(IGCGenerator on: self) generateEnum: anEnum.
+	outStream cr
 ]
 
 { #category : 'visiting' }
 IGCVisitor >> visitFunction: aFunction [
 
-	outStream << (aFunction asFunctionSourceWithPrefix: self prefix delimiter: '_').
+	(IGCGenerator on: self) generateFunction: aFunction.
 	outStream cr
 ]
 
@@ -156,11 +148,18 @@ IGCVisitor >> visitNamespace: aNamespace [
 	self push: aNamespace.
 	[ 
 		self indentDo: [  
-			outStream << '/* BEGIN NAMESPACE: ' << aNamespace name << '*/' << String cr << String cr.
+			outStream << '/* BEGIN NAMESPACE: ' << aNamespace name << ' */' << String cr << String cr.
 			super visitNamespace: aNamespace.
-			outStream << '/* END NAMESPACE: ' << aNamespace name << '*/' << String cr << String cr ] ]
+			outStream << '/* END NAMESPACE: ' << aNamespace name << ' */' << String cr << String cr ] ]
 	ensure: [ 
 		self pop ]
+]
+
+{ #category : 'visiting' }
+IGCVisitor >> visitStructure: aStructure [
+
+	(IGCGenerator on: self) generateStructure: aStructure.
+	outStream cr	
 ]
 
 { #category : 'visiting' }

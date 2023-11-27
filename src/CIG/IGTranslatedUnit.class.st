@@ -4,7 +4,8 @@ Class {
 	#traits : 'IGTElementContainer',
 	#classTraits : 'IGTElementContainer classTrait',
 	#instVars : [
-		'nodeClasses'
+		'nodeClasses',
+		'registerUnknown'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -20,33 +21,43 @@ IGTranslatedUnit >> accept: aVisitor [
 	aVisitor visitUnit: self
 ]
 
+{ #category : 'accessing' }
+IGTranslatedUnit >> addElement: anElement [
+
+	elements ifNil: [ elements := OrderedCollection new ].
+	anElement parent: self.
+	elements add: anElement
+]
+
 { #category : 'private' }
 IGTranslatedUnit >> addNode: currentNode parent: parentNode [
 	| parent current |
 
-	parent := self findNode: parentNode.	
+	parent := self findParent: parentNode.	
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
 		ifNotNil: [ ^ self ].
-	
+
 	current := self newNode: currentNode.
+	(current isUnknown and: [ self isGeneratingWithUnknown not ])
+		ifTrue: [ ^ self ].
 	parent addElement: current
 ]
 
-{ #category : 'private' }
-IGTranslatedUnit >> findElementMatching: aBlock [
+{ #category : 'accessing' }
+IGTranslatedUnit >> elementAtPath: aPath [
+	| current |
 
-	self elements do: [ :eachElement |
-		(eachElement findElementMatching: aBlock) 
-			ifNotNil: [ :found | ^ found ] ].
-
-	^ nil
+	current := self.
+	aPath do: [ :each |
+		current := current findElementMatching: [ :eachElement | eachElement name = each ] ].
+	^ current
 ]
 
 { #category : 'private' }
-IGTranslatedUnit >> findNode: parentNode [
+IGTranslatedUnit >> findNode: aNode [
 
 	^ self 
-		findNode: parentNode 
+		findNode: aNode 
 		ifAbsent: [ self ]
 ]
 
@@ -66,12 +77,36 @@ IGTranslatedUnit >> findNode: aCursor startingAt: aNode ifAbsent: aBlock [
 	kind := aCursor kind.
 	name := aCursor displayName.
 	
-	result := aNode findElementMatching: [ :each | 
+	result := aNode findDeepElementMatching: [ :each | 
 		each kind = kind and: [ each name = name ] ].
 	
 	result ifNil: [ ^ aBlock value ].
 	
 	^ result
+]
+
+{ #category : 'private' }
+IGTranslatedUnit >> findParent: aCursor [
+	| current parents kind name |
+	
+	parents := aCursor withAllParents.
+	current := self.
+	parents allButFirst do: [ :each |
+		| next |
+		kind := each kind.
+		name := each displayName.
+		next := current findElementMatching: [ :eachElement | 
+			eachElement kind = kind and: [ eachElement name = name ] ].
+		next ifNil: [ ^ current ].
+		current := next ].
+	
+	^ current 
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> findReversedElementMatching: aBlock [
+
+	^ self findElementMatching: aBlock
 ]
 
 { #category : 'generating' }
@@ -105,7 +140,14 @@ IGTranslatedUnit >> generateFrom: aHeader [
 IGTranslatedUnit >> initialize [
 
 	super initialize.
-	elements := OrderedCollection new
+	elements := OrderedCollection new.
+	self withUnknown
+]
+
+{ #category : 'testing' }
+IGTranslatedUnit >> isGeneratingWithUnknown [
+
+	^ registerUnknown
 ]
 
 { #category : 'private' }
@@ -128,4 +170,28 @@ IGTranslatedUnit >> nodeClasses [
 		
 	^ nodeClasses ifNil: [ 
 		nodeClasses := IGElement nodesDictionary ]
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> path [
+	
+	^ { self }
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> root [
+	
+	^ self
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> withUnknown [
+
+	registerUnknown := true
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> withoutUnknown [
+
+	registerUnknown := false
 ]

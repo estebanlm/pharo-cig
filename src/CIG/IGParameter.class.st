@@ -46,7 +46,7 @@ IGParameter >> asParameterString [
 IGParameter >> castString [
 	| element |
 	
-	element := self root findElementMatching: [ :each | each name = self typeName ].
+	element := self root findDeepElementMatching: [ :each | each name = self typeName ].
 	element ifNotNil: [
 		"if elaborated element is an enum. we will need a cast"
 		element isEnum ifTrue: [ ^ element fullName ].
@@ -67,9 +67,43 @@ IGParameter >> fromCursor: aCursor [
 ]
 
 { #category : 'testing' }
+IGParameter >> hasTypeReference [
+
+	^ self typeReference notNil
+]
+
+{ #category : 'testing' }
 IGParameter >> isElaborated [
 
 	^ self typeKind = CXType_Elaborated
+]
+
+{ #category : 'testing' }
+IGParameter >> isLValueReference [
+
+	^ self typeKind = CXType_LValueReference
+]
+
+{ #category : 'testing' }
+IGParameter >> isReference [
+
+	^ (self parseType: self typeName) isReference
+]
+
+{ #category : 'private' }
+IGParameter >> parseType: aString [
+
+	^ IGFunctionParser parse: aString
+]
+
+{ #category : 'accessing' }
+IGParameter >> resolveType [
+	
+	^ IGType new
+		parent: self;
+		name: self typeName;
+		reference: self typeReference;
+		yourself
 ]
 
 { #category : 'accessing' }
@@ -89,4 +123,13 @@ IGParameter >> typeKind: aNumber [
 IGParameter >> typeName [
 
 	^ typeName
+]
+
+{ #category : 'accessing' }
+IGParameter >> typeReference [
+	"if isLValueReference = true, there will be a type reference"
+
+	^ self elements 
+		detect: [ :each | each isTypeReference ]
+		ifNone: [ nil ]
 ]

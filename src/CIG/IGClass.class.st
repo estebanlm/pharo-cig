@@ -17,3 +17,9 @@ IGClass >> accept: aVisitor [
 
 	aVisitor visitClass: self
 ]
+
+{ #category : 'testing' }
+IGClass >> isClass [
+
+	^ true
+]

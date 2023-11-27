@@ -12,6 +12,7 @@ Trait {
 IGTElementContainer >> addElement: anElement [
 
 	elements ifNil: [ elements := OrderedCollection new ].
+	anElement parent: self.
 	elements add: anElement
 ]
 
@@ -22,11 +23,21 @@ IGTElementContainer >> elements [
 ]
 
 { #category : 'accessing' }
+IGTElementContainer >> findDeepElementMatching: aBlock [
+
+	self elements do: [ :eachElement |
+		(eachElement findDeepElementMatching: aBlock) 
+			ifNotNil: [ :found | ^ found ] ].
+
+	^ nil
+]
+
+{ #category : 'private' }
 IGTElementContainer >> findElementMatching: aBlock [
 
 	self elements do: [ :eachElement |
-		(eachElement findElementMatching: aBlock) 
-			ifNotNil: [ :found | ^ found ] ].
+		(aBlock value: eachElement) 
+			ifTrue: [ ^ eachElement ] ].
 
 	^ nil
 ]

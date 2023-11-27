@@ -15,35 +15,11 @@ IGTFunction >> argumentsAsList [
 	^ (self parameters collect: [ :each | each asArgumentString ]) asCommaString
 ]
 
-{ #category : 'converting' }
-IGTFunction >> asFunctionDeclarationWithPrefix: prefix delimiter: delim [
-
-	^ String streamContents: [ :stream |
-		  stream 
-			<< self returnTypeName << ' ' << prefix << delim
-		 	 << self spelling << '(' << self parametersAsList << ')' ]
-]
-
-{ #category : 'converting' }
-IGTFunction >> asFunctionSourceWithPrefix: prefix delimiter: delim [
-
-	^ '{1} \{
-	{5}{2}::{3}({4});
-\}' format: {
-			  (self asFunctionDeclarationWithPrefix: prefix delimiter: delim).
-			  prefix.
-			  self spelling.
-			  self argumentsAsList.
-			  (self isReturnTypeVoid
-				   ifTrue: [ '' ]
-				   ifFalse: [ 'return ' ]) }
-]
-
 { #category : 'initialization' }
 IGTFunction >> fillFunctionWith: aCursor [
 
 	returnTypeName := aCursor type resultType spelling.
-	spelling := aCursor spelling	
+	spelling := aCursor spelling
 ]
 
 { #category : 'testing' }
@@ -64,6 +40,18 @@ IGTFunction >> parametersAsList [
 	^ (self parameters collect: [ :each | each asParameterString ]) asCommaString
 ]
 
+{ #category : 'handling' }
+IGTFunction >> resolveReturnType [
+
+	self isReturnTypeVoid ifTrue: [ ^ nil ].
+	
+	^ IGType new
+		parent: self;
+		name: self returnTypeName;
+		reference: self typeReference;
+		yourself
+]
+
 { #category : 'accessing' }
 IGTFunction >> returnTypeName [
 
@@ -74,4 +62,13 @@ IGTFunction >> returnTypeName [
 IGTFunction >> spelling [
 
 	^ spelling
+]
+
+{ #category : 'handling' }
+IGTFunction >> typeReference [
+	"if isLValueReference = true, there will be a type reference"
+
+	^ self elements 
+		detect: [ :each | each isTypeReference ]
+		ifNone: [ nil ]
 ]

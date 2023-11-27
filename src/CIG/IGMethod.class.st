@@ -21,58 +21,6 @@ IGMethod >> accept: aVisitor [
 	aVisitor visitMethod: self
 ]
 
-{ #category : 'converting' }
-IGMethod >> asFunctionDeclarationWithPrefix: prefix delimiter: delim [
-	| parsed |
-
-	^ String streamContents: [ :stream |
-		parsed := self parseReturnType.
-		parsed isReference 
-			ifTrue: [ stream << parsed name << ' *' ]
-			ifFalse: [ 
-				stream << self returnTypeName.
-				self returnTypeName last isAlphaNumeric ifTrue: [ 
-					stream space ] ].
-		
-		stream 
-			<< prefix << delim
-			<< self spelling 
-			<< '(' << self parametersAsList << ')' ]
-]
-
-{ #category : 'converting' }
-IGMethod >> asFunctionSourceWithPrefix: prefix delimiter: delim [
-	
-	^ '{declaration} \{
-	{return}{cast}(({classCast})self)->{func}({arguments});
-\}' 
-	format: { 
-		#declaration -> (self asFunctionDeclarationWithPrefix: prefix delimiter: delim).
-		#func -> self spelling.
-		#arguments -> self argumentsAsList.
-		#cast -> self castReturnString.
-		#classCast -> self castClassString.
-		#return -> (self isReturnTypeVoid 
-			ifTrue: [ '' ]
-			ifFalse: [ 'return ' ]) }
-		asDictionary
-]
-
-{ #category : 'private' }
-IGMethod >> castClassString [
-
-	^ self parent name, ' *'
-]
-
-{ #category : 'private' }
-IGMethod >> castReturnString [
-	| return |
-
-	return := self parseReturnType.
-	return isReference ifFalse: [ ^ '' ].
-	^ '({1}*)&' format: { return name }
-]
-
 { #category : 'initialization' }
 IGMethod >> fromCursor: aCursor [
 
@@ -104,8 +52,23 @@ IGMethod >> parametersAsList [
 				stream << ', ' << aString ] ]
 ]
 
-{ #category : 'private' }
-IGMethod >> parseReturnType [
+{ #category : 'handling' }
+IGMethod >> resolveReturnType [
+
+	self isReturnTypeVoid ifTrue: [ ^ nil ].
 	
-	^ IGFunctionParser parse: self returnTypeName
+	^ IGType new
+		parent: self;
+		name: self returnTypeName;
+		reference: self typeReference;
+		yourself
+]
+
+{ #category : 'accessing' }
+IGMethod >> typeReference [
+	"if isLValueReference = true, there will be a type reference"
+
+	^ self elements 
+		detect: [ :each | each isTypeReference ]
+		ifNone: [ nil ]
 ]

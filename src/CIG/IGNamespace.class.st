@@ -23,3 +23,9 @@ IGNamespace >> accept: aVisitor [
 
 	aVisitor visitNamespace: self
 ]
+
+{ #category : 'testing' }
+IGNamespace >> isNamespace [
+
+	^ true
+]

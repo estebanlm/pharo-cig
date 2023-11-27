@@ -26,3 +26,9 @@ IGFunction >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	self fillFunctionWith: aCursor
 ]
+
+{ #category : 'accessing' }
+IGFunction >> pathName [
+
+	^ self spelling
+]
