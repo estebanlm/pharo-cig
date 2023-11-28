@@ -6,8 +6,7 @@ Class {
 		'CXTypeKind'
 	],
 	#category : 'CIG-Tests',
-	#package : 'CIG',
-	#tag : 'Tests'
+	#package : 'CIG-Tests'
 }
 
 { #category : 'testing' }

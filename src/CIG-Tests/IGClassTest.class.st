@@ -2,8 +2,7 @@ Class {
 	#name : 'IGClassTest',
 	#superclass : 'IGBaseTest',
 	#category : 'CIG-Tests',
-	#package : 'CIG',
-	#tag : 'Tests'
+	#package : 'CIG-Tests'
 }
 
 { #category : 'tests' }

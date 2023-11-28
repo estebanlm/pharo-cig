@@ -5,8 +5,7 @@ Class {
 		'translatedUnit'
 	],
 	#category : 'CIG-Tests',
-	#package : 'CIG',
-	#tag : 'Tests'
+	#package : 'CIG-Tests'
 }
 
 { #category : 'accessing' }
