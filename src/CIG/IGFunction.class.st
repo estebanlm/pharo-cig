@@ -27,6 +27,12 @@ IGFunction >> fromCursor: aCursor [
 	self fillFunctionWith: aCursor
 ]
 
+{ #category : 'testing' }
+IGFunction >> isFunction [
+
+	^ true
+]
+
 { #category : 'accessing' }
 IGFunction >> pathName [
 

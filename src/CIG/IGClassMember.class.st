@@ -14,6 +14,22 @@ IGClassMember class >> kind [
 	^ nil
 ]
 
+{ #category : 'private' }
+IGClassMember >> disambiguate: aString [
+	| methods |
+	
+	methods := self parent elements 
+		select: [ :each | (each kind = self kind) and: [ each basename = self basename  ] ].
+	
+	"this is the regular case"
+	methods size = 1 
+		ifTrue: [ ^ aString ].
+	
+	"I need to dissambiguate"
+	^ String streamContents: [ :stream |
+		stream << aString << '_' <<  (methods indexOf: self) asString ]
+]
+
 { #category : 'initialization' }
 IGClassMember >> fromCursor: aCursor [
 

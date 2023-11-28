@@ -21,10 +21,10 @@ IGConstructor >> accept: aVisitor [
 { #category : 'accessing' }
 IGConstructor >> cDeclaration [
 
-	^ String streamContents: [ :stream | 
+	^ self disambiguate: (String streamContents: [ :stream | 
 		stream 
 			<<  (self parent fullNameWith: '_')
-			<< '_new' ]
+			<< '_new' ])
 ]
 
 { #category : 'accessing' }

@@ -151,6 +151,13 @@ IGTranslatedUnit >> isGeneratingWithUnknown [
 ]
 
 { #category : 'private' }
+IGTranslatedUnit >> isNamespace [
+	"for polymorphism with elements"
+	
+	^ false
+]
+
+{ #category : 'private' }
 IGTranslatedUnit >> newNode: currentNode [
 	
 	^ (self nodeClassAt: currentNode kind) fromCursor: currentNode

@@ -7,9 +7,9 @@ Class {
 }
 
 { #category : 'private' }
-IGCClassGenerator >> addClassDelete: aClass [
+IGCClassGenerator >> addClassDispose: aClass [
 
-	self outStream << ('void {cClass}_delete({cClass}* self) \{
+	self outStream << ('void {cClass}_dispose({cClass}* self) \{
 	delete ({cppClass} *)self;
 \}' format: { 
 	#cClass -> aClass cDeclaration.
@@ -43,7 +43,7 @@ IGCClassGenerator >> generateClass: aClass [
 	self root: aClass root.
 	self addClassTypedef: aClass.
 	self outStream cr.
-	self addClassDelete: aClass.
+	self addClassDispose: aClass.
 	self outStream cr	
 ]
 
@@ -57,7 +57,7 @@ IGCClassGenerator >> generateConstructor: aConstructor [
 	{return}{returnCast}(new {func}({arguments}\));
 \}' format: { 
 		#type -> (self cDeclarationOf: aConstructor resolveReturnType).
-		#methodName -> (self methodDeclarationOf: aConstructor).
+		#methodName -> aConstructor cDeclaration.
 		#parameters -> (self parametersList: aConstructor).
 		#func -> aConstructor cppDeclaration.
 		#arguments -> (self argumentsListToCPP: aConstructor).
@@ -80,7 +80,7 @@ IGCClassGenerator >> generateMethod: aMethod [
 	{return}{returnCast}(({classCast})self)->{func}({arguments}\);
 \}' format: { 
 		#type -> (self cDeclarationOf: aMethod resolveReturnType).
-		#methodName -> (self methodDeclarationOf: aMethod).
+		#methodName -> aMethod cDeclaration.
 		#parameters -> (self selfParametersList: aMethod).
 		#func -> aMethod spelling.
 		#arguments -> (self argumentsListToCPP: aMethod).
@@ -92,20 +92,6 @@ IGCClassGenerator >> generateMethod: aMethod [
 		asDictionary	.
 			
 	self outStream << body << String cr.
-]
-
-{ #category : 'private' }
-IGCClassGenerator >> methodDeclarationOf: aMethod [
-	"We need to disambiguate potential multimethods"
-	| methods |
-	
-	methods := aMethod parent elements 
-		select: [ :each | (each kind = aMethod kind) and: [ each basename = aMethod basename  ] ].
-	"this is the regular case"
-	methods size = 1 ifTrue: [ ^ aMethod cDeclaration ].
-	
-	^ String streamContents: [ :stream |
-		stream << aMethod cDeclaration << '_' <<  (methods indexOf: aMethod) asString ]
 ]
 
 { #category : 'private' }

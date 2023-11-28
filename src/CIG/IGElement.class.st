@@ -167,6 +167,12 @@ IGElement >> isField [
 ]
 
 { #category : 'testing' }
+IGElement >> isFunction [
+
+	^ false
+]
+
+{ #category : 'testing' }
 IGElement >> isMethod [
 
 	^ false

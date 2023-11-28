@@ -24,15 +24,27 @@ IGNamespace >> accept: aVisitor [
 	aVisitor visitNamespace: self
 ]
 
+{ #category : 'accessing' }
+IGNamespace >> functions [
+
+	^ self elements select: [ :each | each isFunction ]
+]
+
+{ #category : 'testing' }
+IGNamespace >> hasFunctions [
+
+	^ self functions notEmpty
+]
+
 { #category : 'testing' }
 IGNamespace >> isNamespace [
 
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 IGNamespace >> phDeclarationWith: aPrefix [
 
-	^ super phDeclarationWith: aPrefix, 'Namespace'
+	^ (super phDeclarationWith: aPrefix), 'Namespace'
 
 ]

@@ -23,6 +23,12 @@ IGMethod >> accept: aVisitor [
 	aVisitor visitMethod: self
 ]
 
+{ #category : 'accessing' }
+IGMethod >> cDeclaration [
+
+	^ self disambiguate: super cDeclaration
+]
+
 { #category : 'initialization' }
 IGMethod >> fromCursor: aCursor [
 

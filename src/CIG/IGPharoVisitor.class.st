@@ -27,12 +27,30 @@ IGPharoVisitor >> addClass: aName extends: aClass [
 ]
 
 { #category : 'private' }
+IGPharoVisitor >> addClass: aName extends: aClass tag: aTag [
+	| builder |
+	
+	builder := aClass << aName asSymbol.
+	
+	(aClass package name = self packageName) ifFalse: [  
+		builder
+			traits: self libraryTrait;
+			sharedPools: { self typesName asSymbol } ].
+	
+	^ builder
+		tag: aTag;
+		package: self packageName;
+		install
+]
+
+{ #category : 'private' }
 IGPharoVisitor >> addFFILibrary: aUnit [
-	| ffiLibraryName ffiClass template |
+	| ffiLibraryName class template |
 
 	ffiLibraryName := self libraryName.
 	
-	ffiClass := FFILibrary << ffiLibraryName asSymbol
+	class := FFILibrary << ffiLibraryName asSymbol
+		tag: 'Library';
 		package: self packageName;
 		install.	
 
@@ -41,19 +59,20 @@ IGPharoVisitor >> addFFILibrary: aUnit [
 	^ FFIUnix64LibraryFinder findLibrary: ''{1}.so''')
 	format: { self file libraryName }).
 		
-	ffiClass 
+	class 
 		compile: template
 		classified: 'accessing - platform'
 ]
 
 { #category : 'private' }
 IGPharoVisitor >> addFFITrait: aUnit [
-	| ffiTraitName ffiLibraryName ffiTrait template |
+	| ffiTraitName ffiLibraryName trait template |
 
 	ffiLibraryName := self libraryName.
 	ffiTraitName := self libraryTraitName.
 	
-	ffiTrait := Trait << ffiTraitName asSymbol
+	trait := Trait << ffiTraitName asSymbol
+		tag: 'Library';
 		package: self packageName;
 		install.	
 
@@ -62,8 +81,8 @@ IGPharoVisitor >> addFFITrait: aUnit [
 	^ {1}')
 	format: { ffiLibraryName }).
 		
-	ffiTrait compile: template classified: 'library path'.
-	ffiTrait class compile: template classified: 'library path'
+	trait compile: template classified: 'library path'.
+	trait class compile: template classified: 'library path'
 ]
 
 { #category : 'private' }
@@ -92,6 +111,7 @@ IGPharoVisitor >> addTypesClass: aUnit [
 
 	typesName := self typesName.
 	SharedPool << typesName asSymbol
+		tag: 'Library';
 		package: self packageName;
 		install
 ]
@@ -127,6 +147,40 @@ IGPharoVisitor >> libraryTrait [
 IGPharoVisitor >> libraryTraitName [
 
 	^ 'LibT', self file bindingsName capitalized
+]
+
+{ #category : 'private' }
+IGPharoVisitor >> namespaceFor: aNode [
+	| current |
+	
+	current := aNode.
+	[ current notNil ] 
+	whileTrue: [ 
+		current isNamespace ifTrue: [ ^ current ].
+		current := current parent ].
+	^ nil
+]
+
+{ #category : 'private' }
+IGPharoVisitor >> namespaceForClass: aClass [
+
+	^ (self namespaceFor: aClass) 
+		ifNotNil: [ :aNamespace | aNamespace basename capitalized ]
+		ifNil: [ 'Library' ]
+]
+
+{ #category : 'private' }
+IGPharoVisitor >> namespaceForEnum: anEnum [
+
+	^ (self namespaceFor: anEnum) 
+		ifNotNil: [ :aNamespace | aNamespace basename capitalized ]
+		ifNil: [ 'Library' ]
+]
+
+{ #category : 'private' }
+IGPharoVisitor >> namespaceForStructure: aStructure [
+
+	^ self namespaceForEnum: aStructure
 ]
 
 { #category : 'private' }
@@ -177,7 +231,8 @@ IGPharoVisitor >> visitClass: aClass [
 	self registerType: aClass.
 	self 
 		addClass: (aClass phDeclarationWith: self prefix) 
-		extends: (self superclassFor: aClass).
+		extends: (self superclassFor: aClass)
+		tag: (self namespaceForClass: aClass).
 	self visitAll: aClass elements
 ]
 
@@ -195,7 +250,10 @@ IGPharoVisitor >> visitEnum: anEnum [
 
 	self registerType: anEnum.
 	
-	enum := self addClass: (anEnum phDeclarationWith: self prefix) extends: FFIEnumeration.
+	enum := self 
+		addClass: (anEnum phDeclarationWith: self prefix) 
+		extends: FFIEnumeration
+		tag: (self namespaceForEnum: anEnum).
 
 	template := String streamContents: [ :stream |
 		stream << 'enumDecl
@@ -235,10 +293,14 @@ IGPharoVisitor >> visitMethod: aMethod [
 
 { #category : 'visiting' }
 IGPharoVisitor >> visitNamespace: aNamespace [
-	| class |
 
-	"do not do anything, but prepare to add a class in case there are associated functions"
-	class := self addClass: (aNamespace phDeclarationWith: self prefix) extends: Object.
+	"avoid to create a namespace if there are no functions to be installed"
+	aNamespace hasFunctions ifTrue: [
+		self 
+			addClass: (aNamespace phDeclarationWith: self prefix) 
+			extends: Object
+			tag: aNamespace basename capitalized ].
+	
 	self visitAll: aNamespace elements
 ]
 
@@ -248,7 +310,10 @@ IGPharoVisitor >> visitStructure: aStructure [
 
 	self registerType: aStructure.
 	
-	struct := self addClass: (aStructure phDeclarationWith: self prefix) extends: FFIStructure.
+	struct := self 
+		addClass: (aStructure phDeclarationWith: self prefix) 
+		extends: FFIStructure
+		tag: (self namespaceForStructure: aStructure).
 
 	template := String streamContents: [ :stream |
 		stream << 'fieldsDesc' << String cr << String cr. 
