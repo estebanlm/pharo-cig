@@ -233,7 +233,9 @@ IGPharoVisitor >> visitClass: aClass [
 		addClass: (aClass phDeclarationWith: self prefix) 
 		extends: (self superclassFor: aClass)
 		tag: (self namespaceForClass: aClass).
-	self visitAll: aClass elements
+	self visitAll: aClass elements.
+	aClass isAbstract ifFalse: [ 
+		(IGPharoGenerator on: self) generateDispose: aClass ]
 ]
 
 { #category : 'visiting' }

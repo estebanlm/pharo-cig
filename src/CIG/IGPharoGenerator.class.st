@@ -84,6 +84,21 @@ IGPharoGenerator >> generateCreator: aConstructor [
 ]
 
 { #category : 'generating' }
+IGPharoGenerator >> generateDispose: aClass [
+	| class template cDecl |
+	
+	class := self classFor: (aClass phDeclarationWith: self prefix).
+	cDecl := aClass cDeclaration, '_dispose'.
+	template := 'dispose
+		self ffiCall: #(void {cDecl}(self))'
+		format: { 
+			#cDecl -> cDecl 
+		} asDictionary.
+	
+	class compile: template classified: 'finalization'
+]
+
+{ #category : 'generating' }
 IGPharoGenerator >> generateFunction: aFunction [
 	| class template |
 
