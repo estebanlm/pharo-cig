@@ -110,8 +110,8 @@ IGCVisitor >> visitClass: aClass [
 IGCVisitor >> visitConstructor: aConstructor [
 
 	"abstract classes do not have public constructors"
-	aConstructor parent isAbstract
-		ifTrue: [ ^ self ].
+	aConstructor parent isAbstract ifTrue: [ ^ self ].
+	
 	(IGCClassGenerator on: self) generateConstructor: aConstructor.
 	self outStream cr
 ]
@@ -138,9 +138,8 @@ IGCVisitor >> visitFunction: aFunction [
 { #category : 'visiting' }
 IGCVisitor >> visitMethod: aMethod [
 
-	(aMethod isPublic not
-		or: [ aMethod isVirtual 
-		or: [ aMethod isOperator ] ]) 
+	(aMethod isPublic not 
+		or: [ aMethod isOperator ]) 
 		ifTrue: [ ^ self ].
 
 	"outStream << (aMethod asFunctionSourceWithPrefix: self prefix delimiter: '_')."

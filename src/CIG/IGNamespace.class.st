@@ -29,3 +29,10 @@ IGNamespace >> isNamespace [
 
 	^ true
 ]
+
+{ #category : 'as yet unclassified' }
+IGNamespace >> phDeclarationWith: aPrefix [
+
+	^ super phDeclarationWith: aPrefix, 'Namespace'
+
+]

@@ -17,3 +17,9 @@ IGStructure >> accept: aVisitor [
 
 	aVisitor visitStructure: self
 ]
+
+{ #category : 'field definition' }
+IGStructure >> fields [
+	
+	^ self elements select: [ :each | each isField ]
+]

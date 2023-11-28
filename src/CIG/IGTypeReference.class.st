@@ -24,7 +24,7 @@ IGTypeReference >> isTypeReference [
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 IGTypeReference >> referenceType [
 	| typeString |
 

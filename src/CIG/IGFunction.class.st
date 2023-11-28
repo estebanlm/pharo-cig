@@ -32,3 +32,12 @@ IGFunction >> pathName [
 
 	^ self spelling
 ]
+
+{ #category : 'accessing' }
+IGFunction >> phDeclaration [
+
+	^ (String streamContents: [ :stream | 
+			stream  << self spelling uncapitalized.
+			self buildParameters: self parameters on: stream ])
+		trimmed
+]

@@ -28,6 +28,14 @@ IGType >> cDeclaration [
 			stream << '*' ] ]
 ]
 
+{ #category : 'accessing' }
+IGType >> cDeclarationForFFI [
+	
+	self flag: #TODO. "This will not work all the time, since we need to declare 
+	some C types differently (e.g. unsigned = uint, unsigned long = ulong, etc.)"
+	^ self cDeclaration
+]
+
 { #category : 'private' }
 IGType >> cDeclarationFromReference [
 	
@@ -101,6 +109,31 @@ IGType >> parent: aNode [
 IGType >> parseType [
 	
 	^ IGFunctionParser parse: self name
+]
+
+{ #category : 'private' }
+IGType >> phDeclarationFromReferenceWith: aPrefix [
+	
+	^ aPrefix, self reference typeBasename capitalized
+]
+
+{ #category : 'accessing' }
+IGType >> phDeclarationWith: aPrefix [
+	| parsed typeName |
+
+	parsed := self parseType.
+	typeName := parsed name.
+	
+	^ String streamContents: [ :stream |
+		self reference 
+			ifNotNil: [ 
+				stream << ((self phDeclarationFromReferenceWith: aPrefix) ifNil: [ aPrefix, typeName ]) ]
+			ifNil: [ stream << (aPrefix, typeName) ].
+				
+		parsed isReference ifTrue: [ stream << '*' ].
+		1 to: parsed arity do: [ :each |
+			stream << '*' ] ]
+	
 ]
 
 { #category : 'accessing' }

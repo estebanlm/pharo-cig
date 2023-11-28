@@ -27,6 +27,33 @@ CXSourceLocation >> clang_Location_isInSystemHeader [
  	^ self ffiCall: #(int clang_Location_isInSystemHeader(CXSourceLocation self)) 
 ]
 
+{ #category : 'private' }
+CXSourceLocation >> clang_getSpellingLocationFile: file line: line column: column offset: offset [
+
+	self ffiCall: #(void clang_getSpellingLocation(
+		CXSourceLocation self,
+		"CXFile *"void *file,
+		"unsigned *"uint *line,
+		"unsigned *"uint *column,
+		"unsigned *"uint *offset 
+	))
+]
+
+{ #category : 'accessing' }
+CXSourceLocation >> fileName [
+	| buffer file |
+
+	buffer := FFIOop newBuffer.
+	self 
+		clang_getSpellingLocationFile: buffer 
+		line: ExternalAddress null 
+		column: ExternalAddress null
+		offset: ExternalAddress null.
+		
+	file := CXFile fromHandle: (buffer pointerAt: 1).
+	^ file fileName
+]
+
 { #category : 'accessing - structure variables' }
 CXSourceLocation >> int_data [
 	"This method was automatically generated"
@@ -43,6 +70,20 @@ CXSourceLocation >> int_data: anObject [
 CXSourceLocation >> isInSystemHeader [
 
 	^ self clang_Location_isInSystemHeader ~= 0
+]
+
+{ #category : 'accessing' }
+CXSourceLocation >> offset [
+	| buffer |
+
+	buffer := FFIUInt32 newBuffer.
+	self 
+		clang_getSpellingLocationFile: ExternalAddress null 
+		line: ExternalAddress null 
+		column: ExternalAddress null
+		offset: buffer.
+		
+	^ buffer unsignedLongAt: 1
 ]
 
 { #category : 'accessing - structure variables' }

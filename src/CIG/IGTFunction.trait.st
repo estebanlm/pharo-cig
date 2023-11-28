@@ -15,6 +15,17 @@ IGTFunction >> argumentsAsList [
 	^ (self parameters collect: [ :each | each asArgumentString ]) asCommaString
 ]
 
+{ #category : 'private' }
+IGTFunction >> buildParameters: aCollection on: stream [ 
+	
+	aCollection ifEmpty: [ ^ self ].
+	
+	aCollection first in: [ :each | 
+		stream << each name capitalized << ': ' << each name << ' ' ].
+	aCollection allButFirst do: [ :each | 
+		stream << each name << ': ' << each name << ' ' ]
+]
+
 { #category : 'initialization' }
 IGTFunction >> fillFunctionWith: aCursor [
 

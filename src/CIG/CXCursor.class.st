@@ -49,6 +49,12 @@ CXCursor >> clang_getCursorDisplayName [
 ]
 
 { #category : 'private' }
+CXCursor >> clang_getCursorExtent [
+
+	^ self ffiCall: #(CXSourceRange clang_getCursorExtent(CXCursor self))
+]
+
+{ #category : 'private' }
 CXCursor >> clang_getCursorKindSpelling: kind [
 
 	self ffiCall: #(CXString clang_getCursorKindSpelling(int kind))
@@ -85,6 +91,23 @@ CXCursor >> clang_visitChildren: visitor [
 CXCursor >> cxxAccessSpecifier [
 	
 	self ffiCall: #("enum CX_CXXAccessSpecifier"int clang_getCXXAccessSpecifier(CXCursor self))
+]
+
+{ #category : 'testing' }
+CXCursor >> cxxMethodIsPureVirtual [
+	| range pos size source fileName |
+	
+	range := self clang_getCursorExtent.	
+	fileName := self location fileName.
+	fileName ifNotEmpty: [ 
+		pos := range start offset.
+		size := range end offset - pos.
+		fileName asFileReference readStreamDo: [ :stream |
+			stream position: pos.
+			source := stream next: size ].
+			^ source trimmed endsWith: '0' ].
+	
+	^ false
 ]
 
 { #category : 'testing' }

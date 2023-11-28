@@ -3,7 +3,8 @@ Class {
 	#superclass : 'IGClassMember',
 	#instVars : [
 		'isPublic',
-		'isVirtual'
+		'isVirtual',
+		'isPureVirtual'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -27,7 +28,8 @@ IGMethod >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
 	isPublic := aCursor cxxAccessSpecifier = 1.
-	isVirtual := aCursor cxxMethodIsVirtual
+	isVirtual := aCursor cxxMethodIsVirtual.
+	isPureVirtual := isVirtual and: [ aCursor cxxMethodIsPureVirtual ]
 ]
 
 { #category : 'testing' }
@@ -50,6 +52,12 @@ IGMethod >> isPublic [
 ]
 
 { #category : 'testing' }
+IGMethod >> isPureVirtual [
+
+	^ isPureVirtual
+]
+
+{ #category : 'testing' }
 IGMethod >> isVirtual [
 
 	^ isVirtual
@@ -64,6 +72,15 @@ IGMethod >> parametersAsList [
 				<< ' *self'.
 			super parametersAsList ifNotEmpty: [ :aString | 
 				stream << ', ' << aString ] ]
+]
+
+{ #category : 'accessing' }
+IGMethod >> phDeclaration [
+
+	^ (String streamContents: [ :stream | 
+			stream  << self spelling uncapitalized.
+			self buildParameters: self parameters on: stream ])
+		trimmed
 ]
 
 { #category : 'handling' }

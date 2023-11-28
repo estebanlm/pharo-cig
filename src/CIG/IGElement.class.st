@@ -161,6 +161,12 @@ IGElement >> isClass [
 ]
 
 { #category : 'testing' }
+IGElement >> isField [
+
+	^ false
+]
+
+{ #category : 'testing' }
 IGElement >> isMethod [
 
 	^ false
@@ -168,6 +174,12 @@ IGElement >> isMethod [
 
 { #category : 'testing' }
 IGElement >> isNamespace [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isSuperclass [
 
 	^ false
 ]
@@ -231,6 +243,12 @@ IGElement >> path [
 IGElement >> pathName [
 
 	^ self name
+]
+
+{ #category : 'as yet unclassified' }
+IGElement >> phDeclarationWith: aPrefix [
+
+	^ (aPrefix, self name capitalized) asSymbol 
 ]
 
 { #category : 'printing' }

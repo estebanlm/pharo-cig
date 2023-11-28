@@ -33,6 +33,25 @@ IGConstructor >> cppDeclaration [
 	^ self parent cppDeclaration
 ]
 
+{ #category : 'accessing' }
+IGConstructor >> phDeclaration [
+	| params |
+
+	^ (String streamContents: [ :stream | 
+			stream  << self spelling uncapitalized << '_new'.
+			(params := self parameters) size = 1
+				ifTrue: [ 
+					stream << ': ' << params first name  ]
+				ifFalse: [  
+					self parameters do: [ :each | 
+						stream 
+							<< each name  
+							<< ': ' 
+							<< each name 
+							<< ' ' ] ] ])
+		trimmed
+]
+
 { #category : 'handling' }
 IGConstructor >> resolveReturnType [
 

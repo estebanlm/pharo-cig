@@ -32,6 +32,22 @@ IGField >> fromCursor: aCursor [
 	typeKind := type kind	
 ]
 
+{ #category : 'testing' }
+IGField >> isField [
+
+	^ true
+]
+
+{ #category : 'accessing' }
+IGField >> resolveType [
+	
+	^ IGType new 
+		parent: self;
+		name: self typeName;
+		reference: self typeReference;
+		yourself
+]
+
 { #category : 'accessing' }
 IGField >> typeKind [
 
@@ -42,4 +58,12 @@ IGField >> typeKind [
 IGField >> typeName [
 
 	^ typeName
+]
+
+{ #category : 'handling' }
+IGField >> typeReference [
+
+	^ self elements 
+		detect: [ :each | each isTypeReference ]
+		ifNone: [ nil ]
 ]

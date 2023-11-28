@@ -21,7 +21,7 @@ IGClass >> accept: aVisitor [
 { #category : 'testing' }
 IGClass >> isAbstract [
 
-	^ self methods anySatisfy: [ :each | each isVirtual ]
+	^ self methods anySatisfy: [ :each | each isPureVirtual ]
 ]
 
 { #category : 'testing' }
@@ -34,4 +34,12 @@ IGClass >> isClass [
 IGClass >> methods [
 
 	^ self elements select: [ :each | each isMethod ]
+]
+
+{ #category : 'accessing' }
+IGClass >> superclass [
+
+	^ self elements 
+		detect: [ :each | each isSuperclass ]
+		ifNone: [ nil ]
 ]

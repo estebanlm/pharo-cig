@@ -101,3 +101,9 @@ CXType >> spelling [
 	^ [ string cString ]
 		ensure: [ string dispose ]
 ]
+
+{ #category : 'accessing' }
+CXType >> typeDeclaration [
+
+	^ self ffiCall: #(CXCursor clang_getTypeDeclaration(CXType self))
+]
