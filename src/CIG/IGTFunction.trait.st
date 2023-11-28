@@ -21,7 +21,9 @@ IGTFunction >> buildParameters: aCollection on: stream [
 	aCollection ifEmpty: [ ^ self ].
 	
 	aCollection first in: [ :each | 
-		stream << each name capitalized << ': ' << each name << ' ' ].
+		aCollection size > 1 
+			ifTrue: [ stream << each name capitalized ].
+		stream << ': ' << each name << ' ' ].
 	aCollection allButFirst do: [ :each | 
 		stream << each name << ': ' << each name << ' ' ]
 ]
