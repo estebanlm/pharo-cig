@@ -254,7 +254,7 @@ IGElement >> pathName [
 { #category : 'as yet unclassified' }
 IGElement >> phDeclarationWith: aPrefix [
 
-	^ (aPrefix, self name capitalized) asSymbol 
+	^ (aPrefix, self name capitalized) asSymbol
 ]
 
 { #category : 'printing' }
@@ -270,4 +270,12 @@ IGElement >> root [
 	^ self parent 
 		ifNotNil: [ self parent root ]
 		ifNil: [ self ]
+]
+
+{ #category : 'private' }
+IGElement >> typeReference [
+
+	^ self elements 
+		detect: [ :each | each isTypeReference ]
+		ifNone: [ nil ]
 ]

@@ -124,12 +124,3 @@ IGParameter >> typeName [
 
 	^ typeName
 ]
-
-{ #category : 'accessing' }
-IGParameter >> typeReference [
-	"if isLValueReference = true, there will be a type reference"
-
-	^ self elements 
-		detect: [ :each | each isTypeReference ]
-		ifNone: [ nil ]
-]

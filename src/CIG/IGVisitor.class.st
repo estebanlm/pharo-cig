@@ -71,6 +71,10 @@ IGVisitor >> visitStructure: aStructure [
 ]
 
 { #category : 'visiting' }
+IGVisitor >> visitTypedef: aTypedef [
+]
+
+{ #category : 'visiting' }
 IGVisitor >> visitUnit: aUnit [
 ]
 

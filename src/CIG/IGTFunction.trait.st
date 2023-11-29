@@ -76,12 +76,3 @@ IGTFunction >> spelling [
 
 	^ spelling
 ]
-
-{ #category : 'handling' }
-IGTFunction >> typeReference [
-	"if isLValueReference = true, there will be a type reference"
-
-	^ self elements 
-		detect: [ :each | each isTypeReference ]
-		ifNone: [ nil ]
-]

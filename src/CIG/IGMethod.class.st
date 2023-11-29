@@ -100,12 +100,3 @@ IGMethod >> resolveReturnType [
 		reference: self typeReference;
 		yourself
 ]
-
-{ #category : 'accessing' }
-IGMethod >> typeReference [
-	"if isLValueReference = true, there will be a type reference"
-
-	^ self elements 
-		detect: [ :each | each isTypeReference ]
-		ifNone: [ nil ]
-]

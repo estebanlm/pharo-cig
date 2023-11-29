@@ -10,23 +10,7 @@ Class {
 	#tag : 'Generate-Pharo'
 }
 
-{ #category : 'private' }
-IGPharoVisitor >> addClass: aName extends: aClass [
-	| builder |
-	
-	builder := aClass << aName asSymbol.
-	
-	(aClass package name = self packageName) ifFalse: [  
-		builder
-			traits: self libraryTrait;
-			sharedPools: { self typesName asSymbol } ].
-	
-	^ builder
-		package: self packageName;
-		install
-]
-
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGPharoVisitor >> addClass: aName extends: aClass tag: aTag [
 	| builder |
 	
@@ -43,7 +27,7 @@ IGPharoVisitor >> addClass: aName extends: aClass tag: aTag [
 		install
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGPharoVisitor >> addFFILibrary: aUnit [
 	| ffiLibraryName class template |
 
@@ -64,7 +48,7 @@ IGPharoVisitor >> addFFILibrary: aUnit [
 		classified: 'accessing - platform'
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGPharoVisitor >> addFFITrait: aUnit [
 	| ffiTraitName ffiLibraryName trait template |
 
@@ -85,7 +69,7 @@ IGPharoVisitor >> addFFITrait: aUnit [
 	trait class compile: template classified: 'library path'
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGPharoVisitor >> addTypes: aUnit [
 	| class template |
 	
@@ -105,7 +89,7 @@ IGPharoVisitor >> addTypes: aUnit [
 	
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGPharoVisitor >> addTypesClass: aUnit [
 	| typesName |
 
@@ -122,28 +106,19 @@ IGPharoVisitor >> classFor: aSymbol [
 	^ self class environment at: aSymbol asSymbol
 ]
 
-{ #category : 'enum declaration' }
-IGPharoVisitor >> enumDecl [
-
-	^ #(		
-    QUALITY_FAST 0
-    QUALITY_STD 1
-    QUALITY_BEST 2 )
-]
-
-{ #category : 'private' }
+{ #category : 'private - accessing' }
 IGPharoVisitor >> libraryName [
 
 	^ 'Lib', self file bindingsName capitalized
 ]
 
-{ #category : 'private' }
+{ #category : 'private - accessing' }
 IGPharoVisitor >> libraryTrait [
 		
 	^ self class environment at: (self libraryTraitName asSymbol)
 ]
 
-{ #category : 'private' }
+{ #category : 'private - accessing' }
 IGPharoVisitor >> libraryTraitName [
 
 	^ 'LibT', self file bindingsName capitalized
@@ -183,13 +158,13 @@ IGPharoVisitor >> namespaceForStructure: aStructure [
 	^ self namespaceForEnum: aStructure
 ]
 
-{ #category : 'private' }
+{ #category : 'private - accessing' }
 IGPharoVisitor >> packageName [
 
 	^ 'Lib', self file bindingsName capitalized
 ]
 
-{ #category : 'tests - printing' }
+{ #category : 'private - accessing' }
 IGPharoVisitor >> prefix [
 	
 	^ self file prefix
@@ -213,16 +188,16 @@ IGPharoVisitor >> superclassFor: aClass [
 		ifNil: [ FFIOpaqueObject ]
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGPharoVisitor >> typesClass [
 
 	^ self class environment at: self typesName asSymbol
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGPharoVisitor >> typesName [
 
-	^ self prefix, self file bindingsName capitalized, 'Types'
+	^ self prefix, self file bindingsName capitalized, 'Typedef'
 ]
 
 { #category : 'visiting' }
@@ -335,6 +310,14 @@ IGPharoVisitor >> visitStructure: aStructure [
 		classified: 'fields - definition'.
 		
 	struct rebuildFieldAccessors 
+]
+
+{ #category : 'visiting' }
+IGPharoVisitor >> visitTypedef: aTypedef [
+
+	types 
+		at: aTypedef cDeclaration
+		put: (aTypedef resolveType phDeclarationWith: self prefix)
 ]
 
 { #category : 'visiting' }

@@ -105,7 +105,7 @@ IGType >> parent: aNode [
 	parent := aNode
 ]
 
-{ #category : 'parsing' }
+{ #category : 'private' }
 IGType >> parseType [
 	
 	^ IGFunctionParser parse: self name
@@ -128,12 +128,15 @@ IGType >> phDeclarationWith: aPrefix [
 		self reference 
 			ifNotNil: [ 
 				stream << ((self phDeclarationFromReferenceWith: aPrefix) ifNil: [ aPrefix, typeName ]) ]
-			ifNil: [ stream << (aPrefix, typeName) ].
+			ifNil: [ 
+				self 
+					resolveFFIType: typeName
+					ifFound: [ :aType | stream << '#' << aType typeName ]
+					ifAbsent: [ stream << typeName ] ].
 				
 		parsed isReference ifTrue: [ stream << '*' ].
 		1 to: parsed arity do: [ :each |
 			stream << '*' ] ]
-	
 ]
 
 { #category : 'accessing' }
@@ -147,4 +150,13 @@ IGType >> reference: aTypeReference [
 
 	reference := aTypeReference
 
+]
+
+{ #category : 'private' }
+IGType >> resolveFFIType: aString ifFound: foundBlock ifAbsent: absentBlock [
+
+	^ [ 
+		foundBlock value: (FFIExternalType resolveType: aString) ]
+	on: Error 
+	do: [ :e | absentBlock value ]
 ]

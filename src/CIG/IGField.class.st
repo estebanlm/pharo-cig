@@ -59,11 +59,3 @@ IGField >> typeName [
 
 	^ typeName
 ]
-
-{ #category : 'handling' }
-IGField >> typeReference [
-
-	^ self elements 
-		detect: [ :each | each isTypeReference ]
-		ifNone: [ nil ]
-]
