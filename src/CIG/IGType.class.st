@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'parent',
 		'name',
-		'reference'
+		'typeReference'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -18,9 +18,14 @@ IGType >> cDeclaration [
 	parsed := self parseType.
 	typeName := parsed name.
 	
+	(typeName includes: $:) ifTrue: [ 
+		IGTranslationMap uniqueInstance 
+			cDeclarationOf: typeName 
+			ifFound: [ :aDecl | ^ aDecl ] ]. 
+	
 	^ String streamContents: [ :stream |
-		self reference 
-			ifNotNil: [ stream << ((self cDeclarationFromReference) ifNil: [ typeName ]) ]
+		self typeReference
+			ifNotNil: [ stream << (self cDeclarationFromReference ifNil: [ typeName ]) ]
 			ifNil: [ stream << typeName ].
 				
 		parsed isReference ifTrue: [ stream << '*' ].
@@ -38,8 +43,10 @@ IGType >> cDeclarationForFFI [
 
 { #category : 'private' }
 IGType >> cDeclarationFromReference [
+	| typeName |
 	
-	^ (self parent root elementAtPath: (self reference typeName substrings: '::'))
+	typeName := self typeReference typeName.
+	^ (self parent root elementAtPath: (typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cDeclaration ]
 ]
 
@@ -49,9 +56,15 @@ IGType >> cppDeclaration [
 
 	parsed := self parseType.
 	typeName := parsed name.
+
+	(typeName includes: $:) ifTrue: [ 
+		IGTranslationMap uniqueInstance 
+			cppDeclarationOf: typeName 
+			ifFound: [ :aDecl | ^ aDecl ] ]. 
+	
 	
 	^ String streamContents: [ :stream |
-		self reference 
+		self typeReference 
 			ifNotNil: [ stream << ((self cppDeclarationFromReference) ifNil: [ typeName ]) ]
 			ifNil: [ stream << typeName ].
 		parsed isReference ifTrue: [ stream << '*' ].
@@ -62,7 +75,7 @@ IGType >> cppDeclaration [
 { #category : 'private' }
 IGType >> cppDeclarationFromReference [
 
-	^ (self parent root elementAtPath: (self reference typeName substrings: '::'))
+	^ (self parent root elementAtPath: (self typeReference typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cppDeclaration ]
 ]
 
@@ -70,7 +83,7 @@ IGType >> cppDeclarationFromReference [
 IGType >> hasTypeReference [
 	"includes a reference explanation"
 
-	^ self reference notNil
+	^ self typeReference notNil
 ]
 
 { #category : 'testing' }
@@ -114,7 +127,7 @@ IGType >> parseType [
 { #category : 'private' }
 IGType >> phDeclarationFromReferenceWith: aPrefix [
 	
-	^ aPrefix, self reference typeBasename capitalized
+	^ aPrefix, self typeReference typeBasename capitalized
 ]
 
 { #category : 'accessing' }
@@ -125,10 +138,10 @@ IGType >> phDeclarationWith: aPrefix [
 	typeName := parsed name.
 	
 	^ String streamContents: [ :stream |
-		self reference 
+		self typeReference 
 			ifNotNil: [ 
 				stream << ((self phDeclarationFromReferenceWith: aPrefix) ifNil: [ aPrefix, typeName ]) ]
-			ifNil: [ 
+			ifNil: [
 				self 
 					resolveFFIType: typeName
 					ifFound: [ :aType | stream << '#' << aType typeName ]
@@ -139,19 +152,6 @@ IGType >> phDeclarationWith: aPrefix [
 			stream << '*' ] ]
 ]
 
-{ #category : 'accessing' }
-IGType >> reference [
-
-	^ reference
-]
-
-{ #category : 'accessing' }
-IGType >> reference: aTypeReference [
-
-	reference := aTypeReference
-
-]
-
 { #category : 'private' }
 IGType >> resolveFFIType: aString ifFound: foundBlock ifAbsent: absentBlock [
 
@@ -159,4 +159,25 @@ IGType >> resolveFFIType: aString ifFound: foundBlock ifAbsent: absentBlock [
 		foundBlock value: (FFIExternalType resolveType: aString) ]
 	on: Error 
 	do: [ :e | absentBlock value ]
+]
+
+{ #category : 'private' }
+IGType >> tryKnownType: aString ifFound: aBlock [
+	"a place to check for known types and go back and forth"
+
+	self flag: #TODO. "Put this in a config file"	
+	aString = 'std::string' ifTrue: [ ^ aBlock value: 'const char*' ]
+]
+
+{ #category : 'accessing' }
+IGType >> typeReference [
+
+	^ typeReference
+]
+
+{ #category : 'accessing' }
+IGType >> typeReference: aTypeReference [
+
+	typeReference := aTypeReference
+
 ]

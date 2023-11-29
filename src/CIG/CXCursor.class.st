@@ -87,7 +87,7 @@ CXCursor >> clang_visitChildren: visitor [
 		NULL))
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - method' }
 CXCursor >> cxxAccessSpecifier [
 	
 	self ffiCall: #("enum CX_CXXAccessSpecifier"int clang_getCXXAccessSpecifier(CXCursor self))
@@ -247,6 +247,12 @@ CXCursor >> spelling [
 CXCursor >> type [
 
 	^ self ffiCall: #(CXType clang_getCursorType(CXCursor self))
+]
+
+{ #category : 'accessing - typedef' }
+CXCursor >> typedefDeclUnderlyingType [
+
+	self ffiCall: #(CXType clang_getTypedefDeclUnderlyingType(CXCursor self))
 ]
 
 { #category : 'visiting' }

@@ -17,6 +17,30 @@ IGTypeTest >> testResolveParamTypeForSimpleType [
 ]
 
 { #category : 'tests' }
+IGTypeTest >> testResolveParamWhenTypeIsToStdString [
+	| element type |
+	
+	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)'. 'filename'}.
+	
+	type := element resolveType.
+	
+	self assert: type cDeclaration equals: 'const char *'
+	
+]
+
+{ #category : 'tests' }
+IGTypeTest >> testResolveParamWhenTypedefToSimpleType [
+	| element type |
+	
+	element := self elementAtPath: { 'noise'. 'utils'. 'Color'. 'Color(noise::uint8, noise::uint8, noise::uint8, noise::uint8)'. 'r'}.
+	
+	type := element resolveType.
+	
+	self assert: type cDeclaration equals: 'noise_uint8'
+	
+]
+
+{ #category : 'tests' }
 IGTypeTest >> testResolveReturnTypeForClass [
 	| element type |
 	

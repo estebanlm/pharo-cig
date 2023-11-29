@@ -24,6 +24,12 @@ IGTypeReference >> isTypeReference [
 	^ true
 ]
 
+{ #category : 'testing' }
+IGTypeReference >> isUnknown [
+
+	^ self referenceType = IGUnknown
+]
+
 { #category : 'accessing' }
 IGTypeReference >> referenceType [
 	| typeString |
@@ -35,7 +41,7 @@ IGTypeReference >> referenceType [
 	typeString = 'struct' ifTrue: [ ^ IGStructure ].
 	typeString = 'enum' ifTrue: [ ^ IGEnum ].
 	
-	self error: 'Should not arrive here.'
+	^ IGUnknown
 ]
 
 { #category : 'accessing' }
@@ -53,5 +59,8 @@ IGTypeReference >> typeKind [
 { #category : 'accessing' }
 IGTypeReference >> typeName [
 
-	^ self name copyAfter: Character space
+	^ (self name includes: Character space) 
+		ifTrue: [ self name copyAfter: Character space ]
+		ifFalse: [ self name ]
+
 ]

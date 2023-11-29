@@ -58,6 +58,6 @@ IGConstructor >> resolveReturnType [
 	^ IGType new
 		parent: self;
 		name: self parent cppDeclaration, '*';
-		reference: (IGTypeReference newName: 'class ', self parent cppDeclaration);
+		typeReference: (IGTypeReference newName: 'class ', self parent cppDeclaration);
 		yourself	
 ]

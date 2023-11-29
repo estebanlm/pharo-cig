@@ -102,7 +102,7 @@ IGParameter >> resolveType [
 	^ IGType new
 		parent: self;
 		name: self typeName;
-		reference: self typeReference;
+		typeReference: self typeReference;
 		yourself
 ]
 

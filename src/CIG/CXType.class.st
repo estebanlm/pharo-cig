@@ -88,6 +88,12 @@ CXType >> kindSpelling [
 ]
 
 { #category : 'accessing' }
+CXType >> pointeeType [
+
+	^ self ffiCall: #(CXType clang_getPointeeType(CXType self))
+]
+
+{ #category : 'accessing' }
 CXType >> resultType [
 
 	^ self ffiCall: #(CXType clang_getResultType(CXType self))

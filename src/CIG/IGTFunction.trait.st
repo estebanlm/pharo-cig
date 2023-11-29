@@ -61,7 +61,7 @@ IGTFunction >> resolveReturnType [
 	^ IGType new
 		parent: self;
 		name: self returnTypeName;
-		reference: self typeReference;
+		typeReference: self typeReference;
 		yourself
 ]
 

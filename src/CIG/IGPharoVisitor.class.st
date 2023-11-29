@@ -3,7 +3,8 @@ Class {
 	#superclass : 'IGVisitor',
 	#instVars : [
 		'generator',
-		'types'
+		'types',
+		'structures'
 	],
 	#category : 'CIG-Generate-Pharo',
 	#package : 'CIG',
@@ -67,6 +68,18 @@ IGPharoVisitor >> addFFITrait: aUnit [
 		
 	trait compile: template classified: 'library path'.
 	trait class compile: template classified: 'library path'
+]
+
+{ #category : 'private - adding' }
+IGPharoVisitor >> addTypedefTo: aNamespaceClass [
+	| template |
+	
+	template := ('typedef
+	^ {1}' format: { self typesName }).
+
+	aNamespaceClass class 
+		compile: template
+		classified: 'typedef'
 ]
 
 { #category : 'private - adding' }
@@ -171,6 +184,17 @@ IGPharoVisitor >> prefix [
 ]
 
 { #category : 'private' }
+IGPharoVisitor >> registerAllTypesIfNeeded: aCollection [
+
+	aCollection 
+		select: [ :each | each hasTypeReference and: [ each typeReference isUnknown not ] ]
+		thenDo: [ :each | 
+			types 
+				at: each cDeclaration
+				put: (each phDeclarationWith: self prefix) ]
+]
+
+{ #category : 'private' }
 IGPharoVisitor >> registerType: aNode [
 
 	types 
@@ -270,15 +294,14 @@ IGPharoVisitor >> visitMethod: aMethod [
 
 { #category : 'visiting' }
 IGPharoVisitor >> visitNamespace: aNamespace [
+	| namespace |
 
-	"avoid to create a namespace if there are no functions to be installed"
-	aNamespace hasFunctions ifTrue: [
-		self 
-			addClass: (aNamespace phDeclarationWith: self prefix) 
-			extends: Object
-			tag: aNamespace basename capitalized ].
-	
-	self visitAll: aNamespace elements
+	namespace := self 
+		addClass: (aNamespace phDeclarationWith: self prefix) 
+		extends: Object
+		tag: aNamespace basename capitalized.
+	self visitAll: aNamespace elements.
+	self addTypedefTo: namespace
 ]
 
 { #category : 'visiting' }
@@ -286,6 +309,7 @@ IGPharoVisitor >> visitStructure: aStructure [
 	| struct template |
 
 	self registerType: aStructure.
+	self registerAllTypesIfNeeded: (aStructure fields collect: [ :each | each resolveType ]).
 	
 	struct := self 
 		addClass: (aStructure phDeclarationWith: self prefix) 
@@ -309,7 +333,7 @@ IGPharoVisitor >> visitStructure: aStructure [
 		compile: template
 		classified: 'fields - definition'.
 		
-	struct rebuildFieldAccessors 
+	structures add: struct
 ]
 
 { #category : 'visiting' }
@@ -327,6 +351,9 @@ IGPharoVisitor >> visitUnit: aUnit [
 	self addFFITrait: aUnit.
 	self addTypesClass: aUnit. 
 	types := Dictionary new.
+	structures := OrderedCollection new.
 	self visitAll: aUnit elements.
-	self addTypes: aUnit
+	self addTypes: aUnit.
+	
+	structures do: #rebuildFieldAccessors 
 ]

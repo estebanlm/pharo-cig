@@ -3,12 +3,13 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'includePaths',
-		'fileReference',
 		'withMakefile',
 		'withCBindings',
 		'withClasses',
 		'libs',
-		'prefix'
+		'prefix',
+		'bindingsName',
+		'fileReference'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -18,7 +19,13 @@ Class {
 { #category : 'accessing' }
 IGHeaderGenerator >> bindingsName [
 
-	^ self fileReference basenameWithoutExtension
+	^ bindingsName ifNil: [ bindingsName := self files first basenameWithoutExtension ]
+]
+
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> bindingsName: aString [
+
+	bindingsName := aString
 ]
 
 { #category : 'accessing' }
@@ -34,17 +41,16 @@ IGHeaderGenerator >> defaultPrefix [
 	^ (self bindingsName first: 2) capitalized
 ]
 
-{ #category : 'accessing' }
-IGHeaderGenerator >> fileReference [
-	"entry point, it has to point to an existing header file."
-	
-	^ fileReference
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> file: aFileReferenceOrString [
+
+	fileReference := aFileReferenceOrString asFileReference
 ]
 
 { #category : 'accessing' }
-IGHeaderGenerator >> fileReference: aReferenceOrString [
-	
-	fileReference := aReferenceOrString asFileReference
+IGHeaderGenerator >> fileReference [
+
+	^ fileReference
 ]
 
 { #category : 'generating' }
@@ -170,7 +176,7 @@ IGHeaderGenerator >> libs [
 	^ libs
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - configuration' }
 IGHeaderGenerator >> libs: aCollection [
 
 	libs := aCollection
@@ -222,7 +228,7 @@ IGHeaderGenerator >> prefix [
 	^ prefix ifNil: [ prefix := self defaultPrefix ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - configuration' }
 IGHeaderGenerator >> prefix: aPrefix [
 	
 prefix := aPrefix

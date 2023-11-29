@@ -48,7 +48,8 @@ IGMethod >> isMethod [
 IGMethod >> isOperator [
 
 	^ (self name beginsWith: 'operator') 
-		and: [ (self name allButFirst: 8) isAllAlphaNumerics ]
+		and: [ self name size > 8 
+		and: [ (self name at: 9) isAlphaNumeric not ] ]
 ]
 
 { #category : 'testing' }
@@ -97,6 +98,6 @@ IGMethod >> resolveReturnType [
 	^ IGType new
 		parent: self;
 		name: self returnTypeName;
-		reference: self typeReference;
+		typeReference: self typeReference;
 		yourself
 ]
