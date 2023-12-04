@@ -31,6 +31,24 @@ IGPharoGenerator >> classFor: aName [
 ]
 
 { #category : 'private' }
+IGPharoGenerator >> commentOf: anElement [
+
+	(self hasComments not or: [ anElement comment isEmptyOrNil ]) 
+		ifTrue: [ ^ '' ].
+	
+	^ String streamContents: [ :stream | 
+		stream tab.
+		stream << '"'.
+		anElement comment lines
+			do: [ :line | stream << (line copyReplaceAll: '"' with: '""') trimmed ]
+			separatedBy: [ stream cr; tab ].
+		stream << '"'.
+		stream cr ].
+	
+	
+]
+
+{ #category : 'private' }
 IGPharoGenerator >> creatorMethodName: aConstructor [
 
 	^ (String streamContents: [ :stream | 
@@ -41,6 +59,18 @@ IGPharoGenerator >> creatorMethodName: aConstructor [
 				params allButFirst do: [ :each | 
 					stream << each name << ': ' << each name << ' ' ] ] ])
 		trimmed
+]
+
+{ #category : 'generating' }
+IGPharoGenerator >> generateAutoRelease: aClass [
+	| class template |
+	
+	class := self classFor: (aClass phDeclarationWith: self prefix).
+	template := 'autoRelease
+		
+	FinalizationRegistry default add: self'.
+	
+	class compile: template classified: 'finalization'
 ]
 
 { #category : 'generating' }
@@ -88,12 +118,25 @@ IGPharoGenerator >> generateDispose: aClass [
 	| class template cDecl |
 	
 	class := self classFor: (aClass phDeclarationWith: self prefix).
-	cDecl := aClass cDeclaration, '_dispose'.
+	cDecl := aClass fullName, '_dispose'.
 	template := 'dispose
-		self ffiCall: #(void {cDecl}(self))'
-		format: { 
-			#cDecl -> cDecl 
-		} asDictionary.
+
+	self ffiCall: #(void {cDecl}(self))'
+	format: { 
+		#cDecl -> cDecl 
+	} asDictionary.
+	
+	class compile: template classified: 'finalization'
+]
+
+{ #category : 'generating' }
+IGPharoGenerator >> generateFinalize: aClass [
+	| class template |
+	
+	class := self classFor: (aClass phDeclarationWith: self prefix).
+	template := 'finalize
+		
+	self dispose'.
 	
 	class compile: template classified: 'finalization'
 ]
@@ -105,10 +148,11 @@ IGPharoGenerator >> generateFunction: aFunction [
 	class := self classFor: (aFunction parent phDeclarationWith: self prefix).
 	
 	template := '{methodName}
-
+{comment}
 	^ self ffiCall: #({type} {func}({arguments}))'
 	format: {
 		#methodName -> aFunction phDeclaration.
+		#comment -> (self commentOf: aFunction).
 		#type -> (self cDeclarationOf: aFunction resolveReturnType).
 		#func -> aFunction cDeclaration.
 		#arguments -> (self parametersList: aFunction) }
@@ -126,10 +170,11 @@ IGPharoGenerator >> generateMethod: aMethod [
 	class := self classFor: (aMethod parent phDeclarationWith: self prefix).
 	
 	template := '{methodName}
-
+{comment}
 	^ self ffiCall: #({type} {func}({arguments}))'
 	format: {
 		#methodName -> aMethod phDeclaration.
+		#comment -> (self commentOf: aMethod). 
 		#type -> (self cDeclarationOf: aMethod resolveReturnType).
 		#func -> aMethod cDeclaration.
 		#arguments -> (self selfParametersList: aMethod) }
@@ -138,6 +183,12 @@ IGPharoGenerator >> generateMethod: aMethod [
 	class
 		compile: template
 		classified: 'functions'
+]
+
+{ #category : 'testing' }
+IGPharoGenerator >> hasComments [
+
+	^ visitor file hasComments
 ]
 
 { #category : 'private' }
@@ -153,7 +204,7 @@ IGPharoGenerator >> parametersList: aNode [
 	^ (aNode parameters collect: [ :each | self parameterDecl: each ]) asCommaString
 ]
 
-{ #category : 'tests - printing' }
+{ #category : 'accessing' }
 IGPharoGenerator >> prefix [
 	
 	^ visitor file prefix

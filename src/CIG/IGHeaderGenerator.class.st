@@ -1,3 +1,25 @@
+"
+This is a generator of C bindings for CPP libraries. 
+It takes the declaring header (plus some configuration files) and is capable of generate the corresponfing C bindings file, an associated Makefile and also all the Pharo classes included.
+
+## Example
+
+```
+(noise := IGHeaderGenerator new)
+	prefix: 'No';
+	bindingsName: 'noise'; 
+	file: '/home/esteban/dev/vm/libnoise/include/noise/noise.h';
+	includePaths: {
+		'/home/esteban/dev/vm/libnoise/include'.
+		'/home/esteban/dev/vm/libnoise/include/noise' };
+	libs: { 
+		'noise' };
+	withMakefile;
+	withoutClasses.
+
+	noise generate.
+```
+"
 Class {
 	#name : 'IGHeaderGenerator',
 	#superclass : 'Object',
@@ -122,6 +144,12 @@ IGHeaderGenerator >> hasCBindings [
 IGHeaderGenerator >> hasClasses [
 
 	^ withClasses
+]
+
+{ #category : 'testing' }
+IGHeaderGenerator >> hasComments [
+
+	^ withComments
 ]
 
 { #category : 'testing' }

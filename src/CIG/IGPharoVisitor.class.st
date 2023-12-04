@@ -274,15 +274,20 @@ IGPharoVisitor >> typesName [
 
 { #category : 'visiting' }
 IGPharoVisitor >> visitClass: aClass [
+	| class |
 
 	self registerType: aClass.
-	self 
+	class := self 
 		addClass: (aClass phDeclarationWith: self prefix) 
 		extends: (self superclassFor: aClass)
 		tag: (self namespaceForClass: aClass).
 	self visitAll: aClass elements.
+	self file hasComments ifTrue: [ class comment: aClass comment ].
 	aClass isAbstract ifFalse: [ 
-		(IGPharoGenerator on: self) generateDispose: aClass ]
+		(IGPharoGenerator on: self) 
+			generateDispose: aClass;
+			generateFinalize: aClass;
+			generateAutoRelease: aClass ]
 ]
 
 { #category : 'visiting' }

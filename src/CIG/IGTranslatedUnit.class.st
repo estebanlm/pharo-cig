@@ -1,3 +1,8 @@
+"
+Contains the translated nodes taken from traversing the libclang cursor.
+
+The method `IGTranslatedUnit>>#generateFrom:` takes a `ICHeaderGenerator` instance and performs the AST traverse to form the node tree.
+"
 Class {
 	#name : 'IGTranslatedUnit',
 	#superclass : 'Object',
