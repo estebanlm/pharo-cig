@@ -30,6 +30,12 @@ IGTypeReference >> isUnknown [
 	^ self referenceType = IGUnknown
 ]
 
+{ #category : 'as yet unclassified' }
+IGTypeReference >> namePath [
+	
+	^ self typeName substrings: '::'
+]
+
 { #category : 'accessing' }
 IGTypeReference >> referenceType [
 	| typeString |

@@ -251,7 +251,7 @@ IGElement >> pathName [
 	^ self name
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 IGElement >> phDeclarationWith: aPrefix [
 
 	^ (aPrefix, self name capitalized) asSymbol

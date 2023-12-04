@@ -1,6 +1,9 @@
 Class {
 	#name : 'IGClass',
 	#superclass : 'IGElement',
+	#instVars : [
+		'comment'
+	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -16,6 +19,25 @@ IGClass class >> kind [
 IGClass >> accept: aVisitor [
 
 	aVisitor visitClass: self
+]
+
+{ #category : 'accessing' }
+IGClass >> cDeclaration [
+
+	^ super cDeclaration, '*'
+]
+
+{ #category : 'accessing' }
+IGClass >> comment [
+
+	^ comment
+]
+
+{ #category : 'initialization' }
+IGClass >> fromCursor: aCursor [
+
+	super fromCursor: aCursor.
+	comment := aCursor rawComment
 ]
 
 { #category : 'testing' }

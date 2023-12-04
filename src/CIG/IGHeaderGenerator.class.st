@@ -9,7 +9,9 @@ Class {
 		'libs',
 		'prefix',
 		'bindingsName',
-		'fileReference'
+		'fileReference',
+		'namespaces',
+		'withComments'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -148,13 +150,20 @@ IGHeaderGenerator >> includePathsAsArguments [
 	^ self includePaths collect: [ :each | '-I', each ]
 ]
 
+{ #category : 'testing' }
+IGHeaderGenerator >> includesNamespace: aString [
+
+	^ self namespaces anySatisfy: [ :each | each cppName = aString ]
+]
+
 { #category : 'initialization' }
 IGHeaderGenerator >> initialize [
 
 	super initialize.
 	self withCBindings.
 	self withoutMakefile.
-	self withoutClasses
+	self withoutClasses.
+	self withoutComments
 ]
 
 { #category : 'accessing' }
@@ -223,6 +232,18 @@ IGHeaderGenerator >> makefileReference [
 ]
 
 { #category : 'accessing' }
+IGHeaderGenerator >> namespaces [
+
+	^ namespaces ifNil: [ #() ]
+]
+
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> namespaces: aCollection [
+
+	namespaces := aCollection
+]
+
+{ #category : 'accessing' }
 IGHeaderGenerator >> prefix [
 
 	^ prefix ifNil: [ prefix := self defaultPrefix ]
@@ -264,6 +285,12 @@ IGHeaderGenerator >> withClasses [
 ]
 
 { #category : 'accessing - configuration' }
+IGHeaderGenerator >> withComments [
+
+	withComments := true
+]
+
+{ #category : 'accessing - configuration' }
 IGHeaderGenerator >> withMakefile [
 
 	withMakefile := true
@@ -279,6 +306,12 @@ IGHeaderGenerator >> withoutCBindings [
 IGHeaderGenerator >> withoutClasses [
 
 	withClasses := false
+]
+
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> withoutComments [
+
+	withComments := false
 ]
 
 { #category : 'accessing - configuration' }

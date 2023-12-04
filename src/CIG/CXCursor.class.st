@@ -37,6 +37,12 @@ CXCursor class >> newTranslationUnit: tu [
 ]
 
 { #category : 'private' }
+CXCursor >> clang_Cursor_getRawCommentText [
+
+	self ffiCall: #(CXString clang_Cursor_getRawCommentText(CXCursor self))
+]
+
+{ #category : 'private' }
 CXCursor >> clang_Cursor_isNull [
 
 	self ffiCall: #(Boolean clang_Cursor_isNull(CXCursor self))
@@ -232,6 +238,15 @@ CXCursor >> parent [
 	^ (parent clang_Cursor_isNull)
 		ifTrue: [ nil ]
 		ifFalse: [ parent ]
+]
+
+{ #category : 'accessing' }
+CXCursor >> rawComment [
+	| string |
+	
+	string := self clang_Cursor_getRawCommentText.
+	^ [ string cString ]
+		ensure: [ string dispose ]
 ]
 
 { #category : 'accessing' }

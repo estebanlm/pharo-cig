@@ -4,34 +4,76 @@ Class {
 	#instVars : [
 		'fileReference',
 		'stack',
-		'outStream'
+		'cStream',
+		'hStream'
 	],
 	#category : 'CIG-Generate-C',
 	#package : 'CIG',
 	#tag : 'Generate-C'
 }
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGCVisitor >> addCHeaders [
 		
-	outStream << ('#include "{1}"
-
-' format: { self file fileReference basename })
+	cStream << '#include "' << self file fileReference basename << '"' << String cr.
+	cStream << '#include "' << (self fileReference withExtension: 'h') basename << '"' << String cr.
+	cStream cr
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 IGCVisitor >> addCPreamble [
 		
-	outStream << 'extern "C" {
+	cStream << 'extern "C" {
 
 '
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
+IGCVisitor >> addHHeaders [
+	| def |
+		
+	def := self fileReference basenameWithoutExtension asUppercase.
+	hStream << '#ifndef ' << def  << String cr.
+	hStream << '#define ' << def  << String cr.
+	hStream cr.
+	(self file namespaces 
+		collect: [ :each | each cppHeader ]
+		as: Set)
+		do: [ :each |
+			hStream << '#include "' << each << '"' << String cr ].
+	hStream cr		
+]
+
+{ #category : 'private - adding' }
+IGCVisitor >> addHPreamble [
+		
+	hStream << 'extern "C" {
+
+'
+]
+
+{ #category : 'accessing' }
+IGCVisitor >> cStream [
+
+	^ cStream
+]
+
+{ #category : 'private - adding' }
 IGCVisitor >> endCPreamble [
 		
-	outStream << '}
+	cStream << '}
 '
+]
+
+{ #category : 'private - adding' }
+IGCVisitor >> endHFile [
+	| def |
+		
+	def := self fileReference basenameWithoutExtension asUppercase.
+	hStream << '
+}
+	
+#endif /* ' << def << '*/'.
 ]
 
 { #category : 'accessing' }
@@ -40,29 +82,41 @@ IGCVisitor >> fileReference [
 	^ fileReference ifNil: [ fileReference := self file cFileReference ]
 ]
 
+{ #category : 'accessing' }
+IGCVisitor >> hStream [
+
+	^ hStream
+]
+
 { #category : 'private' }
 IGCVisitor >> indentDo: aBlock [
 
 	aBlock value
 ]
 
-{ #category : 'private' }
+{ #category : 'initialization' }
 IGCVisitor >> initialize [
 
 	super initialize.
 	stack := Stack new
 ]
 
-{ #category : 'private' }
-IGCVisitor >> newStreamOn: aStream [
+{ #category : 'private - factory' }
+IGCVisitor >> newCStream [
 
-	^ ZnNewLineWriterStream on: aStream
+	^ self newStreamFor: self fileReference ensureDelete
 ]
 
-{ #category : 'private' }
-IGCVisitor >> outStream [
+{ #category : 'private - factory' }
+IGCVisitor >> newHStream [
 
-	^ outStream
+	^ self newStreamFor: (self fileReference withExtension: 'h') ensureDelete
+]
+
+{ #category : 'private - factory' }
+IGCVisitor >> newStreamFor: aFileReference [
+
+	^ ZnNewLineWriterStream on: aFileReference writeStream
 ]
 
 { #category : 'private' }
@@ -98,10 +152,12 @@ IGCVisitor >> visitClass: aClass [
 	self push: aClass.
 	[  
 		self indentDo: [  
-			outStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr << String cr.
+			hStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr << String cr.
+			cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr << String cr.
 			(IGCClassGenerator on: self) generateClass: aClass.
 			super visitClass: aClass.
-			outStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
+			hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
+			cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
 	ensure: [
 		self pop ]
 ]
@@ -112,8 +168,7 @@ IGCVisitor >> visitConstructor: aConstructor [
 	"abstract classes do not have public constructors"
 	aConstructor parent isAbstract ifTrue: [ ^ self ].
 	
-	(IGCClassGenerator on: self) generateConstructor: aConstructor.
-	self outStream cr
+	(IGCClassGenerator on: self) generateConstructor: aConstructor
 ]
 
 { #category : 'visiting' }
@@ -125,14 +180,14 @@ IGCVisitor >> visitDestructor: aDestructor [
 IGCVisitor >> visitEnum: anEnum [
 
 	(IGCGenerator on: self) generateEnum: anEnum.
-	outStream cr
+	cStream cr
 ]
 
 { #category : 'visiting' }
 IGCVisitor >> visitFunction: aFunction [
 
 	(IGCGenerator on: self) generateFunction: aFunction.
-	outStream cr
+	cStream cr
 ]
 
 { #category : 'visiting' }
@@ -144,18 +199,23 @@ IGCVisitor >> visitMethod: aMethod [
 
 	"outStream << (aMethod asFunctionSourceWithPrefix: self prefix delimiter: '_')."
 	(IGCClassGenerator on: self) generateMethod: aMethod.
-	outStream cr
+	cStream cr
 ]
 
 { #category : 'visiting' }
 IGCVisitor >> visitNamespace: aNamespace [
 
+	(self includesNamespace: aNamespace cppDeclaration) ifTrue: [
+		"skip the namespace since is already there, but try to process nested namespaces"
+		self visitAll: (aNamespace elements select: [ :each | each isNamespace ]). 
+		 ^ self ].
+
 	self push: aNamespace.
 	[ 
 		self indentDo: [  
-			outStream << '/* BEGIN NAMESPACE: ' << aNamespace name << ' */' << String cr << String cr.
+			cStream << '/* BEGIN NAMESPACE: ' << aNamespace name << ' */' << String cr << String cr.
 			super visitNamespace: aNamespace.
-			outStream << '/* END NAMESPACE: ' << aNamespace name << ' */' << String cr << String cr ] ]
+			cStream << '/* END NAMESPACE: ' << aNamespace name << ' */' << String cr << String cr ] ]
 	ensure: [ 
 		self pop ]
 ]
@@ -163,19 +223,36 @@ IGCVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 IGCVisitor >> visitStructure: aStructure [
 
-	(IGCGenerator on: self) generateStructure: aStructure.
-	outStream cr	
+	(IGCGenerator on: self) generateStructure: aStructure
+]
+
+{ #category : 'visiting' }
+IGCVisitor >> visitTypedef: aTypedef [
+	
+	hStream 
+		<< 'typedef ' 
+		<< aTypedef resolveType cDeclaration 
+		<< ' ' 
+		<< aTypedef cDeclaration 
+		<< ';' 
+		<< String cr
 ]
 
 { #category : 'visiting' }
 IGCVisitor >> visitUnit: aUnit [
+	
 
-	self fileReference 
-		ensureDelete;
-		writeStreamDo: [ :aStream |
-			outStream := self newStreamOn: aStream.
-			self addCHeaders.
-			self addCPreamble.
-			self visitAll: aUnit elements.
-			self endCPreamble ]
+	cStream := self newCStream.
+	hStream := self newHStream.	
+	[
+		self addHHeaders.
+		self addHPreamble.
+		self addCHeaders.
+		self addCPreamble.
+		self visitAll: aUnit elements.
+		self endCPreamble.
+		self endHFile ]
+	ensure: [ 
+		hStream close.
+		cStream close ]
 ]

@@ -17,7 +17,7 @@ IGElementTest >> testClassCDeclaration [
 
 	element := self elementAtPath: { 'noise'. 'module'. 'Module' }.
 
-	self assert: element cDeclaration equals: 'noise_module_Module'
+	self assert: element cDeclaration equals: 'noise_module_Module*'
 ]
 
 { #category : 'tests' }

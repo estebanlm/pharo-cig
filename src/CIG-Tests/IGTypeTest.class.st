@@ -24,8 +24,7 @@ IGTypeTest >> testResolveParamWhenTypeIsToStdString [
 	
 	type := element resolveType.
 	
-	self assert: type cDeclaration equals: 'const char *'
-	
+	self assert: type cDeclaration equals: 'char*'
 ]
 
 { #category : 'tests' }
@@ -71,4 +70,28 @@ IGTypeTest >> testResolveReturnTypeForStructure [
 	type := element resolveReturnType.
 	
 	self assert: type cDeclaration equals: 'noise_module_ControlPoint*'
+]
+
+{ #category : 'tests' }
+IGTypeTest >> testResolveTypeForClassCanAnswerElementClass [
+	| element type |
+	
+	element := self elementAtPath: { 'noise'. 'utils'. 'GradientPoint'. 'color' }.
+	
+	type := element resolveType.
+	
+	self 
+		assert: type element
+		equals: (self elementAtPath: { 'noise'. 'utils'. 'Color' })
+]
+
+{ #category : 'tests' }
+IGTypeTest >> testResolveTypeForClassInStructure [
+	| element type |
+	
+	element := self elementAtPath: { 'noise'. 'utils'. 'GradientPoint'. 'color' }.
+	
+	type := element resolveType.
+	
+	self assert: type cDeclaration equals: 'noise_utils_Color*'
 ]

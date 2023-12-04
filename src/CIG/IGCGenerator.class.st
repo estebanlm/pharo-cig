@@ -23,11 +23,15 @@ IGCGenerator >> argumentCastToCPP: aParameter [
 
 	^ String streamContents: [ :stream |
 		| type |
-		aParameter isReference ifTrue: [ stream << '*' ].
 		type := aParameter resolveType.
-		type hasTypeReference
-			ifTrue: [ stream << '(' << type cppDeclaration << ')' ].
-		stream << aParameter name ]
+		type 
+			ifTranslated: [ :translation | 
+				stream << (translation cToCPP: aParameter name)  ]
+			ifNot: [  
+				aParameter isReference ifTrue: [ stream << '*' ].
+				type hasTypeReference
+					ifTrue: [ stream << '(' << type cppDeclaration << ')' ].
+				stream << aParameter name ] ]
 ]
 
 { #category : 'private' }
@@ -59,6 +63,12 @@ IGCGenerator >> cDeclarationOf: aType [
 		ifFalse: [ aType cDeclaration ]
 ]
 
+{ #category : 'accessing' }
+IGCGenerator >> cStream [
+	
+	^ visitor cStream
+]
+
 { #category : 'private' }
 IGCGenerator >> findClassNamed: aString ifFound: foundBlock ifAbsent: absentBlock [
 
@@ -72,23 +82,29 @@ IGCGenerator >> findClassNamed: aString ifFound: foundBlock ifAbsent: absentBloc
 { #category : 'generating' }
 IGCGenerator >> generateEnum: anEnum [ 
 
-	self flag: #TODO. "C files do not contain enum declarations (they will be taken 
-	from the hpp definition)"
-	self outStream << 'enum ' << anEnum cDeclaration << ' {
-'.
+	self hStream << 'enum ' << anEnum cDeclaration << ' {' << String cr.
 
 	anEnum elements 
-		do: [ :each | self outStream << '    ' << each name << ' = ' << each value asString ]
-		separatedBy: [ self outStream << ',' << String cr ].
-	self outStream << String cr << '};' << String cr.
+		do: [ :each | self hStream << '    ' << each name << ' = ' << each value asString ]
+		separatedBy: [ self hStream << ',' << String cr ].
+	self hStream << String cr << '};' << String cr.
 ]
 
 { #category : 'generating' }
 IGCGenerator >> generateFunction: aFunction [
-	| body |
+	| header body |
 	
 	self root: aFunction root.
 
+	header := '{type} {funcName}({parameters});'
+		format: { 
+			#type -> (self cDeclarationOf: aFunction resolveReturnType).
+			#funcName -> aFunction cDeclaration.
+			#parameters -> (self parametersList: aFunction)  }
+		asDictionary	.
+	
+	self hStream << header << String cr.
+	
 	body := '{type} {funcName}({parameters}) \{
 	{return}{returnCast}{func}({arguments}\);
 \}' format: { 
@@ -103,25 +119,25 @@ IGCGenerator >> generateFunction: aFunction [
 			ifFalse: [ 'return ' ]) }
 		asDictionary	.
 			
-	self outStream << body << String cr
+	self cStream << body << String cr
 ]
 
 { #category : 'generating' }
 IGCGenerator >> generateStructure: aStructure [
 
-	self outStream << 'struct ' << aStructure cDeclaration << ' {' << String cr.
+	self hStream << 'struct ' << aStructure cDeclaration << ' {' << String cr.
 	aStructure elements do: [ :each |
-		self outStream 
+		self hStream
 			<< String tab
-			<< each typeName << ' ' << each name << ';' 
+			<< each resolveType cDeclaration << ' ' << each name << ';' 
 			<< String cr ].
-	self outStream << '};' << String cr.
+	self hStream << '};' << String cr.
 ]
 
 { #category : 'accessing' }
-IGCGenerator >> outStream [
+IGCGenerator >> hStream [
 	
-	^ visitor outStream
+	^ visitor hStream
 ]
 
 { #category : 'private' }

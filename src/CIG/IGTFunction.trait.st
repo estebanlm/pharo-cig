@@ -2,7 +2,8 @@ Trait {
 	#name : 'IGTFunction',
 	#instVars : [
 		'returnTypeName',
-		'spelling'
+		'spelling',
+		'comment'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -28,11 +29,18 @@ IGTFunction >> buildParameters: aCollection on: stream [
 		stream << each name << ': ' << each name << ' ' ]
 ]
 
+{ #category : 'accessing' }
+IGTFunction >> comment [
+
+	^ comment	
+]
+
 { #category : 'initialization' }
 IGTFunction >> fillFunctionWith: aCursor [
 
 	returnTypeName := aCursor type resultType spelling.
-	spelling := aCursor spelling
+	spelling := aCursor spelling.
+	comment := aCursor rawComment
 ]
 
 { #category : 'testing' }

@@ -7,6 +7,13 @@ Class {
 }
 
 { #category : 'accessing' }
+IGTypedefType >> cDeclaration [
+
+	parent definesFunction ifTrue: [ ^ 'void*' ].
+	^ parent underlyingTypeSpelling
+]
+
+{ #category : 'accessing' }
 IGTypedefType >> phDeclarationWith: prefix [
 
 	parent definesFunction ifTrue: [ ^ 'FFICallback' ].

@@ -57,3 +57,15 @@ IGTypedef >> resolveType [
 { #category : 'accessing' }
 IGTypedef >> spelling [
 ]
+
+{ #category : 'accessing' }
+IGTypedef >> underlyingTypeKind [
+
+	^ underlyingTypeKind
+]
+
+{ #category : 'accessing' }
+IGTypedef >> underlyingTypeSpelling [
+
+	^ underlyingTypeSpelling
+]

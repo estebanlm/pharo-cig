@@ -31,37 +31,25 @@ IGTranslationMap class >> uniqueInstance [
 	^ uniqueInstance ifNil: [ uniqueInstance := self basicNew initialize ]
 ]
 
-{ #category : 'as yet unclassified' }
-IGTranslationMap >> cDeclarationOf: aString ifFound: aBlock [
+{ #category : 'accessing' }
+IGTranslationMap >> atType: aType ifPresent: aBlock ifAbsent: absentBlock [
 
-	translationTable 
-		at: aString 
-		ifPresent: [ :aTranslation | aBlock value: aTranslation cDeclaration ]
-]
-
-{ #category : 'as yet unclassified' }
-IGTranslationMap >> cppDeclarationOf: aString ifFound: aBlock [
-
-	translationTable 
-		at: aString 
-		ifPresent: [ :aTranslation | aBlock value: aTranslation cppDeclaration ]
+	^ translationTable 
+		detect: [ :each | each appliesTo: aType ]
+		ifFound: [ :aTranslation | aBlock value: aTranslation ]
+		ifNone: [ absentBlock value ]
 ]
 
 { #category : 'initialization' }
 IGTranslationMap >> initialize [
 
 	super initialize.
-	translationTable := self translationDefinitions 
-		collect: [ :each | 
-			(each first) -> (IGTranslation fromArray: each) ]
-		as: Dictionary
+	translationTable := self translationDefinitions
 ]
 
 { #category : 'initialization' }
 IGTranslationMap >> translationDefinitions [
 	"name, cDeclaration, cppDeclaration. fromCPP, toCPP"
 
-	^ #(
-		('std::string' 'const char *' 'const char *' '{1}.c_str()' nil)
-	)
+	^ IGTranslation allTranslations
 ]

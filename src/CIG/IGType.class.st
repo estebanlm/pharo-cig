@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'parent',
 		'name',
-		'typeReference'
+		'typeReference',
+		'parsedType'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -13,23 +14,29 @@ Class {
 
 { #category : 'accessing' }
 IGType >> cDeclaration [
-	| parsed typeName |
+	| parsed typeName startArity |
 
+	startArity := 0.
 	parsed := self parseType.
 	typeName := parsed name.
 	
-	(typeName includes: $:) ifTrue: [ 
-		IGTranslationMap uniqueInstance 
-			cDeclarationOf: typeName 
-			ifFound: [ :aDecl | ^ aDecl ] ]. 
+	self ifTranslated: [ :translation | ^ translation cDeclarationOf: self ].
 	
 	^ String streamContents: [ :stream |
 		self typeReference
-			ifNotNil: [ stream << (self cDeclarationFromReference ifNil: [ typeName ]) ]
-			ifNil: [ stream << typeName ].
+			ifNotNil: [ 
+				| refDeclaration |
+				refDeclaration := self cDeclarationFromReference ifNil: [ typeName ].
+				stream << refDeclaration.
+				"type is already a pointer, in the case of classes"
+				refDeclaration last = $*
+					ifTrue: [ startArity := 1 ] ]
+			ifNil: [ 
+				"there may still be a typedef type (format namespace::type), we just 
+				 replace that" 
+				stream << (typeName copyReplaceAll: '::' with: '_') ].
 				
-		parsed isReference ifTrue: [ stream << '*' ].
-		1 to: parsed arity do: [ :each |
+		(1 + startArity) to: parsed arity do: [ :each |
 			stream << '*' ] ]
 ]
 
@@ -57,11 +64,7 @@ IGType >> cppDeclaration [
 	parsed := self parseType.
 	typeName := parsed name.
 
-	(typeName includes: $:) ifTrue: [ 
-		IGTranslationMap uniqueInstance 
-			cppDeclarationOf: typeName 
-			ifFound: [ :aDecl | ^ aDecl ] ]. 
-	
+	self ifTranslated: [ :translation | ^ translation cppDeclarationOf: self ].
 	
 	^ String streamContents: [ :stream |
 		self typeReference 
@@ -79,11 +82,41 @@ IGType >> cppDeclarationFromReference [
 		ifNotNil: [ :aNode | aNode cppDeclaration ]
 ]
 
+{ #category : 'accessing' }
+IGType >> element [
+	"if there is a typeRefernce, tries to answer it"
+	
+	self typeReference ifNil: [ ^ nil ].
+	^ self root elementAtPath: self typeReference namePath
+]
+
 { #category : 'testing' }
 IGType >> hasTypeReference [
 	"includes a reference explanation"
 
 	^ self typeReference notNil
+]
+
+{ #category : 'accessing' }
+IGType >> ifTranslated: aBlock [
+
+	^ self ifTranslated: aBlock ifNot: [ ]
+]
+
+{ #category : 'accessing' }
+IGType >> ifTranslated: aBlock ifNot: notBlock [
+	| typeName |
+
+	^ IGTranslationMap uniqueInstance 
+		atType: self
+		ifPresent: [ :aTranslation | aBlock value: aTranslation ]
+		ifAbsent: [ notBlock value ]
+]
+
+{ #category : 'testing' }
+IGType >> isPointer [
+
+	^ self parseType arity > 0
 ]
 
 { #category : 'testing' }
@@ -121,7 +154,8 @@ IGType >> parent: aNode [
 { #category : 'private' }
 IGType >> parseType [
 	
-	^ IGFunctionParser parse: self name
+	^ parsedType ifNil: [ 
+		parsedType := IGFunctionParser parse: self name ]
 ]
 
 { #category : 'private' }
@@ -159,6 +193,12 @@ IGType >> resolveFFIType: aString ifFound: foundBlock ifAbsent: absentBlock [
 		foundBlock value: (FFIExternalType resolveType: aString) ]
 	on: Error 
 	do: [ :e | absentBlock value ]
+]
+
+{ #category : 'accessing' }
+IGType >> root [
+	
+	^ self parent root
 ]
 
 { #category : 'private' }

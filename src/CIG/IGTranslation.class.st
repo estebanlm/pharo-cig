@@ -1,90 +1,73 @@
 Class {
 	#name : 'IGTranslation',
 	#superclass : 'Object',
-	#instVars : [
-		'name',
-		'cDeclaration',
-		'cppDeclaration',
-		'fromCPP',
-		'toCPP'
-	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
 	#tag : 'Base'
 }
 
-{ #category : 'instance creation' }
-IGTranslation class >> fromArray: anArray [
+{ #category : 'as yet unclassified' }
+IGTranslation class >> allTranslations [
 
-	^ self new fromArray: anArray
+	^ self allSubclasses collect: #new
+]
+
+{ #category : 'testing' }
+IGTranslation >> appliesTo: aType [
+	
+	self subclassResponsibility
 ]
 
 { #category : 'accessing' }
 IGTranslation >> cDeclaration [
 
-	^ cDeclaration
+	^ self subclassResponsibility
 ]
 
 { #category : 'accessing' }
-IGTranslation >> cDeclaration: aString [
+IGTranslation >> cDeclarationOf: aType [
 
-	cDeclaration := aString
+	^ self cDeclaration
+]
+
+{ #category : 'converting' }
+IGTranslation >> cToCPP: aString [
+
+	^ self templateCPP format: { aString }
 ]
 
 { #category : 'accessing' }
 IGTranslation >> cppDeclaration [
 
-	^ cppDeclaration
+	^ self subclassResponsibility
 ]
 
 { #category : 'accessing' }
-IGTranslation >> cppDeclaration: aString [
+IGTranslation >> cppDeclarationOf: aType [
 
-	cppDeclaration := aString
+	^ self cppDeclaration
 ]
 
-{ #category : 'initialization' }
-IGTranslation >> fromArray: anArray [
+{ #category : 'converting' }
+IGTranslation >> cppToC: functionString [
 
-	name := anArray first. 
-	cDeclaration := anArray second.
-	cppDeclaration := anArray third.
-	fromCPP := anArray fourth.
-	toCPP := anArray fifth 
+	^ self templateC format: { functionString }
 ]
 
-{ #category : 'accessing' }
-IGTranslation >> fromCPP [
+{ #category : 'converting' }
+IGTranslation >> cppToC: functionString from: aMethod [
 
-	^ fromCPP
+	^ self cppToC: functionString
 ]
 
 { #category : 'accessing' }
-IGTranslation >> fromCPP: aString [
+IGTranslation >> templateC [
 
-	fromCPP := aString
+	^ self subclassResponsibility
 ]
 
 { #category : 'accessing' }
-IGTranslation >> name [
+IGTranslation >> templateCPP [
 
-	^ name
-]
-
-{ #category : 'accessing' }
-IGTranslation >> name: aString [
-
-	name := aString
-]
-
-{ #category : 'accessing' }
-IGTranslation >> toCPP [
-
-	^ toCPP
-]
-
-{ #category : 'accessing' }
-IGTranslation >> toCPP: aString [
-
-	toCPP := aString
+	^ self subclassResponsibility
 ]

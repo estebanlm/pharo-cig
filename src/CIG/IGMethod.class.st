@@ -93,8 +93,6 @@ IGMethod >> phDeclaration [
 { #category : 'handling' }
 IGMethod >> resolveReturnType [
 
-	self isReturnTypeVoid ifTrue: [ ^ nil ].
-	
 	^ IGType new
 		parent: self;
 		name: self returnTypeName;

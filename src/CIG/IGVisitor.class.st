@@ -21,6 +21,13 @@ IGVisitor >> file: aHeaderFile [
 	file := aHeaderFile
 ]
 
+{ #category : 'testing' }
+IGVisitor >> includesNamespace: aNamespace [
+
+	^ self file includesNamespace: aNamespace
+
+]
+
 { #category : 'visiting' }
 IGVisitor >> visit: anObject [
 

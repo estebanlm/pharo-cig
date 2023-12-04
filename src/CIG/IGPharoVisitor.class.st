@@ -12,6 +12,32 @@ Class {
 }
 
 { #category : 'private - adding' }
+IGPharoVisitor >> addCPPHeaderTo: aNamespaceClass [
+	| template |
+	
+	template := ('cppHeader
+
+	^ ''{1}''' format: { self file bindingsName, '_bindings.h' }).
+
+	aNamespaceClass class 
+		compile: template
+		classified: 'accessing'
+]
+
+{ #category : 'private - adding' }
+IGPharoVisitor >> addCPPName: aString to: aNamespaceClass [
+	| template |
+	
+	template := ('cppName
+
+	^ ''{1}''' format: { aString }).
+
+	aNamespaceClass class 
+		compile: template
+		classified: 'accessing'
+]
+
+{ #category : 'private - adding' }
 IGPharoVisitor >> addClass: aName extends: aClass tag: aTag [
 	| builder |
 	
@@ -20,7 +46,12 @@ IGPharoVisitor >> addClass: aName extends: aClass tag: aTag [
 	(aClass package name = self packageName) ifFalse: [  
 		builder
 			traits: self libraryTrait;
-			sharedPools: { self typesName asSymbol } ].
+			sharedPools: (
+				{ self typesName asSymbol }, 
+				(self file namespaces 
+					collect: [ :each | each typedef name ]
+					as: Set)
+					asArray) ].
 	
 	^ builder
 		tag: aTag;
@@ -75,6 +106,7 @@ IGPharoVisitor >> addTypedefTo: aNamespaceClass [
 	| template |
 	
 	template := ('typedef
+
 	^ {1}' format: { self typesName }).
 
 	aNamespaceClass class 
@@ -189,17 +221,27 @@ IGPharoVisitor >> registerAllTypesIfNeeded: aCollection [
 	aCollection 
 		select: [ :each | each hasTypeReference and: [ each typeReference isUnknown not ] ]
 		thenDo: [ :each | 
-			types 
-				at: each cDeclaration
-				put: (each phDeclarationWith: self prefix) ]
+			self 
+				registerDeclaration: each cDeclaration
+				as: (each phDeclarationWith: self prefix) ]
+]
+
+{ #category : 'private' }
+IGPharoVisitor >> registerDeclaration: aString as: otherString [
+
+	types 
+		at: ((aString endsWith: '*')
+			ifTrue: [ aString allButLast ]
+			ifFalse: [ aString ])
+		put: otherString
 ]
 
 { #category : 'private' }
 IGPharoVisitor >> registerType: aNode [
 
-	types 
-		at: aNode cDeclaration 
-		put: (aNode phDeclarationWith: self prefix)
+	self 
+		registerDeclaration: aNode cDeclaration 
+		as: (aNode phDeclarationWith: self prefix)
 ]
 
 { #category : 'private' }
@@ -210,6 +252,12 @@ IGPharoVisitor >> superclassFor: aClass [
 	^ superclass reference 
 		ifNotNil: [ :ref | self classFor: (ref phDeclarationWith: self prefix) ]
 		ifNil: [ FFIOpaqueObject ]
+]
+
+{ #category : 'private' }
+IGPharoVisitor >> types [
+
+	^ types
 ]
 
 { #category : 'private - adding' }
@@ -296,11 +344,17 @@ IGPharoVisitor >> visitMethod: aMethod [
 IGPharoVisitor >> visitNamespace: aNamespace [
 	| namespace |
 
+	(self includesNamespace: aNamespace cppDeclaration) ifTrue: [
+		self visitAll: (aNamespace elements select: [ :each | each isNamespace ]). 
+		 ^ self ].
+
 	namespace := self 
 		addClass: (aNamespace phDeclarationWith: self prefix) 
 		extends: Object
 		tag: aNamespace basename capitalized.
 	self visitAll: aNamespace elements.
+	self addCPPName: aNamespace cppDeclaration to: namespace.
+	self addCPPHeaderTo: namespace.
 	self addTypedefTo: namespace
 ]
 
@@ -338,10 +392,12 @@ IGPharoVisitor >> visitStructure: aStructure [
 
 { #category : 'visiting' }
 IGPharoVisitor >> visitTypedef: aTypedef [
+	| type |
 
+	type := aTypedef resolveType.
 	types 
 		at: aTypedef cDeclaration
-		put: (aTypedef resolveType phDeclarationWith: self prefix)
+		put: (type phDeclarationWith: self prefix)
 ]
 
 { #category : 'visiting' }
