@@ -223,6 +223,9 @@ IGCVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 IGCVisitor >> visitStructure: aStructure [
 
+	aStructure isClass 
+		ifTrue: [ ^ self visitClass: aStructure ].
+	
 	(IGCGenerator on: self) generateStructure: aStructure
 ]
 
