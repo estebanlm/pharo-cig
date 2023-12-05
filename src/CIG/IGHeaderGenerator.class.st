@@ -33,7 +33,8 @@ Class {
 		'bindingsName',
 		'fileReference',
 		'namespaces',
-		'withComments'
+		'withComments',
+		'defines'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -52,11 +53,88 @@ IGHeaderGenerator >> bindingsName: aString [
 	bindingsName := aString
 ]
 
+{ #category : 'scripting' }
+IGHeaderGenerator >> cDefine: aString [
+
+	defines ifNil: [ defines := #() ].
+	defines := defines copyWith: aString
+]
+
+{ #category : 'accessing' }
+IGHeaderGenerator >> cDefines [
+
+	^ defines ifNil: [ #() ]
+]
+
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> cDefines: aCollection [
+
+	defines := aCollection	
+]
+
+{ #category : 'private' }
+IGHeaderGenerator >> cDefinesAsArguments [
+
+	^ self cDefines collect: [ :each | '-D', each ]
+]
+
 { #category : 'accessing' }
 IGHeaderGenerator >> cFileReference [
 	"where the wrapper functions will be placed"
 	
 	^ (FileLocator imageDirectory / (self bindingsName, '_bindings')) withExtension: 'cpp'
+]
+
+{ #category : 'scripting' }
+IGHeaderGenerator >> cIncludePath: aStringOrReference [
+
+	includePaths ifNil: [ includePaths := #() ].
+	includePaths := includePaths copyWith: aStringOrReference asFileReference fullName
+]
+
+{ #category : 'accessing' }
+IGHeaderGenerator >> cIncludePaths [
+	"include paths to put in the include path (-I paramters) in clang, to make sure all 
+	 dependencies are found."
+
+	^ includePaths ifNil: [ #() ]
+]
+
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> cIncludePaths: aCollection [
+
+	includePaths := aCollection
+]
+
+{ #category : 'private' }
+IGHeaderGenerator >> cIncludePathsAsArguments [
+
+	^ self cIncludePaths collect: [ :each | '-I', each ]
+]
+
+{ #category : 'scripting' }
+IGHeaderGenerator >> cLib: aStringOrReference [
+
+	libs ifNil: [ libs := #() ].
+	libs := libs copyWith: aStringOrReference asFileReference fullName
+]
+
+{ #category : 'accessing' }
+IGHeaderGenerator >> cLibs [
+
+	^ libs
+]
+
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> cLibs: aCollection [
+
+	libs := aCollection
+]
+
+{ #category : 'private' }
+IGHeaderGenerator >> cLibsAsArguments [
+
+	^ self cLibs collect: [ :each | '-l', each ]
 ]
 
 { #category : 'private' }
@@ -115,9 +193,9 @@ LIBS={3}
 ' format: { 
 	self libraryName.
 	(String streamContents: [ :s | 
-		self includePathsAsArguments asStringOn: s delimiter: ' ' ]).
+		self cIncludePathsAsArguments asStringOn: s delimiter: ' ' ]).
 	(String streamContents: [ :s | 
-		self libsAsArguments asStringOn: s delimiter: ' ' ]) }.
+		self cLibsAsArguments asStringOn: s delimiter: ' ' ]) }.
 
 	self makefileReference 
 		ensureDelete;
@@ -158,26 +236,6 @@ IGHeaderGenerator >> hasMakefile [
 	^ withMakefile
 ]
 
-{ #category : 'accessing' }
-IGHeaderGenerator >> includePaths [
-	"include paths to put in the include path (-I paramters) in clang, to make sure all 
-	 dependencies are found."
-
-	^ includePaths
-]
-
-{ #category : 'accessing' }
-IGHeaderGenerator >> includePaths: aCollection [
-
-	includePaths := aCollection
-]
-
-{ #category : 'private' }
-IGHeaderGenerator >> includePathsAsArguments [
-
-	^ self includePaths collect: [ :each | '-I', each ]
-]
-
 { #category : 'testing' }
 IGHeaderGenerator >> includesNamespace: aString [
 
@@ -207,24 +265,6 @@ IGHeaderGenerator >> libraryName [
 	^ self cFileReference basenameWithoutExtension
 ]
 
-{ #category : 'accessing' }
-IGHeaderGenerator >> libs [
-
-	^ libs
-]
-
-{ #category : 'accessing - configuration' }
-IGHeaderGenerator >> libs: aCollection [
-
-	libs := aCollection
-]
-
-{ #category : 'private' }
-IGHeaderGenerator >> libsAsArguments [
-
-	^ self libs collect: [ :each | '-l', each ]
-]
-
 { #category : 'private' }
 IGHeaderGenerator >> listElements [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
@@ -238,7 +278,7 @@ IGHeaderGenerator >> listElements [
 				'-E'.
 				'-xc++'.
 			}, 
-			self includePathsAsArguments.
+			self cIncludePathsAsArguments.
 	
 	elements := OrderedCollection new.
 	cursor := tu cursor.
@@ -257,6 +297,13 @@ IGHeaderGenerator >> listElements [
 IGHeaderGenerator >> makefileReference [
 	
 	^ FileLocator imageDirectory / 'Makefile'
+]
+
+{ #category : 'scripting' }
+IGHeaderGenerator >> namespace: aNamespaceClass [
+
+	namespaces ifNil: [ namespaces := #() ].
+	namespaces := namespaces copyWith: aNamespaceClass
 ]
 
 { #category : 'accessing' }

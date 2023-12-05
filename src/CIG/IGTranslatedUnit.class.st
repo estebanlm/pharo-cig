@@ -129,8 +129,9 @@ IGTranslatedUnit >> generateFrom: aHeader [
 				'-E'.
 				'-xc++'.
 			}, 
-			aHeader includePathsAsArguments.
-	
+			aHeader cIncludePathsAsArguments,
+			aHeader cDefinesAsArguments.
+
 	cursor := tu cursor.
 	cursor visitChildren: [ :current :parent :data |
 		current location isInSystemHeader 

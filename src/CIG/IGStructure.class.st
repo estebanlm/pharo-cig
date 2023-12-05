@@ -18,8 +18,26 @@ IGStructure >> accept: aVisitor [
 	aVisitor visitStructure: self
 ]
 
-{ #category : 'field definition' }
+{ #category : 'accessing' }
 IGStructure >> fields [
 	
 	^ self elements select: [ :each | each isField ]
+]
+
+{ #category : 'testing' }
+IGStructure >> isAbstract [
+
+	^ self methods anySatisfy: [ :each | each isPureVirtual ]
+]
+
+{ #category : 'testing' }
+IGStructure >> isClass [
+
+	^ self methods notEmpty
+]
+
+{ #category : 'accessing' }
+IGStructure >> methods [
+
+	^ self elements select: [ :each | each isMethod ]
 ]
