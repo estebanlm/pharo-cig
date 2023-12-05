@@ -26,3 +26,9 @@ IGBaseTest >> translatedUnit [
 
 	^ IGTestResource current translatedUnit
 ]
+
+{ #category : 'accessing' }
+IGBaseTest >> translatedUnitTvision [
+
+	^ IGTestResource current translatedUnitTvision
+]
