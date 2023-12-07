@@ -28,6 +28,12 @@ IGClass >> cDeclaration [
 ]
 
 { #category : 'accessing' }
+IGClass >> classMembers [
+
+	^ self elements select: [ :each | each isClassMember ]
+]
+
+{ #category : 'accessing' }
 IGClass >> comment [
 
 	^ comment
@@ -52,7 +58,7 @@ IGClass >> isClass [
 	^ true
 ]
 
-{ #category : 'testing' }
+{ #category : 'accessing' }
 IGClass >> methods [
 
 	^ self elements select: [ :each | each isMethod ]

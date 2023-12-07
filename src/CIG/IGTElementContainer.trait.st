@@ -44,7 +44,7 @@ IGTElementContainer >> findElementMatching: aBlock [
 
 { #category : 'inspecting' }
 IGTElementContainer >> inspectionElements [
-	<inspectorPresentationOrder: 10 title: 'Elements'>
+	<inspectorPresentationOrder: 910 title: 'Elements'>
 	
 	^ SpTablePresenter new 
 		beResizable;

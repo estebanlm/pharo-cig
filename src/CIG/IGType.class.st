@@ -23,7 +23,7 @@ IGType >> cDeclaration [
 	self ifTranslated: [ :translation | ^ translation cDeclarationOf: self ].
 	
 	^ String streamContents: [ :stream |
-		self typeReference
+		self typeReferenceForParsedType
 			ifNotNil: [ 
 				| refDeclaration |
 				refDeclaration := self cDeclarationFromReference ifNil: [ typeName ].
@@ -86,7 +86,7 @@ IGType >> cppDeclarationFromReference [
 IGType >> element [
 	"if there is a typeRefernce, tries to answer it"
 	
-	self typeReference ifNil: [ ^ nil ].
+	self typeReferenceForParsedType ifNil: [ ^ nil ].
 	^ self root elementAtPath: self typeReference namePath
 ]
 
@@ -94,7 +94,7 @@ IGType >> element [
 IGType >> hasTypeReference [
 	"includes a reference explanation"
 
-	^ self typeReference notNil
+	^ self typeReferenceForParsedType notNil
 ]
 
 { #category : 'accessing' }
@@ -220,4 +220,16 @@ IGType >> typeReference: aTypeReference [
 
 	typeReference := aTypeReference
 
+]
+
+{ #category : 'private' }
+IGType >> typeReferenceForParsedType [
+	| typeRef |
+	
+	typeRef := self typeReference.
+	typeRef ifNil: [ ^ nil ].
+	
+	^ (typeRef name endsWith: self parseType name)
+		ifTrue: [ typeRef ]
+		ifFalse: [ nil ]
 ]

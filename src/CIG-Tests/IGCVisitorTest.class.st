@@ -163,6 +163,38 @@ IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 ]
 
 { #category : 'tests' }
+IGCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'TCellChar'. 'moveWideCharTrail()' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitMethod: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'void TCellChar_moveWideCharTrail(TCellChar* self);'.
+	
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'void TCellChar_moveWideCharTrail(TCellChar* self) {
+	((TCellChar*)self)->moveWideCharTrail();
+}'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitStructureSkipTemplateSpecialization [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'std'. 'hash<TStringView>' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitStructure: element.
+	
+	self assert: visitor cStream contents trimmed isEmpty
+]
+
+{ #category : 'tests' }
 IGCVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 

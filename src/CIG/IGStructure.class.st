@@ -19,9 +19,27 @@ IGStructure >> accept: aVisitor [
 ]
 
 { #category : 'accessing' }
+IGStructure >> cDeclaration [
+	"since a struct in c++ can act as a class, we need to answer its kind as a structure 
+	 of as a class, depending the case"
+	| decl |
+	
+	decl := super cDeclaration.
+	^ self isClass 
+		ifTrue: [ decl, '*' ]
+		ifFalse: [ decl ]
+]
+
+{ #category : 'accessing' }
+IGStructure >> classMembers [
+
+	^ self elements select: [ :each | each isClassMember ]
+]
+
+{ #category : 'accessing' }
 IGStructure >> fields [
 	
-	^ self elements select: [ :each | each isField ]
+	^ self elements select: [ :each | each isField or: [ each isVariable ] ]
 ]
 
 { #category : 'testing' }
@@ -33,7 +51,13 @@ IGStructure >> isAbstract [
 { #category : 'testing' }
 IGStructure >> isClass [
 
-	^ self methods notEmpty
+	^ self classMembers notEmpty
+]
+
+{ #category : 'testing' }
+IGStructure >> isTemplateSpecialization [
+
+	^ '.*<.*>.*' asRegex matches: self name
 ]
 
 { #category : 'accessing' }

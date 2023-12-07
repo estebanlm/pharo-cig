@@ -70,6 +70,12 @@ IGCGenerator >> cStream [
 ]
 
 { #category : 'private' }
+IGCGenerator >> enumNameFor: anEnum [ 
+
+	^ visitor enumNameFor: anEnum
+]
+
+{ #category : 'private' }
 IGCGenerator >> findClassNamed: aString ifFound: foundBlock ifAbsent: absentBlock [
 
 	self root ifNil: [ ^ absentBlock value ].
@@ -82,7 +88,7 @@ IGCGenerator >> findClassNamed: aString ifFound: foundBlock ifAbsent: absentBloc
 { #category : 'generating' }
 IGCGenerator >> generateEnum: anEnum [ 
 
-	self hStream << 'enum ' << anEnum cDeclaration << ' {' << String cr.
+	self hStream << 'enum ' << (self enumNameFor: anEnum) << ' {' << String cr.
 
 	anEnum elements 
 		do: [ :each | self hStream << '    ' << each name << ' = ' << each value asString ]
@@ -126,7 +132,7 @@ IGCGenerator >> generateFunction: aFunction [
 IGCGenerator >> generateStructure: aStructure [
 
 	self hStream << 'struct ' << aStructure cDeclaration << ' {' << String cr.
-	aStructure elements do: [ :each |
+	aStructure fields do: [ :each |
 		self hStream
 			<< String tab
 			<< each resolveType cDeclaration << ' ' << each name << ';' 

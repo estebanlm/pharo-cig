@@ -5,7 +5,8 @@ Class {
 		'fileReference',
 		'stack',
 		'cStream',
-		'hStream'
+		'hStream',
+		'unnamedEnum'
 	],
 	#category : 'CIG-Generate-C',
 	#package : 'CIG',
@@ -76,6 +77,16 @@ IGCVisitor >> endHFile [
 #endif /* ' << def << '*/'.
 ]
 
+{ #category : 'private' }
+IGCVisitor >> enumNameFor: anEnum [
+	"yeah, enums can be unnamed :P"
+	anEnum isUnnamed ifTrue: [
+		unnamedEnum := unnamedEnum + 1.
+		^ 'unnamed_enum_{1}' format: { unnamedEnum } ].
+
+	^ anEnum cDeclaration
+]
+
 { #category : 'accessing' }
 IGCVisitor >> fileReference [
 	
@@ -98,7 +109,8 @@ IGCVisitor >> indentDo: aBlock [
 IGCVisitor >> initialize [
 
 	super initialize.
-	stack := Stack new
+	stack := Stack new.
+	unnamedEnum := 0
 ]
 
 { #category : 'private - factory' }
@@ -186,6 +198,8 @@ IGCVisitor >> visitEnum: anEnum [
 { #category : 'visiting' }
 IGCVisitor >> visitFunction: aFunction [
 
+	aFunction isOperator ifTrue: [ ^ self ].
+	
 	(IGCGenerator on: self) generateFunction: aFunction.
 	cStream cr
 ]
@@ -197,7 +211,6 @@ IGCVisitor >> visitMethod: aMethod [
 		or: [ aMethod isOperator ]) 
 		ifTrue: [ ^ self ].
 
-	"outStream << (aMethod asFunctionSourceWithPrefix: self prefix delimiter: '_')."
 	(IGCClassGenerator on: self) generateMethod: aMethod.
 	cStream cr
 ]
@@ -223,9 +236,12 @@ IGCVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 IGCVisitor >> visitStructure: aStructure [
 
-	aStructure isClass 
-		ifTrue: [ ^ self visitClass: aStructure ].
-	
+	"skip if is template specialization"
+	aStructure isTemplateSpecialization ifTrue: [ ^ self ].
+	"act as class if it behaves as a class"
+	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
+	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
+	"otherwise generate structure"	
 	(IGCGenerator on: self) generateStructure: aStructure
 ]
 

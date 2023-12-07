@@ -23,3 +23,9 @@ IGEnum >> isEnum [
 
 	^ true
 ]
+
+{ #category : 'testing' }
+IGEnum >> isUnnamed [
+
+	^ self name beginsWith: '(unnamed enum'
+]

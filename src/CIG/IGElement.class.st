@@ -161,6 +161,12 @@ IGElement >> isClass [
 ]
 
 { #category : 'testing' }
+IGElement >> isClassMember [
+
+	^ false
+]
+
+{ #category : 'testing' }
 IGElement >> isField [
 
 	^ false
@@ -198,6 +204,12 @@ IGElement >> isTypeReference [
 
 { #category : 'testing' }
 IGElement >> isUnknown [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isVariable [
 
 	^ false
 ]

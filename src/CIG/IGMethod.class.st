@@ -45,14 +45,6 @@ IGMethod >> isMethod [
 ]
 
 { #category : 'testing' }
-IGMethod >> isOperator [
-
-	^ (self name beginsWith: 'operator') 
-		and: [ self name size > 8 
-		and: [ (self name at: 9) isAlphaNumeric not ] ]
-]
-
-{ #category : 'testing' }
 IGMethod >> isPublic [
 
 	^ isPublic

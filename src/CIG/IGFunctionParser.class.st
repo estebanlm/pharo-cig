@@ -17,13 +17,32 @@ IGFunctionParser class >> parse: aString [
 { #category : 'accessing' }
 IGFunctionParser >> parseType [
 	" parse type name and optional number of asterisks, following it"
-	| parsedType |
+	| referenceType typeName ptrArity |
 
-	parsedType := super parseType.
-			
-	parsedType := parsedType copyWith: (stream atEnd not 
+	typeName := stream next.
+	typeName ifNil: [ ^ self error: 'type name expected' ].
+
+	"skip 'const' , which is often used but has no any use for us "
+	(#('const' 'class' 'volatile') includes: typeName) 
+		ifTrue: [
+			typeName := stream next.
+			typeName ifNil: [ ^ self error: 'type name expected' ] ].
+
+	ptrArity := 0.
+	[ stream atEnd not 
+		and: [ stream peek isString 
+		and: [ stream peek beginsWith: '*' ] ] ] 
+	whileTrue: [ | pointerMarker |
+		pointerMarker := stream next.
+		self assert: (pointerMarker allSatisfy: [ :e | e = $* ]).
+		ptrArity := ptrArity + pointerMarker size ].
+
+	referenceType := stream atEnd not 
 		and: [ stream peek isString
-		and: [ stream peek = '&' ] ]).	
-
-	^ parsedType
+		and: [ stream peek = '&' ] ].
+		
+	^ {
+		typeName. 
+		ptrArity.			
+		referenceType }
 ]

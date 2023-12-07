@@ -62,3 +62,9 @@ IGClassDirectTranslation >> templateC [
 	memcpy(_result, &_tmp, sizeof({cppDecl}));
 	return ({cDecl})_result'
 ]
+
+{ #category : 'accessing' }
+IGClassDirectTranslation >> templateCPP [
+
+	^ '{1}'
+]
