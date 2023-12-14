@@ -12,7 +12,8 @@ Class {
 		'nodeClasses',
 		'registerUnknown',
 		'prefix',
-		'namespaces'
+		'namespaces',
+		'defines'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -58,6 +59,12 @@ IGTranslatedUnit >> addNode: currentNode parent: parentNode [
 
 	(current canBeAddedTo: parent) ifFalse: [ ^ self ].
 	parent addElement: current
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> defines [
+
+	^ defines
 ]
 
 { #category : 'accessing' }
@@ -110,6 +117,7 @@ IGTranslatedUnit >> generateFrom: aHeader [
 	
 	prefix := aHeader prefix.
 	namespaces := aHeader namespaces.
+	defines := aHeader cDefines.
 	elements := OrderedCollection new.
 
 	index := CXIndex createIndex: 0 diagnostics: 0. 
