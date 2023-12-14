@@ -103,7 +103,7 @@ IGParameter >> fromCursor: aCursor [
 		(underlyingTypeName indexOf: $<) > 0 
 			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ].
 		
-	definesFunction := typeKind = CXType_Pointer 
+	definesFunction := ({ CXType_Pointer. CXType_LValueReference } includes: typeKind)
 		and: [ { CXType_FunctionProto. CXType_FunctionNoProto } includes: type pointeeType kind ].		
 				
 	self isTemplateSpecialization 
