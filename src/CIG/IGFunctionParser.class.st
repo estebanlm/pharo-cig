@@ -31,10 +31,11 @@ IGFunctionParser >> parseType [
 	ptrArity := 0.
 	[ stream atEnd not 
 		and: [ stream peek isString 
-		and: [ stream peek beginsWith: '*' ] ] ] 
+		and: [ (stream peek beginsWith: '*') or: [ stream peek beginsWith: '&' ] ] ] ] 
 	whileTrue: [ | pointerMarker |
 		pointerMarker := stream next.
-		self assert: (pointerMarker allSatisfy: [ :e | e = $* ]).
+		self assert: ((pointerMarker allButLast allSatisfy: [ :e | e = $* ]) 
+			and: [ #($* $&) includes: pointerMarker last ]).
 		ptrArity := ptrArity + pointerMarker size ].
 
 	referenceType := stream atEnd not 
