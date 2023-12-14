@@ -56,26 +56,36 @@ IGHeaderGenerator >> bindingsName: aString [
 { #category : 'scripting' }
 IGHeaderGenerator >> cDefine: aString [
 
-	defines ifNil: [ defines := #() ].
-	defines := defines copyWith: aString
+	self cDefine: aString as: nil
+]
+
+{ #category : 'scripting' }
+IGHeaderGenerator >> cDefine: aKey as: aValue [
+
+	defines ifNil: [ defines := Dictionary new ].
+	defines at: aKey put: aValue
 ]
 
 { #category : 'accessing' }
 IGHeaderGenerator >> cDefines [
 
-	^ defines ifNil: [ #() ]
+	^ defines ifNil: [ Dictionary new ]
 ]
 
 { #category : 'accessing - configuration' }
 IGHeaderGenerator >> cDefines: aCollection [
 
-	defines := aCollection	
+	aCollection	do: [ :each | 
+		self cDefine: each ]
 ]
 
 { #category : 'private' }
 IGHeaderGenerator >> cDefinesAsArguments [
 
-	^ self cDefines collect: [ :each | '-D', each ]
+	^ self cDefines associations collect: [ :assoc | 
+			String streamContents: [ :stream |
+				stream << '-D' << assoc key asString.
+				assoc value ifNotNil: [ stream << '=' << assoc value asString ] ] ]
 ]
 
 { #category : 'accessing' }

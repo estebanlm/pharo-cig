@@ -74,8 +74,10 @@ IGCHeaderDeclareVisitor >> visitTypedef: aTypedef [
 { #category : 'visiting' }
 IGCHeaderDeclareVisitor >> visitUnit: aUnit [
 
-	aUnit defines do: [ :each | 
-		self hStream << '#define ' << each << String cr ].
+	aUnit defines keysAndValuesDo: [ :name :value | 
+		self hStream << '#define ' << name.
+		value ifNotNil: [ self hStream <<  ' ' << value ].
+		self hStream cr ].
 
 	^ super visitUnit: aUnit
 ]
