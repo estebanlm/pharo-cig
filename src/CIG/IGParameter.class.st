@@ -1,9 +1,15 @@
 Class {
 	#name : 'IGParameter',
 	#superclass : 'IGElement',
+	#traits : 'IGTTemplateSpecialization',
+	#classTraits : 'IGTTemplateSpecialization classTrait',
 	#instVars : [
 		'typeName',
-		'typeKind'
+		'typeKind',
+		'templateTypes',
+		'underlyingTypeName',
+		'underlyingTypeKind',
+		'definesFunction'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -21,7 +27,22 @@ IGParameter class >> kind [
 
 { #category : 'visiting' }
 IGParameter >> accept: aVisitor [
-	"parameters are taken by their parent"
+
+	aVisitor visitParameter: self
+]
+
+{ #category : 'initialization' }
+IGParameter >> argumentIndexOf: aCursor [
+	| cxParent |
+	
+	cxParent := aCursor parent.
+	0 to: (cxParent numArguments - 1) do: [ :index |
+		| cxArg |
+		cxArg := cxParent argumentAt: index.
+		(aCursor equalTo: cxArg)
+			ifTrue: [ ^ index + 1 ] ].
+
+	^ 0
 ]
 
 { #category : 'converting' }
@@ -56,6 +77,12 @@ IGParameter >> castString [
 	^ self typeName
 ]
 
+{ #category : 'testing' }
+IGParameter >> definesFunction [
+
+	^ definesFunction
+]
+
 { #category : 'initialization' }
 IGParameter >> fromCursor: aCursor [
 	| type |
@@ -63,7 +90,24 @@ IGParameter >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	type := aCursor type.
 	typeName := type spelling.
-	typeKind := type kind
+	typeKind := type kind.
+	
+	name ifEmpty: [ 
+		name := 'arg{1}' format: { self argumentIndexOf: aCursor } ].
+	
+	typeKind = CXType_Elaborated ifTrue: [ 
+		| underlyingType |
+		underlyingType :=  type namedType.
+		underlyingTypeName := underlyingType spelling.
+		underlyingTypeKind := underlyingType kind.
+		(underlyingTypeName indexOf: $<) > 0 
+			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ].
+		
+	definesFunction := typeKind = CXType_Pointer 
+		and: [ { CXType_FunctionProto. CXType_FunctionNoProto } includes: type pointeeType kind ].		
+				
+	self isTemplateSpecialization 
+		ifTrue: [ typeName := typeName copyUpTo: $< ]
 ]
 
 { #category : 'testing' }
@@ -99,10 +143,17 @@ IGParameter >> parseType: aString [
 { #category : 'accessing' }
 IGParameter >> resolveType [
 	
-	^ IGType new
+	^ IGParameterType new
 		parent: self;
 		name: self typeName;
-		typeReference: self typeReference;
+		definesFunction: self definesFunction;
+		typeReference: (self typeReference ifNil: [ 
+			self isTemplateSpecialization 
+				ifTrue: [ 
+					(IGTypeReference newName: 'class ', self typeName)
+						parent: self;
+						yourself ]
+				ifFalse: [ nil ] ]);
 		yourself
 ]
 
@@ -123,4 +174,16 @@ IGParameter >> typeKind: aNumber [
 IGParameter >> typeName [
 
 	^ typeName
+]
+
+{ #category : 'accessing' }
+IGParameter >> underlyingTypeKind [
+
+	^ underlyingTypeKind
+]
+
+{ #category : 'accessing' }
+IGParameter >> underlyingTypeName [
+
+	^ underlyingTypeName
 ]

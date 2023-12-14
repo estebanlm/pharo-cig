@@ -10,7 +10,9 @@ Class {
 	#classTraits : 'IGTElementContainer classTrait',
 	#instVars : [
 		'nodeClasses',
-		'registerUnknown'
+		'registerUnknown',
+		'prefix',
+		'namespaces'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -26,6 +28,12 @@ IGTranslatedUnit >> accept: aVisitor [
 	aVisitor visitUnit: self
 ]
 
+{ #category : 'visiting' }
+IGTranslatedUnit >> acceptNestedClasses [
+	
+	^ true
+]
+
 { #category : 'accessing' }
 IGTranslatedUnit >> addElement: anElement [
 
@@ -37,14 +45,18 @@ IGTranslatedUnit >> addElement: anElement [
 { #category : 'private' }
 IGTranslatedUnit >> addNode: currentNode parent: parentNode [
 	| parent current |
+	
+	currentNode location isInSystemHeader ifTrue: [ ^ self ]. 	
 
 	parent := self findParent: parentNode.	
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
-		ifNotNil: [ ^ self ].
+		ifNotNil: [ ^ self ]. 
 
-	current := self newNode: currentNode.
+	current := self newNode: currentNode.	
 	(current isUnknown and: [ self isGeneratingWithUnknown not ])
 		ifTrue: [ ^ self ].
+
+	(current canBeAddedTo: parent) ifFalse: [ ^ self ].
 	parent addElement: current
 ]
 
@@ -54,25 +66,8 @@ IGTranslatedUnit >> elementAtPath: aPath [
 
 	current := self.
 	aPath do: [ :each |
-		current := current findElementMatching: [ :eachElement | eachElement name = each ] ].
+		current := current findElementMatching: [ :eachElement | eachElement isEqualToPath: each ] ].
 	^ current
-]
-
-{ #category : 'private' }
-IGTranslatedUnit >> findNode: aNode [
-
-	^ self 
-		findNode: aNode 
-		ifAbsent: [ self ]
-]
-
-{ #category : 'private' }
-IGTranslatedUnit >> findNode: aCursor ifAbsent: aBlock [
-
-	^ self 
-		findNode: aCursor 
-		startingAt: self 
-		ifAbsent: aBlock
 ]
 
 { #category : 'private' }
@@ -101,17 +96,11 @@ IGTranslatedUnit >> findParent: aCursor [
 		kind := each kind.
 		name := each displayName.
 		next := current findElementMatching: [ :eachElement | 
-			eachElement kind = kind and: [ eachElement name = name ] ].
+			(eachElement kind = kind) and: [ eachElement name = name ] ].
 		next ifNil: [ ^ current ].
 		current := next ].
 	
 	^ current 
-]
-
-{ #category : 'accessing' }
-IGTranslatedUnit >> findReversedElementMatching: aBlock [
-
-	^ self findElementMatching: aBlock
 ]
 
 { #category : 'generating' }
@@ -119,6 +108,8 @@ IGTranslatedUnit >> generateFrom: aHeader [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
 	| cursor tu index |
 	
+	prefix := aHeader prefix.
+	namespaces := aHeader namespaces.
 	elements := OrderedCollection new.
 
 	index := CXIndex createIndex: 0 diagnostics: 0. 
@@ -134,8 +125,7 @@ IGTranslatedUnit >> generateFrom: aHeader [
 
 	cursor := tu cursor.
 	cursor visitChildren: [ :current :parent :data |
-		current location isInSystemHeader 
-			ifFalse: [ self addNode: current parent: parent ].
+		self addNode: current parent: parent.
 		CXChildVisit recurse ].
 
 	tu dispose.
@@ -148,6 +138,16 @@ IGTranslatedUnit >> initialize [
 	super initialize.
 	elements := OrderedCollection new.
 	self withUnknown
+]
+
+{ #category : 'private' }
+IGTranslatedUnit >> installedNamespaceFor: aNamespace [
+	| originName |
+
+	originName := aNamespace originNamespaceName.
+	^ namespaces
+		detect: [ :each | each cppName = originName ]
+		ifNone: [ nil ]
 ]
 
 { #category : 'testing' }
@@ -188,7 +188,15 @@ IGTranslatedUnit >> nodeClasses [
 { #category : 'accessing' }
 IGTranslatedUnit >> path [
 	
-	^ { self }
+	^ { self prefix 
+		ifNotNil: [ :aString | aString asLowercase ]
+		ifNil: [ '' ] }
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> prefix [
+
+	^ prefix
 ]
 
 { #category : 'accessing' }

@@ -327,7 +327,7 @@ IGHeaderGenerator >> prefix [
 { #category : 'accessing - configuration' }
 IGHeaderGenerator >> prefix: aPrefix [
 	
-prefix := aPrefix
+	prefix := aPrefix
 ]
 
 { #category : 'generating' }

@@ -52,7 +52,7 @@ IGCVisitorTest >> testCCastToReturnWhenClass [
 	
 	cast := IGCGenerator new cCastToReturn: element resolveReturnType.
 	
-	self assert: cast equals: '(noise_module_Module*)&' 
+	self assert: cast equals: '(no_noise_module_Module*)&' 
 ]
 
 { #category : 'tests' }
@@ -63,7 +63,7 @@ IGCVisitorTest >> testCCastToReturnWhenClassInDifferentNamespace [
 	
 	cast := IGCGenerator new cCastToReturn: element resolveReturnType.
 	
-	self assert: cast equals: '(noise_module_Module*)&' 
+	self assert: cast equals: '(no_noise_module_Module*)&' 
 ]
 
 { #category : 'tests' }
@@ -74,7 +74,115 @@ IGCVisitorTest >> testCCastToReturnWhenEnum [
 	
 	cast := IGCGenerator new cCastToReturn: element resolveReturnType.
 	
-	self assert: cast equals: '(noise_NoiseQuality)' 
+	self assert: cast equals: '(no_noise_NoiseQuality)' 
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitClassGeneratesATypedef [
+	| element visitor |
+			
+	element := self translatedUnitTvision elementAtPath: { 'TView' }.
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitClass: element.
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'typedef void tv_TView;'.
+		
+	element := self elementAtPath: { 'noise'. 'module'. 'Module' }.
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitClass: element.
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'typedef void no_noise_module_Module;'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitClassTemplateGeneratesATypedefForEachDefinedType [
+	| element visitor |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitClassTemplate: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'typedef void tv_TSpan;
+typedef void tv_TSpanChar;
+typedef void tv_TSpanTScreenCell;'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitClassWithTypedefGenerateTypedefs [
+	| element visitor |
+			
+	element := self translatedUnitTvision elementAtPath: { 'pstream' }.
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitClass: element.
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'typedef void tv_pstream;
+typedef int tv_pstream_openmode;
+typedef int tv_pstream_seekdir;'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitEnumUnnamedGeneratesCorrectName [
+	| element visitor |
+	
+	self skip.
+	
+	element := self translatedUnitTvision elements 
+		detect: [ :each | each isEnum and: [ each isUnnamed ] ].
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitEnum: element.
+	
+	self 
+		assert: visitor hStream contents trimmed lines first
+		equals: 'enum tv_unnamed_enum_1 {'.
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitEnumWithOneLevelEmitsTypedef [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'StreamableInit' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitEnum: element.
+	
+	self 
+		assert: visitor hStream contents trimmed 
+		equals: 'typedef StreamableInit tv_StreamableInit;'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitFunctionDisambiguate [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'fexpand(char *)' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitFunction: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'void tv_fexpand_1(char* rpath);'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNames [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'TEditor'. 'insertBuffer(const char *, uint, uint, Boolean, Boolean)' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitMethod: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'tv_Boolean tv_TEditor_insertBuffer(tv_TEditor* self, const char* arg1, tv_uint arg2, tv_uint arg3, tv_Boolean arg4, tv_Boolean arg5);'
 ]
 
 { #category : 'tests' }
@@ -88,11 +196,11 @@ IGCVisitorTest >> testVisitMethodParameterStdStringCastsCorrectly [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'void noise_utils_WriterBMP_SetDestFilename(noise_utils_WriterBMP* self, const char* filename);'.
+		equals: 'void nu_noise_utils_WriterBMP_SetDestFilename(nu_noise_utils_WriterBMP* self, const char* filename);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'void noise_utils_WriterBMP_SetDestFilename(noise_utils_WriterBMP* self, const char* filename) {
+		equals: 'void nu_noise_utils_WriterBMP_SetDestFilename(nu_noise_utils_WriterBMP* self, const char* filename) {
 	((noise::utils::WriterBMP*)self)->SetDestFilename(std::string(filename));
 }'
 ]
@@ -108,15 +216,15 @@ IGCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'noise_utils_Color* noise_utils_Image_GetBorderValue(noise_utils_Image* self);'.
+		equals: 'nu_noise_utils_Color* nu_noise_utils_Image_GetBorderValue(nu_noise_utils_Image* self);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'noise_utils_Color* noise_utils_Image_GetBorderValue(noise_utils_Image* self) {
+		equals: 'nu_noise_utils_Color* nu_noise_utils_Image_GetBorderValue(nu_noise_utils_Image* self) {
 	auto _tmp = ((noise::utils::Image*)self)->GetBorderValue();
 	auto _result = new noise::utils::Color();
 	memcpy(_result, &_tmp, sizeof(noise::utils::Color));
-	return (noise_utils_Color*)_result;
+	return (nu_noise_utils_Color*)_result;
 }'
 ]
 
@@ -131,12 +239,12 @@ IGCVisitorTest >> testVisitMethodReturningClassPtrGeneratesCorrectReturnType [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'const noise_utils_Color* noise_utils_Image_GetConstSlabPtr_2(noise_utils_Image* self, int row);'.
+		equals: 'const nu_noise_utils_Color* nu_noise_utils_Image_GetConstSlabPtr_2(nu_noise_utils_Image* self, int row);'.
 	
 	self 
 		assert: visitor cStream contents trimmed 
-		equals: 'const noise_utils_Color* noise_utils_Image_GetConstSlabPtr_2(noise_utils_Image* self, int row) {
-	return (noise_utils_Color*)(((noise::utils::Image*)self)->GetConstSlabPtr(row));
+		equals: 'const nu_noise_utils_Color* nu_noise_utils_Image_GetConstSlabPtr_2(nu_noise_utils_Image* self, int row) {
+	return (nu_noise_utils_Color*)(((noise::utils::Image*)self)->GetConstSlabPtr(row));
 }'
 ]
 
@@ -151,11 +259,11 @@ IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'char* noise_utils_WriterBMP_GetDestFilename(noise_utils_WriterBMP* self);'.
+		equals: 'char* nu_noise_utils_WriterBMP_GetDestFilename(nu_noise_utils_WriterBMP* self);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'char* noise_utils_WriterBMP_GetDestFilename(noise_utils_WriterBMP* self) {
+		equals: 'char* nu_noise_utils_WriterBMP_GetDestFilename(nu_noise_utils_WriterBMP* self) {
 	auto _tmp = ((noise::utils::WriterBMP*)self)->GetDestFilename();
 	auto _result = _tmp.c_str();
 	return (char*)_result;
@@ -173,11 +281,11 @@ IGCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'void TCellChar_moveWideCharTrail(TCellChar* self);'.
+		equals: 'void tv_TCellChar_moveWideCharTrail(tv_TCellChar* self);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'void TCellChar_moveWideCharTrail(TCellChar* self) {
+		equals: 'void tv_TCellChar_moveWideCharTrail(tv_TCellChar* self) {
 	((TCellChar*)self)->moveWideCharTrail();
 }'
 ]
@@ -195,15 +303,44 @@ IGCVisitorTest >> testVisitStructureSkipTemplateSpecialization [
 ]
 
 { #category : 'tests' }
+IGCVisitorTest >> testVisitTypedefWithArrayDeclaresCorrectly [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'TScrollChars' }.
+	
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitTypedef: element.
+	
+	self 
+		assert: visitor hStream contents trimmed 
+		equals: 'typedef char* tv_TScrollChars;'
+]
+
+{ #category : 'tests' }
 IGCVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 
 	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMapCallback' }.
 	
-	visitor := IGCVisitor newForTest.
+	visitor := IGCHeaderDeclareVisitor newForTest.
 	visitor visitTypedef: element.
 	
 	self 
 		assert: visitor hStream contents trimmed 
-		equals: 'typedef void* noise_utils_NoiseMapCallback;'
+		equals: 'typedef void* nu_noise_utils_NoiseMapCallback;'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitUsingDeclarationGeneratesTypedefToTypedef [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'streampos' }.
+	
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitUsingDeclaration: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'typedef std::streampos tv_streampos;'.
+
 ]

@@ -36,6 +36,12 @@ CXCursor class >> newTranslationUnit: tu [
 	^ self ffiCall: #(void *clang_getTranslationUnitCursor(CXTranslationUnit tu))
 ]
 
+{ #category : 'accessing - arguments' }
+CXCursor >> argumentAt: index [
+
+	^ self ffiCall: #(CXCursor clang_Cursor_getArgument(CXCursor self, uint index))
+]
+
 { #category : 'private' }
 CXCursor >> clang_Cursor_getRawCommentText [
 
@@ -101,17 +107,9 @@ CXCursor >> cxxAccessSpecifier [
 
 { #category : 'testing' }
 CXCursor >> cxxMethodIsPureVirtual [
-	| range pos size source fileName |
-	
-	range := self clang_getCursorExtent.	
-	fileName := self location fileName.
-	fileName ifNotEmpty: [ 
-		pos := range start offset.
-		size := range end offset - pos.
-		fileName asFileReference readStreamDo: [ :stream |
-			stream position: pos.
-			source := stream next: size ].
-			^ source trimmed endsWith: '0' ].
+
+	self source ifNotNil: [ :aString | 
+		^ aString endsWith: '0' ].
 	
 	^ false
 ]
@@ -174,6 +172,12 @@ CXCursor >> enumConstantValue [
 ]
 
 { #category : 'testing' }
+CXCursor >> equalTo: aCursor [
+
+	^ self ffiCall: #(Boolean clang_equalCursors(CXCursor self	, CXCursor aCursor))
+]
+
+{ #category : 'testing' }
 CXCursor >> isEnumConstantDeclaration [
 
 	^ self kind = CXCursor_EnumConstantDecl
@@ -230,6 +234,32 @@ CXCursor >> location [
 	^ self clang_getCursorLocation
 ]
 
+{ #category : 'accessing - arguments' }
+CXCursor >> numArguments [
+
+	^ self ffiCall: #(int clang_Cursor_getNumArguments(CXCursor self))
+]
+
+{ #category : 'accessing - overloaded' }
+CXCursor >> numOverloadedDecls [
+	
+	^ self ffiCall: #(uint clang_getNumOverloadedDecls(CXCursor self))
+]
+
+{ #category : 'accessing - overloaded' }
+CXCursor >> overloadedDeclarationAt: index [
+
+	^ self ffiCall: #(CXCursor clang_getOverloadedDecl(CXCursor self, uint index))
+]
+
+{ #category : 'accessing - overloaded' }
+CXCursor >> overloadedDeclarations [
+
+	^ Array streamContents: [ :stream | 
+		0 to: self numOverloadedDecls - 1 do: [ :index | 
+			stream nextPut: (self overloadedDeclarationAt: index) ] ]
+]
+
 { #category : 'accessing' }
 CXCursor >> parent [
 	| parent |
@@ -249,6 +279,28 @@ CXCursor >> rawComment [
 		ensure: [ string dispose ]
 ]
 
+{ #category : 'accessing - templates' }
+CXCursor >> referenced [
+
+	^ self ffiCall: #(CXCursor clang_getCursorReferenced(CXCursor self)) 	
+]
+
+{ #category : 'accessing' }
+CXCursor >> source [
+	| fileName pos range size source |
+	
+	fileName := self location fileName.
+	fileName ifEmpty: [ ^ nil ].
+	 
+	range := self clang_getCursorExtent.	
+	pos := range start offset.
+	size := range end offset - pos.
+	fileName asFileReference readStreamDo: [ :stream |
+		stream position: pos.
+		source := stream next: size ].
+	^ source trimmed
+]
+
 { #category : 'accessing' }
 CXCursor >> spelling [
 	| string |
@@ -256,6 +308,12 @@ CXCursor >> spelling [
 	string := self clang_getCursorSpelling.
 	^ [ string cString ]
 		ensure: [ string dispose ]
+]
+
+{ #category : 'accessing - templates' }
+CXCursor >> templateKind [
+
+	self ffiCall: #(int clang_getTemplateCursorKind(CXCursor self))
 ]
 
 { #category : 'accessing' }

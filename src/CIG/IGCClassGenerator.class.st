@@ -32,8 +32,7 @@ IGCClassGenerator >> addClassDispose: aClass [
 { #category : 'private' }
 IGCClassGenerator >> addClassTypedef: aClass [
 
-	self hStream << ('typedef void {1};' format: { aClass fullName  }).
-	self hStream cr
+	visitor addTypedef: #void as: aClass fullName
 ]
 
 { #category : 'private' }
@@ -92,7 +91,6 @@ IGCClassGenerator >> generateClass: aClass [
 	
 	self root: aClass root.
 
-	self addClassTypedef: aClass.
 	self addClassDispose: aClass
 ]
 

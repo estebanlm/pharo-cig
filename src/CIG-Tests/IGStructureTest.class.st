@@ -11,7 +11,7 @@ IGStructureTest >> testClassFieldsCastCorrectly [
 
 	element := self translatedUnitTvision elementAtPath: { 'fLink'. 'forceLink' }.
 
-	self assert: element resolveType cDeclaration equals: 'TStreamableClass*'
+	self assert: element resolveType cDeclaration equals: 'tv_TStreamableClass*'
 ]
 
 { #category : 'tests' }

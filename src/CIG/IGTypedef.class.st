@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'underlyingTypeKind',
 		'underlyingTypeSpelling',
-		'definesFunction'
+		'definesFunction',
+		'definesArray'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -27,6 +28,12 @@ IGTypedef >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
+IGTypedef >> definesArray [
+
+	^ definesArray
+]
+
+{ #category : 'testing' }
 IGTypedef >> definesFunction [
 
 	^ definesFunction
@@ -41,7 +48,16 @@ IGTypedef >> fromCursor: aCursor [
 	underlyingTypeSpelling := type spelling.
 	underlyingTypeKind := type kind.
 	definesFunction := underlyingTypeKind = CXType_Pointer 
-		and: [ type pointeeType resultType ~= CXType_Invalid ]
+		and: [ type pointeeType resultType ~= CXType_Invalid ].
+	definesArray := underlyingTypeKind = CXType_ConstantArray 
+			or: [ underlyingTypeKind = CXType_IncompleteArray
+			or: [ underlyingTypeKind = CXType_VariableArray ] ]
+]
+
+{ #category : 'testing' }
+IGTypedef >> isTypedef [
+
+	^ true
 ]
 
 { #category : 'accessing' }

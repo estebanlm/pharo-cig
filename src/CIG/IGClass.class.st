@@ -2,7 +2,8 @@ Class {
 	#name : 'IGClass',
 	#superclass : 'IGElement',
 	#instVars : [
-		'comment'
+		'comment',
+		'isDeclaration'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -21,10 +22,22 @@ IGClass >> accept: aVisitor [
 	aVisitor visitClass: self
 ]
 
+{ #category : 'testing' }
+IGClass >> acceptNestedClasses [
+
+	^ true
+]
+
 { #category : 'accessing' }
 IGClass >> cDeclaration [
 
 	^ super cDeclaration, '*'
+]
+
+{ #category : 'testing' }
+IGClass >> canBeAddedTo: anElement [
+
+	^ anElement acceptNestedClasses and: [ self isDeclaration not ]
 ]
 
 { #category : 'accessing' }
@@ -43,7 +56,8 @@ IGClass >> comment [
 IGClass >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
-	comment := aCursor rawComment
+	comment := aCursor rawComment.
+	isDeclaration := (aCursor source includesAll: '{}') not
 ]
 
 { #category : 'testing' }
@@ -56,6 +70,12 @@ IGClass >> isAbstract [
 IGClass >> isClass [
 
 	^ true
+]
+
+{ #category : 'testing' }
+IGClass >> isDeclaration [
+
+	^ isDeclaration
 ]
 
 { #category : 'accessing' }

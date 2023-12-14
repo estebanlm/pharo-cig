@@ -26,7 +26,7 @@ IGCGenerator >> argumentCastToCPP: aParameter [
 		type := aParameter resolveType.
 		type 
 			ifTranslated: [ :translation | 
-				stream << (translation cToCPP: aParameter name)  ]
+				stream << (translation cToCPP: aParameter name from: aParameter )  ]
 			ifNot: [  
 				aParameter isReference ifTrue: [ stream << '*' ].
 				type hasTypeReference
@@ -169,6 +169,12 @@ IGCGenerator >> root [
 IGCGenerator >> root: aNode [
 
 	root := aNode
+]
+
+{ #category : 'accessing' }
+IGCGenerator >> visitor [
+
+	^ visitor
 ]
 
 { #category : 'accessing' }

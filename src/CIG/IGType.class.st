@@ -33,8 +33,12 @@ IGType >> cDeclaration [
 					ifTrue: [ startArity := 1 ] ]
 			ifNil: [ 
 				"there may still be a typedef type (format namespace::type), we just 
-				 replace that" 
-				stream << (typeName copyReplaceAll: '::' with: '_') ].
+				 replace that"
+				| path |
+				path := typeName substrings: '::'.
+				stream << ((self root elementAtPath: path) 
+					ifNotNil: [ :anElement | anElement cDeclaration ]
+					ifNil: [ typeName ]) ].
 				
 		(1 + startArity) to: parsed arity do: [ :each |
 			stream << '*' ] ]
@@ -80,6 +84,12 @@ IGType >> cppDeclarationFromReference [
 
 	^ (self parent root elementAtPath: (self typeReference typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cppDeclaration ]
+]
+
+{ #category : 'testing' }
+IGType >> definesFunction [
+	
+	^ false
 ]
 
 { #category : 'accessing' }

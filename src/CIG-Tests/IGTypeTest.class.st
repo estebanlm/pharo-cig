@@ -35,8 +35,7 @@ IGTypeTest >> testResolveParamWhenTypedefToSimpleType [
 	
 	type := element resolveType.
 	
-	self assert: type cDeclaration equals: 'noise_uint8'
-	
+	self assert: type cDeclaration equals: 'no_noise_uint8'
 ]
 
 { #category : 'tests' }
@@ -47,7 +46,7 @@ IGTypeTest >> testResolveReturnTypeForClass [
 	
 	type := element resolveReturnType.
 	
-	self assert: type cDeclaration equals: 'noise_module_Module*'
+	self assert: type cDeclaration equals: 'no_noise_module_Module*'
 ]
 
 { #category : 'tests' }
@@ -69,7 +68,7 @@ IGTypeTest >> testResolveReturnTypeForStructure [
 	
 	type := element resolveReturnType.
 	
-	self assert: type cDeclaration equals: 'noise_module_ControlPoint*'
+	self assert: type cDeclaration equals: 'no_noise_module_ControlPoint*'
 ]
 
 { #category : 'tests' }
@@ -93,5 +92,5 @@ IGTypeTest >> testResolveTypeForClassInStructure [
 	
 	type := element resolveType.
 	
-	self assert: type cDeclaration equals: 'noise_utils_Color*'
+	self assert: type cDeclaration equals: 'nu_noise_utils_Color*'
 ]

@@ -36,6 +36,12 @@ IGTranslation >> cToCPP: aString [
 	^ self templateCPP format: { aString }
 ]
 
+{ #category : 'converting' }
+IGTranslation >> cToCPP: aString from: anElement [
+
+	^ self cToCPP: aString
+]
+
 { #category : 'accessing' }
 IGTranslation >> cppDeclaration [
 
@@ -55,7 +61,7 @@ IGTranslation >> cppToC: functionString [
 ]
 
 { #category : 'converting' }
-IGTranslation >> cppToC: functionString from: aMethod [
+IGTranslation >> cppToC: functionString from: anElement [
 
 	^ self cppToC: functionString
 ]

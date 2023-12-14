@@ -9,7 +9,11 @@ Class {
 { #category : 'accessing' }
 IGTypedefType >> cDeclaration [
 
-	parent definesFunction ifTrue: [ ^ 'void*' ].
+	parent definesFunction 
+		ifTrue: [ ^ 'void*' ].
+	parent definesArray 
+		ifTrue: [ ^ (IGFunctionParser parse: parent underlyingTypeSpelling) name, '*'  ].
+
 	^ parent underlyingTypeSpelling
 ]
 

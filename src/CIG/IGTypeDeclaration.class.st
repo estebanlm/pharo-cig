@@ -26,6 +26,14 @@ IGTypeDeclaration >> isReference [
 ]
 
 { #category : 'accessing' }
+IGTypeDeclaration >> nameWithArity [
+
+	^ self name, (self arity > 0 
+		ifTrue: [ String new: self arity withAll: $* ]
+		ifFalse: [ '' ])
+]
+
+{ #category : 'accessing' }
 IGTypeDeclaration >> reference: aBoolean [
 
 	reference := aBoolean

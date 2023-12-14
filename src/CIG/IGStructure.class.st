@@ -18,6 +18,12 @@ IGStructure >> accept: aVisitor [
 	aVisitor visitStructure: self
 ]
 
+{ #category : 'testing' }
+IGStructure >> acceptNestedClasses [
+
+	^ true
+]
+
 { #category : 'accessing' }
 IGStructure >> cDeclaration [
 	"since a struct in c++ can act as a class, we need to answer its kind as a structure 

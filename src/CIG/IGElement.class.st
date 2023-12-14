@@ -71,6 +71,12 @@ IGElement >> accept: aVisitor [
 	self subclassResponsibility
 ]
 
+{ #category : 'testing' }
+IGElement >> acceptNestedClasses [
+
+	^ false
+]
+
 { #category : 'accessing' }
 IGElement >> basename [
 	"remove the basic name"
@@ -84,10 +90,22 @@ IGElement >> cDeclaration [
 	^ self fullNameWith: '_'
 ]
 
+{ #category : 'testing' }
+IGElement >> canBeAddedTo: anElement [
+
+	^ true
+]
+
 { #category : 'accessing' }
 IGElement >> cppDeclaration [
 
-	^ self fullNameWith: '::'
+	^ self nameWith: '::'
+]
+
+{ #category : 'accessing' }
+IGElement >> depth [
+	
+	^ self path size - 1
 ]
 
 { #category : 'accessing' }
@@ -96,7 +114,7 @@ IGElement >> elementAtPath: aPath [
 
 	current := self.
 	aPath do: [ :each |
-		current := current findElementMatching: [ :eachElement | eachElement name = each ] ].
+		current := current findElementMatching: [ :eachElement | eachElement isEqualToPath: each ] ].
 	^ current
 ]
 
@@ -119,14 +137,6 @@ IGElement >> findElementMatching: aBlock [
 	^ nil
 ]
 
-{ #category : 'accessing' }
-IGElement >> findReversedElementMatching: aBlock [
-
-	(self findElementMatching: aBlock) ifNotNil: [ :aNode | ^ aNode ].
-	self parent ifNil: [ ^ nil ].
-	^ self parent findReversedElementMatching: aBlock
-]
-
 { #category : 'initialization' }
 IGElement >> fromCursor: aCursor [
 
@@ -144,8 +154,7 @@ IGElement >> fullName [
 IGElement >> fullNameWith: delim [ 
 
 	^ String streamContents: [ :stream |
-		"first element is the unit and we do not want that" 
-		self path allButFirst asStringOn: stream delimiter: delim ]
+		self path asStringOn: stream delimiter: delim ]
 ]
 
 { #category : 'comparing' }
@@ -164,6 +173,18 @@ IGElement >> isClass [
 IGElement >> isClassMember [
 
 	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isEnum [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isEqualToPath: aString [
+
+	^ self name = aString
 ]
 
 { #category : 'testing' }
@@ -191,6 +212,12 @@ IGElement >> isNamespace [
 ]
 
 { #category : 'testing' }
+IGElement >> isStructure [
+
+	^ false
+]
+
+{ #category : 'testing' }
 IGElement >> isSuperclass [
 
 	^ false
@@ -198,6 +225,12 @@ IGElement >> isSuperclass [
 
 { #category : 'testing' }
 IGElement >> isTypeReference [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isTypedef [
 
 	^ false
 ]
@@ -236,6 +269,14 @@ IGElement >> name [
 IGElement >> name: aString [
 	
 	name := aString
+]
+
+{ #category : 'accessing' }
+IGElement >> nameWith: delim [ 
+
+	^ String streamContents: [ :stream |
+		"first element is the unit and we do not want that" 
+		self path allButFirst asStringOn: stream delimiter: delim ]
 ]
 
 { #category : 'accessing' }

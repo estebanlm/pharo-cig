@@ -48,6 +48,12 @@ IGVisitor >> visitClass: aClass [
 ]
 
 { #category : 'visiting' }
+IGVisitor >> visitClassTemplate: aClassTemplate [
+
+	self visitClass: aClassTemplate
+]
+
+{ #category : 'visiting' }
 IGVisitor >> visitConstructor: aConstructor [
 ]
 
@@ -74,6 +80,11 @@ IGVisitor >> visitNamespace: aNamespace [
 ]
 
 { #category : 'visiting' }
+IGVisitor >> visitParameter: aParameter [
+	
+]
+
+{ #category : 'visiting' }
 IGVisitor >> visitStructure: aStructure [
 ]
 
@@ -83,10 +94,17 @@ IGVisitor >> visitTypedef: aTypedef [
 
 { #category : 'visiting' }
 IGVisitor >> visitUnit: aUnit [
+
+	self visitAll: aUnit elements
 ]
 
 { #category : 'visiting' }
 IGVisitor >> visitUnknown: anUnknown [
+]
+
+{ #category : 'visiting' }
+IGVisitor >> visitUsingDeclaration: anElement [
+
 ]
 
 { #category : 'visiting' }

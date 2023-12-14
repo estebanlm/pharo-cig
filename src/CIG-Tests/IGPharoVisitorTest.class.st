@@ -6,6 +6,17 @@ Class {
 }
 
 { #category : 'tests' }
+IGPharoVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNames [
+	| element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TEditor'. 'insertBuffer(const char *, uint, uint, Boolean, Boolean)' }.
+	
+	self 
+		assert: element phDeclaration 
+		equals: 'insertBufferArg1: arg1 arg2: arg2 arg3: arg3 arg4: arg4 arg5: arg5'
+]
+
+{ #category : 'tests' }
 IGPharoVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 
@@ -16,7 +27,7 @@ IGPharoVisitorTest >> testVisitTypedefWithCallback [
 	
 	self 
 		assert: visitor types keys first
-		equals: 'noise_utils_NoiseMapCallback'.
+		equals: 'nu_noise_utils_NoiseMapCallback'.
 		
 	self 
 		assert: visitor types values first
@@ -34,7 +45,7 @@ IGPharoVisitorTest >> testVisitTypedefWithUint [
 	
 	self 
 		assert: visitor types keys first
-		equals: 'noise_uint'.
+		equals: 'no_noise_uint'.
 		
 	self 
 		assert: visitor types values first

@@ -87,6 +87,18 @@ CXType >> kindSpelling [
 		ensure: [ string dispose ]
 ]
 
+{ #category : 'accessing - templates' }
+CXType >> namedType [
+ 
+	^ self ffiCall: #(CXType clang_Type_getNamedType	(CXType self))
+]
+
+{ #category : 'accessing - templates' }
+CXType >> numTemplateArguments [
+
+	^ self ffiCall: #(int clang_Type_getNumTemplateArguments(CXType self))
+]
+
 { #category : 'accessing' }
 CXType >> pointeeType [
 
@@ -106,6 +118,12 @@ CXType >> spelling [
 	string := self clang_getTypeSpelling.
 	^ [ string cString ]
 		ensure: [ string dispose ]
+]
+
+{ #category : 'accessing - templates' }
+CXType >> templateArgumentAsType: index [
+
+	^ self ffiCall: #(CXType clang_Type_getTemplateArgumentAsType(CXType self, uint index))
 ]
 
 { #category : 'accessing' }

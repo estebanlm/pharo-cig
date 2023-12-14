@@ -1,8 +1,15 @@
 Class {
 	#name : 'IGFunction',
 	#superclass : 'IGElement',
-	#traits : 'IGTFunction',
-	#classTraits : 'IGTFunction classTrait',
+	#traits : 'IGTFunction + IGTTemplateSpecialization',
+	#classTraits : 'IGTFunction classTrait + IGTTemplateSpecialization classTrait',
+	#instVars : [
+		'underlyingTypeName',
+		'underlyingTypeKind'
+	],
+	#pools : [
+		'CXTypeKind'
+	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -39,11 +46,26 @@ IGFunction >> buildParameters: aCollection on: stream [
 		stream << each name << ': ' << each name << ' ' ]
 ]
 
+{ #category : 'accessing' }
+IGFunction >> cDeclaration [
+
+	^ self disambiguate: super cDeclaration
+]
+
 { #category : 'initialization' }
 IGFunction >> fromCursor: aCursor [
-
+	| type |
+	
 	super fromCursor: aCursor.
-	self fillFunctionWith: aCursor
+	self fillFunctionWith: aCursor.
+	type := aCursor type.
+	type kind  = CXType_Elaborated ifTrue: [ 
+		| underlyingType |
+		underlyingType :=  type namedType.
+		underlyingTypeName := underlyingType spelling.
+		underlyingTypeKind := underlyingType kind.
+		(underlyingTypeName indexOf: $<) > 0 
+			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ]
 ]
 
 { #category : 'testing' }

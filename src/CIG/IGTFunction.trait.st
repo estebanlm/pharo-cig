@@ -35,6 +35,22 @@ IGTFunction >> comment [
 	^ comment	
 ]
 
+{ #category : 'private' }
+IGTFunction >> disambiguate: aString [
+	| nodes |
+	
+	nodes := self parent elements 
+		select: [ :each | (each kind = self kind) and: [ each basename = self basename ] ].
+	
+	"this is the regular case"
+	nodes size = 1 
+		ifTrue: [ ^ aString ].
+	
+	"I need to dissambiguate"
+	^ String streamContents: [ :stream |
+		stream << aString << '_' <<  (nodes indexOf: self) asString ]
+]
+
 { #category : 'initialization' }
 IGTFunction >> fillFunctionWith: aCursor [
 

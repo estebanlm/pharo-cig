@@ -29,3 +29,12 @@ IGEnum >> isUnnamed [
 
 	^ self name beginsWith: '(unnamed enum'
 ]
+
+{ #category : 'accessing' }
+IGEnum >> resolveType [
+
+	^IGEnumType new 
+		parent: self;
+		name: self name;
+		yourself
+]

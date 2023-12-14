@@ -1,8 +1,15 @@
 Class {
 	#name : 'IGClassMember',
 	#superclass : 'IGElement',
-	#traits : 'IGTFunction',
-	#classTraits : 'IGTFunction classTrait',
+	#traits : 'IGTFunction + IGTTemplateSpecialization',
+	#classTraits : 'IGTFunction classTrait + IGTTemplateSpecialization classTrait',
+	#instVars : [
+		'underlyingTypeName',
+		'underlyingTypeKind'
+	],
+	#pools : [
+		'CXTypeKind'
+	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -33,27 +40,21 @@ IGClassMember >> buildParameters: aCollection on: stream [
 		stream << each name << ': ' << each name << ' ' ]
 ]
 
-{ #category : 'private' }
-IGClassMember >> disambiguate: aString [
-	| methods |
-	
-	methods := self parent elements 
-		select: [ :each | (each kind = self kind) and: [ each basename = self basename  ] ].
-	
-	"this is the regular case"
-	methods size = 1 
-		ifTrue: [ ^ aString ].
-	
-	"I need to dissambiguate"
-	^ String streamContents: [ :stream |
-		stream << aString << '_' <<  (methods indexOf: self) asString ]
-]
-
 { #category : 'initialization' }
 IGClassMember >> fromCursor: aCursor [
+	| type |
 
 	super fromCursor: aCursor.
-	self fillFunctionWith: aCursor
+	self fillFunctionWith: aCursor.
+	
+	type := aCursor type.
+	type kind  = CXType_Elaborated ifTrue: [ 
+		| underlyingType |
+		underlyingType :=  type namedType.
+		underlyingTypeName := underlyingType spelling.
+		underlyingTypeKind := underlyingType kind.
+		(underlyingTypeName indexOf: $<) > 0 
+			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ]
 ]
 
 { #category : 'testing' }
@@ -115,4 +116,16 @@ IGClassMember >> returnTypeName [
 IGClassMember >> spelling [
 
 	^ spelling
+]
+
+{ #category : 'accessing' }
+IGClassMember >> underlyingTypeKind [
+
+	^ underlyingTypeKind
+]
+
+{ #category : 'accessing' }
+IGClassMember >> underlyingTypeName [
+
+	^ underlyingTypeName
 ]

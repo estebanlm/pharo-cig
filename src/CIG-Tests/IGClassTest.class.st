@@ -13,7 +13,7 @@ IGClassTest >> testConstructorNameIsNew [
 
 	self 
 		assert: element cDeclaration 
-		equals: 'noise_module_Module_new'
+		equals: 'no_noise_module_Module_new'
 	
 ]
 
@@ -25,7 +25,7 @@ IGClassTest >> testMethodAnsweringAClassPointerAnswerACorrectPointer [
 
 	self 
 		assert: element resolveReturnType cDeclaration 
-		equals: 'noise_module_Module*'
+		equals: 'no_noise_module_Module*'
 ]
 
 { #category : 'tests' }
@@ -36,7 +36,7 @@ IGClassTest >> testMethodAnsweringAClassWithoutReferenceAnswerACorrectPointer [
 
 	self 
 		assert: element resolveReturnType cDeclaration 
-		equals: 'noise_utils_Color*'
+		equals: 'nu_noise_utils_Color*'
 ]
 
 { #category : 'tests' }
@@ -47,5 +47,5 @@ IGClassTest >> testMethodAnsweringAClassWithtReferenceAnswerACorrectPointer [
 
 	self 
 		assert: element resolveReturnType cDeclaration 
-		equals: 'noise_module_Module*'
+		equals: 'no_noise_module_Module*'
 ]
