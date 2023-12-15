@@ -42,6 +42,14 @@ CXCursor >> argumentAt: index [
 	^ self ffiCall: #(CXCursor clang_Cursor_getArgument(CXCursor self, uint index))
 ]
 
+{ #category : 'accessing - arguments' }
+CXCursor >> arguments [
+
+	^ Array streamContents: [ :stream |
+		0 to: self numArguments - 1 do: [ :index |
+			stream nextPut: (self argumentAt: index) ] ]
+]
+
 { #category : 'private' }
 CXCursor >> clang_Cursor_getRawCommentText [
 
@@ -193,6 +201,12 @@ CXCursor >> isEnumDeclaration [
 CXCursor >> isFunctionDeclaration [
 
 	^ self kind = CXCursor_FunctionDecl
+]
+
+{ #category : 'testing' }
+CXCursor >> isFunctionInlined [
+
+	^ self ffiCall: #(Boolean clang_Cursor_isFunctionInlined(CXCursor self))
 ]
 
 { #category : 'testing' }

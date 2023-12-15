@@ -77,12 +77,6 @@ IGClassMember >> isReturnTypeVoid [
 ]
 
 { #category : 'accessing' }
-IGClassMember >> parameters [
-
-	^ self elements select: [ :each | each kind = IGParameter kind ]
-]
-
-{ #category : 'accessing' }
 IGClassMember >> parametersAsList [
 
 	^ (self parameters collect: [ :each | each asParameterString ]) asCommaString

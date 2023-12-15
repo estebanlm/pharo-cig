@@ -252,6 +252,7 @@ IGCVisitor >> visitMethod: aMethod [
 		or: [ aMethod isOperator ]) 
 		ifTrue: [ ^ self ].
 
+	self haltIf: (aMethod parent name = 'TText').
 	(IGCClassGenerator on: self) generateMethod: aMethod.
 	cStream cr
 ]

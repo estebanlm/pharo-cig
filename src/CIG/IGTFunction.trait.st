@@ -3,7 +3,8 @@ Trait {
 	#instVars : [
 		'returnTypeName',
 		'spelling',
-		'comment'
+		'comment',
+		'parameters'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -56,7 +57,8 @@ IGTFunction >> fillFunctionWith: aCursor [
 
 	returnTypeName := aCursor type resultType spelling.
 	spelling := aCursor spelling.
-	comment := aCursor rawComment
+	comment := aCursor rawComment.
+	parameters := aCursor arguments collect: [ :each | IGParameter fromCursor: each ]
 ]
 
 { #category : 'testing' }
@@ -76,7 +78,7 @@ IGTFunction >> isReturnTypeVoid [
 { #category : 'accessing' }
 IGTFunction >> parameters [
 
-	^ self elements select: [ :each | each kind = IGParameter kind ]
+	^ parameters
 ]
 
 { #category : 'accessing' }
