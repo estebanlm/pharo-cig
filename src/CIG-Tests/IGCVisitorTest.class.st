@@ -109,7 +109,8 @@ IGCVisitorTest >> testVisitClassTemplateGeneratesATypedefForEachDefinedType [
 		assert: visitor hStream contents trimmed
 		equals: 'typedef void tv_TSpan;
 typedef void tv_TSpanChar;
-typedef void tv_TSpanTScreenCell;'
+typedef void tv_TSpanTScreenCell;
+typedef void tv_TSpanUint32_t;'
 ]
 
 { #category : 'tests' }

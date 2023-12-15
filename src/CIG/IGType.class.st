@@ -74,7 +74,6 @@ IGType >> cppDeclaration [
 		self typeReference 
 			ifNotNil: [ stream << ((self cppDeclarationFromReference) ifNil: [ typeName ]) ]
 			ifNil: [ stream << typeName ].
-		parsed isReference ifTrue: [ stream << '*' ].
 		1 to: parsed arity do: [ :each |
 			stream << '*' ] ]
 ]

@@ -17,7 +17,7 @@ IGFunctionParser class >> parse: aString [
 { #category : 'accessing' }
 IGFunctionParser >> parseType [
 	" parse type name and optional number of asterisks, following it"
-	| referenceType typeName ptrArity |
+	| referenceMarker typeName ptrArity |
 
 	typeName := stream next.
 	typeName ifNil: [ ^ self error: 'type name expected' ].
@@ -28,6 +28,7 @@ IGFunctionParser >> parseType [
 			typeName := stream next.
 			typeName ifNil: [ ^ self error: 'type name expected' ] ].
 
+	referenceMarker := false.
 	ptrArity := 0.
 	[ stream atEnd not 
 		and: [ stream peek isString 
@@ -36,14 +37,11 @@ IGFunctionParser >> parseType [
 		pointerMarker := stream next.
 		self assert: ((pointerMarker allButLast allSatisfy: [ :e | e = $* ]) 
 			and: [ #($* $&) includes: pointerMarker last ]).
+		referenceMarker := referenceMarker or: [ pointerMarker last = $& ].
 		ptrArity := ptrArity + pointerMarker size ].
-
-	referenceType := stream atEnd not 
-		and: [ stream peek isString
-		and: [ stream peek = '&' ] ].
 		
 	^ {
 		typeName. 
 		ptrArity.			
-		referenceType }
+		referenceMarker }
 ]
