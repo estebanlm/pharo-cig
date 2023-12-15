@@ -58,7 +58,10 @@ IGTFunction >> fillFunctionWith: aCursor [
 	returnTypeName := aCursor type resultType spelling.
 	spelling := aCursor spelling.
 	comment := aCursor rawComment.
-	parameters := aCursor arguments collect: [ :each | IGParameter fromCursor: each ]
+	parameters := aCursor arguments collect: [ :each | 
+		(IGParameter fromCursor: each)
+			parent: self;
+			yourself ]
 ]
 
 { #category : 'testing' }

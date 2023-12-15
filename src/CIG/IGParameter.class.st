@@ -143,6 +143,14 @@ IGParameter >> parseType: aString [
 { #category : 'accessing' }
 IGParameter >> resolveType [
 	
+	"if elements is nil means is the first time I am here, hence I need to merge this 
+	 with a posible parameter element received later when traversing the AST."	
+	elements ifNil: [  
+		elements := self parent elements 
+			detect: [ :each | each = self ]
+			ifFound: [ :aParam | aParam elements ]
+			ifNone: [ #() ] ].
+
 	^ IGParameterType new
 		parent: self;
 		name: self typeName;
