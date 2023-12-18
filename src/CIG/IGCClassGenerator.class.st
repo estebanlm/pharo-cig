@@ -7,29 +7,6 @@ Class {
 }
 
 { #category : 'private' }
-IGCClassGenerator >> addClassDispose: aClass [
-
-	aClass isAbstract ifTrue: [ ^ self ].
-
-	self hStream << ('void {name}_dispose({cClass} self);' 
-		format: { 
-			#name -> aClass fullName.
-			#cClass -> aClass cDeclaration } 
-		asDictionary).
-	self hStream cr.
-	
-	self cStream << ('void {name}_dispose({cClass} self) \{
-	delete ({cppClass} *)self;
-\}' 
-		format: { 
-			#name -> aClass fullName.
-			#cClass -> aClass cDeclaration.
-			#cppClass -> aClass cppDeclaration } 
-		asDictionary).
-	self cStream cr
-]
-
-{ #category : 'private' }
 IGCClassGenerator >> addClassTypedef: aClass [
 
 	visitor addTypedef: #void as: aClass fullName
@@ -44,6 +21,34 @@ IGCClassGenerator >> basicFunctionCallOf: aMethod [
 			#arguments -> (self argumentsListToCPP: aMethod).
 			#classCast -> (self cppCastForSelf: aMethod parent) }
 		asDictionary
+]
+
+{ #category : 'private' }
+IGCClassGenerator >> constructorArgumentListToCPP: aConstructor [	
+	| operator |
+	
+	operator := aConstructor parent operatorAt: 'new'.
+	
+	(operator isNil or: [ operator parameters size = 1 ]) ifTrue: [ ^ '' ].
+	
+	^ String streamContents: [ :stream |
+		stream << '('. 
+		operator parameters allButFirst
+			do: [ :each | stream << (self argumentCastToCPP: each) ]
+			separatedBy: [ stream << ', ' ].
+		stream << ') ' ]
+]
+
+{ #category : 'private' }
+IGCClassGenerator >> constructorParametersList: aConstructor [
+	
+	^ aConstructor parent
+		operatorAt: 'new'
+		ifFound: [ :operator | 
+			(operator parameters allButFirst, aConstructor parameters
+				collect: [ :each | self parameterDecl: each ]) asCommaString ]
+		ifNone: [ 
+			self parametersList: aConstructor ]
 ]
 
 { #category : 'private' }
@@ -87,14 +92,6 @@ IGCClassGenerator >> functionCall: aMethod [
 ]
 
 { #category : 'generating' }
-IGCClassGenerator >> generateClass: aClass [
-	
-	self root: aClass root.
-
-	self addClassDispose: aClass
-]
-
-{ #category : 'generating' }
 IGCClassGenerator >> generateConstructor: aConstructor [
 	| header body |
 	
@@ -104,16 +101,17 @@ IGCClassGenerator >> generateConstructor: aConstructor [
 		format: { 
 			#type -> (self cDeclarationOf: aConstructor resolveReturnType).
 			#methodName -> aConstructor cDeclaration.
-			#parameters -> (self parametersList: aConstructor) }
+			#parameters -> (self constructorParametersList: aConstructor) }
 		asDictionary	.
 	self hStream << header << String cr.
 
 	body := '{type} {methodName}({parameters}) \{
-	{return}{returnCast}(new {func}({arguments}\));
+	{return}{returnCast}(new {newArguments}{func}({arguments}\));
 \}' format: { 
 		#type -> (self cDeclarationOf: aConstructor resolveReturnType).
 		#methodName -> aConstructor cDeclaration.
-		#parameters -> (self parametersList: aConstructor).
+		#parameters -> (self constructorParametersList: aConstructor).
+		#newArguments -> (self constructorArgumentListToCPP: aConstructor).
 		#func -> aConstructor cppDeclaration.
 		#arguments -> (self argumentsListToCPP: aConstructor).
 		#returnCast -> (self cCastToReturn: aConstructor resolveReturnType).
@@ -122,6 +120,32 @@ IGCClassGenerator >> generateConstructor: aConstructor [
 		asDictionary	.
 
 	self cStream << body << String cr
+]
+
+{ #category : 'generating' }
+IGCClassGenerator >> generateDispose: aClass [
+
+	aClass isAbstract ifTrue: [ ^ self ].
+	"if there is a delete overload, I will need to handle the free of resources myself.
+	 (there will probably be a paired new overload)"
+	(aClass operatorAt: 'delete') ifNotNil: [ ^ self ].
+	
+	self hStream << ('void {name}_dispose({cClass} self);' 
+		format: { 
+			#name -> aClass fullName.
+			#cClass -> aClass cDeclaration } 
+		asDictionary).
+	self hStream cr.
+	
+	self cStream << ('void {name}_dispose({cClass} self) \{
+	delete ({cppClass} *)self;
+\}' 
+		format: { 
+			#name -> aClass fullName.
+			#cClass -> aClass cDeclaration.
+			#cppClass -> aClass cppDeclaration } 
+		asDictionary).
+	self cStream cr
 ]
 
 { #category : 'generating' }

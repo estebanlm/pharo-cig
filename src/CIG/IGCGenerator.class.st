@@ -26,7 +26,7 @@ IGCGenerator >> argumentCastToCPP: aParameter [
 		type := aParameter resolveType.
 		type 
 			ifTranslated: [ :translation | 
-				stream << (translation cToCPP: aParameter name from: aParameter )  ]
+				stream << (translation cToCPP: aParameter name from: aParameter)  ]
 			ifNot: [  
 				aParameter isReference ifTrue: [ stream << '*' ].
 				type hasTypeReference
@@ -83,17 +83,6 @@ IGCGenerator >> findClassNamed: aString ifFound: foundBlock ifAbsent: absentBloc
 		(each isClass or: [ each isNamespace ]) and: [ each name = aString ] ])
 		ifNotNil: [ :aNode | foundBlock value: aNode ]
 		ifNil: [ absentBlock value ]
-]
-
-{ #category : 'generating' }
-IGCGenerator >> generateEnum: anEnum [ 
-
-	self hStream << 'enum ' << (self enumNameFor: anEnum) << ' {' << String cr.
-
-	anEnum elements 
-		do: [ :each | self hStream << '    ' << each name << ' = ' << each value asString ]
-		separatedBy: [ self hStream << ',' << String cr ].
-	self hStream << String cr << '};' << String cr.
 ]
 
 { #category : 'generating' }

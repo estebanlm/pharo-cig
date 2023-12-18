@@ -4,8 +4,7 @@ Class {
 	#traits : 'TLibClang',
 	#classTraits : 'TLibClang classTrait',
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'initialization' }

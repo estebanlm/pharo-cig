@@ -7,8 +7,7 @@ Class {
 		'OFFSET_PTR_DATA_2'
 	],
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'field definition' }

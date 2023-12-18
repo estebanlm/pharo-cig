@@ -3,8 +3,7 @@ Class {
 	#superclass : 'CXExternalObject',
 	#classTraits : 'TLibClang classTrait',
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'private' }

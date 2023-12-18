@@ -1,8 +1,7 @@
 Trait {
 	#name : 'TLibClang',
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'library path' }

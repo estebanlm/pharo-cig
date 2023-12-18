@@ -1,6 +1,8 @@
 Class {
 	#name : 'IGClass',
 	#superclass : 'IGElement',
+	#traits : 'IGTClass',
+	#classTraits : 'IGTClass classTrait',
 	#instVars : [
 		'comment',
 		'isDeclaration'
@@ -76,12 +78,6 @@ IGClass >> isClass [
 IGClass >> isDeclaration [
 
 	^ isDeclaration
-]
-
-{ #category : 'accessing' }
-IGClass >> methods [
-
-	^ self elements select: [ :each | each isMethod ]
 ]
 
 { #category : 'accessing' }

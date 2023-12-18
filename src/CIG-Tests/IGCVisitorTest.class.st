@@ -78,14 +78,28 @@ IGCVisitorTest >> testCCastToReturnWhenEnum [
 ]
 
 { #category : 'tests' }
+IGCVisitorTest >> testClassDisposeWithOverloadedDeleteSkipGeneration [
+	| element visitor |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TScreenCell' }.
+	
+	visitor := IGCVisitor newForTest.
+	(IGCClassGenerator on: visitor) generateDispose: element.
+	
+	self assert: visitor hStream contents trimmed isEmpty.		
+	self assert: visitor cStream contents trimmed isEmpty
+]
+
+{ #category : 'tests' }
 IGCVisitorTest >> testVisitClassGeneratesATypedef [
 	| element visitor |
 			
 	element := self translatedUnitTvision elementAtPath: { 'TView' }.
 	visitor := IGCHeaderDeclareVisitor newForTest.
 	visitor visitClass: element.
+	"just first line because TView has inner enums"
 	self 
-		assert: visitor hStream contents trimmed
+		assert: visitor hStream contents trimmed lines first
 		equals: 'typedef void tv_TView;'.
 		
 	element := self elementAtPath: { 'noise'. 'module'. 'Module' }.
@@ -114,17 +128,61 @@ typedef void tv_TSpanUint32_t;'
 ]
 
 { #category : 'tests' }
-IGCVisitorTest >> testVisitClassWithTypedefGenerateTypedefs [
+IGCVisitorTest >> testVisitClassWithNestedEnumEmitsEnum [
 	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo' }.
+	
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitClass: element.
+	
+	self 
+		assert: visitor hStream contents trimmed 
+		equals: 'typedef void tv_THardwareInfo;
+enum tv_THardwareInfo_ConsoleType {
+    cnInput = 0,
+    cnOutput = 1,
+    cnStartup = 2
+};
+enum tv_THardwareInfo_PlatformType {
+    plDPMI32 = 1,
+    plWinNT = 2,
+    plOS2 = 4
+};'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitClassWithTypedefGenerateTypedefs [
+	| element visitor content |
 			
 	element := self translatedUnitTvision elementAtPath: { 'pstream' }.
 	visitor := IGCHeaderDeclareVisitor newForTest.
 	visitor visitClass: element.
+	
+	content := visitor hStream contents trimmed.
+	self assert: (content includesSubstring: 'typedef void tv_pstream;').
+	self assert: (content includesSubstring: 'typedef int tv_pstream_openmode;').
+	self assert: (content includesSubstring: 'typedef int tv_pstream_seekdir;')
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitConstructorWithOverloadedNewGeneratesCorrectParameters [
+	| element visitor |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TScreenCell'. 'TScreenCell()' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitConstructor: element.
+	
 	self 
-		assert: visitor hStream contents trimmed
-		equals: 'typedef void tv_pstream;
-typedef int tv_pstream_openmode;
-typedef int tv_pstream_seekdir;'
+		assert: visitor hStream contents trimmed 
+		equals: 'tv_TScreenCell* tv_TScreenCell_new_1(void* p);'.
+		
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'tv_TScreenCell* tv_TScreenCell_new_1(void* p) {
+	return (tv_TScreenCell*)(new (p) TScreenCell());
+}'
 ]
 
 { #category : 'tests' }
@@ -150,12 +208,12 @@ IGCVisitorTest >> testVisitEnumWithOneLevelEmitsTypedef [
 
 	element := self translatedUnitTvision elementAtPath: { 'StreamableInit' }.
 	
-	visitor := IGCVisitor newForTest.
+	visitor := IGCHeaderDeclareVisitor newForTest.
 	visitor visitEnum: element.
 	
 	self 
 		assert: visitor hStream contents trimmed 
-		equals: 'typedef StreamableInit tv_StreamableInit;'
+		equals: 'typedef int tv_StreamableInit;'
 ]
 
 { #category : 'tests' }
@@ -289,6 +347,20 @@ IGCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
 		equals: 'void tv_TCellChar_moveWideCharTrail(tv_TCellChar* self) {
 	((TCellChar*)self)->moveWideCharTrail();
 }'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitOpaqueStructureGeneratesATypedef [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'TTimer' }.
+	
+	visitor := IGCHeaderDeclareVisitor newForTest.
+	visitor visitStructure: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'typedef void tv_TTimer;'.
 ]
 
 { #category : 'tests' }

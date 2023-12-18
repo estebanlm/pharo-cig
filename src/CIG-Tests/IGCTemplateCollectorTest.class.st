@@ -17,5 +17,5 @@ IGCTemplateCollectorTest >> testCollectionOfType [
 	self assert: collectedTypes notNil.
 	self assert: collectedTypes notEmpty.
 	
-	self assertCollection: collectedTypes hasSameElements: #(char TScreenCell)
+	self assertCollection: collectedTypes hasSameElements: #(char TScreenCell uint32_t)
 ]

@@ -2,8 +2,7 @@ Class {
 	#name : 'CXFile',
 	#superclass : 'CXExternalObject',
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'private' }

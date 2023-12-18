@@ -2,8 +2,7 @@ Class {
 	#name : 'LibClang',
 	#superclass : 'FFILibrary',
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'accessing - platform' }

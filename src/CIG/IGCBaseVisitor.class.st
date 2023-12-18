@@ -2,7 +2,8 @@ Class {
 	#name : 'IGCBaseVisitor',
 	#superclass : 'IGVisitor',
 	#instVars : [
-		'root'
+		'root',
+		'unnamedEnum'
 	],
 	#category : 'CIG-Generate-C',
 	#package : 'CIG',
@@ -17,10 +18,29 @@ IGCBaseVisitor >> addTypedef: cppDecl as: cDecl [
 		<< String cr
 ]
 
+{ #category : 'private' }
+IGCBaseVisitor >> enumNameFor: anEnum [
+	"yeah, enums can be unnamed :P"
+	anEnum isUnnamed ifTrue: [
+		unnamedEnum := unnamedEnum + 1.
+		^ '{1}_unnamed_enum_{2}' format: { 
+			anEnum root prefix asLowercase.			
+			unnamedEnum } ].
+
+	^ anEnum cDeclaration
+]
+
 { #category : 'accessing' }
 IGCBaseVisitor >> hStream [
 
 	^ self subclassResponsibility
+]
+
+{ #category : 'initialization' }
+IGCBaseVisitor >> initialize [
+
+	super initialize.
+	unnamedEnum := 0
 ]
 
 { #category : 'accessing' }

@@ -2,8 +2,7 @@ Class {
 	#name : 'CXString',
 	#superclass : 'CXExternalObject',
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'accessing' }

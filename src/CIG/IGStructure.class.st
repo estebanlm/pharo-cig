@@ -1,6 +1,8 @@
 Class {
 	#name : 'IGStructure',
 	#superclass : 'IGElement',
+	#traits : 'IGTClass',
+	#classTraits : 'IGTClass classTrait',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -57,17 +59,17 @@ IGStructure >> isAbstract [
 { #category : 'testing' }
 IGStructure >> isClass [
 
-	^ self classMembers notEmpty
+	^ self classMembers notEmpty or: [ self isOpaque ]
+]
+
+{ #category : 'testing' }
+IGStructure >> isOpaque [
+
+	^ elements isNil
 ]
 
 { #category : 'testing' }
 IGStructure >> isTemplateSpecialization [
 
 	^ '.*<.*>.*' asRegex matches: self name
-]
-
-{ #category : 'accessing' }
-IGStructure >> methods [
-
-	^ self elements select: [ :each | each isMethod ]
 ]

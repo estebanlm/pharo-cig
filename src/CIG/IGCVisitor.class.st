@@ -5,8 +5,7 @@ Class {
 		'fileReference',
 		'stack',
 		'cStream',
-		'hStream',
-		'unnamedEnum'
+		'hStream'
 	],
 	#category : 'CIG-Generate-C',
 	#package : 'CIG',
@@ -16,7 +15,6 @@ Class {
 { #category : 'private - rendering' }
 IGCVisitor >> addCHeaders [
 		
-	cStream << '#include "' << self file fileReference basename << '"' << String cr.
 	cStream << '#include "' << (self fileReference withExtension: 'h') basename << '"' << String cr.
 	cStream cr
 ]
@@ -30,42 +28,19 @@ IGCVisitor >> addCPreamble [
 ]
 
 { #category : 'private - rendering' }
-IGCVisitor >> addClassDispose: aClass [
-	
-	aClass isAbstract ifTrue: [ ^ self ].
-
-	self hStream << ('void {name}_dispose({cClass} self);' 
-		format: { 
-			#name -> aClass fullName.
-			#cClass -> aClass cDeclaration } 
-		asDictionary).
-	self hStream cr.
-	
-	self cStream << ('void {name}_dispose({cClass} self) \{
-	delete ({cppClass} *)self;
-\}' 
-		format: { 
-			#name -> aClass fullName.
-			#cClass -> aClass cDeclaration.
-			#cppClass -> aClass cppDeclaration } 
-		asDictionary).
-	self cStream cr
-]
-
-{ #category : 'private - rendering' }
 IGCVisitor >> addHHeaders [
 	| def |
 		
 	def := self fileReference basenameWithoutExtension asUppercase.
 	hStream << '#ifndef ' << def  << String cr.
 	hStream << '#define ' << def  << String cr.
-	hStream cr.
 	(self file namespaces 
 		collect: [ :each | each cppHeader ]
 		as: Set)
 		do: [ :each |
-			hStream << '#include "' << each << '"' << String cr ].
-	hStream cr		
+			hStream cr.
+			hStream << '#include "' << each << '"' ].
+	hStream cr
 ]
 
 { #category : 'private - rendering' }
@@ -100,18 +75,6 @@ IGCVisitor >> endHFile [
 #endif /* ' << def << '*/'.
 ]
 
-{ #category : 'private' }
-IGCVisitor >> enumNameFor: anEnum [
-	"yeah, enums can be unnamed :P"
-	anEnum isUnnamed ifTrue: [
-		unnamedEnum := unnamedEnum + 1.
-		^ '{1}_unnamed_enum_{2}' format: { 
-			anEnum root prefix asLowercase.			
-			unnamedEnum } ].
-
-	^ anEnum cDeclaration
-]
-
 { #category : 'accessing' }
 IGCVisitor >> fileReference [
 	
@@ -134,8 +97,7 @@ IGCVisitor >> indentDo: aBlock [
 IGCVisitor >> initialize [
 
 	super initialize.
-	stack := Stack new.
-	unnamedEnum := 0
+	stack := Stack new
 ]
 
 { #category : 'private - factory' }
@@ -185,7 +147,7 @@ IGCVisitor >> visitClass: aClass [
 			hStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
 			cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
 			super visitClass: aClass.
-			self addClassDispose: aClass.
+			(IGCClassGenerator on: self) generateDispose: aClass.
 			hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
 			cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
 	ensure: [
@@ -222,16 +184,6 @@ IGCVisitor >> visitDestructor: aDestructor [
 { #category : 'visiting' }
 IGCVisitor >> visitEnum: anEnum [
 
-	"skipping unnamed enums"
-	anEnum isUnnamed ifTrue: [ ^ self ].
-
-	"if it does not belongs to a namespace, it will be available at compile 
-	 time in C, so we just generate it as a typedef"
-	anEnum depth = 1 ifTrue: [ 
-		^ self addTypedef: anEnum cppDeclaration as: anEnum cDeclaration ].
-
-	(IGCGenerator on: self) generateEnum: anEnum.
-	cStream cr
 ]
 
 { #category : 'visiting' }
@@ -252,7 +204,6 @@ IGCVisitor >> visitMethod: aMethod [
 		or: [ aMethod isOperator ]) 
 		ifTrue: [ ^ self ].
 
-	self haltIf: (aMethod parent name = 'TText').
 	(IGCClassGenerator on: self) generateMethod: aMethod.
 	cStream cr
 ]
@@ -289,22 +240,28 @@ IGCVisitor >> visitStructure: aStructure [
 
 { #category : 'visiting' }
 IGCVisitor >> visitUnit: aUnit [
-	
+	| headerVisitor |
+
 	root := aUnit.
 	
 	cStream := self newCStream.
 	hStream := self newHStream.	
-	[
-		self addHHeaders.
+	[		
+		headerVisitor := IGCHeaderDeclareVisitor new 
+			hStream: self hStream; 
+			yourself.	
+			
+		self addHHeaders.		
+		headerVisitor visitDefinesBeforeHeader: aUnit.
+		hStream cr.
+		hStream << '#include <' << self file fileReference basename << '>'.
+		hStream cr; cr.
 		self addHPreamble.
+		hStream << '/* BEGIN SECTION: DECLARATIONS */' << String cr.
+		headerVisitor visit: aUnit.
+		hStream << '/* END SECTION: DECLARATIONS */' << String cr << String cr.
 		self addCHeaders.
 		self addCPreamble.
-		
-		hStream << '/* BEGIN SECTION: DECLARATIONS */' << String cr.
-		IGCHeaderDeclareVisitor new 
-			hStream: self hStream; 
-			visit: aUnit.
-		hStream << '/* END SECTION: DECLARATIONS */' << String cr << String cr.
 		self visitAll: aUnit elements.
 		self endCPreamble.
 		self endHFile ]

@@ -29,6 +29,14 @@ IGClassDirectTranslation >> cDeclarationOf: aType [
 	^ aType cDeclarationFromReference
 ]
 
+{ #category : 'converting' }
+IGClassDirectTranslation >> cToCPP: aName from: aNode [
+
+	^ self templateCPP format: { 
+		self cppDeclarationOf: aNode resolveType.
+		aName }
+]
+
 { #category : 'accessing' }
 IGClassDirectTranslation >> cppDeclaration [
 
@@ -66,5 +74,5 @@ IGClassDirectTranslation >> templateC [
 { #category : 'accessing' }
 IGClassDirectTranslation >> templateCPP [
 
-	^ '{1}'
+	^ '*({1}*){2}'
 ]

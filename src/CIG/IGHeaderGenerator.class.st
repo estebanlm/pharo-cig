@@ -34,7 +34,8 @@ Class {
 		'fileReference',
 		'namespaces',
 		'withComments',
-		'defines'
+		'defines',
+		'definesBeforeHeader'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -66,6 +67,19 @@ IGHeaderGenerator >> cDefine: aKey as: aValue [
 	defines at: aKey put: aValue
 ]
 
+{ #category : 'scripting' }
+IGHeaderGenerator >> cDefineBeforeHeader: aString [
+
+	self cDefineBeforeHeader: aString as: nil
+]
+
+{ #category : 'scripting' }
+IGHeaderGenerator >> cDefineBeforeHeader: aKey as: aValue [
+
+	definesBeforeHeader ifNil: [ definesBeforeHeader := Dictionary new ].
+	definesBeforeHeader at: aKey put: aValue
+]
+
 { #category : 'accessing' }
 IGHeaderGenerator >> cDefines [
 
@@ -83,6 +97,28 @@ IGHeaderGenerator >> cDefines: aCollection [
 IGHeaderGenerator >> cDefinesAsArguments [
 
 	^ self cDefines associations collect: [ :assoc | 
+			String streamContents: [ :stream |
+				stream << '-D' << assoc key asString.
+				assoc value ifNotNil: [ stream << '=' << assoc value asString ] ] ]
+]
+
+{ #category : 'accessing' }
+IGHeaderGenerator >> cDefinesBeforeHeader [
+
+	^ definesBeforeHeader ifNil: [ Dictionary new ]
+]
+
+{ #category : 'accessing - configuration' }
+IGHeaderGenerator >> cDefinesBeforeHeader: aCollection [
+
+	aCollection	do: [ :each | 
+		self cDefineBeforeHeader: each ]
+]
+
+{ #category : 'private' }
+IGHeaderGenerator >> cDefinesBeforeHeaderAsArguments [
+
+	^ self cDefinesBeforeHeader associations collect: [ :assoc | 
 			String streamContents: [ :stream |
 				stream << '-D' << assoc key asString.
 				assoc value ifNotNil: [ stream << '=' << assoc value asString ] ] ]

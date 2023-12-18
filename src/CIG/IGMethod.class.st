@@ -62,6 +62,13 @@ IGMethod >> isVirtual [
 	^ isVirtual
 ]
 
+{ #category : 'accessing' }
+IGMethod >> operator [
+	"if method is an overloaded operator, this accessor will answer the operator it is defining"
+	
+	^ ((self name allButFirst: 8) copyUpTo: $() trimmed
+]
+
 { #category : 'converting' }
 IGMethod >> parametersAsList [
 	

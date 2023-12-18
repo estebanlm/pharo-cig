@@ -13,7 +13,8 @@ Class {
 		'registerUnknown',
 		'prefix',
 		'namespaces',
-		'defines'
+		'defines',
+		'definesBeforeHeader'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -62,9 +63,21 @@ IGTranslatedUnit >> addNode: currentNode parent: parentNode [
 ]
 
 { #category : 'accessing' }
+IGTranslatedUnit >> allDefines [
+
+	^ self definesBeforeHeader, self defines
+]
+
+{ #category : 'accessing' }
 IGTranslatedUnit >> defines [
 
 	^ defines
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> definesBeforeHeader [
+
+	^ definesBeforeHeader
 ]
 
 { #category : 'accessing' }
@@ -114,9 +127,10 @@ IGTranslatedUnit >> findParent: aCursor [
 IGTranslatedUnit >> generateFrom: aHeader [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
 	| cursor tu index |
-	
+
 	prefix := aHeader prefix.
 	namespaces := aHeader namespaces.
+	definesBeforeHeader := aHeader cDefinesBeforeHeader.
 	defines := aHeader cDefines.
 	elements := OrderedCollection new.
 
@@ -129,6 +143,7 @@ IGTranslatedUnit >> generateFrom: aHeader [
 				'-xc++'.
 			}, 
 			aHeader cIncludePathsAsArguments,
+			aHeader cDefinesBeforeHeaderAsArguments,
 			aHeader cDefinesAsArguments.
 
 	cursor := tu cursor.
