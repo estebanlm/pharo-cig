@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'isPublic',
 		'isVirtual',
-		'isPureVirtual'
+		'isPureVirtual',
+		'isStatic'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -35,6 +36,7 @@ IGMethod >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	isPublic := aCursor cxxAccessSpecifier = 1.
 	isVirtual := aCursor cxxMethodIsVirtual.
+	isStatic := aCursor cxxMethodIsStatic.
 	isPureVirtual := isVirtual and: [ aCursor cxxMethodIsPureVirtual ]
 ]
 
@@ -54,6 +56,12 @@ IGMethod >> isPublic [
 IGMethod >> isPureVirtual [
 
 	^ isPureVirtual
+]
+
+{ #category : 'testing' }
+IGMethod >> isStatic [
+
+	^ isStatic
 ]
 
 { #category : 'testing' }

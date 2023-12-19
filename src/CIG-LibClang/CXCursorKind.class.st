@@ -292,8 +292,7 @@ Class {
 		'CXCursor_WhileStmt'
 	],
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'class initialization' }

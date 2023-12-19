@@ -12,9 +12,10 @@ IGClassDirectTranslation >> appliesTo: aType [
 	
 	element := aType element.
 	^ element notNil 
-		and: [ element isClass 
+		and: [ element isClass
+		and: [ element isClassTemplate not
 		and: [ aType isReference not
-		and: [ aType isPointer not ] ] ]
+		and: [ aType isPointer not ] ] ] ]
 ]
 
 { #category : 'accessing' }

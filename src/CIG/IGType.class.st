@@ -61,6 +61,15 @@ IGType >> cDeclarationFromReference [
 		ifNotNil: [ :aNode | aNode cDeclaration ]
 ]
 
+{ #category : 'private' }
+IGType >> cDeclarationFromReferenceWithSpecialization: aCollection [
+	| typeName |
+	
+	typeName := self typeReference typeName.
+	^ (self parent root elementAtPath: (typeName substrings: '::'))
+		ifNotNil: [ :aNode | aNode cDeclarationWithSpecialization: aCollection ]
+]
+
 { #category : 'accessing' }
 IGType >> cppDeclaration [
 	| parsed typeName |
@@ -83,6 +92,13 @@ IGType >> cppDeclarationFromReference [
 
 	^ (self parent root elementAtPath: (self typeReference typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cppDeclaration ]
+]
+
+{ #category : 'private' }
+IGType >> cppDeclarationFromReferenceWithSpecialization: aCollection [
+
+	^ (self parent root elementAtPath: (self typeReference typeName substrings: '::'))
+		ifNotNil: [ :aNode | aNode cppDeclarationWithSpecialization: aCollection ]
 ]
 
 { #category : 'testing' }

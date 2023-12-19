@@ -144,8 +144,12 @@ IGCGenerator >> parameterDecl: aParameter [
 
 { #category : 'private' }
 IGCGenerator >> parametersList: aNode [
+	| paramList | 
 
-	^ (aNode parameters collect: [ :each | self parameterDecl: each ]) asCommaString
+	paramList := (aNode parameters collect: [ :each | self parameterDecl: each ]) asCommaString.
+	^ aNode isVariadic 
+		ifTrue: [ paramList, ', ...' ]
+		ifFalse: [ paramList ]
 ]
 
 { #category : 'accessing' }

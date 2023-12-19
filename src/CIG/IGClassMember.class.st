@@ -21,12 +21,6 @@ IGClassMember class >> kind [
 	^ nil
 ]
 
-{ #category : 'accessing' }
-IGClassMember >> argumentsAsList [
-
-	^ (self parameters collect: [ :each | each asArgumentString ]) asCommaString
-]
-
 { #category : 'private' }
 IGClassMember >> buildParameters: aCollection on: stream [ 
 	

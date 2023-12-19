@@ -9,7 +9,9 @@ Class {
 		'templateTypes',
 		'underlyingTypeName',
 		'underlyingTypeKind',
-		'definesFunction'
+		'definesFunction',
+		'argumentIndex',
+		'recordKind'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -31,7 +33,13 @@ IGParameter >> accept: aVisitor [
 	aVisitor visitParameter: self
 ]
 
-{ #category : 'initialization' }
+{ #category : 'accessing' }
+IGParameter >> argumentIndex [
+
+	^ argumentIndex
+]
+
+{ #category : 'private' }
 IGParameter >> argumentIndexOf: aCursor [
 	| cxParent |
 	
@@ -46,35 +54,10 @@ IGParameter >> argumentIndexOf: aCursor [
 ]
 
 { #category : 'converting' }
-IGParameter >> asArgumentString [
-
-	^ String streamContents: [ :stream |
-		self isElaborated ifTrue: [
-			"I will cast all elaborated types (it can't be bad, the 
-			 compiler will eat it if not needed)"
-			stream << '(' << self castString << ')' ].
-		stream << self name ]
-]
-
-{ #category : 'converting' }
 IGParameter >> asParameterString [
 
 	^ String streamContents: [ :stream |
 		stream << self typeName << ' ' << self name ]
-]
-
-{ #category : 'private' }
-IGParameter >> castString [
-	| element |
-	
-	element := self root findDeepElementMatching: [ :each | each name = self typeName ].
-	element ifNotNil: [
-		"if elaborated element is an enum. we will need a cast"
-		element isEnum ifTrue: [ ^ element fullName ].
-		self flag: #TODO. "I need to complete with other elaborated types" ].
-
-	"this is actually not a cast, but well... :P"
-	^ self typeName
 ]
 
 { #category : 'testing' }
@@ -91,9 +74,10 @@ IGParameter >> fromCursor: aCursor [
 	type := aCursor type.
 	typeName := type spelling.
 	typeKind := type kind.
+	argumentIndex := self argumentIndexOf: aCursor.
 	
 	name ifEmpty: [ 
-		name := 'arg{1}' format: { self argumentIndexOf: aCursor } ].
+		name := 'arg{1}' format: { argumentIndex } ].
 	
 	typeKind = CXType_Elaborated ifTrue: [ 
 		| underlyingType |
@@ -101,7 +85,9 @@ IGParameter >> fromCursor: aCursor [
 		underlyingTypeName := underlyingType spelling.
 		underlyingTypeKind := underlyingType kind.
 		(underlyingTypeName indexOf: $<) > 0 
-			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ].
+			ifTrue: [ self checkForTemplateSpecialization: underlyingType ].
+		underlyingTypeKind = CXType_Record 
+			ifTrue: [ recordKind := underlyingType typeDeclaration kind ] ].
 		
 	definesFunction := ({ CXType_Pointer. CXType_LValueReference } includes: typeKind)
 		and: [ { CXType_FunctionProto. CXType_FunctionNoProto } includes: type pointeeType kind ].		
@@ -134,10 +120,25 @@ IGParameter >> isReference [
 	^ (self parseType: self typeName) isReference
 ]
 
+{ #category : 'testing' }
+IGParameter >> matchesCursor: aCursor [
+
+	^ self kind = aCursor kind 
+		and: [ 
+			(self name = aCursor displayName) 
+				or: [ self argumentIndex = (self argumentIndexOf: aCursor) ] ]
+]
+
 { #category : 'private' }
 IGParameter >> parseType: aString [
 
 	^ IGFunctionParser parse: aString
+]
+
+{ #category : 'accessing' }
+IGParameter >> recordKind [
+
+	^ recordKind
 ]
 
 { #category : 'accessing' }
@@ -151,18 +152,7 @@ IGParameter >> resolveType [
 			ifFound: [ :aParam | aParam elements ]
 			ifNone: [ #() ] ].
 
-	^ IGParameterType new
-		parent: self;
-		name: self typeName;
-		definesFunction: self definesFunction;
-		typeReference: (self typeReference ifNil: [ 
-			self isTemplateSpecialization 
-				ifTrue: [ 
-					(IGTypeReference newName: 'class ', self typeName)
-						parent: self;
-						yourself ]
-				ifFalse: [ nil ] ]);
-		yourself
+	^ IGParameterType fromParameter: self
 ]
 
 { #category : 'accessing' }

@@ -84,7 +84,10 @@ IGCClassGenerator >> findClass: aName [
 IGCClassGenerator >> functionCall: aMethod [
 	| template |
 	
-	template := self basicFunctionCallOf: aMethod.
+	template := aMethod isStatic 
+		ifTrue: [ self staticFunctionCallOf: aMethod ]
+		ifFalse: [ self basicFunctionCallOf: aMethod ].
+	
 	aMethod resolveReturnType
 		ifTranslated: [ :translation | ^ translation cppToC: template from: aMethod  ].
 			
@@ -158,7 +161,7 @@ IGCClassGenerator >> generateMethod: aMethod [
 		format: { 
 			#type -> (self cDeclarationOf: aMethod resolveReturnType).
 			#methodName -> aMethod cDeclaration.
-			#parameters -> (self selfParametersList: aMethod) }
+			#parameters -> (self methodParametersList: aMethod) }
 		asDictionary	.
 	self hStream << header << String cr.
 	
@@ -167,7 +170,7 @@ IGCClassGenerator >> generateMethod: aMethod [
 \}' format: { 
 		#type -> (self cDeclarationOf: aMethod resolveReturnType).
 		#methodName -> aMethod cDeclaration.
-		#parameters -> (self selfParametersList: aMethod).
+		#parameters -> (self methodParametersList: aMethod).
 		#functionCall -> (self functionCall: aMethod) } 
 	asDictionary.
 
@@ -175,12 +178,26 @@ IGCClassGenerator >> generateMethod: aMethod [
 ]
 
 { #category : 'private' }
-IGCClassGenerator >> selfParametersList: anElement [
+IGCClassGenerator >> methodParametersList: aMethod [
+
+	aMethod isStatic 
+		ifTrue: [ ^ self parametersList: aMethod ].
 
 	^ String streamContents: [ :stream |
 		stream 
-			<< anElement parent cDeclaration
+			<< aMethod parent cDeclaration
 			<< ' self'.
-		(super parametersList: anElement) 
+		(self parametersList: aMethod) 
 			ifNotEmpty: [ :aString | stream << ', ' << aString ] ]
+]
+
+{ #category : 'private' }
+IGCClassGenerator >> staticFunctionCallOf: aMethod [
+	
+	^ '{classCast}::{func}({arguments})' 
+		format: { 
+			#func -> aMethod spelling.
+			#arguments -> (self argumentsListToCPP: aMethod).
+			#classCast -> aMethod parent cppDeclaration }
+		asDictionary
 ]

@@ -7,8 +7,7 @@ Class {
 		'CXChildVisit_Recurse'
 	],
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'accessing' }

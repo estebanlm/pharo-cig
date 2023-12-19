@@ -130,13 +130,6 @@ IGElement >> findDeepElementMatching: aBlock [
 	^ nil
 ]
 
-{ #category : 'private' }
-IGElement >> findElementMatching: aBlock [
-
-	self elements do: [ :each | (aBlock value: each) ifTrue: [ ^ each ] ].
-	^ nil
-]
-
 { #category : 'initialization' }
 IGElement >> fromCursor: aCursor [
 
@@ -171,6 +164,12 @@ IGElement >> isClass [
 
 { #category : 'testing' }
 IGElement >> isClassMember [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isClassTemplate [
 
 	^ false
 ]
@@ -257,6 +256,13 @@ IGElement >> kind [
 IGElement >> kind: aKind [
 	
 	kind := aKind
+]
+
+{ #category : 'testing' }
+IGElement >> matchesCursor: aCursor [
+
+	^ self kind = aCursor kind 
+		and: [ self name = aCursor displayName ]
 ]
 
 { #category : 'accessing' }

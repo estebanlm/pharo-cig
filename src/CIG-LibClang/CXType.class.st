@@ -10,8 +10,7 @@ Class {
 		'CXTypeKind'
 	],
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'field definition' }

@@ -88,18 +88,6 @@ IGFunction >> isReturnTypeVoid [
 ]
 
 { #category : 'accessing' }
-IGFunction >> parameters [
-
-	^ self elements select: [ :each | each kind = IGParameter kind ]
-]
-
-{ #category : 'accessing' }
-IGFunction >> parametersAsList [
-
-	^ (self parameters collect: [ :each | each asParameterString ]) asCommaString
-]
-
-{ #category : 'accessing' }
 IGFunction >> pathName [
 
 	^ self spelling

@@ -2,6 +2,10 @@ Class {
 	#name : 'CXCursor',
 	#superclass : 'CXStructure',
 	#classTraits : 'TLibClang classTrait',
+	#instVars : [
+		'displayName',
+		'kind'
+	],
 	#classVars : [
 		'OFFSET_DATA_1',
 		'OFFSET_DATA_2',
@@ -42,11 +46,32 @@ CXCursor >> argumentAt: index [
 ]
 
 { #category : 'accessing - arguments' }
+CXCursor >> argumentIndex [
+
+	^ self ffiCall: #(int clang_Cursor_getArgumentIndex(CXCursor self))
+]
+
+{ #category : 'accessing - arguments' }
 CXCursor >> arguments [
 
 	^ Array streamContents: [ :stream |
 		0 to: self numArguments - 1 do: [ :index |
 			stream nextPut: (self argumentAt: index) ] ]
+]
+
+{ #category : 'private' }
+CXCursor >> basicDisplayName [
+	| string |
+	
+	string := self clang_getCursorDisplayName.
+	^ [ string cString ]
+		ensure: [ string dispose ]
+]
+
+{ #category : 'private' }
+CXCursor >> basicKind [
+
+	^ self ffiCall: #(int clang_getCursorKind(CXCursor self))
 ]
 
 { #category : 'private' }
@@ -122,6 +147,12 @@ CXCursor >> cxxMethodIsPureVirtual [
 ]
 
 { #category : 'testing' }
+CXCursor >> cxxMethodIsStatic [
+
+	^ self ffiCall: #(Boolean clang_CXXMethod_isStatic(CXCursor self))
+]
+
+{ #category : 'testing' }
 CXCursor >> cxxMethodIsVirtual [
 
 	^ self ffiCall: #(Boolean clang_CXXMethod_isVirtual(CXCursor self))
@@ -165,11 +196,8 @@ CXCursor >> data_3: anObject [
 
 { #category : 'accessing' }
 CXCursor >> displayName [
-	| string |
-	
-	string := self clang_getCursorDisplayName.
-	^ [ string cString ]
-		ensure: [ string dispose ]
+
+	^ displayName ifNil: [ displayName := self basicDisplayName ]
 ]
 
 { #category : 'accessing' }
@@ -220,10 +248,16 @@ CXCursor >> isParameterDeclaration [
 	^ self kind = CXCursor_ParmDecl
 ]
 
+{ #category : 'testing' }
+CXCursor >> isVariadic [
+
+	^ self ffiCall: #(Boolean clang_Cursor_isVariadic(CXCursor self))
+]
+
 { #category : 'accessing' }
 CXCursor >> kind [
 
-	^ self ffiCall: #(int clang_getCursorKind(CXCursor self))
+	^ kind ifNil: [ kind := self basicKind ]
 ]
 
 { #category : 'accessing - structure variables' }

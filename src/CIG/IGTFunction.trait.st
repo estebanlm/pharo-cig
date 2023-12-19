@@ -4,18 +4,13 @@ Trait {
 		'returnTypeName',
 		'spelling',
 		'comment',
-		'parameters'
+		'parameters',
+		'variadic'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
 }
-
-{ #category : 'accessing' }
-IGTFunction >> argumentsAsList [
-
-	^ (self parameters collect: [ :each | each asArgumentString ]) asCommaString
-]
 
 { #category : 'private' }
 IGTFunction >> buildParameters: aCollection on: stream [ 
@@ -58,10 +53,17 @@ IGTFunction >> fillFunctionWith: aCursor [
 	returnTypeName := aCursor type resultType spelling.
 	spelling := aCursor spelling.
 	comment := aCursor rawComment.
+	variadic := aCursor isVariadic.
 	parameters := aCursor arguments collect: [ :each | 
 		(IGParameter fromCursor: each)
 			parent: self;
 			yourself ]
+]
+
+{ #category : 'testing' }
+IGTFunction >> hasVariadicListArgument [
+
+	^ self parameters anySatisfy: [ :each | each typeName = 'va_list' ]
 ]
 
 { #category : 'testing' }
@@ -78,16 +80,16 @@ IGTFunction >> isReturnTypeVoid [
 	^ self returnTypeName = 'void'
 ]
 
+{ #category : 'testing' }
+IGTFunction >> isVariadic [
+
+	^ variadic
+]
+
 { #category : 'accessing' }
 IGTFunction >> parameters [
 
 	^ parameters
-]
-
-{ #category : 'accessing' }
-IGTFunction >> parametersAsList [
-
-	^ (self parameters collect: [ :each | each asParameterString ]) asCommaString
 ]
 
 { #category : 'handling' }

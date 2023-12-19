@@ -36,8 +36,32 @@ IGParameterTest >> testParameterClassInFunctionCastsCorrectly [
 			
 	element := self translatedUnitTvision elementAtPath: { 'historyAdd(uchar, TStringView)'. 'arg2' }.
 	
-	visitor := IGVisitor newForTest.
+	visitor := IGCVisitor newForTest.
 	cast := (IGCGenerator on: visitor) argumentCastToCPP: element.
 	
 	self assert: cast equals: '*(TStringView*)arg2'
+]
+
+{ #category : 'tests' }
+IGParameterTest >> testParameterClassSpecializationCastsCorrectly [
+	| element param |
+
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'drawStr(TSpan<TScreenCell>, int, TStringView, int)' }.
+	param := element parameters first.
+	
+	self assert: param resolveType cDeclaration equals: 'tv_TSpanTScreenCell*'.
+	self assert: param resolveType cppDeclaration equals: 'TSpan<TScreenCell>'.
+	
+]
+
+{ #category : 'tests' }
+IGParameterTest >> testParameterReferenceTypeCastsCorrectly [
+	| element param |
+
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'scroll(TStringView, int, Boolean, int &, int &)' }.
+	param := element parameters fourth.
+	
+	self assert: param resolveType cDeclaration equals: 'int*'.
+	self assert: param resolveType cppDeclaration equals: 'int&'.
+	
 ]

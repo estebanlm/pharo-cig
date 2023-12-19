@@ -35,11 +35,17 @@ IGTElementContainer >> findDeepElementMatching: aBlock [
 { #category : 'private' }
 IGTElementContainer >> findElementMatching: aBlock [
 
-	self elements do: [ :eachElement |
-		(aBlock value: eachElement) 
-			ifTrue: [ ^ eachElement ] ].
+	^ self elements 
+		detect: [ :eachElement | aBlock value: eachElement ]
+		ifNone: [ nil ]
+]
 
-	^ nil
+{ #category : 'accessing' }
+IGTElementContainer >> findElementMatchingCursor: aCursor [
+
+	^ self elements 
+		detect: [ :each | each matchesCursor: aCursor ]
+		ifNone: [ nil ]
 ]
 
 { #category : 'inspecting' }

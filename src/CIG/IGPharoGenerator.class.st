@@ -177,7 +177,7 @@ IGPharoGenerator >> generateMethod: aMethod [
 		#comment -> (self commentOf: aMethod). 
 		#type -> (self cDeclarationOf: aMethod resolveReturnType).
 		#func -> aMethod cDeclaration.
-		#arguments -> (self selfParametersList: aMethod) }
+		#arguments -> (self methodParametersList: aMethod) }
 		asDictionary.
 	"install functions in class side"
 	class
@@ -189,6 +189,14 @@ IGPharoGenerator >> generateMethod: aMethod [
 IGPharoGenerator >> hasComments [
 
 	^ visitor file hasComments
+]
+
+{ #category : 'private' }
+IGPharoGenerator >> methodParametersList: aNode [
+
+	^ (self parametersList: aNode)
+		ifNotEmpty: [ :aString | 'self, ', aString ]
+		ifEmpty: [ 'self' ]
 ]
 
 { #category : 'private' }
@@ -208,14 +216,6 @@ IGPharoGenerator >> parametersList: aNode [
 IGPharoGenerator >> prefix [
 	
 	^ visitor file prefix
-]
-
-{ #category : 'private' }
-IGPharoGenerator >> selfParametersList: aNode [
-
-	^ (self parametersList: aNode)
-		ifNotEmpty: [ :aString | 'self, ', aString ]
-		ifEmpty: [ 'self' ]
 ]
 
 { #category : 'accessing' }

@@ -130,8 +130,7 @@ Class {
 		'CXType_WChar'
 	],
 	#category : 'CIG-LibClang',
-	#package : 'CIG',
-	#tag : 'LibClang'
+	#package : 'CIG-LibClang'
 }
 
 { #category : 'class initialization' }

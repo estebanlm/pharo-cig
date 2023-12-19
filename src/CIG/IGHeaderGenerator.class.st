@@ -63,7 +63,7 @@ IGHeaderGenerator >> cDefine: aString [
 { #category : 'scripting' }
 IGHeaderGenerator >> cDefine: aKey as: aValue [
 
-	defines ifNil: [ defines := Dictionary new ].
+	defines ifNil: [ defines := OrderedDictionary new ].
 	defines at: aKey put: aValue
 ]
 
@@ -76,7 +76,7 @@ IGHeaderGenerator >> cDefineBeforeHeader: aString [
 { #category : 'scripting' }
 IGHeaderGenerator >> cDefineBeforeHeader: aKey as: aValue [
 
-	definesBeforeHeader ifNil: [ definesBeforeHeader := Dictionary new ].
+	definesBeforeHeader ifNil: [ definesBeforeHeader := OrderedDictionary new ].
 	definesBeforeHeader at: aKey put: aValue
 ]
 

@@ -231,6 +231,60 @@ IGCVisitorTest >> testVisitFunctionDisambiguate [
 ]
 
 { #category : 'tests' }
+IGCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'RGBtoBIOS(TColorRGB)' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitFunction: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'tv_TColorBIOS* tv_RGBtoBIOS(tv_TColorRGB* arg1);'.
+	
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'tv_TColorBIOS* tv_RGBtoBIOS(tv_TColorRGB* arg1) {
+	auto _tmp = RGBtoBIOS(arg1);
+	auto _result = new TColorRGB();
+	memcpy(_result, &_tmp, sizeof(TColorRGB));
+	return (TColorRGB*)_result;
+}'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitFunctionWithVariadicArgumentGeneratesCorrectFunction [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'fmtStr(const char *, ...)' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitFunction: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'char* tv_fmtStr(const char* format, ...);'.
+		
+	self 
+		assert: visitor cStream contents trimmed
+		equals: '
+static char* tv_fmtStr_valist(char* format, va_list varargs) { 
+	return fmtStr(format, varargs);	
+} 		
+
+char* tv_fmtStr(char* format, ...) {
+ 	char* result;
+	va_list varargs;
+	va_start(varargs, format);
+	result = tv_fmtStr_valist(fmt, varargs);
+	va_end(varargs);
+	return result;
+}
+'
+]
+
+{ #category : 'tests' }
 IGCVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNames [
 	| element visitor |
 
@@ -330,6 +384,46 @@ IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 ]
 
 { #category : 'tests' }
+IGCVisitorTest >> testVisitMethodWithClassTemplateCastsCorrectly [
+	| element visitor |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'drawStr(TSpan<TScreenCell>, int, TStringView, int)' }.
+
+	visitor := IGCVisitor newForTest.
+	visitor visitMethod: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'int tv_TText_drawStr_1(tv_TSpanTScreenCell* cells, int indent, tv_TStringView* text, int textIndent);'.
+	
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'int tv_TText_drawStr_1(tv_TSpanTScreenCell* cells, int indent, tv_TStringView* text, int textIndent) {
+	return TText::drawStr(*(TSpan<TScreenCell>*)cells, indent, *(TStringView*)text, textIndent);
+}'
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
+	| element visitor |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'scroll(TStringView, int, Boolean, int &, int &)' }.
+
+	visitor := IGCVisitor newForTest.
+	visitor visitMethod: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, int* length, int* width);'.
+	
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, int* length, int* width) {
+	TText::scroll(*(TStringView*)text, count, includeIncomplete, length, width);
+}'
+]
+
+{ #category : 'tests' }
 IGCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
 	| element visitor |
 
@@ -361,6 +455,26 @@ IGCVisitorTest >> testVisitOpaqueStructureGeneratesATypedef [
 	self 
 		assert: visitor hStream contents trimmed
 		equals: 'typedef void tv_TTimer;'.
+]
+
+{ #category : 'tests' }
+IGCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
+	| element visitor |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'scroll(TStringView, int, Boolean)' }.
+
+	visitor := IGCVisitor newForTest.
+	visitor visitMethod: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, tv_Boolean includeIncomplete);'.
+	
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, tv_Boolean includeIncomplete) {
+	return TText::scroll(*(TStringView*)text, count, includeIncomplete);
+}'
 ]
 
 { #category : 'tests' }

@@ -189,7 +189,11 @@ IGCVisitor >> visitEnum: anEnum [
 { #category : 'visiting' }
 IGCVisitor >> visitFunction: aFunction [
 
-	aFunction isOperator ifTrue: [ ^ self ].
+	"skip operators because they are not really used in pharo. 
+	 skip function with va_list because we don't know what to do with them"
+	(aFunction isOperator 
+		or: [ aFunction hasVariadicListArgument ])
+		ifTrue: [ ^ self ].
 	
 	(IGCGenerator on: self) generateFunction: aFunction.
 	cStream cr
@@ -198,10 +202,12 @@ IGCVisitor >> visitFunction: aFunction [
 { #category : 'visiting' }
 IGCVisitor >> visitMethod: aMethod [
 
-	"skipping non public methods and operators (maybe I need to include operators? 
-	 e.g. = generates an equals: method?) "
+	"skip not public methods.
+	 skip operators because they are not really used in pharo. 
+	 skip function with va_list because we don't know what to do with them"
 	(aMethod isPublic not 
-		or: [ aMethod isOperator ]) 
+		or: [ aMethod isOperator
+		or: [ aMethod hasVariadicListArgument ] ]) 
 		ifTrue: [ ^ self ].
 
 	(IGCClassGenerator on: self) generateMethod: aMethod.

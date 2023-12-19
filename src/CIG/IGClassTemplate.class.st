@@ -27,13 +27,44 @@ IGClassTemplate >> baseName [
 { #category : 'accessing' }
 IGClassTemplate >> cDeclaration [
 
-	^ (super fullName copyUpTo: $<), '*'
+	^ (self fullName copyUpTo: $<), '*'
+]
+
+{ #category : 'accessing' }
+IGClassTemplate >> cDeclarationWithSpecialization: typesCollection [
+
+	typesCollection ifEmpty: [ ^ self cDeclaration ].
+	
+	^ String streamContents: [ :stream |
+		stream << (self fullName copyUpTo: $<).
+		typesCollection do: [ :each | stream << each capitalized ].
+		stream << '*' ]
 ]
 
 { #category : 'accessing' }
 IGClassTemplate >> cppDeclaration [
 
 	^ super cppDeclaration copyUpTo: $<
+]
+
+{ #category : 'accessing' }
+IGClassTemplate >> cppDeclarationWithSpecialization: typesCollection [
+
+	typesCollection ifEmpty: [ ^ self cDeclaration ].
+	
+	^ String streamContents: [ :stream |
+		stream << self cppDeclaration.
+		stream << '<'.
+		typesCollection 
+			do: [ :each | stream << each ]
+			separatedBy: [ stream << ', ' ].
+		stream << '>' ]
+]
+
+{ #category : 'testing' }
+IGClassTemplate >> isClassTemplate [
+
+	^ true
 ]
 
 { #category : 'testing' }

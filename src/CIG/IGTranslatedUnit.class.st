@@ -46,13 +46,22 @@ IGTranslatedUnit >> addElement: anElement [
 
 { #category : 'private' }
 IGTranslatedUnit >> addNode: currentNode parent: parentNode [
-	| parent current |
-	
+	| parent current pass |
+
 	currentNode location isInSystemHeader ifTrue: [ ^ self ]. 	
 
-	parent := self findParent: parentNode.	
+	pass := false.
+	parent := self findParent: parentNode.
+	(parent name = 'text')
+		ifTrue: [ 
+			pass := true.
+			(currentNode withAllParents allButFirst collect: #displayName) crTrace.
+			currentNode displayName crTrace ].	
+
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
 		ifNotNil: [ ^ self ]. 
+
+	pass ifTrue: [ '<enter>' crTrace ].
 
 	current := self newNode: currentNode.	
 	(current isUnknown and: [ self isGeneratingWithUnknown not ])
@@ -107,16 +116,14 @@ IGTranslatedUnit >> findNode: aCursor startingAt: aNode ifAbsent: aBlock [
 
 { #category : 'private' }
 IGTranslatedUnit >> findParent: aCursor [
-	| current parents kind name |
+	| current parents |
 	
 	parents := aCursor withAllParents.
+	
 	current := self.
 	parents allButFirst do: [ :each |
 		| next |
-		kind := each kind.
-		name := each displayName.
-		next := current findElementMatching: [ :eachElement | 
-			(eachElement kind = kind) and: [ eachElement name = name ] ].
+		next := current findElementMatchingCursor: each.
 		next ifNil: [ ^ current ].
 		current := next ].
 	
@@ -184,6 +191,12 @@ IGTranslatedUnit >> isNamespace [
 	"for polymorphism with elements"
 	
 	^ false
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> name [
+
+	^ '__Unit__'
 ]
 
 { #category : 'private' }
