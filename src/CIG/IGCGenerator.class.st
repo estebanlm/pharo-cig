@@ -41,6 +41,17 @@ IGCGenerator >> argumentsListToCPP: aNode [
 ]
 
 { #category : 'private' }
+IGCGenerator >> basicFunctionCallOf: aFunction [
+
+	^ '{func}({arguments}\)'
+		format: {
+			#func -> aFunction cppDeclaration.
+			#arguments -> (self argumentsListToCPP: aFunction).
+		}
+		asDictionary
+]
+
+{ #category : 'private' }
 IGCGenerator >> cCastToReturn: aType [
 		
 	aType ifNil: [ ^ '' ].
@@ -70,6 +81,23 @@ IGCGenerator >> cStream [
 ]
 
 { #category : 'private' }
+IGCGenerator >> defaultCastOf: aMethod call: aString [
+	| cast |
+	
+	cast := self cCastToReturn: aMethod resolveReturnType.
+	^ '{return}{returnCast}{call}' 
+		format: { 
+			#call -> (cast 
+				ifNotEmpty: [ '(', aString, ')' ]
+				ifEmpty: [ aString ]).
+			#returnCast -> cast.
+			#return -> (aMethod isReturnTypeVoid 
+				ifTrue: [ '' ]
+				ifFalse: [ 'return ' ]) }
+		asDictionary
+]
+
+{ #category : 'private' }
 IGCGenerator >> enumNameFor: anEnum [ 
 
 	^ visitor enumNameFor: anEnum
@@ -83,6 +111,19 @@ IGCGenerator >> findClassNamed: aString ifFound: foundBlock ifAbsent: absentBloc
 		(each isClass or: [ each isNamespace ]) and: [ each name = aString ] ])
 		ifNotNil: [ :aNode | foundBlock value: aNode ]
 		ifNil: [ absentBlock value ]
+]
+
+{ #category : 'private' }
+IGCGenerator >> functionCall: aFunction [
+	| template |
+	
+	template := self basicFunctionCallOf: aFunction.
+	
+	aFunction isReturnTypeVoid ifFalse: [ 
+		aFunction resolveReturnType
+			ifTranslated: [ :translation | ^ translation cppToC: template from: aFunction  ] ].
+			
+	^ self defaultCastOf: aFunction call: template
 ]
 
 { #category : 'generating' }
@@ -101,17 +142,12 @@ IGCGenerator >> generateFunction: aFunction [
 	self hStream << header << String cr.
 	
 	body := '{type} {funcName}({parameters}) \{
-	{return}{returnCast}{func}({arguments}\);
+	{functionCall};
 \}' format: { 
 		#type -> (self cDeclarationOf: aFunction resolveReturnType).
 		#funcName -> aFunction cDeclaration.
 		#parameters -> (self parametersList: aFunction).
-		#func -> aFunction cppDeclaration.
-		#arguments -> (self argumentsListToCPP: aFunction).
-		#returnCast -> (self cCastToReturn: aFunction resolveReturnType).
-		#return -> (aFunction isReturnTypeVoid 
-			ifTrue: [ '' ]
-			ifFalse: [ 'return ' ]) }
+		#functionCall -> (self functionCall: aFunction) }
 		asDictionary	.
 			
 	self cStream << body << String cr

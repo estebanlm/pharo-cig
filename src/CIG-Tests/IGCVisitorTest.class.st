@@ -246,10 +246,10 @@ IGCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'tv_TColorBIOS* tv_RGBtoBIOS(tv_TColorRGB* arg1) {
-	auto _tmp = RGBtoBIOS(arg1);
-	auto _result = new TColorRGB();
-	memcpy(_result, &_tmp, sizeof(TColorRGB));
-	return (TColorRGB*)_result;
+	auto _tmp = RGBtoBIOS(*(TColorRGB*)arg1);
+	auto _result = new TColorBIOS();
+	memcpy(_result, &_tmp, sizeof(TColorBIOS));
+	return (tv_TColorBIOS*)_result;
 }'
 ]
 

@@ -58,23 +58,6 @@ IGCClassGenerator >> cppCastForSelf: aNode [
 ]
 
 { #category : 'private' }
-IGCClassGenerator >> defaultCastOf: aMethod call: aString [
-	| cast |
-	
-	cast := self cCastToReturn: aMethod resolveReturnType.
-	^ '{return}{returnCast}{call}' 
-		format: { 
-			#call -> (cast 
-				ifNotEmpty: [ '(', aString, ')' ]
-				ifEmpty: [ aString ]).
-			#returnCast -> cast.
-			#return -> (aMethod isReturnTypeVoid 
-				ifTrue: [ '' ]
-				ifFalse: [ 'return ' ]) }
-		asDictionary
-]
-
-{ #category : 'private' }
 IGCClassGenerator >> findClass: aName [
 
 	^ self root findDeepElementMatching: [ :each | each isClass and: [ each name = aName ] ]
