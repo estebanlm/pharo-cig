@@ -10,14 +10,17 @@ Class {
 IGCParameterClassTemplate class >> handlesType: type [
 
 	^ type isReference not 
-		and: [ type isClass ]
+		and: [ type isClass 
+		and: [ type isPointer not ] ]
 ]
 
 { #category : 'generating' }
 IGCParameterClassTemplate >> castReturn: aString [ 
 	
-	^ String streamContents: [ :stream | 
-		stream << '(' << self generateCType << ')(' << aString << ')' ]
+	^ String streamContents: [ :stream |
+		stream << 'auto _result = new ' << self type name << '();'; cr.
+		stream << '*_result = ' << aString << ';'; cr.
+		stream << 'return (' << self generateCType << ')_result' ]
 ]
 
 { #category : 'generating' }

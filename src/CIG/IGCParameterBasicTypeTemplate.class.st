@@ -16,9 +16,11 @@ IGCParameterBasicTypeTemplate >> castReturn: aString [
 		self type isReference 
 			ifTrue: [ stream << '&' ] ].
 		
-	cast ifEmpty: [ ^ aString ].
 	^ String streamContents: [ :stream |
-		stream << cast << '(' << aString << ')' ]
+		stream << 'return '.
+		cast 
+			ifNotEmpty: [ stream << cast << '(' << aString << ')' ]
+			ifEmpty: [ stream << aString ] ]
 ]
 
 { #category : 'generating' }

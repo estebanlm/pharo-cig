@@ -76,6 +76,12 @@ IGClassMember >> isOperator [
 		  self name size > 8 and: [ (self name at: 9) isAlphaNumeric not ] ]
 ]
 
+{ #category : 'testing' }
+IGClassMember >> isStatic [
+
+	^ false
+]
+
 { #category : 'accessing' }
 IGClassMember >> parametersAsList [
 

@@ -164,6 +164,18 @@ IGType >> isClassTemplate [
 ]
 
 { #category : 'testing' }
+IGType >> isEnum [
+
+	^ self hasElement and: [ self element isEnum ]
+]
+
+{ #category : 'testing' }
+IGType >> isFunction [
+
+	^ self definesFunction
+]
+
+{ #category : 'testing' }
 IGType >> isPointer [
 
 	^ self parseType arity > 0

@@ -1,5 +1,5 @@
 Class {
-	#name : 'IGCParameterClassReferenceTemplate',
+	#name : 'IGCParameterEnumReferenceTemplate',
 	#superclass : 'IGCParameterTemplate',
 	#category : 'CIG-C-Template',
 	#package : 'CIG',
@@ -7,28 +7,27 @@ Class {
 }
 
 { #category : 'private' }
-IGCParameterClassReferenceTemplate class >> handlesType: type [
+IGCParameterEnumReferenceTemplate class >> handlesType: type [
 
-	^ type isReference 
-		and: [ type isClass ]
+	^ type isEnum
 ]
 
 { #category : 'generating' }
-IGCParameterClassReferenceTemplate >> castReturn: aString [ 
+IGCParameterEnumReferenceTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream | 
 		stream << 'return ' << '(' << self generateCType << ')(' << aString << ')' ]
 ]
 
 { #category : 'generating' }
-IGCParameterClassReferenceTemplate >> generateArgument [
+IGCParameterEnumReferenceTemplate >> generateArgument [
 	
 	^ String streamContents: [ :stream |
-		stream << '*(' << (self type element cppDeclaration) << '*)' << self element name ]
+		stream << '(' << (self type element cppDeclaration) << ')' << self element name ]
 ]
 
 { #category : 'generating' }
-IGCParameterClassReferenceTemplate >> generateCType [
+IGCParameterEnumReferenceTemplate >> generateCType [
 	| typeName |
 	
 	typeName := self type typeReference typeName.

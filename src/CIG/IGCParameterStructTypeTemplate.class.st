@@ -9,14 +9,14 @@ Class {
 { #category : 'private' }
 IGCParameterStructTypeTemplate class >> handlesType: type [
 
-	^ type isStructure
+	^ type isStructure and: [ type isClass not ]
 ]
 
 { #category : 'generating' }
 IGCParameterStructTypeTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream | 
-		stream << '(' << self generateCType << ')(' << aString << ')' ]
+		stream << 'return ' << '(' << self generateCType << ')(' << aString << ')' ]
 ]
 
 { #category : 'generating' }

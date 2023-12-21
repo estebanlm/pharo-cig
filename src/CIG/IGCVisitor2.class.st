@@ -148,7 +148,10 @@ IGCVisitor2 >> visitClass: aClass [
 			self cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
 			super visitClass: aClass.
 			self hStream << aClass cDisposeTemplate generateHeader << ';'; cr. 
-			self cStream << aClass cDisposeTemplate generate; cr.
+			"we do not generate dispose if operator new is overloaded, because the free of the 
+			 memory will be handled differently (by hand)"
+			aClass hasOperatorOverloadNew 
+				ifFalse: [ self cStream << aClass cDisposeTemplate generate; cr ].
 			self hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
 			self cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
 	ensure: [
@@ -240,7 +243,9 @@ IGCVisitor2 >> visitStructure: aStructure [
 	"act as class if it behaves as a class"
 	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
 	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
-	"otherwise, the structure will be generated in the header"	
+	"otherwise, generate the structure (unless is opaque, of course)"	
+	aStructure isOpaque ifTrue: [ ^ self ].	
+	self hStream << aStructure cTemplate generate; cr
 ]
 
 { #category : 'visiting' }

@@ -30,19 +30,6 @@ IGParameterTest >> testParameterClassCastsCorrectly [
 ]
 
 { #category : 'tests' }
-IGParameterTest >> testParameterClassInFunctionCastsCorrectly [
-	"it will be a pointer in our case"
-	| element visitor cast |
-			
-	element := self translatedUnitTvision elementAtPath: { 'historyAdd(uchar, TStringView)'. 'arg2' }.
-	
-	visitor := IGCVisitor newForTest.
-	cast := (IGCGenerator on: visitor) argumentCastToCPP: element.
-	
-	self assert: cast equals: '*(TStringView*)arg2'
-]
-
-{ #category : 'tests' }
 IGParameterTest >> testParameterClassSpecializationCastsCorrectly [
 	| element param |
 

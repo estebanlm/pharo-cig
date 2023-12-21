@@ -9,7 +9,9 @@ Class {
 { #category : 'private' }
 IGCConstructorTemplate class >> handlesElement: anElement [
 
-	^ anElement isConstructor
+	^ anElement isClassMember 
+		and: [ anElement isConstructor
+		and: [ anElement parent hasOperatorOverloadNew not ] ]
 ]
 
 { #category : 'private' }
@@ -26,7 +28,7 @@ IGCConstructorTemplate >> basicGenerateBody [
 IGCConstructorTemplate >> castReturn: aString [
 
 	^ String streamContents: [ :stream |
-		stream << 'return ' << (self return castReturn: aString) ]
+		stream <<  'return (' <<  self return generateCType  <<  ')(' << aString << ')' ]
 ]
 
 { #category : 'accessing' }

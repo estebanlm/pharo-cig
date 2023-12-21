@@ -14,7 +14,7 @@ IGCFunctionTemplateTest >> testGenerateBodyBasicTypeFunctionWithParameterClassRe
 	template := IGCFunctionTemplate for: element.
 		
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: 'return (tv_ushort)(getStyle(*(TColorAttr*)attr));'
 ]
 
@@ -26,7 +26,7 @@ IGCFunctionTemplateTest >> testGenerateBodyIntFunctionWithParameterInt [
 	template := IGCFunctionTemplate for: element.
 		
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: 'return min(a, b);'
 ]
 
@@ -38,7 +38,7 @@ IGCFunctionTemplateTest >> testGenerateBodyVoidFunctionWithParameterClassReferen
 	template := IGCFunctionTemplate for: element.
 		
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: 'setStyle(*(TColorAttr*)attr, (ushort)style);'
 ]
 

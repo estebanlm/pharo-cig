@@ -13,17 +13,21 @@ IGCParameterTemplateTest >> testCastReturnBasicType [
 	element := self translatedUnitTvision elementAtPath: { 'getStyle(const TColorAttr &)' }.
 	template := IGCParameterTemplate forReturn: element.
 	
-	self assert: (template castReturn: 'x') equals: '(tv_ushort)(x)'
+	self assert: (template castReturn: 'x') equals: 'return (tv_ushort)(x)'
 ]
 
 { #category : 'tests' }
 IGCParameterTemplateTest >> testCastReturnClassReference [
 	| template element |
 
-	element := self translatedUnitTvision elementAtPath: { 'getAttr(const TScreenCell &)' }.
+	element := self translatedUnitTvision elementAtPath: { 'RGBtoBIOS(TColorRGB)' }.
 	template := IGCParameterTemplate forReturn: element.
 	
-	self assert: (template castReturn: 'x') equals: '(tv_TColorAttr*)(x)'
+	self 
+		assert: (template castReturn: 'x')  
+		equals: 'auto _result = new TColorBIOS();
+*_result = x;
+return (tv_TColorBIOS*)_result'
 ]
 
 { #category : 'tests' }
@@ -33,7 +37,7 @@ IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	element := self translatedUnitTvision elementAtPath: { '_dos_findnext(struct find_t *)' }.
 	template := IGCParameterTemplate forParameter: element parameters first.
 	
-	self assert: (template castReturn: 'x') equals: '(struct tv_find_t*)(x)'
+	self assert: (template castReturn: 'x') equals: 'return (struct tv_find_t*)(x)'
 ]
 
 { #category : 'tests' }
@@ -64,6 +68,46 @@ IGCParameterTemplateTest >> testGenerateFieldClass [
 	template := IGCParameterTemplate forField: element.
 	
 	self assert: template generate equals: 'tv_TStreamableClass* forceLink'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateFunctionParameter [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'requestClipboardText(void (&)(TStringView))' }.
+	template := IGCParameterTemplate forParameter: element parameters first.
+	
+	self assert: template generate equals: 'void* accept'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateNestedEnum [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'getPlatform()' }.
+	template := IGCParameterTemplate forReturn: element.
+	
+	self assert: template generateCType equals: 'tv_THardwareInfo_PlatformType'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateNestedEnumParameter [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TGroup'. 'setCurrent(TView *, selectMode)' }.
+	template := IGCParameterTemplate forParameter: element parameters second.
+	
+	self assert: template generate equals: 'tv_TView_selectMode mode'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateNestedEnumType [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'getPlatform()' }.
+	template := IGCParameterTemplate forReturn: element.
+	
+	self assert: template generateCType equals: 'tv_THardwareInfo_PlatformType'
 ]
 
 { #category : 'tests' }
@@ -138,7 +182,7 @@ IGCParameterTemplateTest >> testResolveFieldClass [
 	element := self translatedUnitTvision elementAtPath: { 'fLink'. 'forceLink' }.
 	template := IGCParameterTemplate forField: element.
 	
-	self assert: template class equals: IGCParameterClassTemplate
+	self assert: template class equals: IGCParameterClassPointerTemplate
 ]
 
 { #category : 'tests' }

@@ -9,7 +9,7 @@ Class {
 { #category : 'private' }
 IGCClassMethodTemplate class >> handlesElement: anElement [
 
-	^ anElement isStatic
+	^ anElement isClassMember and: [ anElement isStatic ]
 ]
 
 { #category : 'private' }

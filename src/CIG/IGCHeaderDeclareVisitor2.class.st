@@ -63,9 +63,8 @@ IGCHeaderDeclareVisitor2 >> visitStructure: aStructure [
 		self hStream << (IGCClassTemplate for: aStructure) generateHeader; cr.
 		^ self ].
 
-	aStructure isOpaque ifTrue: [ ^ self ].
-		
-	self hStream << aStructure cTemplate generate; cr
+	"aStructure isOpaque ifTrue: [ ^ self ].	
+	self hStream << aStructure cTemplate generate; cr"
 ]
 
 { #category : 'visiting' }

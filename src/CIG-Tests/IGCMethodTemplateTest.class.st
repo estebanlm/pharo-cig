@@ -14,8 +14,20 @@ IGCMethodTemplateTest >> testGenerateBodyConstructor [
 	template := element cTemplate.
 	
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: 'return (tv_TView*)(new TView(*(TRect*)bounds));'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyConstructorOverloadNew [
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'TScreenCell'. 'TScreenCell()' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generateBody trimmed
+		equals: 'return (tv_TScreenCell*)(new (p) TScreenCell());'
 ]
 
 { #category : 'tests' }
@@ -26,8 +38,22 @@ IGCMethodTemplateTest >> testGenerateBodyDispose [
 	template := element cDisposeTemplate.
 	
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: 'delete (TText*)self;'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyFunctionReturnClassReference [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'RGBtoBIOS(TColorRGB)' }.
+	template := IGCFunctionTemplate for: element.
+		
+	self
+		assert: template generateBody
+		equals: '	auto _result = new TColorBIOS();
+	*_result = RGBtoBIOS(*(TColorRGB*)arg1);
+	return (tv_TColorBIOS*)_result;'
 ]
 
 { #category : 'tests' }
@@ -38,7 +64,7 @@ IGCMethodTemplateTest >> testGenerateBodyStatic [
 	template := element cTemplate.
 	
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: 'return TText::scroll(*(TStringView*)text, count, (Boolean)includeIncomplete);'
 ]
 
@@ -50,7 +76,7 @@ IGCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterClassReference [
 	template := IGCMethodTemplate for: element.
 		
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: '((TView*)self)->locate(*(TRect*)bounds);'
 ]
 
@@ -62,7 +88,7 @@ IGCMethodTemplateTest >> testGenerateBodyVoidMethodWithouthParameters [
 	template := IGCMethodTemplate for: element.
 		
 	self 
-		assert: template generateBody
+		assert: template generateBody trimmed
 		equals: '((TView*)self)->hide();'
 ]
 
@@ -76,6 +102,18 @@ IGCMethodTemplateTest >> testGenerateHeaderConstructor [
 	self 
 		assert: template generateHeader 
 		equals: 'tv_TView* tv_TView_new_1(tv_TRect* bounds)'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateHeaderConstructorOverloadNew [
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'TScreenCell'. 'TScreenCell()' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generateHeader 
+		equals: 'tv_TScreenCell* tv_TScreenCell_new_1(void* p)'
 ]
 
 { #category : 'tests' }

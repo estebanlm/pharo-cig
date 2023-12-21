@@ -5,6 +5,18 @@ Trait {
 	#tag : 'Node'
 }
 
+{ #category : 'testing' }
+IGTClass >> hasOperatorOverload: aString [
+
+	^ (self operatorAt: aString) notNil
+]
+
+{ #category : 'testing' }
+IGTClass >> hasOperatorOverloadNew [
+
+	^ self hasOperatorOverload: 'new'
+]
+
 { #category : 'accessing' }
 IGTClass >> methods [
 
@@ -26,6 +38,12 @@ IGTClass >> operatorAt: aName ifFound: foundBlock ifNone: noneBlock [
 		detect: [ :each | each operator = aName ]
 		ifFound: foundBlock
 		ifNone: noneBlock
+]
+
+{ #category : 'accessing' }
+IGTClass >> operatorNew [
+
+	^ self operatorAt: 'new'
 ]
 
 { #category : 'accessing' }

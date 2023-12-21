@@ -20,15 +20,14 @@ IGCBaseFunctionTemplate >> basicGenerateBody [
 IGCBaseFunctionTemplate >> castReturn: aString [
 
 	self element isReturnTypeVoid ifTrue: [ ^ aString ].
-	^ String streamContents: [ :stream |
-		stream << 'return ' << (self return castReturn: aString) ]
+	^ self return castReturn: aString
 ]
 
 { #category : 'generating' }
 IGCBaseFunctionTemplate >> generate [
 
 	^ '{header} \{
-	{body}
+{body}
 }' format: {
 		#header -> self generateHeader.
 		#body -> self generateBody.
@@ -48,7 +47,13 @@ IGCBaseFunctionTemplate >> generateArguments [
 IGCBaseFunctionTemplate >> generateBody [
 	
 	^ String streamContents: [ :stream |
-		stream << (self castReturn: self basicGenerateBody) << ';' ]
+		(self castReturn: self basicGenerateBody) lines 
+			do: [ :each | 
+				stream tab.
+				stream << each ]
+			separatedBy: [ 
+				stream cr ].
+			stream << ';' ]
 ]
 
 { #category : 'generating' }

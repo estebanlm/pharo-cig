@@ -6,6 +6,12 @@ Class {
 	#tag : 'C-Template'
 }
 
+{ #category : 'private' }
+IGCParameterSelfTemplate class >> handlesType: aType [
+
+	^ false
+]
+
 { #category : 'as yet unclassified' }
 IGCParameterSelfTemplate >> generateCast [
 	
