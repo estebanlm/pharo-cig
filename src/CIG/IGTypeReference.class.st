@@ -19,6 +19,18 @@ IGTypeReference >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
+IGTypeReference >> isClass [
+
+	^ self referenceType = IGClass
+]
+
+{ #category : 'testing' }
+IGTypeReference >> isStructure [
+
+	^ self referenceType = IGStructure
+]
+
+{ #category : 'testing' }
 IGTypeReference >> isTypeReference [
 
 	^ true

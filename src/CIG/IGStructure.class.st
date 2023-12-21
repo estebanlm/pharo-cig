@@ -39,6 +39,18 @@ IGStructure >> cDeclaration [
 ]
 
 { #category : 'accessing' }
+IGStructure >> cDisposeTemplate [
+	
+	^ IGCDisposeMethodTemplate for: self
+]
+
+{ #category : 'accessing' }
+IGStructure >> cTemplate [
+	
+	^ IGCStructTemplate for: self
+]
+
+{ #category : 'accessing' }
 IGStructure >> classMembers [
 
 	^ self elements select: [ :each | each isClassMember ]
@@ -69,7 +81,25 @@ IGStructure >> isOpaque [
 ]
 
 { #category : 'testing' }
+IGStructure >> isStructure [
+
+	^ true
+]
+
+{ #category : 'testing' }
 IGStructure >> isTemplateSpecialization [
 
 	^ '.*<.*>.*' asRegex matches: self name
+]
+
+{ #category : 'accessing' }
+IGStructure >> resolveType [
+
+	^ IGType new 
+		parent: self;
+		name: self name;
+		typeReference: ((IGTypeReference newName: 'class ', self name)
+			parent: self;
+			yourself);
+		yourself
 ]

@@ -58,16 +58,22 @@ IGClassMember >> isClassMember [
 ]
 
 { #category : 'testing' }
+IGClassMember >> isConstructor [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGClassMember >> isDestructor [
+
+	^ false
+]
+
+{ #category : 'testing' }
 IGClassMember >> isOperator [
 
 	^ (self name beginsWith: 'operator') and: [
 		  self name size > 8 and: [ (self name at: 9) isAlphaNumeric not ] ]
-]
-
-{ #category : 'testing' }
-IGClassMember >> isReturnTypeVoid [
-
-	^ self returnTypeName = 'void'
 ]
 
 { #category : 'accessing' }
@@ -80,18 +86,6 @@ IGClassMember >> parametersAsList [
 IGClassMember >> pathName [
 
 	^ self spelling
-]
-
-{ #category : 'handling' }
-IGClassMember >> resolveReturnType [
-
-	self isReturnTypeVoid ifTrue: [ ^ nil ].
-	
-	^ IGType new
-		parent: self;
-		name: self returnTypeName;
-		typeReference: self typeReference;
-		yourself
 ]
 
 { #category : 'accessing' }

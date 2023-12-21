@@ -17,3 +17,9 @@ IGDestructor >> accept: aVisitor [
 
 	aVisitor visitDestructor: self
 ]
+
+{ #category : 'testing' }
+IGDestructor >> isDestructor [
+
+	^ true
+]

@@ -5,9 +5,9 @@ Class {
 		'root',
 		'visitor'
 	],
-	#category : 'CIG-Generate-C',
+	#category : 'CIG-C',
 	#package : 'CIG',
-	#tag : 'Generate-C'
+	#tag : 'C'
 }
 
 { #category : 'instance creation' }
@@ -43,7 +43,7 @@ IGCGenerator >> argumentsListToCPP: aNode [
 { #category : 'private' }
 IGCGenerator >> basicFunctionCallOf: aFunction [
 
-	^ '{func}({arguments}\)'
+	^ '{func}({arguments})'
 		format: {
 			#func -> aFunction cppDeclaration.
 			#arguments -> (self argumentsListToCPP: aFunction).

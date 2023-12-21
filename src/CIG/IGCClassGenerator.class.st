@@ -1,9 +1,9 @@
 Class {
 	#name : 'IGCClassGenerator',
 	#superclass : 'IGCGenerator',
-	#category : 'CIG-Generate-C',
+	#category : 'CIG-C',
 	#package : 'CIG',
-	#tag : 'Generate-C'
+	#tag : 'C'
 }
 
 { #category : 'private' }

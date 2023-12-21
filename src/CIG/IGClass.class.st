@@ -36,6 +36,18 @@ IGClass >> cDeclaration [
 	^ super cDeclaration, '*'
 ]
 
+{ #category : 'accessing' }
+IGClass >> cDisposeTemplate [
+	
+	^ IGCDisposeMethodTemplate for: self
+]
+
+{ #category : 'accessing' }
+IGClass >> cTemplate [
+
+	^ IGCClassTemplate for: self
+]
+
 { #category : 'testing' }
 IGClass >> canBeAddedTo: anElement [
 
@@ -78,6 +90,18 @@ IGClass >> isClass [
 IGClass >> isDeclaration [
 
 	^ isDeclaration
+]
+
+{ #category : 'accessing' }
+IGClass >> resolveType [
+
+	^ IGType new 
+		parent: self;
+		name: self name;
+		typeReference: ((IGTypeReference newName: 'class ', self name)
+			parent: self;
+			yourself);
+		yourself
 ]
 
 { #category : 'accessing' }

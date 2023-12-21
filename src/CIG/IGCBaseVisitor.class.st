@@ -5,9 +5,9 @@ Class {
 		'root',
 		'unnamedEnum'
 	],
-	#category : 'CIG-Generate-C',
+	#category : 'CIG-C',
 	#package : 'CIG',
-	#tag : 'Generate-C'
+	#tag : 'C'
 }
 
 { #category : 'private - rendering' }

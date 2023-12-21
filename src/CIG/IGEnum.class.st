@@ -18,6 +18,12 @@ IGEnum >> accept: aVisitor [
 	aVisitor visitEnum: self
 ]
 
+{ #category : 'accessing' }
+IGEnum >> cTemplate [
+
+	^ IGCEnumTemplate for: self
+]
+
 { #category : 'testing' }
 IGEnum >> isEnum [
 
@@ -33,7 +39,7 @@ IGEnum >> isUnnamed [
 { #category : 'accessing' }
 IGEnum >> resolveType [
 
-	^IGEnumType new 
+	^ IGEnumType new 
 		parent: self;
 		name: self name;
 		yourself

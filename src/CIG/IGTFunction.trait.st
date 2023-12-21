@@ -95,8 +95,6 @@ IGTFunction >> parameters [
 { #category : 'handling' }
 IGTFunction >> resolveReturnType [
 
-	self isReturnTypeVoid ifTrue: [ ^ nil ].
-	
 	^ IGType new
 		parent: self;
 		name: self returnTypeName;

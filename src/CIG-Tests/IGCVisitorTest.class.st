@@ -254,6 +254,29 @@ IGCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate [
 ]
 
 { #category : 'tests' }
+IGCVisitorTest >> testVisitFunctionReturningClassWithOverloadedNewGenerateCorrectMethodTemplate [
+	"classes with overloaded new cannot be created in a reliable way, we transform the 
+	 function to receive an extra parameter and copying the content there"
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'getFore(const TColorAttr &)' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitFunction: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'void tv_getFore(const tv_TColorAttr* attr, tv_TDesiredColor* out);'.
+	
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'void tv_getFore(const tv_TColorAttr* attr, tv_TDesiredColor* out) {
+	auto _tmp = getFore(*(TColorAttr*)attr);
+	memcpy(out, &_tmp, sizeof(TColorDesired));
+}'
+]
+
+{ #category : 'tests' }
 IGCVisitorTest >> testVisitFunctionWithVariadicArgumentGeneratesCorrectFunction [
 	| element visitor |
 

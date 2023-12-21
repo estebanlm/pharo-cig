@@ -219,7 +219,7 @@ IGHeaderGenerator >> generate [
 IGHeaderGenerator >> generateCBindingsWith: unit [
 
 	('Generating C file: {1}.' format: { self cFileReference basename }) asBeaconSignal emit.
-	IGCVisitor new
+	IGCVisitor2 new
 		file: self;
 		visit: unit
 ]

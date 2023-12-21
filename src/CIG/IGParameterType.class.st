@@ -37,7 +37,7 @@ IGParameterType >> fromParameter: aParameter [
 		typeReference: (self typeReferenceFrom: aParameter)
 ]
 
-{ #category : 'initialization' }
+{ #category : 'private' }
 IGParameterType >> typeReferenceFrom: aParameter [
 
 	aParameter typeReference ifNotNil: [ :ref | ^ ref ]. 

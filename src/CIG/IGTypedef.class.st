@@ -27,6 +27,12 @@ IGTypedef >> accept: aVisitor [
 	aVisitor visitTypedef: self
 ]
 
+{ #category : 'accessing' }
+IGTypedef >> cTemplate [
+	
+	^ IGCTypedefTemplate for: self
+]
+
 { #category : 'testing' }
 IGTypedef >> definesArray [
 
@@ -81,7 +87,7 @@ IGTypedef >> underlyingTypeKind [
 ]
 
 { #category : 'accessing' }
-IGTypedef >> underlyingTypeSpelling [
+IGTypedef >> underlyingTypeName [
 
 	^ underlyingTypeSpelling
 ]

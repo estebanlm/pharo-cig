@@ -1,5 +1,5 @@
 Class {
-	#name : 'IGCVisitor',
+	#name : 'IGCVisitor2',
 	#superclass : 'IGCBaseVisitor',
 	#instVars : [
 		'fileReference',
@@ -13,14 +13,14 @@ Class {
 }
 
 { #category : 'private - rendering' }
-IGCVisitor >> addCHeaders [
+IGCVisitor2 >> addCHeaders [
 		
 	cStream << '#include "' << (self fileReference withExtension: 'h') basename << '"' << String cr.
 	cStream cr
 ]
 
 { #category : 'private - rendering' }
-IGCVisitor >> addCPreamble [
+IGCVisitor2 >> addCPreamble [
 		
 	cStream << 'extern "C" {
 
@@ -28,7 +28,7 @@ IGCVisitor >> addCPreamble [
 ]
 
 { #category : 'private - rendering' }
-IGCVisitor >> addHHeaders [
+IGCVisitor2 >> addHHeaders [
 	| def |
 		
 	def := self fileReference basenameWithoutExtension asUppercase.
@@ -44,7 +44,7 @@ IGCVisitor >> addHHeaders [
 ]
 
 { #category : 'private - rendering' }
-IGCVisitor >> addHPreamble [
+IGCVisitor2 >> addHPreamble [
 		
 	hStream << 'extern "C" {
 
@@ -52,20 +52,20 @@ IGCVisitor >> addHPreamble [
 ]
 
 { #category : 'accessing' }
-IGCVisitor >> cStream [
+IGCVisitor2 >> cStream [
 
 	^ cStream
 ]
 
 { #category : 'private - rendering' }
-IGCVisitor >> endCPreamble [
+IGCVisitor2 >> endCPreamble [
 		
 	cStream << '}
 '
 ]
 
 { #category : 'private - rendering' }
-IGCVisitor >> endHFile [
+IGCVisitor2 >> endHFile [
 	| def |
 		
 	def := self fileReference basenameWithoutExtension asUppercase.
@@ -76,56 +76,56 @@ IGCVisitor >> endHFile [
 ]
 
 { #category : 'accessing' }
-IGCVisitor >> fileReference [
+IGCVisitor2 >> fileReference [
 	
 	^ fileReference ifNil: [ fileReference := self file cFileReference ]
 ]
 
 { #category : 'accessing' }
-IGCVisitor >> hStream [
+IGCVisitor2 >> hStream [
 
 	^ hStream
 ]
 
 { #category : 'private' }
-IGCVisitor >> indentDo: aBlock [
+IGCVisitor2 >> indentDo: aBlock [
 
 	aBlock value
 ]
 
 { #category : 'initialization' }
-IGCVisitor >> initialize [
+IGCVisitor2 >> initialize [
 
 	super initialize.
 	stack := Stack new
 ]
 
 { #category : 'private - factory' }
-IGCVisitor >> newCStream [
+IGCVisitor2 >> newCStream [
 
 	^ self newStreamFor: self fileReference ensureDelete
 ]
 
 { #category : 'private - factory' }
-IGCVisitor >> newHStream [
+IGCVisitor2 >> newHStream [
 
 	^ self newStreamFor: (self fileReference withExtension: 'h') ensureDelete
 ]
 
 { #category : 'private - factory' }
-IGCVisitor >> newStreamFor: aFileReference [
+IGCVisitor2 >> newStreamFor: aFileReference [
 
 	^ ZnNewLineWriterStream on: aFileReference writeStream
 ]
 
 { #category : 'private' }
-IGCVisitor >> pop [ 
+IGCVisitor2 >> pop [ 
 	
 	^ stack pop
 ]
 
 { #category : 'private' }
-IGCVisitor >> prefix [
+IGCVisitor2 >> prefix [
 
 	^ String streamContents: [ :s |
 		(stack reversed collect: #name as: Array) 
@@ -133,29 +133,30 @@ IGCVisitor >> prefix [
 ]
 
 { #category : 'private' }
-IGCVisitor >> push: anObject [
+IGCVisitor2 >> push: anObject [
 
 	stack push: anObject
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitClass: aClass [
+IGCVisitor2 >> visitClass: aClass [
 
 	self push: aClass.
 	[  
 		self indentDo: [  
-			hStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
-			cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
+			self hStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
+			self cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
 			super visitClass: aClass.
-			(IGCClassGenerator on: self) generateDispose: aClass.
-			hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
-			cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
+			self hStream << aClass cDisposeTemplate generateHeader << ';'; cr. 
+			self cStream << aClass cDisposeTemplate generate; cr.
+			self hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
+			self cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
 	ensure: [
 		self pop ]
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitClassTemplate: aClassTemplate [
+IGCVisitor2 >> visitClassTemplate: aClassTemplate [
 
 	"
 	1. collect defined templates.
@@ -168,26 +169,29 @@ IGCVisitor >> visitClassTemplate: aClassTemplate [
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitConstructor: aConstructor [
+IGCVisitor2 >> visitConstructor: aConstructor [
 
 	"abstract classes do not have public constructors"
 	aConstructor parent isAbstract ifTrue: [ ^ self ].
 	
-	(IGCClassGenerator on: self) generateConstructor: aConstructor
+	self hStream << aConstructor cTemplate generateHeader << ';'; cr.
+	self cStream << aConstructor cTemplate generate; cr
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitDestructor: aDestructor [
+IGCVisitor2 >> visitDestructor: aDestructor [
 
+	"no destructor generation (no point)"
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitEnum: anEnum [
+IGCVisitor2 >> visitEnum: anEnum [
 
+	"this is generated in the header declaration."
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitFunction: aFunction [
+IGCVisitor2 >> visitFunction: aFunction [
 
 	"skip operators because they are not really used in pharo. 
 	 skip function with va_list because we don't know what to do with them"
@@ -195,27 +199,23 @@ IGCVisitor >> visitFunction: aFunction [
 		or: [ aFunction hasVariadicListArgument ])
 		ifTrue: [ ^ self ].
 	
-	(IGCGenerator on: self) generateFunction: aFunction.
-	cStream cr
+	self hStream << aFunction cTemplate generateHeader << ';'; cr.
+	self cStream << aFunction cTemplate generate; cr
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitMethod: aMethod [
+IGCVisitor2 >> visitMethod: aMethod [
 
 	"skip not public methods.
 	 skip operators because they are not really used in pharo. 
 	 skip function with va_list because we don't know what to do with them"
-	(aMethod isPublic not 
-		or: [ aMethod isOperator
-		or: [ aMethod hasVariadicListArgument ] ]) 
-		ifTrue: [ ^ self ].
+	aMethod isPublic ifFalse: [ ^ self ].
 
-	(IGCClassGenerator on: self) generateMethod: aMethod.
-	cStream cr
+	self visitFunction: aMethod
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitNamespace: aNamespace [
+IGCVisitor2 >> visitNamespace: aNamespace [
 
 	(self includesNamespace: aNamespace cppDeclaration) ifTrue: [
 		"skip the namespace since is already there, but try to process nested namespaces"
@@ -233,19 +233,18 @@ IGCVisitor >> visitNamespace: aNamespace [
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitStructure: aStructure [
+IGCVisitor2 >> visitStructure: aStructure [
 
 	"skip if is template specialization"
 	aStructure isTemplateSpecialization ifTrue: [ ^ self ].
 	"act as class if it behaves as a class"
 	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
 	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
-	"otherwise generate structure"	
-	(IGCGenerator on: self) generateStructure: aStructure
+	"otherwise, the structure will be generated in the header"	
 ]
 
 { #category : 'visiting' }
-IGCVisitor >> visitUnit: aUnit [
+IGCVisitor2 >> visitUnit: aUnit [
 	| headerVisitor |
 
 	root := aUnit.
@@ -253,7 +252,7 @@ IGCVisitor >> visitUnit: aUnit [
 	cStream := self newCStream.
 	hStream := self newHStream.	
 	[		
-		headerVisitor := IGCHeaderDeclareVisitor new 
+		headerVisitor := IGCHeaderDeclareVisitor2 new 
 			hStream: self hStream; 
 			yourself.	
 			

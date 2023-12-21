@@ -28,6 +28,15 @@ IGFunctionParser >> parseType [
 			typeName := stream next.
 			typeName ifNil: [ ^ self error: 'type name expected' ] ].
 
+	"parsing struct types"
+	(#('struct') includes: typeName) 
+		ifTrue: [ 
+			| prefix |
+			prefix := typeName.
+			typeName := stream next.
+			typeName ifNil: [ ^ self error: 'type name expected' ].
+			typeName := prefix, ' ', typeName ].
+
 	referenceMarker := false.
 	ptrArity := 0.
 	[ stream atEnd not 

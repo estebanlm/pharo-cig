@@ -52,6 +52,12 @@ IGFunction >> cDeclaration [
 	^ self disambiguate: super cDeclaration
 ]
 
+{ #category : 'accessing' }
+IGFunction >> cTemplate [
+	
+	^ IGCFunctionTemplate for: self
+]
+
 { #category : 'initialization' }
 IGFunction >> fromCursor: aCursor [
 	| type |
@@ -100,18 +106,6 @@ IGFunction >> phDeclaration [
 			stream  << self spelling uncapitalized.
 			self buildParameters: self parameters on: stream ])
 		trimmed
-]
-
-{ #category : 'handling' }
-IGFunction >> resolveReturnType [
-
-	self isReturnTypeVoid ifTrue: [ ^ nil ].
-	
-	^ IGType new
-		parent: self;
-		name: self returnTypeName;
-		typeReference: self typeReference;
-		yourself
 ]
 
 { #category : 'accessing' }

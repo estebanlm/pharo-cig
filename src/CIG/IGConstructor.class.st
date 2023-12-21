@@ -28,9 +28,21 @@ IGConstructor >> cDeclaration [
 ]
 
 { #category : 'accessing' }
+IGConstructor >> cTemplate [
+	
+	^ IGCMethodTemplate for: self
+]
+
+{ #category : 'accessing' }
 IGConstructor >> cppDeclaration [
 
 	^ self parent cppDeclaration
+]
+
+{ #category : 'testing' }
+IGConstructor >> isConstructor [
+
+	^ true
 ]
 
 { #category : 'accessing' }

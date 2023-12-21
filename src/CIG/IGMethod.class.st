@@ -30,6 +30,12 @@ IGMethod >> cDeclaration [
 	^ self disambiguate: super cDeclaration
 ]
 
+{ #category : 'accessing' }
+IGMethod >> cTemplate [
+	
+	^ IGCMethodTemplate for: self
+]
+
 { #category : 'initialization' }
 IGMethod >> fromCursor: aCursor [
 

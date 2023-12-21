@@ -5,7 +5,8 @@ Class {
 		'parent',
 		'name',
 		'typeReference',
-		'parsedType'
+		'parsedType',
+		'element'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -111,8 +112,20 @@ IGType >> definesFunction [
 IGType >> element [
 	"if there is a typeRefernce, tries to answer it"
 	
-	self typeReferenceForParsedType ifNil: [ ^ nil ].
-	^ self root elementAtPath: self typeReference namePath
+	^ element ifNil: [ 
+		element := self typeReferenceForParsedType 
+			ifNotNil: [ 
+				"it can be an element from the tree (class, etc.)"
+				self root elementAtPath: self typeReference namePath ]
+			ifNil: [ 
+				"it can be a typedef"
+				self root elementAtPath: (self parseType name substrings: '::') ] ]
+]
+
+{ #category : 'testing' }
+IGType >> hasElement [
+	
+	^ self element notNil
 ]
 
 { #category : 'testing' }
@@ -139,6 +152,18 @@ IGType >> ifTranslated: aBlock ifNot: notBlock [
 ]
 
 { #category : 'testing' }
+IGType >> isClass [
+
+	^ self element notNil and: [ self element isClass ]
+]
+
+{ #category : 'testing' }
+IGType >> isClassTemplate [
+
+	^ self element notNil and: [ self element isClassTemplate ]
+]
+
+{ #category : 'testing' }
 IGType >> isPointer [
 
 	^ self parseType arity > 0
@@ -150,6 +175,19 @@ IGType >> isReference [
 	 e.g Module &m"
 	
 	^ self parseType isReference
+]
+
+{ #category : 'testing' }
+IGType >> isStructure [
+
+	^ self element notNil and: [ self element isStructure ]
+]
+
+{ #category : 'testing' }
+IGType >> isTypedef [
+	
+	^ self element notNil
+		and: [ self element isTypedef ]
 ]
 
 { #category : 'accessing' }

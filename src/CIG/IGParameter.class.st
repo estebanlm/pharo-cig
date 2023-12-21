@@ -60,6 +60,12 @@ IGParameter >> asParameterString [
 		stream << self typeName << ' ' << self name ]
 ]
 
+{ #category : 'accessing' }
+IGParameter >> cTemplate [
+	
+	^ IGCParameterTemplate forParameter: self
+]
+
 { #category : 'testing' }
 IGParameter >> definesFunction [
 

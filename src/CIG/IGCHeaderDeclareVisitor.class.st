@@ -7,9 +7,9 @@ Class {
 	#instVars : [
 		'hStream'
 	],
-	#category : 'CIG-Generate-C',
+	#category : 'CIG-C',
 	#package : 'CIG',
-	#tag : 'Generate-C'
+	#tag : 'C'
 }
 
 { #category : 'private' }
@@ -41,7 +41,7 @@ IGCHeaderDeclareVisitor >> visitClass: aClass [
 	super visitClass: aClass
 ]
 
-{ #category : 'visiting' }
+{ #category : 'as yet unclassified' }
 IGCHeaderDeclareVisitor >> visitClassTemplate: aClassTemplate [
 	| cppName cName |
 
