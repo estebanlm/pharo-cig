@@ -1,13 +1,19 @@
 Class {
-	#name : 'IGCParameterBasicTypeTemplate',
+	#name : 'IGCParameterDeclarationTemplate',
 	#superclass : 'IGCParameterTemplate',
 	#category : 'CIG-C-Template',
 	#package : 'CIG',
 	#tag : 'C-Template'
 }
 
+{ #category : 'nil' }
+IGCParameterDeclarationTemplate class >> handlesType: aType [
+
+	^ aType isAnyDeclaration
+]
+
 { #category : 'generating' }
-IGCParameterBasicTypeTemplate >> castReturn: aString [ 
+IGCParameterDeclarationTemplate >> castReturn: aString [ 
 	| cast |
 	
 	cast := String streamContents: [ :stream | 
@@ -24,17 +30,20 @@ IGCParameterBasicTypeTemplate >> castReturn: aString [
 ]
 
 { #category : 'generating' }
-IGCParameterBasicTypeTemplate >> generateArgument [
+IGCParameterDeclarationTemplate >> generateArgument [
 	
-	self type hasElement ifFalse: [ ^ self element name ]. 
 	^ String streamContents: [ :stream | 
 		self type isReference 
 			ifTrue: [ stream << '*' ].
-		stream << '(' << self type parseType name << ')' << self element name ]
+		"stream << '(' << self type element cppDeclaration.
+		self type parseType arity 
+			timesRepeat: [ stream << '*' ].
+		stream << ')'."		
+		stream << self element name ]
 ]
 
 { #category : 'generating' }
-IGCParameterBasicTypeTemplate >> generateCType [
+IGCParameterDeclarationTemplate >> generateCType [
 	| typeName parsed startArity |
 
 	startArity := 0.

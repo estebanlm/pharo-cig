@@ -121,6 +121,12 @@ IGParameter >> isLValueReference [
 ]
 
 { #category : 'testing' }
+IGParameter >> isParameter [
+
+	^ true
+]
+
+{ #category : 'testing' }
 IGParameter >> isReference [
 
 	^ (self parseType: self typeName) isReference

@@ -41,3 +41,9 @@ IGUsingDeclaration >> isDeclaringTypedef [
 		ifFound: [ :each | each isDeclaringTypedef ]
 		ifNone: [ false ]
 ]
+
+{ #category : 'testing' }
+IGUsingDeclaration >> isUsingDeclaration [
+
+	^ true
+]

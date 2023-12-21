@@ -19,6 +19,18 @@ IGCFunctionTemplateTest >> testGenerateBodyBasicTypeFunctionWithParameterClassRe
 ]
 
 { #category : 'tests' }
+IGCFunctionTemplateTest >> testGenerateBodyFunctionWithReturnClassReferenceOverloadNew [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'getFore(const TColorAttr &)' }.
+	template := IGCFunctionTemplate for: element.
+		
+	self 
+		assert: template generateBody trimmed
+		equals: '*(TColorDesired*)result = getFore(*(TColorAttr*)attr);'
+]
+
+{ #category : 'tests' }
 IGCFunctionTemplateTest >> testGenerateBodyIntFunctionWithParameterInt [
 	| template element |
 
@@ -39,7 +51,7 @@ IGCFunctionTemplateTest >> testGenerateBodyVoidFunctionWithParameterClassReferen
 		
 	self 
 		assert: template generateBody trimmed
-		equals: 'setStyle(*(TColorAttr*)attr, (ushort)style);'
+		equals: 'setStyle(*(TColorAttr*)attr, style);'
 ]
 
 { #category : 'tests' }
@@ -52,8 +64,20 @@ IGCFunctionTemplateTest >> testGenerateFunctionVoidFunctionWithParameterClassRef
 	self 
 		assert: template generate
 		equals: 'void tv_setStyle(tv_TColorAttr* attr, tv_ushort style) {
-	setStyle(*(TColorAttr*)attr, (ushort)style);
+	setStyle(*(TColorAttr*)attr, style);
 }'
+]
+
+{ #category : 'tests' }
+IGCFunctionTemplateTest >> testGenerateHeaderFunctionWithReturnClassReferenceOverloadNew [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'getFore(const TColorAttr &)' }.
+	template := IGCFunctionTemplate for: element.
+		
+	self 
+		assert: template generateHeader
+		equals: 'void tv_getFore(tv_TColorAttr* attr, tv_TColorDesired* result)'
 ]
 
 { #category : 'tests' }

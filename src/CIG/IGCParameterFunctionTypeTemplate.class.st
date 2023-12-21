@@ -22,9 +22,8 @@ IGCParameterFunctionTypeTemplate >> castReturn: aString [
 { #category : 'generating' }
 IGCParameterFunctionTypeTemplate >> generateArgument [
 	
-	self type hasElement ifFalse: [ ^ self element name ]. 
 	^ String streamContents: [ :stream | 
-		stream << '(' << self type parseType name << ')' << self element name ]
+		stream << '(' << self type name << ')' << self element name ]
 ]
 
 { #category : 'generating' }

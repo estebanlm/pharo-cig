@@ -21,11 +21,18 @@ IGCParameterStructTypeTemplate >> castReturn: aString [
 
 { #category : 'generating' }
 IGCParameterStructTypeTemplate >> generateArgument [
+	| name |
 	
 	self type hasElement ifFalse: [ ^ self element name ]. 
+	name := self type parseType name.
 	^ String streamContents: [ :stream | 
+		self type isReference 
+			ifTrue: [ stream << '*' ].
 		stream << '('.
-		stream << self type parseType name.
+		"a type struct may or may not come with implicit name"
+		(name beginsWith: 'struct ')
+			ifFalse: [ stream << 'struct ' ].
+		stream << name.
 		self type parseType arity timesRepeat: [ 
 			stream << '*' ].
 		stream << ')'. 

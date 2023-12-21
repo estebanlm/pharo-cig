@@ -31,6 +31,16 @@ return (tv_TColorBIOS*)_result'
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testCastReturnConstBasic [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'historyStr(uchar, int)' }.
+	template := IGCParameterTemplate forReturn: element.
+	
+	self assert: (template castReturn: 'x') equals: 'return (const char*)(x)'
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	| template element |
 
@@ -38,6 +48,18 @@ IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	template := IGCParameterTemplate forParameter: element parameters first.
 	
 	self assert: (template castReturn: 'x') equals: 'return (struct tv_find_t*)(x)'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateArgumentWhenTypedefOfComplexElementAndPointer [
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'printEventCode(ostream &, ushort)' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generateArgument
+		equals: '*arg1'
 ]
 
 { #category : 'tests' }
@@ -61,6 +83,18 @@ IGCParameterTemplateTest >> testGenerateClassReference [
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateClassSpecialization [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TStringView'. 'TStringView(TSpan<char>)' }.
+	template := IGCParameterTemplate forParameter: element parameters first.
+	
+	self 
+		assert: template generateArgument 
+		equals: '*(TSpan<char>*)span'
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testGenerateFieldClass [
 	| template element |
 
@@ -68,6 +102,18 @@ IGCParameterTemplateTest >> testGenerateFieldClass [
 	template := IGCParameterTemplate forField: element.
 	
 	self assert: template generate equals: 'tv_TStreamableClass* forceLink'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateFunctionArgument [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'requestClipboardText(void (&)(TStringView))' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generateArgument 
+		equals: '(void (&)(TStringView))accept'
 ]
 
 { #category : 'tests' }
@@ -155,10 +201,22 @@ IGCParameterTemplateTest >> testGenerateStructPointerType [
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateStructReferenceArgument [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'getMouseEvent(MouseEventType &)' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generateArgument
+		equals: '*(struct MouseEventType*)event'
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testResolveBasicType [
 	| template element |
 
-	element := self translatedUnitTvision elementAtPath: { 'getCtrlChar(ushort)' }.
+	element := self translatedUnitTvision elementAtPath: { 'min(int, int)' }.
 	template := IGCParameterTemplate forParameter: element parameters first.
 	
 	self assert: template class equals: IGCParameterBasicTypeTemplate
@@ -173,6 +231,16 @@ IGCParameterTemplateTest >> testResolveClassReference [
 	
 	self assert: template class equals: IGCParameterClassReferenceTemplate
 	
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testResolveDeclarationType [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'getCtrlChar(ushort)' }.
+	template := IGCParameterTemplate forParameter: element parameters first.
+	
+	self assert: template class equals: IGCParameterDeclarationTemplate
 ]
 
 { #category : 'tests' }

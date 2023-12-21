@@ -1,3 +1,7 @@
+"
+A class to handle ""self"" (the class instance) as a parameter.
+This is used internally in the `IGCMethodTemplate` hierarchy.
+"
 Class {
 	#name : 'IGCParameterSelfTemplate',
 	#superclass : 'IGCParameterClassTemplate',
@@ -12,7 +16,7 @@ IGCParameterSelfTemplate class >> handlesType: aType [
 	^ false
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'generating' }
 IGCParameterSelfTemplate >> generateCast [
 	
 	^ String streamContents: [ :stream | 

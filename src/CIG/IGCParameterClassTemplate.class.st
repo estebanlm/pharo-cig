@@ -11,7 +11,8 @@ IGCParameterClassTemplate class >> handlesType: type [
 
 	^ type isReference not 
 		and: [ type isClass 
-		and: [ type isPointer not ] ]
+		and: [ type isTemplateSpecialization not
+		and: [ type isPointer not ] ] ]
 ]
 
 { #category : 'generating' }

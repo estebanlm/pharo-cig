@@ -152,6 +152,14 @@ IGType >> ifTranslated: aBlock ifNot: notBlock [
 ]
 
 { #category : 'testing' }
+IGType >> isAnyDeclaration [
+	
+	self hasElement ifFalse: [ ^ false ].
+	^ self element isTypedef 
+		or: [ self element isUsingDeclaration ]
+]
+
+{ #category : 'testing' }
 IGType >> isClass [
 
 	^ self element notNil and: [ self element isClass ]
@@ -161,6 +169,12 @@ IGType >> isClass [
 IGType >> isClassTemplate [
 
 	^ self element notNil and: [ self element isClassTemplate ]
+]
+
+{ #category : 'testing' }
+IGType >> isConst [
+	
+	^ self name beginsWith: 'const '
 ]
 
 { #category : 'testing' }
@@ -193,6 +207,13 @@ IGType >> isReference [
 IGType >> isStructure [
 
 	^ self element notNil and: [ self element isStructure ]
+]
+
+{ #category : 'testing' }
+IGType >> isTemplateSpecialization [
+	
+	^ self parent isParameter and: [ self parent isTemplateSpecialization ]
+
 ]
 
 { #category : 'testing' }

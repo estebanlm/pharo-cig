@@ -211,6 +211,12 @@ IGElement >> isNamespace [
 ]
 
 { #category : 'testing' }
+IGElement >> isParameter [
+
+	^ false
+]
+
+{ #category : 'testing' }
 IGElement >> isStructure [
 
 	^ false
@@ -236,6 +242,12 @@ IGElement >> isTypedef [
 
 { #category : 'testing' }
 IGElement >> isUnknown [
+
+	^ false
+]
+
+{ #category : 'testing' }
+IGElement >> isUsingDeclaration [
 
 	^ false
 ]

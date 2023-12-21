@@ -65,7 +65,7 @@ IGCMethodTemplateTest >> testGenerateBodyStatic [
 	
 	self 
 		assert: template generateBody trimmed
-		equals: 'return TText::scroll(*(TStringView*)text, count, (Boolean)includeIncomplete);'
+		equals: 'return TText::scroll(*(TStringView*)text, count, includeIncomplete);'
 ]
 
 { #category : 'tests' }
@@ -78,6 +78,18 @@ IGCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterClassReference [
 	self 
 		assert: template generateBody trimmed
 		equals: '((TView*)self)->locate(*(TRect*)bounds);'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterStructReference [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'getMouseEvent(MouseEventType &)' }.
+	template := element cTemplate.
+		
+	self 
+		assert: template generateBody trimmed
+		equals: 'return THardwareInfo::getMouseEvent(*(struct MouseEventType*)event);'
 ]
 
 { #category : 'tests' }
