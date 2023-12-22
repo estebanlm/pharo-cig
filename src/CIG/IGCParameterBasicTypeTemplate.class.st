@@ -26,11 +26,12 @@ IGCParameterBasicTypeTemplate >> castReturn: aString [
 { #category : 'generating' }
 IGCParameterBasicTypeTemplate >> generateArgument [
 	
-	self type hasElement ifFalse: [ ^ self element name ]. 
 	^ String streamContents: [ :stream | 
 		self type isReference 
 			ifTrue: [ stream << '*' ].
-		stream << '(' << self type parseType name << ')' << self element name ]
+		self type hasElement 
+			ifTrue: [ stream << '(' << self type parseType name << ')' << self element name ]
+			ifFalse: [ stream << self element name ] ]
 ]
 
 { #category : 'generating' }

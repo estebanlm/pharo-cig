@@ -282,6 +282,16 @@ IGType >> phDeclarationWith: aPrefix [
 			stream << '*' ] ]
 ]
 
+{ #category : 'testing' }
+IGType >> requiresCast [
+	"There are some type cases that require an explicit cast. 
+	 For now the only case I know is in case we have a typedef to a function, but that mey be other in the future"
+	
+	^ self hasElement 
+		and: [ self element isTypedef
+		and: [ self element definesFunction ] ]
+]
+
 { #category : 'private' }
 IGType >> resolveFFIType: aString ifFound: foundBlock ifAbsent: absentBlock [
 

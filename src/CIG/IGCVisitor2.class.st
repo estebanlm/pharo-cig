@@ -176,6 +176,8 @@ IGCVisitor2 >> visitConstructor: aConstructor [
 
 	"abstract classes do not have public constructors"
 	aConstructor parent isAbstract ifTrue: [ ^ self ].
+	"we just want public constructors"
+	aConstructor isPublic ifFalse: [ ^ self ].
 	
 	self hStream << aConstructor cTemplate generateHeader << ';'; cr.
 	self cStream << aConstructor cTemplate generate; cr

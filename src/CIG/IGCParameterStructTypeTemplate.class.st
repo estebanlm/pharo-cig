@@ -1,3 +1,7 @@
+"
+This template handles structure parameters (e.g. struct mystruct arg).
+template for returning structs is different because we need to copy from original struct to result struct (which is not the same).
+"
 Class {
 	#name : 'IGCParameterStructTypeTemplate',
 	#superclass : 'IGCParameterTemplate',
@@ -9,14 +13,19 @@ Class {
 { #category : 'private' }
 IGCParameterStructTypeTemplate class >> handlesType: type [
 
-	^ type isStructure and: [ type isClass not ]
+	^ type isStructure 
+		and: [ type isClass not
+		and: [ type isPointer not ] ]
 ]
 
 { #category : 'generating' }
 IGCParameterStructTypeTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream | 
-		stream << 'return ' << '(' << self generateCType << ')(' << aString << ')' ]
+		stream << 'auto _tmp = ' << aString << ';'; cr.
+		stream << self generateCType  << ' _result;'; cr.
+		stream << 'memcpy(&_result, &_tmp, sizeof(' << self generateCType << '));'; cr.
+		stream << 'return _result' ]
 ]
 
 { #category : 'generating' }

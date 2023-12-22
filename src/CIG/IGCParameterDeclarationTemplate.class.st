@@ -35,10 +35,14 @@ IGCParameterDeclarationTemplate >> generateArgument [
 	^ String streamContents: [ :stream | 
 		self type isReference 
 			ifTrue: [ stream << '*' ].
-		"stream << '(' << self type element cppDeclaration.
-		self type parseType arity 
-			timesRepeat: [ stream << '*' ].
-		stream << ')'."		
+		self type requiresCast ifTrue: [ 
+			stream << '('.
+			self type hasElement 
+				ifTrue: [ stream << self type element cppDeclaration ]
+				ifFalse: [ stream << self type name ].
+			self type parseType arity 
+				timesRepeat: [ stream << '*' ].
+			stream << ')' ].
 		stream << self element name ]
 ]
 

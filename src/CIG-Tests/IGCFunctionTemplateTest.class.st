@@ -15,7 +15,7 @@ IGCFunctionTemplateTest >> testGenerateBodyBasicTypeFunctionWithParameterClassRe
 		
 	self 
 		assert: template generateBody trimmed
-		equals: 'return (tv_ushort)(getStyle(*(TColorAttr*)attr));'
+		equals: 'return getStyle(*(TColorAttr*)attr);'
 ]
 
 { #category : 'tests' }

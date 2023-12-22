@@ -30,7 +30,7 @@ IGCBaseFunctionTemplate >> generate [
 {body}
 }' format: {
 		#header -> self generateHeader.
-		#body -> self generateBody.
+		#body -> (self indent: self generateBody).
 	} asDictionary
 ]
 
@@ -47,13 +47,8 @@ IGCBaseFunctionTemplate >> generateArguments [
 IGCBaseFunctionTemplate >> generateBody [
 	
 	^ String streamContents: [ :stream |
-		(self castReturn: self basicGenerateBody) lines 
-			do: [ :each | 
-				stream tab.
-				stream << each ]
-			separatedBy: [ 
-				stream cr ].
-			stream << ';' ]
+		stream << (self castReturn: self basicGenerateBody).
+		stream << ';' ]
 ]
 
 { #category : 'generating' }
@@ -80,6 +75,17 @@ IGCBaseFunctionTemplate >> generateParameters [
 IGCBaseFunctionTemplate >> generateReturnType [
 
 	^ self return generateCType
+]
+
+{ #category : 'accessing' }
+IGCBaseFunctionTemplate >> indent: aString [ 
+	
+	^ String streamContents: [ :stream |
+		 aString lines 
+			do: [ :each | 
+				stream tab.
+				stream << each ]
+			separatedBy: [ stream cr ] ]
 ]
 
 { #category : 'accessing' }

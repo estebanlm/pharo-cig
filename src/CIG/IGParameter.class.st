@@ -73,6 +73,23 @@ IGParameter >> definesFunction [
 ]
 
 { #category : 'initialization' }
+IGParameter >> disambiguateIntTypeName: aCursor [
+	
+	self flag: #TODO. "This can have other cases?"
+	(typeName beginsWith: 'int') ifTrue: [ self disambiguatePossibleIntSizeT: aCursor ]		
+]
+
+{ #category : 'initialization' }
+IGParameter >> disambiguatePossibleIntSizeT: aCursor [
+	| source |
+	
+	source := aCursor source.
+	(source beginsWith: 'size_t') ifFalse: [ ^ self ].
+	
+	typeName :=  typeName copyReplaceAll: 'int' with: 'size_t'
+]
+
+{ #category : 'initialization' }
 IGParameter >> fromCursor: aCursor [
 	| type |
 
@@ -81,10 +98,13 @@ IGParameter >> fromCursor: aCursor [
 	typeName := type spelling.
 	typeKind := type kind.
 	argumentIndex := self argumentIndexOf: aCursor.
+
+	"I need to disambiguate a kind int that is in fact declared as a size_t"
+	self disambiguateIntTypeName: aCursor.
 	
 	name ifEmpty: [ 
 		name := 'arg{1}' format: { argumentIndex } ].
-	
+		
 	typeKind = CXType_Elaborated ifTrue: [ 
 		| underlyingType |
 		underlyingType :=  type namedType.

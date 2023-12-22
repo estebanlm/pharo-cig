@@ -19,7 +19,7 @@ IGCParameterClassPointerTemplate class >> handlesType: type [
 IGCParameterClassPointerTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream | 
-		stream << '(' << self generateCType << ')(' << aString << ')' ]
+		stream << 'return (' << self generateCType << ')(' << aString << ')' ]
 ]
 
 { #category : 'generating' }

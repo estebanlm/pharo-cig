@@ -13,7 +13,7 @@ IGCParameterTemplateTest >> testCastReturnBasicType [
 	element := self translatedUnitTvision elementAtPath: { 'getStyle(const TColorAttr &)' }.
 	template := IGCParameterTemplate forReturn: element.
 	
-	self assert: (template castReturn: 'x') equals: 'return (tv_ushort)(x)'
+	self assert: (template castReturn: 'x') equals: 'return x'
 ]
 
 { #category : 'tests' }
@@ -45,7 +45,7 @@ IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	| template element |
 
 	element := self translatedUnitTvision elementAtPath: { '_dos_findnext(struct find_t *)' }.
-	template := IGCParameterTemplate forParameter: element parameters first.
+	template := element parameters first cTemplate.
 	
 	self assert: (template castReturn: 'x') equals: 'return (struct tv_find_t*)(x)'
 ]
@@ -117,6 +117,18 @@ IGCParameterTemplateTest >> testGenerateFunctionArgument [
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateFunctionArgumentWithTypedef [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TNSCollection'. 'firstThat(ccTestFunc, void *)' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generateArgument 
+		equals: '(ccTestFunc)Test'
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testGenerateFunctionParameter [
 	| template element |
 
@@ -158,14 +170,14 @@ IGCParameterTemplateTest >> testGenerateNestedEnumType [
 
 { #category : 'tests' }
 IGCParameterTemplateTest >> testGenerateReferenceArgument [
-	| element template |
+	| template element |
 
-	element := self translatedUnitTvision elementAtPath: { 'TText'. 'scroll(TStringView, int, Boolean)' }.
-	template := element parameters first cTemplate.
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'next(TStringView, int &)' }.
+	template := element parameters second cTemplate.
 	
 	self 
 		assert: template generateArgument
-		equals: '*(TStringView*)text'
+		equals: '*index'
 ]
 
 { #category : 'tests' }
@@ -254,11 +266,11 @@ IGCParameterTemplateTest >> testResolveFieldClass [
 ]
 
 { #category : 'tests' }
-IGCParameterTemplateTest >> testResolveStructType [
+IGCParameterTemplateTest >> testResolvePointerToStructType [
 	| template element |
 
 	element := self translatedUnitTvision elementAtPath: { '_dos_findnext(struct find_t *)' }.
 	template := IGCParameterTemplate forParameter: element parameters first.
 	
-	self assert: template class equals: IGCParameterStructTypeTemplate
+	self assert: template class equals: IGCParameterPointerToStructTypeTemplate
 ]

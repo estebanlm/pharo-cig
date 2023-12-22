@@ -51,9 +51,24 @@ IGCMethodTemplateTest >> testGenerateBodyFunctionReturnClassReference [
 		
 	self
 		assert: template generateBody
-		equals: '	auto _result = new TColorBIOS();
-	*_result = RGBtoBIOS(*(TColorRGB*)arg1);
-	return (tv_TColorBIOS*)_result;'
+		equals: 'auto _result = new TColorBIOS();
+*_result = RGBtoBIOS(*(TColorRGB*)arg1);
+return (tv_TColorBIOS*)_result;'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyReturnStruct [
+	| element template |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'measure(TStringView)' }.
+	template := element cTemplate.
+
+	self 
+		assert: template generateBody
+		equals: 'auto _tmp = TText::measure(*(TStringView*)text);
+struct tv_TTextMetrics _result;
+memcpy(&_result, &_tmp, sizeof(struct tv_TTextMetrics));
+return _result;'
 ]
 
 { #category : 'tests' }
@@ -66,6 +81,18 @@ IGCMethodTemplateTest >> testGenerateBodyStatic [
 	self 
 		assert: template generateBody trimmed
 		equals: 'return TText::scroll(*(TStringView*)text, count, includeIncomplete);'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyStaticReturningClass [
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'allocateScreenBuffer()' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generateBody trimmed
+		equals: 'return (tv_TScreenCell*)(THardwareInfo::allocateScreenBuffer());'
 ]
 
 { #category : 'tests' }
