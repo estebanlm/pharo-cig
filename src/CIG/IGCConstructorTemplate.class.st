@@ -9,9 +9,9 @@ Class {
 { #category : 'private' }
 IGCConstructorTemplate class >> handlesElement: anElement [
 
-	^ anElement isClassMember 
+	^ anElement isClassMember
 		and: [ anElement isConstructor
-		and: [ anElement parent hasOperatorOverloadNew not ] ]
+		and: [ anElement parent hasOperatorOverloadNewManyArguments not ] ]
 ]
 
 { #category : 'private' }

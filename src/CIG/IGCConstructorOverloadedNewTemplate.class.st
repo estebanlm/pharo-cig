@@ -11,7 +11,7 @@ IGCConstructorOverloadedNewTemplate class >> handlesElement: anElement [
 
 	^ anElement isClassMember 
 		and: [ anElement isConstructor
-		and: [ anElement parent hasOperatorOverloadNew ] ]
+		and: [ anElement parent hasOperatorOverloadNewManyArguments ] ]
 ]
 
 { #category : 'private' }

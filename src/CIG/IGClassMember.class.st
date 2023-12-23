@@ -5,7 +5,8 @@ Class {
 	#classTraits : 'IGTFunction classTrait + IGTTemplateSpecialization classTrait',
 	#instVars : [
 		'underlyingTypeName',
-		'underlyingTypeKind'
+		'underlyingTypeKind',
+		'isPublic'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -40,6 +41,7 @@ IGClassMember >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
 	self fillFunctionWith: aCursor.
+	isPublic := aCursor cxxAccessSpecifier = 1.
 	
 	type := aCursor type.
 	type kind  = CXType_Elaborated ifTrue: [ 
@@ -74,6 +76,12 @@ IGClassMember >> isOperator [
 
 	^ (self name beginsWith: 'operator') and: [
 		  self name size > 8 and: [ (self name at: 9) isAlphaNumeric not ] ]
+]
+
+{ #category : 'testing' }
+IGClassMember >> isPublic [
+
+	^ isPublic
 ]
 
 { #category : 'testing' }

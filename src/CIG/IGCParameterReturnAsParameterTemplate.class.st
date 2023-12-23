@@ -13,8 +13,7 @@ Class {
 { #category : 'private' }
 IGCParameterReturnAsParameterTemplate class >> handlesType: type [
 
-	^ type isReference 
-		and: [ type isClass ]
+	^ false
 ]
 
 { #category : 'generating' }

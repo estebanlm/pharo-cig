@@ -10,14 +10,18 @@ Class {
 IGCParameterClassReferenceTemplate class >> handlesType: type [
 
 	^ type isReference 
-		and: [ type isClass ]
+		and: [ type isClass
+		and: [ (type isPointer not) or: [ type pointerArity = 1 ] ] ]
 ]
 
 { #category : 'generating' }
 IGCParameterClassReferenceTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream | 
-		stream << 'return ' << '(' << self generateCType << ')(' << aString << ')' ]
+		stream << 'return ' << '(' << self generateCType << ')'.
+		self type isReference
+			ifTrue: [ stream << '&' ].
+		stream << '(' << aString << ')' ]
 ]
 
 { #category : 'generating' }

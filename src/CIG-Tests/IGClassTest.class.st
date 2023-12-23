@@ -43,9 +43,12 @@ IGClassTest >> testMethodAnsweringAClassWithoutReferenceAnswerACorrectPointer [
 IGClassTest >> testMethodAnsweringAClassWithtReferenceAnswerACorrectPointer [
 	| element |
 	
-	element := self elementAtPath: { 'noise'. 'model'. 'Plane'. 'GetModule()' }.
-
-	self 
-		assert: element resolveReturnType cDeclaration 
-		equals: 'no_noise_module_Module*'
+	element := self translatedUnitTvision elementAtPath: { 'TPWrittenObjects' }.
+	self deny: element shouldExposeDispose.
+	
+	element := self translatedUnitTvision elementAtPath: { 'TScreenCell' }.
+	self deny: element shouldExposeDispose.
+	
+	element := self translatedUnitTvision elementAtPath: { 'TStreamableTypes' }.
+	self assert: element shouldExposeDispose
 ]

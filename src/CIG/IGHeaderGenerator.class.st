@@ -231,17 +231,18 @@ IGHeaderGenerator >> generateMakefile [
 	'Generating Makefile.' asBeaconSignal emit.
 
 	template := '
-INCLUDE_DIRS={2}
-LIBS={3}
+INCLUDE_DIRS={include}
+LIBS={libs}
 
-{1}.so: {1}.cpp
-	clang -xc++ -fPIC --shared $(INCLUDE_DIRS) $(LIBS) {1}.cpp -o {1}.so
+{libName}.so: {libName}.cpp
+	clang -xc++ -fPIC --shared $(INCLUDE_DIRS) $(LIBS) {libName}.cpp -o {libName}.so
 ' format: { 
-	self libraryName.
-	(String streamContents: [ :s | 
-		self cIncludePathsAsArguments asStringOn: s delimiter: ' ' ]).
-	(String streamContents: [ :s | 
-		self cLibsAsArguments asStringOn: s delimiter: ' ' ]) }.
+		#libName->self libraryName.
+		#include->(String streamContents: [ :s | 
+			self cIncludePathsAsArguments asStringOn: s delimiter: ' ' ]).
+		#libs->(String streamContents: [ :s | 
+			self cLibsAsArguments asStringOn: s delimiter: ' ' ]) }
+	asDictionary.
 
 	self makefileReference 
 		ensureDelete;

@@ -146,12 +146,12 @@ IGCVisitor2 >> visitClass: aClass [
 		self indentDo: [  
 			self hStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
 			self cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
-			super visitClass: aClass.
-			self hStream << aClass cDisposeTemplate generateHeader << ';'; cr. 
+			super visitClass: aClass. 
 			"we do not generate dispose if operator new is overloaded, because the free of the 
 			 memory will be handled differently (by hand)"
-			aClass hasOperatorOverloadNew 
-				ifFalse: [ self cStream << aClass cDisposeTemplate generate; cr ].
+			aClass shouldExposeDispose ifTrue: [
+				self hStream << aClass cDisposeTemplate generateHeader << ';'; cr.
+				self cStream << aClass cDisposeTemplate generate; cr ].
 			self hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
 			self cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
 	ensure: [

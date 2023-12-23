@@ -31,6 +31,19 @@ IGCMethodTemplateTest >> testGenerateBodyConstructorOverloadNew [
 ]
 
 { #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyConstructorOverloadNewSingleParameter [
+	"when new is overloaded but with just one parameter we can proceed as usual"
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'TStreamableTypes'. 'TStreamableTypes()' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generateBody trimmed
+		equals: 'return (tv_TStreamableTypes*)(new TStreamableTypes());'
+]
+
+{ #category : 'tests' }
 IGCMethodTemplateTest >> testGenerateBodyDispose [
 	| element template |
 
@@ -54,6 +67,18 @@ IGCMethodTemplateTest >> testGenerateBodyFunctionReturnClassReference [
 		equals: 'auto _result = new TColorBIOS();
 *_result = RGBtoBIOS(*(TColorRGB*)arg1);
 return (tv_TColorBIOS*)_result;'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyMethodWithReturnClassReferenceOverloadNew [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TView'. 'getColor(ushort)' }.
+	template := IGCMethodTemplate for: element.
+		
+	self 
+		assert: template generateBody
+		equals: '*(TAttrPair*)result = ((TView*)self)->getColor(color);'
 ]
 
 { #category : 'tests' }
@@ -101,10 +126,22 @@ IGCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterClassReference [
 
 	element := self translatedUnitTvision elementAtPath: { 'TView'. 'locate(TRect &)' }.
 	template := IGCMethodTemplate for: element.
-		
+
 	self 
 		assert: template generateBody trimmed
 		equals: '((TView*)self)->locate(*(TRect*)bounds);'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterPointerClassReference [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TColorDialog'. 'getIndexes(TColorIndex *&)' }.
+	template := IGCMethodTemplate for: element.
+
+	self 
+		assert: template generateBody trimmed
+		equals: '((TColorDialog*)self)->getIndexes((TColorIndex*&)arg1);'
 ]
 
 { #category : 'tests' }
@@ -165,6 +202,18 @@ IGCMethodTemplateTest >> testGenerateHeaderDispose [
 	self 
 		assert: template generateHeader 
 		equals: 'void tv_TText_dispose(tv_TText* self)'
+]
+
+{ #category : 'tests' }
+IGCMethodTemplateTest >> testGenerateHeaderMethodWithReturnClassReferenceOverloadNew [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TView'. 'getColor(ushort)' }.
+	template := IGCMethodTemplate for: element.
+		
+	self 
+		assert: template generateHeader
+		equals: 'void tv_TView_getColor(tv_TView* self, tv_ushort color, tv_TAttrPair* result)'
 ]
 
 { #category : 'tests' }

@@ -282,6 +282,12 @@ IGType >> phDeclarationWith: aPrefix [
 			stream << '*' ] ]
 ]
 
+{ #category : 'accessing' }
+IGType >> pointerArity [
+	
+	^ self parseType arity
+]
+
 { #category : 'testing' }
 IGType >> requiresCast [
 	"There are some type cases that require an explicit cast. 

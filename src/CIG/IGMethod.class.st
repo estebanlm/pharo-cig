@@ -2,7 +2,6 @@ Class {
 	#name : 'IGMethod',
 	#superclass : 'IGClassMember',
 	#instVars : [
-		'isPublic',
 		'isVirtual',
 		'isPureVirtual',
 		'isStatic'
@@ -40,7 +39,6 @@ IGMethod >> cTemplate [
 IGMethod >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
-	isPublic := aCursor cxxAccessSpecifier = 1.
 	isVirtual := aCursor cxxMethodIsVirtual.
 	isStatic := aCursor cxxMethodIsStatic.
 	isPureVirtual := isVirtual and: [ aCursor cxxMethodIsPureVirtual ]
@@ -50,12 +48,6 @@ IGMethod >> fromCursor: aCursor [
 IGMethod >> isMethod [
 
 	^ true
-]
-
-{ #category : 'testing' }
-IGMethod >> isPublic [
-
-	^ isPublic
 ]
 
 { #category : 'testing' }

@@ -12,9 +12,22 @@ IGTClass >> hasOperatorOverload: aString [
 ]
 
 { #category : 'testing' }
+IGTClass >> hasOperatorOverloadDelete [
+
+	^ self hasOperatorOverload: 'delete'
+]
+
+{ #category : 'testing' }
 IGTClass >> hasOperatorOverloadNew [
 
 	^ self hasOperatorOverload: 'new'
+]
+
+{ #category : 'testing' }
+IGTClass >> hasOperatorOverloadNewManyArguments [
+
+	^ (self hasOperatorOverload: 'new') 
+		and: [ (self operatorAt: 'new') parameters size > 1 ]
 ]
 
 { #category : 'accessing' }
@@ -41,6 +54,12 @@ IGTClass >> operatorAt: aName ifFound: foundBlock ifNone: noneBlock [
 ]
 
 { #category : 'accessing' }
+IGTClass >> operatorDelete [
+
+	^ self operatorAt: 'delete'
+]
+
+{ #category : 'accessing' }
 IGTClass >> operatorNew [
 
 	^ self operatorAt: 'new'
@@ -50,4 +69,17 @@ IGTClass >> operatorNew [
 IGTClass >> operators [
 
 	^ self elements select: [ :each | each isMethod and: [ each isOperator ] ]
+]
+
+{ #category : 'testing' }
+IGTClass >> shouldExposeDispose [
+
+	"if I have a new with arguments I will need to dispose differenly"
+	^ self hasOperatorOverloadNewManyArguments not 
+		and: [ 
+			"if destructor is private, the dispose method will not work."
+			self elements anySatisfy: [ :each | 
+				each isClassMember
+				and: [ each isDestructor 
+				and: [ each isPublic ] ] ] ]
 ]

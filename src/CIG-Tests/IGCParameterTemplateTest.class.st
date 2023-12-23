@@ -31,6 +31,18 @@ return (tv_TColorBIOS*)_result'
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testCastReturnClassReferencePassingReference [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TRect'. 'move(int, int)' }.
+	template := IGCParameterTemplate forReturn: element.
+	
+	self 
+		assert: (template castReturn: 'x')
+		equals: 'return (tv_TRect*)&(x)'
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testCastReturnConstBasic [
 	| template element |
 
@@ -48,6 +60,30 @@ IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	template := element parameters first cTemplate.
 	
 	self assert: (template castReturn: 'x') equals: 'return (struct tv_find_t*)(x)'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateArgumentPointerClassReference [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TColorDialog'. 'getIndexes(TColorIndex *&)' }.
+	template := element parameters first cTemplate.
+
+	self 
+		assert: template generateArgument 
+		equals: '(TColorIndex*&)arg1'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateArgumentReferenceArgument [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'next(TStringView, int &)' }.
+	template := element parameters second cTemplate.
+	
+	self 
+		assert: template generateArgument
+		equals: '*index'
 ]
 
 { #category : 'tests' }
@@ -166,18 +202,6 @@ IGCParameterTemplateTest >> testGenerateNestedEnumType [
 	template := IGCParameterTemplate forReturn: element.
 	
 	self assert: template generateCType equals: 'tv_THardwareInfo_PlatformType'
-]
-
-{ #category : 'tests' }
-IGCParameterTemplateTest >> testGenerateReferenceArgument [
-	| template element |
-
-	element := self translatedUnitTvision elementAtPath: { 'TText'. 'next(TStringView, int &)' }.
-	template := element parameters second cTemplate.
-	
-	self 
-		assert: template generateArgument
-		equals: '*index'
 ]
 
 { #category : 'tests' }

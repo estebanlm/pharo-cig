@@ -1,13 +1,13 @@
 Class {
-	#name : 'IGCFunctionReturnAsParameterTemplate',
-	#superclass : 'IGCFunctionTemplate',
+	#name : 'IGCMethodReturnAsParameterTemplate',
+	#superclass : 'IGCInstanceMethodTemplate',
 	#category : 'CIG-C-Template',
 	#package : 'CIG',
 	#tag : 'C-Template'
 }
 
 { #category : 'private' }
-IGCFunctionReturnAsParameterTemplate class >> handlesElement: anElement [
+IGCMethodReturnAsParameterTemplate class >> handlesElement: anElement [
 	| type |
 
 	type := anElement resolveReturnType.
@@ -15,7 +15,7 @@ IGCFunctionReturnAsParameterTemplate class >> handlesElement: anElement [
 ]
 
 { #category : 'generating' }
-IGCFunctionReturnAsParameterTemplate >> castReturn: aString [
+IGCMethodReturnAsParameterTemplate >> castReturn: aString [
 	| cppDecl |
 
 	cppDecl := self returnArgument type element cppDeclaration.
@@ -26,7 +26,7 @@ IGCFunctionReturnAsParameterTemplate >> castReturn: aString [
 ]
 
 { #category : 'generating' }
-IGCFunctionReturnAsParameterTemplate >> generateArguments [
+IGCMethodReturnAsParameterTemplate >> generateArguments [
 
 	^ String streamContents: [ :stream |
 		self parameters allButLast
@@ -35,7 +35,7 @@ IGCFunctionReturnAsParameterTemplate >> generateArguments [
 ]
 
 { #category : 'accessing' }
-IGCFunctionReturnAsParameterTemplate >> generateHeader [
+IGCMethodReturnAsParameterTemplate >> generateHeader [
 
 	^ 'void {func}({parameters})'
 		format: {
@@ -45,14 +45,14 @@ IGCFunctionReturnAsParameterTemplate >> generateHeader [
 ]
 
 { #category : 'accessing' }
-IGCFunctionReturnAsParameterTemplate >> parameters [
+IGCMethodReturnAsParameterTemplate >> parameters [
 	
 	^ parameters ifNil: [ 
 		parameters := super parameters copyWith: self returnArgument ]
 ]
 
 { #category : 'private' }
-IGCFunctionReturnAsParameterTemplate >> returnArgument [
+IGCMethodReturnAsParameterTemplate >> returnArgument [
 	
 	^ IGCParameterReturnAsParameterTemplate forElement: self element
 ]
