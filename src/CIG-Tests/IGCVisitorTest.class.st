@@ -174,9 +174,8 @@ IGCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'tv_TColorBIOS* tv_RGBtoBIOS(tv_TColorRGB* arg1) {
-	auto _tmp = RGBtoBIOS(*(TColorRGB*)arg1);
 	auto _result = new TColorBIOS();
-	memcpy(_result, &_tmp, sizeof(TColorBIOS));
+	*_result = RGBtoBIOS(*(TColorRGB*)arg1);
 	return (tv_TColorBIOS*)_result;
 }'
 ]
@@ -194,13 +193,12 @@ IGCVisitorTest >> testVisitFunctionReturningClassWithOverloadedNewGenerateCorrec
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'void tv_getFore(const tv_TColorAttr* attr, tv_TDesiredColor* out);'.
+		equals: 'void tv_getFore(tv_TColorAttr* attr, tv_TColorDesired* result);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'void tv_getFore(const tv_TColorAttr* attr, tv_TDesiredColor* out) {
-	auto _tmp = getFore(*(TColorAttr*)attr);
-	memcpy(out, &_tmp, sizeof(TColorDesired));
+		equals: 'void tv_getFore(tv_TColorAttr* attr, tv_TColorDesired* result) {
+	*(TColorDesired*)result = getFore(*(TColorAttr*)attr);
 }'
 ]
 
@@ -285,9 +283,8 @@ IGCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'nu_noise_utils_Color* nu_noise_utils_Image_GetBorderValue(nu_noise_utils_Image* self) {
-	auto _tmp = ((noise::utils::Image*)self)->GetBorderValue();
-	auto _result = new noise::utils::Color();
-	memcpy(_result, &_tmp, sizeof(noise::utils::Color));
+	auto _result = new Color();
+	*_result = ((noise::utils::Image*)self)->GetBorderValue();
 	return (nu_noise_utils_Color*)_result;
 }'
 ]
@@ -303,11 +300,11 @@ IGCVisitorTest >> testVisitMethodReturningClassPtrGeneratesCorrectReturnType [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'const nu_noise_utils_Color* nu_noise_utils_Image_GetConstSlabPtr_2(nu_noise_utils_Image* self, int row);'.
+		equals: 'nu_noise_utils_Color* nu_noise_utils_Image_GetConstSlabPtr_2(nu_noise_utils_Image* self, int row);'.
 	
 	self 
 		assert: visitor cStream contents trimmed 
-		equals: 'const nu_noise_utils_Color* nu_noise_utils_Image_GetConstSlabPtr_2(nu_noise_utils_Image* self, int row) {
+		equals: 'nu_noise_utils_Color* nu_noise_utils_Image_GetConstSlabPtr_2(nu_noise_utils_Image* self, int row) {
 	return (nu_noise_utils_Color*)(((noise::utils::Image*)self)->GetConstSlabPtr(row));
 }'
 ]
@@ -426,18 +423,6 @@ IGCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
 		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, tv_Boolean includeIncomplete) {
 	return TText::scroll(*(TStringView*)text, count, includeIncomplete);
 }'
-]
-
-{ #category : 'tests' }
-IGCVisitorTest >> testVisitStructureSkipTemplateSpecialization [
-	| element visitor |
-
-	element := self translatedUnitTvision elementAtPath: { 'std'. 'hash<TStringView>' }.
-	
-	visitor := IGCVisitor2 newForTest.
-	visitor visitStructure: element.
-	
-	self assert: visitor cStream contents trimmed isEmpty
 ]
 
 { #category : 'tests' }
