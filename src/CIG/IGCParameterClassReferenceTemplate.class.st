@@ -31,7 +31,7 @@ IGCParameterClassReferenceTemplate >> generateArgument [
 		stream << '*(' << (self type element cppDeclaration) << '*)' << self element name ]
 ]
 
-{ #category : 'generating' }
+{ #category : 'as yet unclassified' }
 IGCParameterClassReferenceTemplate >> generateCType [
 	| typeName |
 	

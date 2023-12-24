@@ -98,7 +98,7 @@ IGClass >> resolveType [
 	^ IGType new 
 		parent: self;
 		name: self name;
-		typeReference: ((IGTypeReference newName: 'class ', self name)
+		typeReference: ((IGTypeReference newName: 'class ', self cppDeclaration)
 			parent: self;
 			yourself);
 		yourself

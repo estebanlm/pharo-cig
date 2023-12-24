@@ -365,12 +365,12 @@ IGCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, int* length, int* width);'.
+		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, size_t* length, size_t* width);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, int* length, int* width) {
-	TText::scroll(*(TStringView*)text, count, (Boolean)includeIncomplete, length, width);
+		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, size_t* length, size_t* width) {
+	TText::scroll(*(TStringView*)text, count, includeIncomplete, *length, *width);
 }'
 ]
 
@@ -424,7 +424,7 @@ IGCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, tv_Boolean includeIncomplete) {
-	return TText::scroll(*(TStringView*)text, count, (Boolean)includeIncomplete);
+	return TText::scroll(*(TStringView*)text, count, includeIncomplete);
 }'
 ]
 

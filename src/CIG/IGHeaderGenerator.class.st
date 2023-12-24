@@ -54,26 +54,26 @@ IGHeaderGenerator >> bindingsName: aString [
 	bindingsName := aString
 ]
 
-{ #category : 'scripting' }
+{ #category : 'accessing - scripting' }
 IGHeaderGenerator >> cDefine: aString [
 
 	self cDefine: aString as: nil
 ]
 
-{ #category : 'scripting' }
+{ #category : 'accessing - scripting' }
 IGHeaderGenerator >> cDefine: aKey as: aValue [
 
 	defines ifNil: [ defines := OrderedDictionary new ].
 	defines at: aKey put: aValue
 ]
 
-{ #category : 'scripting' }
+{ #category : 'accessing - scripting' }
 IGHeaderGenerator >> cDefineBeforeHeader: aString [
 
 	self cDefineBeforeHeader: aString as: nil
 ]
 
-{ #category : 'scripting' }
+{ #category : 'accessing - scripting' }
 IGHeaderGenerator >> cDefineBeforeHeader: aKey as: aValue [
 
 	definesBeforeHeader ifNil: [ definesBeforeHeader := OrderedDictionary new ].
@@ -131,7 +131,7 @@ IGHeaderGenerator >> cFileReference [
 	^ (FileLocator imageDirectory / (self bindingsName, '_bindings')) withExtension: 'cpp'
 ]
 
-{ #category : 'scripting' }
+{ #category : 'accessing - scripting' }
 IGHeaderGenerator >> cIncludePath: aStringOrReference [
 
 	includePaths ifNil: [ includePaths := #() ].
@@ -158,11 +158,11 @@ IGHeaderGenerator >> cIncludePathsAsArguments [
 	^ self cIncludePaths collect: [ :each | '-I', each ]
 ]
 
-{ #category : 'scripting' }
+{ #category : 'accessing - scripting' }
 IGHeaderGenerator >> cLib: aStringOrReference [
 
 	libs ifNil: [ libs := #() ].
-	libs := libs copyWith: aStringOrReference asFileReference fullName
+	libs := libs copyWith: aStringOrReference
 ]
 
 { #category : 'accessing' }
@@ -346,7 +346,7 @@ IGHeaderGenerator >> makefileReference [
 	^ FileLocator imageDirectory / 'Makefile'
 ]
 
-{ #category : 'scripting' }
+{ #category : 'accessing - scripting' }
 IGHeaderGenerator >> namespace: aNamespaceClass [
 
 	namespaces ifNil: [ namespaces := #() ].

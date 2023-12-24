@@ -205,13 +205,28 @@ IGCParameterTemplateTest >> testGenerateNestedEnumType [
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateSelfArgumentForClassWithinNamespace [
+	| template element |
+
+	element := self elementAtPath: { 'noise'.  'module'. 'Module'. 'GetSourceModule(int)' }.
+	template := element cTemplate selfTemplate.
+	
+	self 
+		assert: template generateArgument
+		equals: '*(noise::module::Module*)Module'
+	
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testGenerateSelfType [
 	| template element |
 
 	element := self translatedUnitTvision elementAtPath: { 'TView' }.
 	template := IGCParameterSelfTemplate for: element.
 	
-	self assert: template generate equals: 'tv_TView* self'
+	self 
+		assert: template generate 
+		equals: 'tv_TView* self'
 ]
 
 { #category : 'tests' }

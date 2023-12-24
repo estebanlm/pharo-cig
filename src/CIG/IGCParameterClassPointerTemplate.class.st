@@ -28,13 +28,3 @@ IGCParameterClassPointerTemplate >> generateArgument [
 	^ String streamContents: [ :stream |
 		stream << '(' << (self type element cppDeclaration) << '*)' << self element name ]
 ]
-
-{ #category : 'generating' }
-IGCParameterClassPointerTemplate >> generateCType [
-	| typeName |
-	
-	typeName := self type typeReference typeName.
-	^ (self elementAtPath: (typeName substrings: '::'))
-		ifNotNil: [ :aNode | aNode cDeclaration ]
-		ifNil: [ typeName ]
-]
