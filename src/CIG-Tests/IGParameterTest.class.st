@@ -17,19 +17,6 @@ IGParameterTest >> testParameterCallbackCastsCorrectly [
 ]
 
 { #category : 'tests' }
-IGParameterTest >> testParameterClassCastsCorrectly [
-	"it will be a pointer in our case"
-	| element visitor cast |
-			
-	element := self translatedUnitTvision elementAtPath: { 'TCellChar'. 'moveStr(TStringView, bool)'. 'mbc' }.
-	
-	visitor := IGVisitor newForTest.
-	cast := (IGCClassGenerator on: visitor) argumentCastToCPP: element.
-	
-	self assert: cast equals: '*(TStringView*)mbc'
-]
-
-{ #category : 'tests' }
 IGParameterTest >> testParameterClassSpecializationCastsCorrectly [
 	| element param |
 

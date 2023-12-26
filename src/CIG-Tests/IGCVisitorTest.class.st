@@ -6,19 +6,6 @@ Class {
 }
 
 { #category : 'tests' }
-IGCVisitorTest >> testClassDisposeWithOverloadedDeleteSkipGeneration [
-	| element visitor |
-	
-	element := self translatedUnitTvision elementAtPath: { 'TScreenCell' }.
-	
-	visitor := IGCVisitor2 newForTest.
-	(IGCClassGenerator on: visitor) generateDispose: element.
-	
-	self assert: visitor hStream contents trimmed isEmpty.		
-	self assert: visitor cStream contents trimmed isEmpty
-]
-
-{ #category : 'tests' }
 IGCVisitorTest >> testVisitClassGeneratesATypedef [
 	| element visitor |
 			
@@ -99,7 +86,7 @@ IGCVisitorTest >> testVisitConstructorWithOverloadedNewGeneratesCorrectParameter
 	
 	element := self translatedUnitTvision elementAtPath: { 'TScreenCell'. 'TScreenCell()' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitConstructor: element.
 	
 	self 
@@ -117,12 +104,13 @@ IGCVisitorTest >> testVisitConstructorWithOverloadedNewGeneratesCorrectParameter
 IGCVisitorTest >> testVisitEnumUnnamedGeneratesCorrectName [
 	| element visitor |
 	
+	"I am not generating them for the moment"
 	self skip.
 	
 	element := self translatedUnitTvision elements 
 		detect: [ :each | each isEnum and: [ each isUnnamed ] ].
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitEnum: element.
 	
 	self 
@@ -150,7 +138,7 @@ IGCVisitorTest >> testVisitFunctionDisambiguate [
 
 	element := self translatedUnitTvision elementAtPath: { 'fexpand(char *)' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitFunction: element.
 	
 	self 
@@ -164,7 +152,7 @@ IGCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate [
 
 	element := self translatedUnitTvision elementAtPath: { 'RGBtoBIOS(TColorRGB)' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitFunction: element.
 	
 	self 
@@ -188,7 +176,7 @@ IGCVisitorTest >> testVisitFunctionReturningClassWithOverloadedNewGenerateCorrec
 
 	element := self translatedUnitTvision elementAtPath: { 'getFore(const TColorAttr &)' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitFunction: element.
 	
 	self 
@@ -208,7 +196,7 @@ IGCVisitorTest >> testVisitFunctionWithVariadicArgumentGeneratesCorrectFunction 
 
 	element := self translatedUnitTvision elementAtPath: { 'fmtStr(const char *, ...)' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitFunction: element.
 	
 	self 
@@ -239,7 +227,7 @@ IGCVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNam
 
 	element := self translatedUnitTvision elementAtPath: { 'TEditor'. 'insertBuffer(const char *, uint, uint, Boolean, Boolean)' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -253,7 +241,7 @@ IGCVisitorTest >> testVisitMethodParameterStdStringCastsCorrectly [
 
 	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -273,7 +261,7 @@ IGCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 
 	element := self elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetBorderValue()' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -295,7 +283,7 @@ IGCVisitorTest >> testVisitMethodReturningClassPtrGeneratesCorrectReturnType [
 
 	element := self elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetConstSlabPtr(int)' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -315,7 +303,7 @@ IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 
 	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'GetDestFilename()' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -337,7 +325,7 @@ IGCVisitorTest >> testVisitMethodWithClassTemplateCastsCorrectly [
 	
 	element := self translatedUnitTvision elementAtPath: { 'TText'. 'drawStr(TSpan<TScreenCell>, int, TStringView, int)' }.
 
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -357,7 +345,7 @@ IGCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
 	
 	element := self translatedUnitTvision elementAtPath: { 'TText'. 'scroll(TStringView, int, Boolean, int &, int &)' }.
 
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -377,7 +365,7 @@ IGCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
 
 	element := self translatedUnitTvision elementAtPath: { 'TCellChar'. 'moveWideCharTrail()' }.
 	
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 
@@ -411,7 +399,7 @@ IGCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
 	
 	element := self translatedUnitTvision elementAtPath: { 'TText'. 'scroll(TStringView, int, Boolean)' }.
 
-	visitor := IGCVisitor2 newForTest.
+	visitor := IGCVisitor newForTest.
 	visitor visitMethod: element.
 	
 	self 

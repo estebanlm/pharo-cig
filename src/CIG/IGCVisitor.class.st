@@ -144,12 +144,16 @@ IGCVisitor >> visitClass: aClass [
 	self push: aClass.
 	[  
 		self indentDo: [  
-			hStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
-			cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
-			super visitClass: aClass.
-			(IGCClassGenerator on: self) generateDispose: aClass.
-			hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
-			cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
+			self hStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
+			self cStream << '/* BEGIN CLASS: ' << aClass name << ' */' << String cr.
+			super visitClass: aClass. 
+			"we do not generate dispose if operator new is overloaded, because the free of the 
+			 memory will be handled differently (by hand)"
+			aClass shouldExposeDispose ifTrue: [
+				self hStream << aClass cDisposeTemplate generateHeader << ';'; cr.
+				self cStream << aClass cDisposeTemplate generate; cr ].
+			self hStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr.
+			self cStream << '/* END CLASS: ' << aClass name << ' */' << String cr << String cr ] ]
 	ensure: [
 		self pop ]
 ]
@@ -172,18 +176,23 @@ IGCVisitor >> visitConstructor: aConstructor [
 
 	"abstract classes do not have public constructors"
 	aConstructor parent isAbstract ifTrue: [ ^ self ].
+	"we just want public constructors"
+	aConstructor isPublic ifFalse: [ ^ self ].
 	
-	(IGCClassGenerator on: self) generateConstructor: aConstructor
+	self hStream << aConstructor cTemplate generateHeader << ';'; cr.
+	self cStream << aConstructor cTemplate generate; cr
 ]
 
 { #category : 'visiting' }
 IGCVisitor >> visitDestructor: aDestructor [
 
+	"no destructor generation (no point)"
 ]
 
 { #category : 'visiting' }
 IGCVisitor >> visitEnum: anEnum [
 
+	"this is generated in the header declaration."
 ]
 
 { #category : 'visiting' }
@@ -195,8 +204,8 @@ IGCVisitor >> visitFunction: aFunction [
 		or: [ aFunction hasVariadicListArgument ])
 		ifTrue: [ ^ self ].
 	
-	(IGCGenerator on: self) generateFunction: aFunction.
-	cStream cr
+	self hStream << aFunction cTemplate generateHeader << ';'; cr.
+	self cStream << aFunction cTemplate generate; cr
 ]
 
 { #category : 'visiting' }
@@ -205,13 +214,9 @@ IGCVisitor >> visitMethod: aMethod [
 	"skip not public methods.
 	 skip operators because they are not really used in pharo. 
 	 skip function with va_list because we don't know what to do with them"
-	(aMethod isPublic not 
-		or: [ aMethod isOperator
-		or: [ aMethod hasVariadicListArgument ] ]) 
-		ifTrue: [ ^ self ].
+	aMethod isPublic ifFalse: [ ^ self ].
 
-	(IGCClassGenerator on: self) generateMethod: aMethod.
-	cStream cr
+	self visitFunction: aMethod
 ]
 
 { #category : 'visiting' }
@@ -240,8 +245,9 @@ IGCVisitor >> visitStructure: aStructure [
 	"act as class if it behaves as a class"
 	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
 	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
-	"otherwise generate structure"	
-	(IGCGenerator on: self) generateStructure: aStructure
+	"otherwise, generate the structure (unless is opaque, of course)"	
+	aStructure isOpaque ifTrue: [ ^ self ].	
+	self hStream << aStructure cTemplate generate; cr
 ]
 
 { #category : 'visiting' }

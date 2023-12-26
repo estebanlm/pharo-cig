@@ -37,30 +37,8 @@ IGCHeaderDeclareVisitor >> hStream: aStream [
 { #category : 'visiting' }
 IGCHeaderDeclareVisitor >> visitClass: aClass [
 
-	self addTypedef: #void as: aClass fullName.
+	self hStream << aClass cTemplate generateHeader; cr.
 	super visitClass: aClass
-]
-
-{ #category : 'as yet unclassified' }
-IGCHeaderDeclareVisitor >> visitClassTemplate: aClassTemplate [
-	| cppName cName |
-
-	"
-	1. collect defined templates.
-	2. generate a typedef for each.
-	3. generate functions for each.
-		- later, in pharo side, we will generate a class and a hierarchy
-	"
-
-	cName := aClassTemplate cDeclaration allButLast.
-	cppName := aClassTemplate cppDeclaration.	
-	self addTypedef: #void as: cName.
-	(IGCTemplateCollector new
-		typeName: cppName;
-		visit: aClassTemplate root;
-		collected)
-		do: [ :each | 
-			self addTypedef: #void as: (cName, each capitalized) ]
 ]
 
 { #category : 'visiting' }
@@ -75,31 +53,24 @@ IGCHeaderDeclareVisitor >> visitEnum: anEnum [
 	"skipping unnamed enums"
 	anEnum isUnnamed ifTrue: [ ^ self ].
 
-	"if it does not belongs to a namespace, it will be available at compile 
-	 time in C, so we just generate it as a typedef"
-	anEnum depth = 1 ifTrue: [ 
-		^ self addTypedef: #int as: anEnum cDeclaration ].
-
-	self hStream << 'enum ' << (self enumNameFor: anEnum) << ' {' << String cr.
-	anEnum elements 
-		do: [ :each | self hStream << '    ' << each name << ' = ' << each value asString ]
-		separatedBy: [ self hStream << ',' << String cr ].
-	self hStream << String cr << '};' << String cr.
+	self hStream << anEnum cTemplate generate; cr
 ]
 
 { #category : 'visiting' }
 IGCHeaderDeclareVisitor >> visitStructure: aStructure [
 
-	(aStructure isClass or: [ aStructure isOpaque ]) ifFalse: [ ^ self ].
-	(IGCClassGenerator on: self) addClassTypedef: aStructure
+	aStructure isClass ifTrue: [ 
+		self hStream << (IGCClassTemplate for: aStructure) generateHeader; cr.
+		^ self ].
+
+	"aStructure isOpaque ifTrue: [ ^ self ].	
+	self hStream << aStructure cTemplate generate; cr"
 ]
 
 { #category : 'visiting' }
 IGCHeaderDeclareVisitor >> visitTypedef: aTypedef [
 
-	self
-		addTypedef: aTypedef resolveType cDeclaration 
-		as: aTypedef cDeclaration
+	self hStream << aTypedef cTemplate generate; cr
 ]
 
 { #category : 'visiting' }
