@@ -100,6 +100,14 @@ IGTranslatedUnit >> elementAtPath: aPath [
 ]
 
 { #category : 'private' }
+IGTranslatedUnit >> findElementMatching: aBlock [
+
+	^ self elements
+		detect: [ :eachElement | aBlock value: eachElement ]
+		ifNone: [ nil ]
+]
+
+{ #category : 'private' }
 IGTranslatedUnit >> findNode: aCursor startingAt: aNode ifAbsent: aBlock [
 	| kind name result |
 	
@@ -133,33 +141,16 @@ IGTranslatedUnit >> findParent: aCursor [
 { #category : 'generating' }
 IGTranslatedUnit >> generateFrom: aHeader [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
-	| cursor tu index |
 
+	"initialize variables"
 	prefix := aHeader prefix.
 	namespaces := aHeader namespaces.
 	definesBeforeHeader := aHeader cDefinesBeforeHeader.
 	defines := aHeader cDefines.
 	elements := OrderedCollection new.
-
-	index := CXIndex createIndex: 0 diagnostics: 0. 
-	tu := CXTranslationUnit 
-		parseIndex: index 
-		fileName: aHeader fileReference fullName
-		arguments: {
-				'-E'.
-				'-xc++'.
-			}, 
-			aHeader cIncludePathsAsArguments,
-			aHeader cDefinesBeforeHeaderAsArguments,
-			aHeader cDefinesAsArguments.
-
-	cursor := tu cursor.
-	cursor visitChildren: [ :current :parent :data |
-		self addNode: current parent: parent.
-		CXChildVisit recurse ].
-
-	tu dispose.
-	index dispose
+	self traverseASTWith: aHeader.
+	"add special elements at the end"
+	elements addAll: self specialElements
 ]
 
 { #category : 'initialization' }
@@ -239,6 +230,39 @@ IGTranslatedUnit >> prefix [
 IGTranslatedUnit >> root [
 	
 	^ self
+]
+
+{ #category : 'private' }
+IGTranslatedUnit >> specialElements [
+	"a place to keep special elements with special templates (like std namespace)"
+	
+	^ IGSpecialElement allElements
+		collect: [ :each | each parent: self; yourself ]
+]
+
+{ #category : 'generating' }
+IGTranslatedUnit >> traverseASTWith: aHeader [
+	| index tu cursor |
+	
+	index := CXIndex createIndex: 0 diagnostics: 0. 
+	tu := CXTranslationUnit 
+		parseIndex: index 
+		fileName: aHeader fileReference fullName
+		arguments: {
+				'-E'.
+				'-xc++'.
+			}, 
+			aHeader cIncludePathsAsArguments,
+			aHeader cDefinesBeforeHeaderAsArguments,
+			aHeader cDefinesAsArguments.
+
+	cursor := tu cursor.
+	cursor visitChildren: [ :current :parent :data |
+		self addNode: current parent: parent.
+		CXChildVisit recurse ].
+
+	tu dispose.
+	index dispose
 ]
 
 { #category : 'accessing' }

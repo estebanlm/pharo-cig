@@ -53,6 +53,16 @@ IGCParameterTemplateTest >> testCastReturnConstBasic [
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testCastReturnStdStringType [
+	| template element |
+
+	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'GetDestFilename()' }.
+	template := IGCParameterTemplate forReturn: element.
+	
+	self assert: (template castReturn: 'x') equals: 'return (char*)(x).c_str()'
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	| template element |
 
@@ -84,6 +94,18 @@ IGCParameterTemplateTest >> testGenerateArgumentReferenceArgument [
 	self 
 		assert: template generateArgument
 		equals: '*index'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateArgumentStdString [
+	| template element |
+
+	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)' }.
+	template := element parameters first cTemplate.
+
+	self 
+		assert: template generateArgument 
+		equals: 'std::string(filename)'
 ]
 
 { #category : 'tests' }

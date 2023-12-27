@@ -246,11 +246,11 @@ IGCVisitorTest >> testVisitMethodParameterStdStringCastsCorrectly [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'void nu_noise_utils_WriterBMP_SetDestFilename(nu_noise_utils_WriterBMP* self, const char* filename);'.
+		equals: 'void nu_noise_utils_WriterBMP_SetDestFilename(nu_noise_utils_WriterBMP* self, char* filename);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'void nu_noise_utils_WriterBMP_SetDestFilename(nu_noise_utils_WriterBMP* self, const char* filename) {
+		equals: 'void nu_noise_utils_WriterBMP_SetDestFilename(nu_noise_utils_WriterBMP* self, char* filename) {
 	((noise::utils::WriterBMP*)self)->SetDestFilename(std::string(filename));
 }'
 ]
@@ -313,9 +313,7 @@ IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'char* nu_noise_utils_WriterBMP_GetDestFilename(nu_noise_utils_WriterBMP* self) {
-	auto _tmp = ((noise::utils::WriterBMP*)self)->GetDestFilename();
-	auto _result = _tmp.c_str();
-	return (char*)_result;
+	return (char*)(((noise::utils::WriterBMP*)self)->GetDestFilename()).c_str();
 }'
 ]
 

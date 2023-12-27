@@ -162,7 +162,7 @@ IGType >> isAnyDeclaration [
 { #category : 'testing' }
 IGType >> isClass [
 
-	^ self element notNil and: [ self element isClass ]
+	^ self hasElement and: [ self element isClass ]
 ]
 
 { #category : 'testing' }
