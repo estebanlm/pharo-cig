@@ -83,17 +83,6 @@ IGElementTest >> testStructureCPPDeclaration [
 ]
 
 { #category : 'tests' }
-IGElementTest >> testTemplateArgumentAnswersAType [
-	| element |
-
-	element := self translatedUnitTvision elementAtPath: { 'TView'. 'textEvent(TEvent &, TSpan<char>, int &)'. 'dest' }.
-
-	self 
-		assert: element resolveType cDeclaration
-		equals: 'tv_TSpan*'
-]
-
-{ #category : 'tests' }
 IGElementTest >> testUnnamedArgumentAnswersAValidName [
 	| element params |
 

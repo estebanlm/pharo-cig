@@ -16,7 +16,9 @@ IGStdStringParameterTemplate class >> handlesType: aType [
 IGStdStringParameterTemplate >> castReturn: aString [ 
 
 	^ String streamContents: [ :stream |
-		stream << 'return (char*)(' << aString << ').c_str()' ]
+		stream << 'auto _tmp = ' << aString << ';'; cr.
+		stream << 'auto _result = _tmp.c_str();'; cr.
+		stream << 'return (char*)_result' ]
 ]
 
 { #category : 'generating' }

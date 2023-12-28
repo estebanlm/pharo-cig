@@ -43,6 +43,19 @@ typedef void tv_TSpanUint32_t;'
 ]
 
 { #category : 'tests' }
+IGCVisitorTest >> testVisitClassWithDispose [
+	| element visitor |
+
+	element := self elementAtPath: { 'noise'. 'utils'. 'RendererNormalMap' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitClass: element.
+	
+	self assert: (visitor hStream contents includesSubstring: 'void nu_noise_utils_RendererNormalMap_dispose')
+		
+]
+
+{ #category : 'tests' }
 IGCVisitorTest >> testVisitClassWithNestedEnumEmitsEnum [
 	| element visitor |
 
@@ -271,7 +284,7 @@ IGCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'nu_noise_utils_Color* nu_noise_utils_Image_GetBorderValue(nu_noise_utils_Image* self) {
-	auto _result = new Color();
+	auto _result = new noise::utils::Color();
 	*_result = ((noise::utils::Image*)self)->GetBorderValue();
 	return (nu_noise_utils_Color*)_result;
 }'
@@ -313,7 +326,9 @@ IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'char* nu_noise_utils_WriterBMP_GetDestFilename(nu_noise_utils_WriterBMP* self) {
-	return (char*)(((noise::utils::WriterBMP*)self)->GetDestFilename()).c_str();
+	auto _tmp = ((noise::utils::WriterBMP*)self)->GetDestFilename();
+	auto _result = _tmp.c_str();
+	return (char*)_result;
 }'
 ]
 

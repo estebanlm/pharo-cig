@@ -57,6 +57,17 @@ IGCHeaderDeclareVisitor >> visitEnum: anEnum [
 ]
 
 { #category : 'visiting' }
+IGCHeaderDeclareVisitor >> visitNamespace: aNamespace [
+
+	(self includesNamespace: aNamespace cppDeclaration) 
+		ifTrue: [
+			"skip the namespace since is already there, but try to process nested namespaces"
+			self visitAll: (aNamespace elements select: [ :each | each isNamespace ]) ]
+		ifFalse: [ 
+			super visitNamespace: aNamespace ]
+]
+
+{ #category : 'visiting' }
 IGCHeaderDeclareVisitor >> visitStructure: aStructure [
 
 	aStructure isClass ifTrue: [ 

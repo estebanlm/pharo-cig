@@ -19,7 +19,7 @@ IGCParameterClassTemplate class >> handlesType: type [
 IGCParameterClassTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream |
-		stream << 'auto _result = new ' << self type name << '();'; cr.
+		stream << 'auto _result = new ' << self type element cppDeclaration << '();'; cr.
 		stream << '*_result = ' << aString << ';'; cr.
 		stream << 'return (' << self generateCType << ')_result' ]
 ]

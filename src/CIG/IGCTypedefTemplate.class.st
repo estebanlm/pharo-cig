@@ -4,9 +4,9 @@ Class {
 	#instVars : [
 		'type'
 	],
-	#category : 'CIG-C',
+	#category : 'CIG-C-Template',
 	#package : 'CIG',
-	#tag : 'C'
+	#tag : 'C-Template'
 }
 
 { #category : 'generating' }

@@ -43,6 +43,20 @@ IGCParameterTemplateTest >> testCastReturnClassReferencePassingReference [
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testCastReturnClassReferenceWithNamespace [
+	| template element |
+
+	element := self elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetBorderValue()' }.
+	template := IGCParameterTemplate forReturn: element.
+	
+	self 
+		assert: (template castReturn: 'x')  
+		equals: 'auto _result = new noise::utils::Color();
+*_result = x;
+return (nu_noise_utils_Color*)_result'
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testCastReturnConstBasic [
 	| template element |
 
@@ -52,17 +66,21 @@ IGCParameterTemplateTest >> testCastReturnConstBasic [
 	self assert: (template castReturn: 'x') equals: 'return (const char*)(x)'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - stdstring' }
 IGCParameterTemplateTest >> testCastReturnStdStringType [
 	| template element |
 
 	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'GetDestFilename()' }.
 	template := IGCParameterTemplate forReturn: element.
 	
-	self assert: (template castReturn: 'x') equals: 'return (char*)(x).c_str()'
+	self 
+		assert: (template castReturn: 'x') 
+		equals: 'auto _tmp = x;
+auto _result = _tmp.c_str();
+return (char*)_result'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	| template element |
 
@@ -70,6 +88,18 @@ IGCParameterTemplateTest >> testCastReturnStructPointerType [
 	template := element parameters first cTemplate.
 	
 	self assert: (template castReturn: 'x') equals: 'return (struct tv_find_t*)(x)'
+]
+
+{ #category : 'tests' }
+IGCParameterTemplateTest >> testGenerateArgumentClassSpecialization [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'drawStr(TSpan<TScreenCell>, int, TStringView, int)' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generateArgument 
+		equals: '*(TSpan<TScreenCell>*)cells'
 ]
 
 { #category : 'tests' }
@@ -96,7 +126,7 @@ IGCParameterTemplateTest >> testGenerateArgumentReferenceArgument [
 		equals: '*index'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - stdstring' }
 IGCParameterTemplateTest >> testGenerateArgumentStdString [
 	| template element |
 
@@ -148,11 +178,11 @@ IGCParameterTemplateTest >> testGenerateClassSpecialization [
 	template := IGCParameterTemplate forParameter: element parameters first.
 	
 	self 
-		assert: template generateArgument 
-		equals: '*(TSpan<char>*)span'
+		assert: template generate 
+		equals: 'tv_TSpan* span'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testGenerateFieldClass [
 	| template element |
 
@@ -162,7 +192,7 @@ IGCParameterTemplateTest >> testGenerateFieldClass [
 	self assert: template generate equals: 'tv_TStreamableClass* forceLink'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testGenerateFunctionArgument [
 	| template element |
 
@@ -196,7 +226,7 @@ IGCParameterTemplateTest >> testGenerateFunctionParameter [
 	self assert: template generate equals: 'void* accept'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - enum' }
 IGCParameterTemplateTest >> testGenerateNestedEnum [
 	| template element |
 
@@ -206,7 +236,7 @@ IGCParameterTemplateTest >> testGenerateNestedEnum [
 	self assert: template generateCType equals: 'tv_THardwareInfo_PlatformType'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - enum' }
 IGCParameterTemplateTest >> testGenerateNestedEnumParameter [
 	| template element |
 
@@ -216,7 +246,7 @@ IGCParameterTemplateTest >> testGenerateNestedEnumParameter [
 	self assert: template generate equals: 'tv_TView_selectMode mode'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - enum' }
 IGCParameterTemplateTest >> testGenerateNestedEnumType [
 	| template element |
 
@@ -226,7 +256,7 @@ IGCParameterTemplateTest >> testGenerateNestedEnumType [
 	self assert: template generateCType equals: 'tv_THardwareInfo_PlatformType'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - self' }
 IGCParameterTemplateTest >> testGenerateSelfArgumentForClassWithinNamespace [
 	| template element |
 
@@ -239,7 +269,7 @@ IGCParameterTemplateTest >> testGenerateSelfArgumentForClassWithinNamespace [
 	
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - self' }
 IGCParameterTemplateTest >> testGenerateSelfType [
 	| template element |
 
@@ -251,7 +281,7 @@ IGCParameterTemplateTest >> testGenerateSelfType [
 		equals: 'tv_TView* self'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testGenerateStructPointerArgument [
 	| template element |
 	
@@ -263,7 +293,7 @@ IGCParameterTemplateTest >> testGenerateStructPointerArgument [
 		equals: '(struct find_t*)__finfo'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testGenerateStructPointerType [
 	| template element |
 
@@ -273,7 +303,7 @@ IGCParameterTemplateTest >> testGenerateStructPointerType [
 	self assert: template generate equals: 'struct tv_find_t* __finfo'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testGenerateStructReferenceArgument [
 	| template element |
 
@@ -307,6 +337,17 @@ IGCParameterTemplateTest >> testResolveClassReference [
 ]
 
 { #category : 'tests' }
+IGCParameterTemplateTest >> testResolveClassSpecialzation [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TText'. 'drawStr(TSpan<TScreenCell>, int, TStringView, int)' }.
+	template := element parameters first cTemplate.
+	
+	self assert: template class equals: IGCParameterClassSpecializationTemplate
+	
+]
+
+{ #category : 'tests' }
 IGCParameterTemplateTest >> testResolveDeclarationType [
 	| template element |
 
@@ -316,7 +357,7 @@ IGCParameterTemplateTest >> testResolveDeclarationType [
 	self assert: template class equals: IGCParameterDeclarationTemplate
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testResolveFieldClass [
 	| template element |
 
@@ -326,7 +367,7 @@ IGCParameterTemplateTest >> testResolveFieldClass [
 	self assert: template class equals: IGCParameterClassPointerTemplate
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCParameterTemplateTest >> testResolvePointerToStructType [
 	| template element |
 

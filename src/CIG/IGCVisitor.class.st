@@ -113,6 +113,15 @@ IGCVisitor >> newHStream [
 ]
 
 { #category : 'private - factory' }
+IGCVisitor >> newHeaderVisitor [
+
+	^ IGCHeaderDeclareVisitor new 
+		file: self file;
+		hStream: self hStream; 
+		yourself
+]
+
+{ #category : 'private - factory' }
 IGCVisitor >> newStreamFor: aFileReference [
 
 	^ ZnNewLineWriterStream on: aFileReference writeStream
@@ -259,10 +268,7 @@ IGCVisitor >> visitUnit: aUnit [
 	cStream := self newCStream.
 	hStream := self newHStream.	
 	[		
-		headerVisitor := IGCHeaderDeclareVisitor new 
-			hStream: self hStream; 
-			yourself.	
-			
+		headerVisitor := self newHeaderVisitor.	
 		self addHHeaders.		
 		headerVisitor visitDefinesBeforeHeader: aUnit.
 		hStream cr.
