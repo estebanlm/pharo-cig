@@ -160,6 +160,18 @@ IGCParameterTemplateTest >> testGenerateBasicType [
 	self assert: template generate equals: 'tv_ushort arg1'
 ]
 
+{ #category : 'tests - callbacks' }
+IGCParameterTemplateTest >> testGenerateCallback [
+	| template element |
+
+	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder'. 'SetCallback(NoiseMapCallback)' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generate trimmed
+		equals: 'nu_noise_utils_NoiseMapCallback pCallback'
+]
+
 { #category : 'tests' }
 IGCParameterTemplateTest >> testGenerateClassReference [
 	| template element |

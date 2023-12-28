@@ -1,3 +1,6 @@
+"
+A special template to handle std::string types.
+"
 Class {
 	#name : 'IGStdStringParameterTemplate',
 	#superclass : 'IGCParameterTemplate',

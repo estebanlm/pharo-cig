@@ -21,6 +21,12 @@ IGTypedef class >> kind [
 	^ CXCursor_TypedefDecl
 ]
 
+{ #category : 'accessing' }
+IGTypedef class >> typeKind [
+	
+	^ CXType_Typedef
+]
+
 { #category : 'visiting' }
 IGTypedef >> accept: aVisitor [
 	

@@ -57,5 +57,10 @@ IGParameterType >> typeReferenceFrom: aParameter [
 			parent: aParameter;
 			yourself ].
 
+	aParameter underlyingTypeKind = IGTypedef typeKind ifTrue: [ 
+		^ (IGTypeReference newName: 'typedef ', aParameter underlyingTypeName)
+			parent: aParameter;
+			yourself ].
+
 	^ nil
 ]

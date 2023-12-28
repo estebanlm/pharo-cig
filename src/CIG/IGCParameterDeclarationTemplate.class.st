@@ -62,8 +62,7 @@ IGCParameterDeclarationTemplate >> generateCType [
 		self type isConst 
 			ifTrue: [ stream << 'const ' ].
 		
-		path := typeName substrings: '::'.
-		stream << ((self elementAtPath: path) 
+		stream << (self type element 
 			ifNotNil: [ :anElement | anElement cDeclaration ]
 			ifNil: [ typeName ]).
 		(1 + startArity) to: parsed arity do: [ :each |

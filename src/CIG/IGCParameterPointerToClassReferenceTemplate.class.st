@@ -1,3 +1,7 @@
+"
+This is a reference to a class pointer.
+e.g. MyClass *&
+"
 Class {
 	#name : 'IGCParameterPointerToClassReferenceTemplate',
 	#superclass : 'IGCParameterClassReferenceTemplate',
