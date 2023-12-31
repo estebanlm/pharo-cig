@@ -31,9 +31,12 @@ IGCParameterReturnAsParameterTemplate >> generateArgument [
 
 { #category : 'as yet unclassified' }
 IGCParameterReturnAsParameterTemplate >> generateCType [
-	| typeName |
+	| typeName typeReference |
 	
-	typeName := self type typeReference typeName.
+	typeReference := self type typeReference. 
+	typeReference ifNil: [ ^ self type name ].
+	
+	typeName := typeReference typeName.
 	^ (self elementAtPath: (typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cDeclaration ]
 		ifNil: [ typeName ]

@@ -83,7 +83,10 @@ IGClass >> fromClassTemplate: aClassTemplate [
 	self basicFromClassTemplate: aClassTemplate.
 	elements := (aClassTemplate elements 
 		reject: [ :each | each isClassMember and: [ each isTemplateOf: aClassTemplate ] ])
-		collect: [ :each | each copy ]
+		collect: [ :each | 
+			each copy
+				parent: self;
+				yourself ]
 ]
 
 { #category : 'initialization' }
@@ -95,7 +98,9 @@ IGClass >> fromClassTemplate: aClassTemplate specializedype: aString [
 	elements := aClassTemplate classMembers
 		select: [ :each | each isTemplateOf: aClassTemplate ]
 		thenCollect: [ :each | 
-			each asSpecializationOf: aClassTemplate type: aString ]
+			(each asSpecializationOf: aClassTemplate type: aString)
+				parent: self;
+				yourself ]
 ]
 
 { #category : 'initialization' }

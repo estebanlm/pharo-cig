@@ -170,7 +170,8 @@ IGClassMember >> specializeClassTemplate: aClassTemplate type: typeString [
 				each copy 
 					specializeClassTemplate: aClassTemplate 
 					type: typeString ]
-			ifFalse: [ each copy ] ]
+			ifFalse: [ 
+				each copy ] ]
 ]
 
 { #category : 'accessing' }

@@ -184,7 +184,7 @@ IGCVisitor >> visitClassTemplate: aClassTemplate [
 	self visitClass: aClassTemplate asBaseClass.
 	"later, we add one subclass for each specialized type"
 	aClassTemplate typeSpecializations do: [ :each |
-		self visitClass: (each asSubclassOfSpecializedType: each) ]
+		self visitClass: (aClassTemplate addSubclassWithSpecializedType: each) ]
 ]
 
 { #category : 'visiting' }

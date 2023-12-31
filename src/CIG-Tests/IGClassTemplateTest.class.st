@@ -26,7 +26,7 @@ IGClassTemplateTest >> testSubclassWithSpecializedType [
 	| element subclass methods |
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
-	subclass := element asSubclassWithSpecializedType: 'char'.
+	subclass := element addSubclassWithSpecializedType: 'char'.
 	
 	self assert: subclass name equals: 'TSpanChar'.
 	

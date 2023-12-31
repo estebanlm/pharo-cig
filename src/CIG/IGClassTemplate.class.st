@@ -18,6 +18,17 @@ IGClassTemplate >> accept: aVisitor [
 	aVisitor visitClassTemplate: self
 ]
 
+{ #category : 'adding' }
+IGClassTemplate >> addSubclassWithSpecializedType: aString [ 
+	"this creates the subclass an adds it as element (so it can be found in the 
+	 generating process)"
+	| specializedClass |
+	
+	specializedClass := self asSubclassWithSpecializedType: aString.
+	self parent addElement: specializedClass.
+	^ specializedClass
+]
+
 { #category : 'converting' }
 IGClassTemplate >> asBaseClass [
 	

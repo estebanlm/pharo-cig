@@ -5,7 +5,7 @@ Class {
 	#package : 'CIG-Tests'
 }
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 IGCVisitorTest >> testVisitClassGeneratesATypedef [
 	| element visitor |
 			
@@ -25,7 +25,25 @@ IGCVisitorTest >> testVisitClassGeneratesATypedef [
 		equals: 'typedef void no_noise_module_Module;'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - classtemplate' }
+IGCVisitorTest >> testVisitClassTemplateGeneratesABaseClassAndSubclasses [
+	| element visitor result |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	
+	visitor := IGCVisitor newForTest.
+	visitor visitClassTemplate: element.
+	
+	result := visitor hStream contents.
+	
+	"check for different generated methods"
+	self assert: (result includesSubstring: 'tv_TSpan* tv_TSpan_new_1();').
+	self assert: (result includesSubstring: 'char* tv_TSpanChar_data(tv_TSpanChar* self);').
+	self assert: (result includesSubstring: 'void tv_TSpanTScreenCell_data(tv_TSpanTScreenCell* self, TScreenCell* result);').
+	self assert: (result includesSubstring: 'uint32_t* tv_TSpanUint32_t_data(tv_TSpanUint32_t* self);')
+]
+
+{ #category : 'tests - class' }
 IGCVisitorTest >> testVisitClassTemplateGeneratesATypedefForEachDefinedType [
 	| element visitor |
 	
@@ -42,7 +60,7 @@ typedef void tv_TSpanTScreenCell;
 typedef void tv_TSpanUint32_t;'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 IGCVisitorTest >> testVisitClassWithDispose [
 	| element visitor |
 
@@ -55,7 +73,7 @@ IGCVisitorTest >> testVisitClassWithDispose [
 		
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 IGCVisitorTest >> testVisitClassWithNestedEnumEmitsEnum [
 	| element visitor |
 
@@ -79,7 +97,7 @@ enum tv_THardwareInfo_PlatformType {
 };'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 IGCVisitorTest >> testVisitClassWithTypedefGenerateTypedefs [
 	| element visitor content |
 			
@@ -93,7 +111,7 @@ IGCVisitorTest >> testVisitClassWithTypedefGenerateTypedefs [
 	self assert: (content includesSubstring: 'typedef int tv_pstream_seekdir;')
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitConstructorWithOverloadedNewGeneratesCorrectParameters [
 	| element visitor |
 	
@@ -113,7 +131,7 @@ IGCVisitorTest >> testVisitConstructorWithOverloadedNewGeneratesCorrectParameter
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - enum' }
 IGCVisitorTest >> testVisitEnumUnnamedGeneratesCorrectName [
 	| element visitor |
 	
@@ -131,7 +149,7 @@ IGCVisitorTest >> testVisitEnumUnnamedGeneratesCorrectName [
 		equals: 'enum tv_unnamed_enum_1 {'.
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - enum' }
 IGCVisitorTest >> testVisitEnumWithOneLevelEmitsTypedef [
 	| element visitor |
 
@@ -145,7 +163,7 @@ IGCVisitorTest >> testVisitEnumWithOneLevelEmitsTypedef [
 		equals: 'typedef int tv_StreamableInit;'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - function' }
 IGCVisitorTest >> testVisitFunctionDisambiguate [
 	| element visitor |
 
@@ -159,7 +177,7 @@ IGCVisitorTest >> testVisitFunctionDisambiguate [
 		equals: 'void tv_fexpand_1(char* rpath);'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - function' }
 IGCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate [
 	| element visitor |
 
@@ -181,7 +199,7 @@ IGCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - function' }
 IGCVisitorTest >> testVisitFunctionReturningClassWithOverloadedNewGenerateCorrectMethodTemplate [
 	"classes with overloaded new cannot be created in a reliable way, we transform the 
 	 function to receive an extra parameter and copying the content there"
@@ -203,7 +221,7 @@ IGCVisitorTest >> testVisitFunctionReturningClassWithOverloadedNewGenerateCorrec
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - function' }
 IGCVisitorTest >> testVisitFunctionWithVariadicArgumentGeneratesCorrectFunction [
 	| element visitor |
 
@@ -237,7 +255,7 @@ void f(const char *format, ...) {
 '
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNames [
 	| element visitor |
 
@@ -251,7 +269,7 @@ IGCVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNam
 		equals: 'tv_Boolean tv_TEditor_insertBuffer(tv_TEditor* self, const char* arg1, tv_uint arg2, tv_uint arg3, tv_Boolean arg4, tv_Boolean arg5);'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodParameterStdStringCastsCorrectly [
 	| element visitor |
 
@@ -271,7 +289,7 @@ IGCVisitorTest >> testVisitMethodParameterStdStringCastsCorrectly [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 	| element visitor |
 
@@ -293,7 +311,7 @@ IGCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodReturningClassPtrGeneratesCorrectReturnType [
 	| element visitor |
 
@@ -313,7 +331,7 @@ IGCVisitorTest >> testVisitMethodReturningClassPtrGeneratesCorrectReturnType [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 	| element visitor |
 
@@ -335,7 +353,7 @@ IGCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodWithClassTemplateCastsCorrectly [
 	| element visitor |
 	
@@ -355,7 +373,7 @@ IGCVisitorTest >> testVisitMethodWithClassTemplateCastsCorrectly [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
 	| element visitor |
 	
@@ -375,7 +393,7 @@ IGCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
 	| element visitor |
 
@@ -395,7 +413,7 @@ IGCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 IGCVisitorTest >> testVisitOpaqueStructureGeneratesATypedef [
 	| element visitor |
 
@@ -409,7 +427,7 @@ IGCVisitorTest >> testVisitOpaqueStructureGeneratesATypedef [
 		equals: 'typedef void tv_TTimer;'.
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - method' }
 IGCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
 	| element visitor |
 	
@@ -429,7 +447,7 @@ IGCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
 }'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - typedef' }
 IGCVisitorTest >> testVisitTypedefWithArrayDeclaresCorrectly [
 	| element visitor |
 
@@ -443,7 +461,7 @@ IGCVisitorTest >> testVisitTypedefWithArrayDeclaresCorrectly [
 		equals: 'typedef char* tv_TScrollChars;'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - typedef' }
 IGCVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 
@@ -457,7 +475,7 @@ IGCVisitorTest >> testVisitTypedefWithCallback [
 		equals: 'typedef void* nu_noise_utils_NoiseMapCallback;'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - typedef' }
 IGCVisitorTest >> testVisitUsingDeclarationGeneratesTypedefToTypedef [
 	| element visitor |
 
