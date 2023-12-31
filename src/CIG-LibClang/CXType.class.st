@@ -65,6 +65,12 @@ CXType >> isEnum [
 	^ self kind = CXType_Enum
 ]
 
+{ #category : 'testing' }
+CXType >> isPointer [
+
+	^ self kind = CXType_Pointer
+]
+
 { #category : 'accessing - structure variables' }
 CXType >> kind [
 	"This method was automatically generated"

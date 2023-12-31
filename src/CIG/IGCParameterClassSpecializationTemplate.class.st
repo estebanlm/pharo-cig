@@ -20,13 +20,13 @@ IGCParameterClassSpecializationTemplate >> generateArgument [
 	^ String streamContents: [ :stream |
 		stream << '*('. 
 		stream << (self type element cppDeclaration).
-		stream << '<' << self templateTypes << '>'.
+		stream << '<' << self specializationTypes << '>'.
 		stream << '*)'.
 		stream << self element name ]
 ]
 
 { #category : 'accessing' }
-IGCParameterClassSpecializationTemplate >> templateTypes [
+IGCParameterClassSpecializationTemplate >> specializationTypes [
 	
-	^ self type parent templateTypes asCommaString
+	^ self type parent specializationTypes asCommaString
 ]

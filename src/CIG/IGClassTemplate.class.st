@@ -18,8 +18,22 @@ IGClassTemplate >> accept: aVisitor [
 	aVisitor visitClassTemplate: self
 ]
 
+{ #category : 'converting' }
+IGClassTemplate >> asBaseClass [
+	
+	^ IGClass new fromClassTemplate: self
+]
+
+{ #category : 'converting' }
+IGClassTemplate >> asSubclassWithSpecializedType: aString [ 
+	
+	^ IGClass new 
+		fromClassTemplate: self 
+		specializedype: aString
+]
+
 { #category : 'accessing' }
-IGClassTemplate >> baseName [
+IGClassTemplate >> basename [
 
 	^ self name copyUpTo: $<
 ]
@@ -70,5 +84,17 @@ IGClassTemplate >> isClassTemplate [
 { #category : 'testing' }
 IGClassTemplate >> isEqualToPath: aString [
 
-	^ (super isEqualToPath: aString) or: [ self baseName = aString ]
+	^ (super isEqualToPath: aString) or: [ self basename = aString ]
+]
+
+{ #category : 'accessing' }
+IGClassTemplate >> templateTypeParameters [
+	
+	^ self elements select: [ :each | each isTemplateTypeParameter ]
+]
+
+{ #category : 'accessing' }
+IGClassTemplate >> typeSpecializations [
+
+	^ self root typeSpecializationsOf: self basename
 ]

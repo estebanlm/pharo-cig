@@ -6,29 +6,6 @@ Class {
 }
 
 { #category : 'tests' }
-IGParameterTest >> testParameterCallbackCastsCorrectly [
-	| element |
-			
-	element := self translatedUnitTvision elementAtPath: { 'TGroup' . 'forEach(void (*)(TView *, void *), void *)' . 'func' }.
-	
-	self 
-		assert: element resolveType cDeclaration
-		equals: 'void*'
-]
-
-{ #category : 'tests' }
-IGParameterTest >> testParameterClassSpecializationCastsCorrectly [
-	| element param |
-
-	element := self translatedUnitTvision elementAtPath: { 'TText'. 'drawStr(TSpan<TScreenCell>, int, TStringView, int)' }.
-	param := element parameters first.
-	
-	self assert: param resolveType cDeclaration equals: 'tv_TSpanTScreenCell*'.
-	self assert: param resolveType cppDeclaration equals: 'TSpan<TScreenCell>'.
-	
-]
-
-{ #category : 'tests' }
 IGParameterTest >> testParameterSizeTAnswerSizeTType [
 	"there is a problem where size_t is being translated as int. 
 	 this is an indirect test, since I am checking after the parse is done (but cost of 

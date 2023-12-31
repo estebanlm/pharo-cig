@@ -48,6 +48,12 @@ IGTElementContainer >> findElementMatchingCursor: aCursor [
 		ifNone: [ nil ]
 ]
 
+{ #category : 'testing' }
+IGTElementContainer >> hasElements [
+
+	^ elements isEmptyOrNil not
+]
+
 { #category : 'inspecting' }
 IGTElementContainer >> inspectionElements [
 	<inspectorPresentationOrder: 910 title: 'Elements'>
@@ -61,4 +67,24 @@ IGTElementContainer >> inspectionElements [
 			yourself);
 		addColumn: (SpStringTableColumn title: 'Name' evaluated: #name) beSortable;
 		yourself
+]
+
+{ #category : 'private - traversing' }
+IGTElementContainer >> traverseElementsDo: aBlock [
+
+	self 
+		traverseElementsDo: aBlock 
+		excluding: Set new	
+]
+
+{ #category : 'private - traversing' }
+IGTElementContainer >> traverseElementsDo: aBlock excluding: excludes [
+
+	(excludes includes: self) ifTrue: [ ^ self ]. 
+	excludes add: self.
+	aBlock value: self.
+
+	self hasElements ifFalse: [ ^ self ]. 
+	self elements do: [ :each |
+		each traverseElementsDo: aBlock excluding: excludes ]
 ]

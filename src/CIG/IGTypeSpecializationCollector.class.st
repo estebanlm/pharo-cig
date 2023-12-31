@@ -1,5 +1,5 @@
 Class {
-	#name : 'IGCTemplateCollector',
+	#name : 'IGTypeSpecializationCollector',
 	#superclass : 'IGVisitor',
 	#instVars : [
 		'type',
@@ -7,47 +7,47 @@ Class {
 		'collected',
 		'typeName'
 	],
-	#category : 'CIG-C',
+	#category : 'CIG-Base',
 	#package : 'CIG',
-	#tag : 'C'
+	#tag : 'Base'
 }
 
 { #category : 'private' }
-IGCTemplateCollector >> checkForTemplateSpecialization: aFunction [
+IGTypeSpecializationCollector >> checkForTemplateSpecialization: aFunction [
 		
 	aFunction isTemplateSpecialization ifFalse: [ ^ self ].
-	aFunction templateTypes ifNil: [ ^ self ].
+	aFunction specializationTypes ifNil: [ ^ self ].
 	(aFunction underlyingTypeName beginsWith: (self typeName, '<')) ifFalse: [ ^ self ].
 
-	collected addAll: aFunction templateTypes
+	collected addAll: aFunction specializationTypes
 ]
 
 { #category : 'accessing' }
-IGCTemplateCollector >> collected [
+IGTypeSpecializationCollector >> collected [
 
 	^ collected
 ]
 
 { #category : 'accessing' }
-IGCTemplateCollector >> typeName [
+IGTypeSpecializationCollector >> typeName [
 
 	^ typeName
 ]
 
 { #category : 'accessing' }
-IGCTemplateCollector >> typeName: aString [
+IGTypeSpecializationCollector >> typeName: aString [
 
 	typeName := aString
 ]
 
 { #category : 'visiting' }
-IGCTemplateCollector >> visitConstructor: aConstructor [
+IGTypeSpecializationCollector >> visitConstructor: aConstructor [
 
 	self visitFunction: aConstructor
 ]
 
 { #category : 'visiting' }
-IGCTemplateCollector >> visitFunction: aFunction [
+IGTypeSpecializationCollector >> visitFunction: aFunction [
 
 	self checkForTemplateSpecialization: aFunction.	
 	aFunction parameters 
@@ -55,19 +55,19 @@ IGCTemplateCollector >> visitFunction: aFunction [
 ]
 
 { #category : 'visiting' }
-IGCTemplateCollector >> visitMethod: aMethod [
+IGTypeSpecializationCollector >> visitMethod: aMethod [
 
 	self visitFunction: aMethod
 ]
 
 { #category : 'visiting' }
-IGCTemplateCollector >> visitParameter: aParameter [
+IGTypeSpecializationCollector >> visitParameter: aParameter [
 
 	self checkForTemplateSpecialization: aParameter
 ]
 
 { #category : 'visiting' }
-IGCTemplateCollector >> visitUnit: aUnit [
+IGTypeSpecializationCollector >> visitUnit: aUnit [
 
 	collected := OrderedCollection new.
 	super visitUnit: aUnit.

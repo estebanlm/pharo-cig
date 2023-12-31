@@ -9,7 +9,7 @@ Class {
 IGCTemplateCollectorTest >> testCollectionOfType [
 	| collectedTypes |
 
-	collectedTypes := IGCTemplateCollector new 
+	collectedTypes := IGTypeSpecializationCollector new 
 		typeName: 'TSpan';
 		visit: self translatedUnitTvision;
 		collected.

@@ -6,6 +6,17 @@ Class {
 }
 
 { #category : 'tests' }
+IGFunctionParserTest >> testParseClassTemplateType [
+	| type |
+
+	type := IGFunctionParser new
+		setOn: 'TSpan<T>';
+		parseType.
+	
+	self assert: type fourth equals: 'T'
+]
+
+{ #category : 'tests' }
 IGFunctionParserTest >> testParsePointerPointerType [
 	| type |
 

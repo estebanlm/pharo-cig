@@ -5,7 +5,7 @@ Trait {
 		'spelling',
 		'comment',
 		'parameters',
-		'variadic'
+		'isVariadic'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -53,7 +53,7 @@ IGTFunction >> fillFunctionWith: aCursor [
 	returnTypeName := aCursor type resultType spelling.
 	spelling := aCursor spelling.
 	comment := aCursor rawComment.
-	variadic := aCursor isVariadic.
+	isVariadic := aCursor isVariadic.
 	parameters := aCursor arguments collect: [ :each | 
 		(IGParameter fromCursor: each)
 			parent: self;
@@ -83,7 +83,7 @@ IGTFunction >> isReturnTypeVoid [
 { #category : 'testing' }
 IGTFunction >> isVariadic [
 
-	^ variadic
+	^ isVariadic
 ]
 
 { #category : 'accessing' }

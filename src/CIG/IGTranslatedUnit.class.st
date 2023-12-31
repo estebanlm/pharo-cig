@@ -6,7 +6,6 @@ The method `IGTranslatedUnit>>#generateFrom:` takes a `ICHeaderGenerator` instan
 Class {
 	#name : 'IGTranslatedUnit',
 	#superclass : 'Object',
-	#traits : 'IGTElementContainer',
 	#classTraits : 'IGTElementContainer classTrait',
 	#instVars : [
 		'nodeClasses',
@@ -99,11 +98,35 @@ IGTranslatedUnit >> elementAtPath: aPath [
 	^ current
 ]
 
+{ #category : 'accessing' }
+IGTranslatedUnit >> elements [
+
+	^ elements ifNil: [ #() ]
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> findDeepElementMatching: aBlock [
+
+	self elements do: [ :eachElement |
+		(eachElement findDeepElementMatching: aBlock) 
+			ifNotNil: [ :found | ^ found ] ].
+
+	^ nil
+]
+
 { #category : 'private' }
 IGTranslatedUnit >> findElementMatching: aBlock [
 
 	^ self elements
 		detect: [ :eachElement | aBlock value: eachElement ]
+		ifNone: [ nil ]
+]
+
+{ #category : 'accessing' }
+IGTranslatedUnit >> findElementMatchingCursor: aCursor [
+
+	^ self elements 
+		detect: [ :each | each matchesCursor: aCursor ]
 		ifNone: [ nil ]
 ]
 
@@ -153,12 +176,33 @@ IGTranslatedUnit >> generateFrom: aHeader [
 	elements addAll: self specialElements
 ]
 
+{ #category : 'testing' }
+IGTranslatedUnit >> hasElements [
+
+	^ elements notNil
+]
+
 { #category : 'initialization' }
 IGTranslatedUnit >> initialize [
 
 	super initialize.
 	elements := OrderedCollection new.
 	self withUnknown
+]
+
+{ #category : 'inspecting' }
+IGTranslatedUnit >> inspectionElements [
+	<inspectorPresentationOrder: 910 title: 'Elements'>
+	
+	^ SpTablePresenter new 
+		beResizable;
+		items: self elements;
+		addColumn: ((SpStringTableColumn title: 'Type' evaluated: #className) 
+			beSortable;
+			width: 120;
+			yourself);
+		addColumn: (SpStringTableColumn title: 'Name' evaluated: #name) beSortable;
+		yourself
 ]
 
 { #category : 'private' }
@@ -232,6 +276,25 @@ IGTranslatedUnit >> root [
 	^ self
 ]
 
+{ #category : 'utils' }
+IGTranslatedUnit >> selectTemplateClasses [
+	
+	^ Array streamContents: [ :stream |
+		self traverseElementsDo: [ :each | 
+			each isClassTemplate
+				ifTrue: [ stream << each ] ] ]
+]
+
+{ #category : 'utils' }
+IGTranslatedUnit >> selectVariadicFunctions [
+	
+	^ Array streamContents: [ :stream |
+		self traverseElementsDo: [ :each | 
+			((each isFunction or: [ each isClassMember ])
+			and: [ each isVariadic ])
+			ifTrue: [ stream << each ] ] ]
+]
+
 { #category : 'private' }
 IGTranslatedUnit >> specialElements [
 	"a place to keep special elements with special templates (like std namespace)"
@@ -263,6 +326,31 @@ IGTranslatedUnit >> traverseASTWith: aHeader [
 
 	tu dispose.
 	index dispose
+]
+
+{ #category : 'private - traversing' }
+IGTranslatedUnit >> traverseElementsDo: aBlock [
+
+	self 
+		traverseElementsDo: aBlock 
+		excluding: Set new	
+]
+
+{ #category : 'private - traversing' }
+IGTranslatedUnit >> traverseElementsDo: aBlock excluding: excludes [
+
+	self hasElements ifFalse: [ ^ self ]. 
+	self elements do: [ :each |
+		each traverseElementsDo: aBlock excluding: excludes ]
+]
+
+{ #category : 'utils' }
+IGTranslatedUnit >> typeSpecializationsOf: aName [
+
+	^ IGTypeSpecializationCollector new
+		typeName: aName;
+		visit: self;
+		collected
 ]
 
 { #category : 'accessing' }

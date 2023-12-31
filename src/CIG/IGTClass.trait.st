@@ -73,13 +73,15 @@ IGTClass >> operators [
 
 { #category : 'testing' }
 IGTClass >> shouldExposeDispose [
-
+	
+	"do not add dispose of abstract class"
+	self isAbstract ifTrue: [ ^ false ].
 	"if I have a new with arguments I will need to dispose differenly"
-	^ self hasOperatorOverloadNewManyArguments not 
-		and: [ 
-			"if destructor is private, the dispose method will not work."
-			self elements anySatisfy: [ :each | 
-				each isClassMember
-				and: [ each isDestructor 
-				and: [ each isPublic ] ] ] ]
+	self hasOperatorOverloadNewManyArguments ifTrue: [ ^ false ].
+	
+	"if destructor is private, the dispose method will not work."
+	^ self elements 
+		detect: [ :each | each isClassMember and: [ each isDestructor ] ] 
+		ifFound: [ :aDestructor | aDestructor isPublic ]
+		ifNone: [ true ]
 ]

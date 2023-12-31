@@ -229,6 +229,12 @@ IGElement >> isSuperclass [
 ]
 
 { #category : 'testing' }
+IGElement >> isTemplateTypeParameter [
+	
+	^ false
+]
+
+{ #category : 'testing' }
 IGElement >> isTypeReference [
 
 	^ false

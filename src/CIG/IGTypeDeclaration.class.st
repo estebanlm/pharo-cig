@@ -2,7 +2,8 @@ Class {
 	#name : 'IGTypeDeclaration',
 	#superclass : 'FFITypeDeclaration',
 	#instVars : [
-		'reference'
+		'reference',
+		'templateName'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -16,6 +17,7 @@ IGTypeDeclaration class >> fromArray: anArray [
 		name: anArray first;
 		arity: anArray second;
 		reference: anArray third;
+		templateName: anArray  fourth;
 		yourself
 ]
 
@@ -23,6 +25,12 @@ IGTypeDeclaration class >> fromArray: anArray [
 IGTypeDeclaration >> isReference [
 
 	^ reference
+]
+
+{ #category : 'testing' }
+IGTypeDeclaration >> isTemplate [
+
+	^ templateName notNil
 ]
 
 { #category : 'accessing' }
@@ -37,4 +45,16 @@ IGTypeDeclaration >> nameWithArity [
 IGTypeDeclaration >> reference: aBoolean [
 
 	reference := aBoolean
+]
+
+{ #category : 'accessing' }
+IGTypeDeclaration >> templateName [
+
+	^ templateName
+]
+
+{ #category : 'accessing' }
+IGTypeDeclaration >> templateName: aString [
+
+	templateName := aString
 ]

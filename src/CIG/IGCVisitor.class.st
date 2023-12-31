@@ -177,7 +177,14 @@ IGCVisitor >> visitClassTemplate: aClassTemplate [
 	3. generate functions for each.
 		- later, in pharo side, we will generate a class and a hierarchy
 	"
-	self flag: #TODO. "I am skipping method generation for the moment"
+
+	self flag: #TODO. "Header should abstract/subclasses too"
+
+	"we first define the abstract class"
+	self visitClass: aClassTemplate asBaseClass.
+	"later, we add one subclass for each specialized type"
+	aClassTemplate typeSpecializations do: [ :each |
+		self visitClass: (each asSubclassOfSpecializedType: each) ]
 ]
 
 { #category : 'visiting' }
@@ -208,9 +215,12 @@ IGCVisitor >> visitEnum: anEnum [
 IGCVisitor >> visitFunction: aFunction [
 
 	"skip operators because they are not really used in pharo. 
-	 skip function with va_list because we don't know what to do with them"
+	 skip function with va_list because we don't know what to do with them.
+	 skip functions with variadics (...) because we also can't forward them easily 
+	 to its C++ counterpart (doable in gcc, but feels too much work for lose gain)"
 	(aFunction isOperator 
-		or: [ aFunction hasVariadicListArgument ])
+		or: [ aFunction hasVariadicListArgument
+		or: [ aFunction isVariadic ] ])
 		ifTrue: [ ^ self ].
 	
 	self hStream << aFunction cTemplate generateHeader << ';'; cr.

@@ -3,7 +3,8 @@ Class {
 	#superclass : 'IGElement',
 	#instVars : [
 		'typeName',
-		'typeKind'
+		'typeKind',
+		'isPublic'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -29,13 +30,20 @@ IGField >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	type := aCursor type.
 	typeName := type spelling.
-	typeKind := type kind	
+	typeKind := type kind.
+	isPublic := aCursor cxxAccessSpecifier = 1
 ]
 
 { #category : 'testing' }
 IGField >> isField [
 
 	^ true
+]
+
+{ #category : 'testing' }
+IGField >> isPublic [
+
+	^ isPublic
 ]
 
 { #category : 'accessing' }

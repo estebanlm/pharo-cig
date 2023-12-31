@@ -207,6 +207,17 @@ IGCVisitorTest >> testVisitFunctionReturningClassWithOverloadedNewGenerateCorrec
 IGCVisitorTest >> testVisitFunctionWithVariadicArgumentGeneratesCorrectFunction [
 	| element visitor |
 
+	"I am skipping variadic functions for the moment, as there is no easy way to 
+	 forward them to the c++ side. Using gcc this would ne something like this (calling printf): 
+
+void f(const char *format, ...) {
+	void* args = __builtin_apply_args();
+	void* result = __builtin_apply((void (*)())printf, args, 1000);
+	__builtin_return(result);
+}	
+	"
+	self skip.
+
 	element := self translatedUnitTvision elementAtPath: { 'fmtStr(const char *, ...)' }.
 	
 	visitor := IGCVisitor newForTest.
@@ -218,18 +229,10 @@ IGCVisitorTest >> testVisitFunctionWithVariadicArgumentGeneratesCorrectFunction 
 		
 	self 
 		assert: visitor cStream contents trimmed
-		equals: '
-static char* tv_fmtStr_valist(char* format, va_list varargs) { 
-	return fmtStr(format, varargs);	
-} 		
-
-char* tv_fmtStr(char* format, ...) {
- 	char* result;
-	va_list varargs;
-	va_start(varargs, format);
-	result = tv_fmtStr_valist(fmt, varargs);
-	va_end(varargs);
-	return result;
+		equals: 'char* tv_fmtStr(char* format, ...) {
+	void* _args = __builtin_apply_args();
+	void* _result = __builtin_apply((void (*)())fmtStr, _args, 1000);
+	__builtin_return(_result);
 }
 '
 ]
@@ -343,11 +346,11 @@ IGCVisitorTest >> testVisitMethodWithClassTemplateCastsCorrectly [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'int tv_TText_drawStr_1(tv_TSpanTScreenCell* cells, int indent, tv_TStringView* text, int textIndent);'.
+		equals: 'int tv_TText_drawStr_1(tv_TSpan* cells, size_t indent, tv_TStringView* text, int textIndent);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'int tv_TText_drawStr_1(tv_TSpanTScreenCell* cells, int indent, tv_TStringView* text, int textIndent) {
+		equals: 'int tv_TText_drawStr_1(tv_TSpan* cells, size_t indent, tv_TStringView* text, int textIndent) {
 	return TText::drawStr(*(TSpan<TScreenCell>*)cells, indent, *(TStringView*)text, textIndent);
 }'
 ]

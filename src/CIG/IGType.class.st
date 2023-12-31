@@ -13,36 +13,47 @@ Class {
 	#tag : 'Base'
 }
 
-{ #category : 'accessing' }
-IGType >> cDeclaration [
-	| parsed typeName startArity |
+{ #category : 'utils' }
+IGType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: aString [ 
+	| type classType classTemplateType |
+	
+	aClassTemplate templateTypeParameters size > 1 ifTrue: [ 
+		self error: 'I can''t handle more than one parameter class templates.' ].
+	
+	type := IGFunctionParser parse: aString.
+	classTemplateType := String streamContents: [ :stream | 
+			stream << aClassTemplate basename << '<' << aClassTemplate templateTypeParameters first name << '>' ].
+	
+	(aString includesSubstring: classTemplateType)
+		ifFalse: [ self error: 'Class templates do not correspond to type to match.' ]. 
+	
+	classType := String streamContents: [ :stream | 
+			stream << aClassTemplate basename << '<' << typeString << '>' ].
+		
+	^ String streamContents: [ :stream | 
+		stream << classType.
+		(type arity - (type isReference ifTrue: [ 1 ] ifFalse: [ 0 ])) timesRepeat: [ 
+			stream << '*' ].
+		type isReference ifTrue: [ 
+			stream << '&' ] ]
+]
 
-	startArity := 0.
-	parsed := self parseType.
-	typeName := parsed name.
-	
-	self ifTranslated: [ :translation | ^ translation cDeclarationOf: self ].
-	
-	^ String streamContents: [ :stream |
-		self typeReferenceForParsedType
-			ifNotNil: [ 
-				| refDeclaration |
-				refDeclaration := self cDeclarationFromReference ifNil: [ typeName ].
-				stream << refDeclaration.
-				"type is already a pointer, in the case of classes"
-				refDeclaration last = $*
-					ifTrue: [ startArity := 1 ] ]
-			ifNil: [ 
-				"there may still be a typedef type (format namespace::type), we just 
-				 replace that"
-				| path |
-				path := typeName substrings: '::'.
-				stream << ((self root elementAtPath: path) 
-					ifNotNil: [ :anElement | anElement cDeclaration ]
-					ifNil: [ typeName ]) ].
-				
-		(1 + startArity) to: parsed arity do: [ :each |
-			stream << '*' ] ]
+{ #category : 'utils' }
+IGType class >> replaceTypeTemplate: aClassTemplate type: typeString in: aString [
+	| type |
+
+
+	type := IGFunctionParser parse: aString.
+
+	(aClassTemplate templateTypeParameters anySatisfy: [ :each | each name = type name ])
+		ifFalse: [ self error: 'Class templates do not correspond to type to match.' ]. 
+		
+	^ String streamContents: [ :stream | 
+		stream << typeString.
+		(type arity - (type isReference ifTrue: [ 1 ] ifFalse: [ 0 ])) timesRepeat: [ 
+			stream << '*' ].
+		type isReference ifTrue: [ 
+			stream << '&' ] ]
 ]
 
 { #category : 'accessing' }
@@ -69,23 +80,6 @@ IGType >> cDeclarationFromReferenceWithSpecialization: aCollection [
 	typeName := self typeReference typeName.
 	^ (self parent root elementAtPath: (typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cDeclarationWithSpecialization: aCollection ]
-]
-
-{ #category : 'accessing' }
-IGType >> cppDeclaration [
-	| parsed typeName |
-
-	parsed := self parseType.
-	typeName := parsed name.
-
-	self ifTranslated: [ :translation | ^ translation cppDeclarationOf: self ].
-	
-	^ String streamContents: [ :stream |
-		self typeReference 
-			ifNotNil: [ stream << ((self cppDeclarationFromReference) ifNil: [ typeName ]) ]
-			ifNil: [ stream << typeName ].
-		1 to: parsed arity do: [ :each |
-			stream << '*' ] ]
 ]
 
 { #category : 'private' }
@@ -133,22 +127,6 @@ IGType >> hasTypeReference [
 	"includes a reference explanation"
 
 	^ self typeReferenceForParsedType notNil
-]
-
-{ #category : 'accessing' }
-IGType >> ifTranslated: aBlock [
-
-	^ self ifTranslated: aBlock ifNot: [ ]
-]
-
-{ #category : 'accessing' }
-IGType >> ifTranslated: aBlock ifNot: notBlock [
-	| typeName |
-
-	^ IGTranslationMap uniqueInstance 
-		atType: self
-		ifPresent: [ :aTranslation | aBlock value: aTranslation ]
-		ifAbsent: [ notBlock value ]
 ]
 
 { #category : 'testing' }

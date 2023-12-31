@@ -21,11 +21,11 @@ IGSpecializedClassDirectTranslation >> appliesTo: aType [
 { #category : 'accessing' }
 IGSpecializedClassDirectTranslation >> cDeclarationOf: aType [
 
-	^ aType cDeclarationFromReferenceWithSpecialization: aType parent templateTypes
+	^ aType cDeclarationFromReferenceWithSpecialization: aType parent specializationTypes
 ]
 
 { #category : 'accessing' }
 IGSpecializedClassDirectTranslation >> cppDeclarationOf: aType [
 
-	^ aType cppDeclarationFromReferenceWithSpecialization: aType parent templateTypes
+	^ aType cppDeclarationFromReferenceWithSpecialization: aType parent specializationTypes
 ]

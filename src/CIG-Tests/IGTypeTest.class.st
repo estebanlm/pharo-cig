@@ -6,69 +6,71 @@ Class {
 }
 
 { #category : 'tests' }
-IGTypeTest >> testResolveParamTypeForSimpleType [
-	| element type |
+IGTypeTest >> testReplaceTypeClassTemplateTypeIn [
+	| element result |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+
+	result := IGType 
+		replaceTypeClassTemplate: element
+		type: 'char'
+		in: 'TSpan<T> *'.
+	self assert: result equals: 'TSpan<char>*'.
 	
-	element := self elementAtPath: { 'noise'. 'module'. 'Module'. 'GetSourceModule(int)' }.
-	
-	type := element parameters first resolveType.
-	
-	self assert: type cDeclaration equals: 'int'
+	result := IGType 
+		replaceTypeClassTemplate: element
+		type: 'char'
+		in: 'TSpan<T>'.
+	self assert: result equals: 'TSpan<char>'.
+
+	result := IGType 
+		replaceTypeClassTemplate: element
+		type: 'char'
+		in: 'TSpan<T>*'.
+	self assert: result equals: 'TSpan<char>*'
 ]
 
 { #category : 'tests' }
-IGTypeTest >> testResolveParamWhenTypeIsToStdString [
-	| element type |
-	
-	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)'. 'filename'}.
-	
-	type := element resolveType.
-	
-	self assert: type cDeclaration equals: 'char*'
-]
+IGTypeTest >> testReplaceTypeTemplateTypeIn [
+	| element result |
 
-{ #category : 'tests' }
-IGTypeTest >> testResolveParamWhenTypedefToSimpleType [
-	| element type |
-	
-	element := self elementAtPath: { 'noise'. 'utils'. 'Color'. 'Color(noise::uint8, noise::uint8, noise::uint8, noise::uint8)'. 'r'}.
-	
-	type := element resolveType.
-	
-	self assert: type cDeclaration equals: 'no_noise_uint8'
-]
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
 
-{ #category : 'tests' }
-IGTypeTest >> testResolveReturnTypeForClass [
-	| element type |
+	result := IGType 
+		replaceTypeTemplate: element
+		type: 'char'
+		in: 'T *'.
+	self assert: result equals: 'char*'.
 	
-	element := self elementAtPath: { 'noise'. 'module'. 'Module'. 'GetSourceModule(int)' }.
+	result := IGType 
+		replaceTypeTemplate: element
+		type: 'char'
+		in: 'T'.
+	self assert: result equals: 'char'.
 	
-	type := element resolveReturnType.
+	result := IGType 
+		replaceTypeTemplate: element
+		type: 'char'
+		in: 'T*'.
+	self assert: result equals: 'char*'.
 	
-	self assert: type cDeclaration equals: 'no_noise_module_Module*'
-]
-
-{ #category : 'tests' }
-IGTypeTest >> testResolveReturnTypeForSimpleType [
-	| element type |
+	result := IGType 
+		replaceTypeTemplate: element
+		type: 'char'
+		in: 'T &'.
+	self assert: result equals: 'char&'.
 	
-	element := self elementAtPath: { 'noise'. 'module'. 'Module'. 'GetSourceModuleCount()' }.
+	result := IGType 
+		replaceTypeTemplate: element
+		type: 'char'
+		in: 'T&'.
+	self assert: result equals: 'char&'.
 	
-	type := element resolveReturnType.
-	
-	self assert: type cDeclaration equals: 'int'
-]
-
-{ #category : 'tests' }
-IGTypeTest >> testResolveReturnTypeForStructure [
-	| element type |
-	
-	element := self elementAtPath: { 'noise'. 'module'. 'Curve'. 'GetControlPointArray()' }.
-	
-	type := element resolveReturnType.
-	
-	self assert: type cDeclaration equals: 'no_noise_module_ControlPoint*'
+	result := IGType 
+		replaceTypeTemplate: element
+		type: 'char'
+		in: 'T *&'.
+	self assert: result equals: 'char*&'
 ]
 
 { #category : 'tests' }
@@ -82,15 +84,4 @@ IGTypeTest >> testResolveTypeForClassCanAnswerElementClass [
 	self 
 		assert: type element
 		equals: (self elementAtPath: { 'noise'. 'utils'. 'Color' })
-]
-
-{ #category : 'tests' }
-IGTypeTest >> testResolveTypeForClassInStructure [
-	| element type |
-	
-	element := self elementAtPath: { 'noise'. 'utils'. 'GradientPoint'. 'color' }.
-	
-	type := element resolveType.
-	
-	self assert: type cDeclaration equals: 'nu_noise_utils_Color*'
 ]

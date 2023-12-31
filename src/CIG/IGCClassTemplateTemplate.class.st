@@ -12,15 +12,6 @@ IGCClassTemplateTemplate class >> handlesElement: anElement [
 	^ anElement isClassTemplate
 ]
 
-{ #category : 'private' }
-IGCClassTemplateTemplate >> classSpecializations [
-	
-	^ IGCTemplateCollector new
-		typeName: self element baseName;
-		visit: self root;
-		collected
-]
-
 { #category : 'generating' }
 IGCClassTemplateTemplate >> generateHeader [
 	| cName |
@@ -29,7 +20,13 @@ IGCClassTemplateTemplate >> generateHeader [
 	^ String streamContents: [ :stream |  
 		stream << 'typedef void ' << cName << ';'.
 		stream cr.
-		self classSpecializations 
+		self typeSpecializations 
 			do: [ :each | stream << 'typedef void ' <<  cName << each capitalized << ';' ]
 			separatedBy: [ stream cr ] ]
+]
+
+{ #category : 'private' }
+IGCClassTemplateTemplate >> typeSpecializations [
+	
+	^ self element typeSpecializations
 ]

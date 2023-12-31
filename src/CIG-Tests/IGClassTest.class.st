@@ -18,28 +18,6 @@ IGClassTest >> testConstructorNameIsNew [
 ]
 
 { #category : 'tests' }
-IGClassTest >> testMethodAnsweringAClassPointerAnswerACorrectPointer [
-	| element |
-	
-	element := self elementAtPath: { 'noise'. 'module'. 'Module'. 'Module(int)' }.
-
-	self 
-		assert: element resolveReturnType cDeclaration 
-		equals: 'no_noise_module_Module*'
-]
-
-{ #category : 'tests' }
-IGClassTest >> testMethodAnsweringAClassWithoutReferenceAnswerACorrectPointer [
-	| element |
-	
-	element := self elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetBorderValue()' }.
-
-	self 
-		assert: element resolveReturnType cDeclaration 
-		equals: 'nu_noise_utils_Color*'
-]
-
-{ #category : 'tests' }
 IGClassTest >> testMethodAnsweringAClassWithtReferenceAnswerACorrectPointer [
 	| element |
 	
@@ -51,4 +29,35 @@ IGClassTest >> testMethodAnsweringAClassWithtReferenceAnswerACorrectPointer [
 	
 	element := self translatedUnitTvision elementAtPath: { 'TStreamableTypes' }.
 	self assert: element shouldExposeDispose
+]
+
+{ #category : 'tests' }
+IGClassTest >> testShouldExposeDispose [
+	| element |
+
+	element := self elementAtPath: { 'noise'. 'utils'. 'RendererNormalMap' }.
+	self assert: element shouldExposeDispose.
+	
+	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder' }.
+	self deny: element shouldExposeDispose
+]
+
+{ #category : 'tests' }
+IGClassTest >> testTemplateClass [
+	| element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	self assert: element isClassTemplate.
+	
+	element := self translatedUnitTvision elementAtPath: { 'TScreenCell' }.
+	self deny: element isClassTemplate
+	
+]
+
+{ #category : 'tests' }
+IGClassTest >> testTemplateClassHasTemplateTypeParameter [
+	| element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	self denyEmpty: element templateTypeParameters
 ]

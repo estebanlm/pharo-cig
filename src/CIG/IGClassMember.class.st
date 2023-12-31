@@ -22,6 +22,14 @@ IGClassMember class >> kind [
 	^ nil
 ]
 
+{ #category : 'converting' }
+IGClassMember >> asSpecializationOf: aClassTemplate type: typeString [
+	
+	^ self copy 
+		specializeClassTemplate: aClassTemplate type: typeString;
+		yourself
+]
+
 { #category : 'private' }
 IGClassMember >> buildParameters: aCollection on: stream [ 
 	
@@ -51,6 +59,18 @@ IGClassMember >> fromCursor: aCursor [
 		underlyingTypeKind := underlyingType kind.
 		(underlyingTypeName indexOf: $<) > 0 
 			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ]
+]
+
+{ #category : 'testing' }
+IGClassMember >> hasAnyParameterTypeClassTemplateOf: aClassTemplate [
+	
+	^ self parameters anySatisfy: [ :each | each isClassTemplateOf: aClassTemplate ]
+]
+
+{ #category : 'testing' }
+IGClassMember >> hasAnyParameterTypeTemplateOf: aClassTemplate [
+	
+	^ self parameters anySatisfy: [ :each | each isTemplateOf: aClassTemplate ]
 ]
 
 { #category : 'testing' }
@@ -85,9 +105,31 @@ IGClassMember >> isPublic [
 ]
 
 { #category : 'testing' }
+IGClassMember >> isReturnTypeClassTemplateOf: aClassTemplate [
+	
+	^self returnTypeName includesSubstring: aClassTemplate name
+]
+
+{ #category : 'testing' }
+IGClassMember >> isReturnTypeTemplateOf: aClassTemplate [
+	
+	^ aClassTemplate templateTypeParameters 
+		anySatisfy: [ :each | each name = self resolveReturnType parseType name ]
+]
+
+{ #category : 'testing' }
 IGClassMember >> isStatic [
 
 	^ false
+]
+
+{ #category : 'testing' }
+IGClassMember >> isTemplateOf: aClassTemplate [
+
+	^ (self isReturnTypeTemplateOf: aClassTemplate)
+		or: [ (self hasAnyParameterTypeTemplateOf: aClassTemplate)
+		or: [ (self isReturnTypeClassTemplateOf: aClassTemplate) 
+		or: [ self hasAnyParameterTypeClassTemplateOf: aClassTemplate ] ] ]
 ]
 
 { #category : 'accessing' }
@@ -106,6 +148,29 @@ IGClassMember >> pathName [
 IGClassMember >> returnTypeName [
 
 	^ returnTypeName
+]
+
+{ #category : 'private' }
+IGClassMember >> specializeClassTemplate: aClassTemplate type: typeString [
+		
+	(self isReturnTypeTemplateOf: aClassTemplate) ifTrue: [ 
+		returnTypeName := IGType 
+			replaceTypeTemplate: aClassTemplate
+			type: typeString
+			in: returnTypeName ].
+	(self isReturnTypeClassTemplateOf: aClassTemplate) ifTrue: [ 
+		returnTypeName := IGType 
+			replaceTypeClassTemplate: aClassTemplate
+			type: typeString
+			in: returnTypeName ].
+
+	parameters := self parameters collect: [ :each |
+		(each isTemplateOf: aClassTemplate)
+			ifTrue: [ 
+				each copy 
+					specializeClassTemplate: aClassTemplate 
+					type: typeString ]
+			ifFalse: [ each copy ] ]
 ]
 
 { #category : 'accessing' }

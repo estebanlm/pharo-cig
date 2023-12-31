@@ -1,7 +1,7 @@
 Trait {
 	#name : 'IGTTemplateSpecialization',
 	#instVars : [
-		'templateTypes'
+		'specializationTypes'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -18,21 +18,21 @@ IGTTemplateSpecialization >> checkForTemplateSpecialization: aType [
 	templateArgs := aType numTemplateArguments.
 	templateArgs > 0 ifFalse: [ ^ self ].
 	
-	templateTypes := OrderedCollection new.
+	specializationTypes := OrderedCollection new.
 	0 to: (templateArgs - 1) do: [ :index |
 		| argType |
 		argType := aType templateArgumentAsType: index.
-		templateTypes add: (IGFunctionParser parse: argType spelling) nameWithArity ]
+		specializationTypes add: (IGFunctionParser parse: argType spelling) nameWithArity ]
 ]
 
 { #category : 'testing' }
 IGTTemplateSpecialization >> isTemplateSpecialization [
 
-	^ templateTypes isEmptyOrNil not
+	^ specializationTypes isEmptyOrNil not
 ]
 
 { #category : 'accessing' }
-IGTTemplateSpecialization >> templateTypes [
+IGTTemplateSpecialization >> specializationTypes [
 
-	^ templateTypes
+	^ specializationTypes
 ]

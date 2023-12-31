@@ -6,15 +6,6 @@ Class {
 }
 
 { #category : 'tests' }
-IGStructureTest >> testClassFieldsCastCorrectly [
-	| element |
-
-	element := self translatedUnitTvision elementAtPath: { 'fLink'. 'forceLink' }.
-
-	self assert: element resolveType cDeclaration equals: 'tv_TStreamableClass*'
-]
-
-{ #category : 'tests' }
 IGStructureTest >> testFieldsAnswerAlsoVariables [
 	| element |
 

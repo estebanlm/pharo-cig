@@ -17,7 +17,7 @@ IGFunctionParser class >> parse: aString [
 { #category : 'accessing' }
 IGFunctionParser >> parseType [
 	" parse type name and optional number of asterisks, following it"
-	| referenceMarker typeName ptrArity |
+	| templateTypeName referenceMarker typeName ptrArity |
 
 	typeName := stream next.
 	typeName ifNil: [ ^ self error: 'type name expected' ].
@@ -37,6 +37,14 @@ IGFunctionParser >> parseType [
 			typeName ifNil: [ ^ self error: 'type name expected' ].
 			typeName := prefix, ' ', typeName ].
 
+	"extract template"
+	(stream atEnd not and: [ stream peek = #< ]) ifTrue: [ 
+		templateTypeName := ''.
+		stream next.
+		[ stream peek = #> ] whileFalse: [ 
+			templateTypeName := templateTypeName, stream next ].
+		stream next ].
+	
 	referenceMarker := false.
 	ptrArity := 0.
 	[ stream atEnd not 
@@ -52,5 +60,15 @@ IGFunctionParser >> parseType [
 	^ {
 		typeName. 
 		ptrArity.			
-		referenceMarker }
+		referenceMarker.
+		templateTypeName }
+]
+
+{ #category : 'accessing' }
+IGFunctionParser >> setOn: aString [
+	"add a space to > to ensure is parsed as a different symbol"
+
+	^ super setOn: (aString 
+		copyReplaceAll: '>' 
+		with: '> ')
 ]

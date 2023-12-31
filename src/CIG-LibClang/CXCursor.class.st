@@ -332,6 +332,12 @@ CXCursor >> referenced [
 	^ self ffiCall: #(CXCursor clang_getCursorReferenced(CXCursor self)) 	
 ]
 
+{ #category : 'accessing - method' }
+CXCursor >> resultType [
+
+	^ self ffiCall: #(CXType clang_getCursorResultType(CXCursor self))
+]
+
 { #category : 'accessing' }
 CXCursor >> source [
 	| fileName pos range size source |

@@ -129,6 +129,13 @@ IGParameter >> hasTypeReference [
 ]
 
 { #category : 'testing' }
+IGParameter >> isClassTemplateOf: aClassTemplate [
+
+	^ self typeName includesSubstring: aClassTemplate name
+
+]
+
+{ #category : 'testing' }
 IGParameter >> isElaborated [
 
 	^ self typeKind = CXType_Elaborated
@@ -150,6 +157,16 @@ IGParameter >> isParameter [
 IGParameter >> isReference [
 
 	^ (self parseType: self typeName) isReference
+]
+
+{ #category : 'testing' }
+IGParameter >> isTemplateOf: aClassTemplate [
+	| paramTypeName |
+
+	paramTypeName := self resolveType parseType name.
+	self flag: #TODO. "Demeters law!"
+	^ aClassTemplate templateTypeParameters 
+		anySatisfy: [ :each | each name = paramTypeName ]
 ]
 
 { #category : 'testing' }
@@ -185,6 +202,22 @@ IGParameter >> resolveType [
 			ifNone: [ #() ] ].
 
 	^ IGParameterType fromParameter: self
+]
+
+{ #category : 'private' }
+IGParameter >> specializeClassTemplate: aClassTemplate type: aString [ 
+
+	(self isTemplateOf: aClassTemplate) ifTrue: [ 
+		typeName := IGType 
+			replaceTypeTemplate: aClassTemplate 
+			type: aString 
+			in: typeName ].
+	
+	(self isClassTemplateOf: aClassTemplate) ifTrue: [ 
+		typeName := IGType 
+			replaceTypeClassTemplate: aClassTemplate 
+			type: aString 
+			in: typeName ]
 ]
 
 { #category : 'accessing' }

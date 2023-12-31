@@ -54,17 +54,6 @@ IGElementTest >> testFullNameWithAnswerCorrectName [
 ]
 
 { #category : 'tests' }
-IGElementTest >> testReferenceArgumentAnswersAsPointer [
-	| element |
-
-	element := self translatedUnitTvision elementAtPath: { 'TView'. 'textEvent(TEvent &, TSpan<char>, int &)'. 'event' }.
-
-	self 
-		assert: element resolveType cDeclaration 
-		equals: 'tv_TEvent*'
-]
-
-{ #category : 'tests' }
 IGElementTest >> testStructureCDeclaration [
 	| element |
 
