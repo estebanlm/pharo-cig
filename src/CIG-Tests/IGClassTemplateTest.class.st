@@ -19,7 +19,7 @@ IGClassTemplateTest >> testMethodReturningTemplateArgument [
 		assert: template generateBody 
 		equals: 'auto _result = new TSpan<TScreenCell>();
 *_result = ((TSpan<TScreenCell>*)self)->subspan(pos);
-return (tv_TSpan*)_result;'
+return (tv_TSpanTScreenCell*)_result;'
 ]
 
 { #category : 'tests' }
