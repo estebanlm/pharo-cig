@@ -21,6 +21,15 @@ IGTypeDeclaration class >> fromArray: anArray [
 		yourself
 ]
 
+{ #category : 'accessing' }
+IGTypeDeclaration >> fullName [
+
+	^ String streamContents: [ :stream |
+		stream << self name.
+		self templateName ifNotNil: [ 
+			stream << '<' << self templateName << '>' ] ]
+]
+
 { #category : 'testing' }
 IGTypeDeclaration >> isReference [
 
@@ -39,6 +48,16 @@ IGTypeDeclaration >> nameWithArity [
 	^ self name, (self arity > 0 
 		ifTrue: [ String new: self arity withAll: $* ]
 		ifFalse: [ '' ])
+]
+
+{ #category : 'accessing' }
+IGTypeDeclaration >> nameWithSpecialization [
+	"we produce a special element if we are specializating a class"
+
+	^ String streamContents: [ :stream |
+		stream << self name.
+		self templateName ifNotNil: [ 
+			stream << self templateName capitalized ] ]
 ]
 
 { #category : 'accessing' }

@@ -18,6 +18,13 @@ IGClass class >> kind [
 	^ CXCursor_ClassDecl
 ]
 
+{ #category : 'accessing' }
+IGClass class >> typeReferenceName [
+	"prefix included in IGTypeReference"
+	
+	^ 'class'
+]
+
 { #category : 'visiting' }
 IGClass >> accept: aVisitor [
 
@@ -28,15 +35,6 @@ IGClass >> accept: aVisitor [
 IGClass >> acceptNestedClasses [
 
 	^ true
-]
-
-{ #category : 'initialization' }
-IGClass >> basicFromClassTemplate: aClassTemplate [
-
-	parent := aClassTemplate parent.
-	kind := self class kind.
-	comment := aClassTemplate comment.
-	isDeclaration := aClassTemplate isDeclaration
 ]
 
 { #category : 'accessing' }
@@ -73,34 +71,6 @@ IGClass >> classMembers [
 IGClass >> comment [
 
 	^ comment
-]
-
-{ #category : 'initialization' }
-IGClass >> fromClassTemplate: aClassTemplate [
-	"this is used to construct the specialised class superclass"
-	
-	name := aClassTemplate basename.
-	self basicFromClassTemplate: aClassTemplate.
-	elements := (aClassTemplate elements 
-		reject: [ :each | each isClassMember and: [ each isTemplateOf: aClassTemplate ] ])
-		collect: [ :each | 
-			each copy
-				parent: self;
-				yourself ]
-]
-
-{ #category : 'initialization' }
-IGClass >> fromClassTemplate: aClassTemplate specializedype: aString [
-
-	name := aClassTemplate basename, aString capitalized.
-	self basicFromClassTemplate: aClassTemplate.
-	"I am just interested in class members here"
-	elements := aClassTemplate classMembers
-		select: [ :each | each isTemplateOf: aClassTemplate ]
-		thenCollect: [ :each | 
-			(each asSpecializationOf: aClassTemplate type: aString)
-				parent: self;
-				yourself ]
 ]
 
 { #category : 'initialization' }

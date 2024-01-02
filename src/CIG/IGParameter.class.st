@@ -136,6 +136,12 @@ IGParameter >> isClassTemplateOf: aClassTemplate [
 ]
 
 { #category : 'testing' }
+IGParameter >> isDeclType [
+
+	^ self typeName beginsWith: 'decltype'
+]
+
+{ #category : 'testing' }
 IGParameter >> isElaborated [
 
 	^ self typeKind = CXType_Elaborated

@@ -113,7 +113,7 @@ IGType >> element [
 				self root elementAtPath: self typeReference namePath ]
 			ifNil: [ 
 				"it can be a typedef"
-				self root elementAtPath: (self parseType name substrings: '::') ] ]
+				self root elementAtPath: (self parseType nameWithSpecialization substrings: '::') ] ]
 ]
 
 { #category : 'testing' }

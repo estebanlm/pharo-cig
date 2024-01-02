@@ -12,6 +12,13 @@ IGEnum class >> kind [
 	^ CXCursor_EnumDecl
 ]
 
+{ #category : 'accessing' }
+IGEnum class >> typeReferenceName [
+	"prefix included in IGTypeReference"
+	
+	^ 'enum'
+]
+
 { #category : 'visiting' }
 IGEnum >> accept: aVisitor [
 

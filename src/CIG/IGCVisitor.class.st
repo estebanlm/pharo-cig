@@ -170,19 +170,7 @@ IGCVisitor >> visitClass: aClass [
 { #category : 'visiting' }
 IGCVisitor >> visitClassTemplate: aClassTemplate [
 
-	"
-	1. collect defined templates.
-	2. generate a typedef for each.
-	(this is make in the declaration phase)
-	3. generate functions for each.
-		- later, in pharo side, we will generate a class and a hierarchy
-	"
-
-	self flag: #TODO. "Header should abstract/subclasses too"
-
-	"we first define the abstract class"
-	self visitClass: aClassTemplate asBaseClass.
-	"later, we add one subclass for each specialized type"
+	"we add one subclass for each specialized type"
 	aClassTemplate typeSpecializations do: [ :each |
 		self visitClass: (aClassTemplate addSubclassWithSpecializedType: each) ]
 ]
@@ -230,9 +218,7 @@ IGCVisitor >> visitFunction: aFunction [
 { #category : 'visiting' }
 IGCVisitor >> visitMethod: aMethod [
 
-	"skip not public methods.
-	 skip operators because they are not really used in pharo. 
-	 skip function with va_list because we don't know what to do with them"
+	"skip not public methods."
 	aMethod isPublic ifFalse: [ ^ self ].
 
 	self visitFunction: aMethod

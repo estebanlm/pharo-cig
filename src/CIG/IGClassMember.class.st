@@ -101,7 +101,8 @@ IGClassMember >> isOperator [
 { #category : 'testing' }
 IGClassMember >> isPublic [
 
-	^ isPublic
+	^ isPublic and: [ 
+		self parameters noneSatisfy: [ :each | each isDeclType ] ]
 ]
 
 { #category : 'testing' }
@@ -144,6 +145,13 @@ IGClassMember >> pathName [
 	^ self spelling
 ]
 
+{ #category : 'copying' }
+IGClassMember >> postCopy [
+
+	elements ifNil: [ ^ self ].
+	elements := elements collect: [ :each | each copy ]
+]
+
 { #category : 'accessing' }
 IGClassMember >> returnTypeName [
 
@@ -152,26 +160,46 @@ IGClassMember >> returnTypeName [
 
 { #category : 'private' }
 IGClassMember >> specializeClassTemplate: aClassTemplate type: typeString [
-		
-	(self isReturnTypeTemplateOf: aClassTemplate) ifTrue: [ 
-		returnTypeName := IGType 
-			replaceTypeTemplate: aClassTemplate
-			type: typeString
-			in: returnTypeName ].
-	(self isReturnTypeClassTemplateOf: aClassTemplate) ifTrue: [ 
-		returnTypeName := IGType 
-			replaceTypeClassTemplate: aClassTemplate
-			type: typeString
-			in: returnTypeName ].
+
+	self specializeTypeTemplate: aClassTemplate type: typeString.
+	self specializeTypeClassTemplate: aClassTemplate type: typeString.
 
 	parameters := self parameters collect: [ :each |
 		(each isTemplateOf: aClassTemplate)
 			ifTrue: [ 
-				each copy 
+				each copy
 					specializeClassTemplate: aClassTemplate 
 					type: typeString ]
 			ifFalse: [ 
 				each copy ] ]
+]
+
+{ #category : 'private' }
+IGClassMember >> specializeTypeClassTemplate: aClassTemplate type: typeString [
+
+	(self isReturnTypeClassTemplateOf: aClassTemplate) ifFalse: [ ^ self ]. 
+	
+	returnTypeName := IGType
+		replaceTypeClassTemplate: aClassTemplate
+		type: typeString
+		in: returnTypeName.
+
+	self typeReference ifNotNil: [ :aTypeReference |
+		aTypeReference specializeTypeClassTemplate: aClassTemplate type: typeString ]
+]
+
+{ #category : 'private' }
+IGClassMember >> specializeTypeTemplate: aClassTemplate type: typeString [
+		
+	(self isReturnTypeTemplateOf: aClassTemplate) ifFalse: [ ^ self ].
+	 
+	returnTypeName := IGType 
+		replaceTypeTemplate: aClassTemplate
+		type: typeString
+		in: returnTypeName.
+		
+	self typeReference ifNotNil: [ :aTypeReference |
+		aTypeReference specializeTypeTemplate: aClassTemplate type: typeString ]
 ]
 
 { #category : 'accessing' }

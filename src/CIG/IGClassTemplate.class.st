@@ -19,12 +19,14 @@ IGClassTemplate >> accept: aVisitor [
 ]
 
 { #category : 'adding' }
-IGClassTemplate >> addSubclassWithSpecializedType: aString [ 
+IGClassTemplate >> addSubclassWithSpecializedType: aString [
 	"this creates the subclass an adds it as element (so it can be found in the 
 	 generating process)"
 	| specializedClass |
 	
 	specializedClass := self asSubclassWithSpecializedType: aString.
+	self flag: #TODO. "ensure a replace. Demeters law!"
+	self parent elements remove: specializedClass ifAbsent: [  ].
 	self parent addElement: specializedClass.
 	^ specializedClass
 ]
@@ -32,13 +34,13 @@ IGClassTemplate >> addSubclassWithSpecializedType: aString [
 { #category : 'converting' }
 IGClassTemplate >> asBaseClass [
 	
-	^ IGClass new fromClassTemplate: self
+	^ IGClassSpecialization fromClassTemplate: self
 ]
 
 { #category : 'converting' }
 IGClassTemplate >> asSubclassWithSpecializedType: aString [ 
 	
-	^ IGClass new 
+	^ IGClassSpecialization 
 		fromClassTemplate: self 
 		specializedype: aString
 ]

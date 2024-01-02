@@ -219,7 +219,7 @@ IGPharoVisitor >> prefix [
 IGPharoVisitor >> registerAllTypesIfNeeded: aCollection [
 
 	aCollection 
-		select: [ :each | each hasTypeReference and: [ each typeReference isUnknown not ] ]
+		select: [ :each | each hasTypeReference and: [ each typeReference isUnknownReference not ] ]
 		thenDo: [ :each | 
 			self 
 				registerDeclaration: each cDeclaration

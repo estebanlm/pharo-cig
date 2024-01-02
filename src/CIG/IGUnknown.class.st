@@ -15,6 +15,12 @@ IGUnknown class >> kind [
 	^ nil
 ]
 
+{ #category : 'accessing' }
+IGUnknown class >> typeReferenceName [
+
+	^ nil
+]
+
 { #category : 'visiting' }
 IGUnknown >> accept: aVisitor [
 

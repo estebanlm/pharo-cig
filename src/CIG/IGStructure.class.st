@@ -14,6 +14,13 @@ IGStructure class >> kind [
 	^ CXCursor_StructDecl
 ]
 
+{ #category : 'accessing' }
+IGStructure class >> typeReferenceName [
+	"prefix included in IGTypeReference"
+	
+	^ 'struct'
+]
+
 { #category : 'visiting' }
 IGStructure >> accept: aVisitor [
 

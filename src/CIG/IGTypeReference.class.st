@@ -12,6 +12,12 @@ IGTypeReference class >> kind [
 	^ CXCursor_TypeRef
 ]
 
+{ #category : 'dependencies' }
+IGTypeReference class >> typeReferenceClasses [
+	
+	^ { IGClass. IGStructure. IGEnum }
+]
+
 { #category : 'visiting' }
 IGTypeReference >> accept: aVisitor [
 
@@ -37,29 +43,67 @@ IGTypeReference >> isTypeReference [
 ]
 
 { #category : 'testing' }
-IGTypeReference >> isUnknown [
+IGTypeReference >> isUnknownReference [
 
 	^ self referenceType = IGUnknown
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 IGTypeReference >> namePath [
 	
 	^ self typeName substrings: '::'
+]
+
+{ #category : 'private' }
+IGTypeReference >> referenceName [
+
+	^ self referenceType typeReferenceName
+]
+
+{ #category : 'private' }
+IGTypeReference >> referenceNamePrefixFor: typeName [
+
+	self referenceName ifNotNil: [ :aName | ^ aName, ' ', typeName ].
+	
+	(self root elementAtPath: (typeName substrings: '::')) ifNotNil: [ :anElement | 
+		^ anElement class typeReferenceName, ' ', anElement cppDeclaration ].
+
+	^ typeName
 ]
 
 { #category : 'accessing' }
 IGTypeReference >> referenceType [
 	| typeString |
 
-	self flag: #TODO. "This can be refactored to an object hierarchy?"
-
 	typeString := self name copyUpTo: Character space.
-	typeString = 'class' ifTrue: [ ^ IGClass ].
-	typeString = 'struct' ifTrue: [ ^ IGStructure ].
-	typeString = 'enum' ifTrue: [ ^ IGEnum ].
-	
-	^ IGUnknown
+	^ self class typeReferenceClasses 
+		detect: [ :each | each typeReferenceName = typeString ]
+		ifNone: [ IGUnknown ]
+
+]
+
+{ #category : 'private' }
+IGTypeReference >> specializeTypeClassTemplate: aClassTemplate type: typeString [
+	| newTypeName |
+
+	newTypeName := IGType 
+		replaceTypeClassTemplate: aClassTemplate
+		type:typeString
+		in: self typeName.
+		
+	name := self referenceNamePrefixFor: newTypeName
+]
+
+{ #category : 'private' }
+IGTypeReference >> specializeTypeTemplate: aClassTemplate type: typeString [
+	| newTypeName |
+
+	newTypeName := IGType 
+		replaceTypeTemplate: aClassTemplate
+		type:typeString
+		in: self typeName.
+		
+	name := self referenceNamePrefixFor: newTypeName
 ]
 
 { #category : 'accessing' }
