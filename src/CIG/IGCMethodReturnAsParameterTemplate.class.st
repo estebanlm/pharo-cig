@@ -11,7 +11,9 @@ IGCMethodReturnAsParameterTemplate class >> handlesElement: anElement [
 	| type |
 
 	type := anElement resolveReturnType.
-	^ type isClass and: [ type element hasOperatorOverloadNewManyArguments ]
+	^ type isClass 
+		and: [ type isPointer not
+		and: [ type element hasOperatorOverloadNewManyArguments ] ]
 ]
 
 { #category : 'generating' }

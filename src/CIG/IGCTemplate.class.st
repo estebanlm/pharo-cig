@@ -29,8 +29,14 @@ IGCTemplate >> element [
 
 { #category : 'accessing' }
 IGCTemplate >> elementAtPath: aPath [
+	| elementAtPath |
 
-	^ self root elementAtPath: aPath
+	elementAtPath := self root elementAtPath: aPath.
+	"I am not interested on type references (at least for now)"
+	(elementAtPath isNil or: [ elementAtPath isTypeReference ])
+		ifTrue: [ ^ nil ].
+		
+	^ elementAtPath 
 ]
 
 { #category : 'initialization' }

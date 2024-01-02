@@ -39,7 +39,7 @@ IGCVisitorTest >> testVisitClassTemplateGeneratesABaseClassAndSubclasses [
 	"check for different generated methods"
 	self assert: (result includesSubstring: 'tv_TSpanChar* tv_TSpanChar_new_1();').
 	self assert: (result includesSubstring: 'char* tv_TSpanChar_data(tv_TSpanChar* self);').
-	self assert: (result includesSubstring: 'void tv_TSpanTScreenCell_data(tv_TSpanTScreenCell* self, tv_TScreenCell* result);').
+	self assert: (result includesSubstring: 'tv_TScreenCell* tv_TSpanTScreenCell_data(tv_TSpanTScreenCell* self);').
 	self assert: (result includesSubstring: 'uint32_t* tv_TSpanUint32_t_data(tv_TSpanUint32_t* self);')
 ]
 

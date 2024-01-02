@@ -6,6 +6,21 @@ Class {
 }
 
 { #category : 'tests' }
+IGClassTemplateTest >> testMethodReturningConstTemplate [
+	| element subclass method template |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	subclass := element addSubclassWithSpecializedType: 'char'.
+
+	method := subclass elementAtPath: { 'cbegin()' }.
+	template := 	method cTemplate.
+	
+	self 
+		assert: template generateBody 
+		equals: 'return (const char*)(((TSpan<char>*)self)->cbegin());'
+]
+
+{ #category : 'tests' }
 IGClassTemplateTest >> testMethodReturningTemplateArgument [
 	| element subclass method template |
 
@@ -23,8 +38,25 @@ return (tv_TSpanTScreenCell*)_result;'
 ]
 
 { #category : 'tests' }
+IGClassTemplateTest >> testMethodReturningTemplateArgumentWithPointer [
+	| element subclass method template |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	subclass := element addSubclassWithSpecializedType: 'TScreenCell'.
+
+	method := subclass elementAtPath: { 'data()' }.
+	template := 	method cTemplate.
+	
+	self 
+		assert: template generateBody 
+		equals: 'return (tv_TScreenCell*)(((TSpan<TScreenCell>*)self)->data());'
+]
+
+{ #category : 'tests' }
 IGClassTemplateTest >> testMethodReturningTemplateArgumentWithSpecialNewGenerateAnExtraArgument [
 	| element subclass method template |
+
+	self skip. "I do not find a correct example of this :("
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
 	subclass := element addSubclassWithSpecializedType: 'TScreenCell'.

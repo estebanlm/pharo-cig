@@ -31,6 +31,8 @@ IGType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: aS
 			stream << aClassTemplate basename << '<' << typeString << '>' ].
 		
 	^ String streamContents: [ :stream | 
+		(aString includesSubstring: 'const ')
+			ifTrue: [ stream << 'const ' ].
 		stream << classType.
 		(type arity - (type isReference ifTrue: [ 1 ] ifFalse: [ 0 ])) timesRepeat: [ 
 			stream << '*' ].
@@ -49,6 +51,8 @@ IGType class >> replaceTypeTemplate: aClassTemplate type: typeString in: aString
 		ifFalse: [ self error: 'Class templates do not correspond to type to match.' ]. 
 		
 	^ String streamContents: [ :stream | 
+		(aString includesSubstring: 'const ') 
+			ifTrue: [ stream << 'const ' ].
 		stream << typeString.
 		(type arity - (type isReference ifTrue: [ 1 ] ifFalse: [ 0 ])) timesRepeat: [ 
 			stream << '*' ].
