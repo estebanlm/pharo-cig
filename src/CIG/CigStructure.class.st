@@ -66,13 +66,19 @@ CigStructure >> classMembers [
 { #category : 'accessing' }
 CigStructure >> fields [
 	
-	^ self elements select: [ :each | each isField or: [ each isVariable ] ]
+	^ self elements select: [ :each | each isStructMember ]
 ]
 
 { #category : 'testing' }
 CigStructure >> isAbstract [
 
 	^ self methods anySatisfy: [ :each | each isPureVirtual ]
+]
+
+{ #category : 'testing' }
+CigStructure >> isAnonymous [
+	
+	^ self name beginsWith: '(anonymous'
 ]
 
 { #category : 'testing' }
@@ -88,6 +94,12 @@ CigStructure >> isOpaque [
 ]
 
 { #category : 'testing' }
+CigStructure >> isStructMember [
+
+	^ true
+]
+
+{ #category : 'testing' }
 CigStructure >> isStructure [
 
 	^ true
@@ -97,6 +109,12 @@ CigStructure >> isStructure [
 CigStructure >> isTemplateSpecialization [
 
 	^ '.*<.*>.*' asRegex matches: self name
+]
+
+{ #category : 'accessing' }
+CigStructure >> phTemplate [
+	
+	^ CigPharoStructureTemplate for: self
 ]
 
 { #category : 'accessing' }

@@ -30,17 +30,10 @@ CigClassMember >> asSpecializationOf: aClassTemplate type: typeString [
 		yourself
 ]
 
-{ #category : 'private' }
-CigClassMember >> buildParameters: aCollection on: stream [ 
-	
-	aCollection ifEmpty: [ ^ self ].
-	
-	aCollection first in: [ :each | 
-		aCollection size > 1 
-			ifTrue: [ stream << each name capitalized ].
-		stream << ': ' << each name << ' ' ].
-	aCollection allButFirst do: [ :each | 
-		stream << each name << ': ' << each name << ' ' ]
+{ #category : 'testing' }
+CigClassMember >> exposesReturnValueAsParameter [
+
+	^ false
 ]
 
 { #category : 'initialization' }
@@ -71,6 +64,12 @@ CigClassMember >> hasAnyParameterTypeClassTemplateOf: aClassTemplate [
 CigClassMember >> hasAnyParameterTypeTemplateOf: aClassTemplate [
 	
 	^ self parameters anySatisfy: [ :each | each isTemplateOf: aClassTemplate ]
+]
+
+{ #category : 'testing' }
+CigClassMember >> hasComment [
+	
+	^ self comment isEmptyOrNil not
 ]
 
 { #category : 'testing' }

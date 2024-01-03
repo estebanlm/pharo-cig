@@ -33,19 +33,6 @@ CigFunction >> argumentsAsList [
 	^ (self parameters collect: [ :each | each asArgumentString ]) asCommaString
 ]
 
-{ #category : 'private' }
-CigFunction >> buildParameters: aCollection on: stream [ 
-	
-	aCollection ifEmpty: [ ^ self ].
-	
-	aCollection first in: [ :each | 
-		aCollection size > 1 
-			ifTrue: [ stream << each name capitalized ].
-		stream << ': ' << each name << ' ' ].
-	aCollection allButFirst do: [ :each | 
-		stream << each name << ': ' << each name << ' ' ]
-]
-
 { #category : 'accessing' }
 CigFunction >> cDeclaration [
 
@@ -56,6 +43,16 @@ CigFunction >> cDeclaration [
 CigFunction >> cTemplate [
 	
 	^ CigCFunctionTemplate for: self
+]
+
+{ #category : 'testing' }
+CigFunction >> exposesReturnValueAsParameter [
+	| type |
+
+	type := self resolveReturnType.
+	^ type isClass 
+		and: [ type isPointer not
+		and: [ type element hasOperatorOverloadNewManyArguments ] ]
 ]
 
 { #category : 'initialization' }
@@ -72,6 +69,12 @@ CigFunction >> fromCursor: aCursor [
 		underlyingTypeKind := underlyingType kind.
 		(underlyingTypeName indexOf: $<) > 0 
 			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ]
+]
+
+{ #category : 'testing' }
+CigFunction >> hasComment [
+	
+	^ self comment isEmptyOrNil not
 ]
 
 { #category : 'testing' }
@@ -106,6 +109,12 @@ CigFunction >> phDeclaration [
 			stream  << self spelling uncapitalized.
 			self buildParameters: self parameters on: stream ])
 		trimmed
+]
+
+{ #category : 'accessing' }
+CigFunction >> phTemplate [
+	
+	^ CigPharoFunctionTemplate for: self
 ]
 
 { #category : 'accessing' }

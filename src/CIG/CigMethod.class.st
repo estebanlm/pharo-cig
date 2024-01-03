@@ -35,6 +35,16 @@ CigMethod >> cTemplate [
 	^ CigCMethodTemplate for: self
 ]
 
+{ #category : 'testing' }
+CigMethod >> exposesReturnValueAsParameter [
+	| type |
+
+	type := self resolveReturnType.
+	^ type isClass 
+		and: [ type isPointer not
+		and: [ type element hasOperatorOverloadNewManyArguments ] ]
+]
+
 { #category : 'initialization' }
 CigMethod >> fromCursor: aCursor [
 
@@ -93,6 +103,12 @@ CigMethod >> phDeclaration [
 			stream  << self spelling uncapitalized.
 			self buildParameters: self parameters on: stream ])
 		trimmed
+]
+
+{ #category : 'accessing' }
+CigMethod >> phTemplate [
+	
+	^ CigPharoFunctionTemplate for: self
 ]
 
 { #category : 'handling' }

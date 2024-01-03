@@ -13,7 +13,7 @@ CigCStructTemplate >> generate [
 		stream << 'struct ' << self element cDeclaration << ' {' .
 		stream cr.
 		self element fields 
-			collect: [ :each | CigCParameterTemplate forField: each ]
+			collect: [ :each | each cTemplate ]
 			thenDo: [ :each |
 				stream tab.
 				stream << each generate << ';'.

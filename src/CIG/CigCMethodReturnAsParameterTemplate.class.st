@@ -8,12 +8,8 @@ Class {
 
 { #category : 'private' }
 CigCMethodReturnAsParameterTemplate class >> handlesElement: anElement [
-	| type |
 
-	type := anElement resolveReturnType.
-	^ type isClass 
-		and: [ type isPointer not
-		and: [ type element hasOperatorOverloadNewManyArguments ] ]
+	^ anElement exposesReturnValueAsParameter
 ]
 
 { #category : 'generating' }

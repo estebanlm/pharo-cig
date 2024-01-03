@@ -217,6 +217,12 @@ CigElement >> isParameter [
 ]
 
 { #category : 'testing' }
+CigElement >> isStructMember [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CigElement >> isStructure [
 
 	^ false
@@ -326,6 +332,12 @@ CigElement >> path [
 CigElement >> pathName [
 
 	^ self name
+]
+
+{ #category : 'accessing' }
+CigElement >> phDeclaration [
+
+	^ '' join: (self path collect: [ :each | each capitalized ])
 ]
 
 { #category : 'accessing' }

@@ -33,6 +33,12 @@ CigVariable >> fromCursor: aCursor [
 ]
 
 { #category : 'testing' }
+CigVariable >> isStructMember [
+
+	^ true
+]
+
+{ #category : 'testing' }
 CigVariable >> isVariable [
 
 	^ true

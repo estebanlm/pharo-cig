@@ -23,6 +23,12 @@ CigField >> accept: aVisitor [
 	"Fields are handled by their parents"
 ]
 
+{ #category : 'accessing' }
+CigField >> cTemplate [
+
+	^ CigCParameterTemplate forField: self
+]
+
 { #category : 'initialization' }
 CigField >> fromCursor: aCursor [
 	| type |
@@ -44,6 +50,18 @@ CigField >> isField [
 CigField >> isPublic [
 
 	^ isPublic
+]
+
+{ #category : 'testing' }
+CigField >> isStructMember [
+
+	^ true
+]
+
+{ #category : 'accessing' }
+CigField >> phTemplate [
+	
+	^ CigPharoFieldTemplate for: self
 ]
 
 { #category : 'accessing' }
