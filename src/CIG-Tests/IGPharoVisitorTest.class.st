@@ -1,8 +1,9 @@
 Class {
 	#name : 'IGPharoVisitorTest',
 	#superclass : 'IGBaseTest',
-	#category : 'CIG-Tests',
-	#package : 'CIG-Tests'
+	#category : 'CIG-Tests-Pharo',
+	#package : 'CIG-Tests',
+	#tag : 'Pharo'
 }
 
 { #category : 'tests' }

@@ -1,7 +1,7 @@
-Extension { #name : 'IGPharoVisitor' }
+Extension { #name : 'IGPharoVisitorOld' }
 
 { #category : '*CIG-Tests' }
-IGPharoVisitor >> prepareForTest [
+IGPharoVisitorOld >> prepareForTest [
 	
 	types := Dictionary new.
 	file := IGHeaderGenerator new

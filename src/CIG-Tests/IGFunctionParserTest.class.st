@@ -1,8 +1,9 @@
 Class {
 	#name : 'IGFunctionParserTest',
 	#superclass : 'TestCase',
-	#category : 'CIG-Tests',
-	#package : 'CIG-Tests'
+	#category : 'CIG-Tests-Misc',
+	#package : 'CIG-Tests',
+	#tag : 'Misc'
 }
 
 { #category : 'tests' }

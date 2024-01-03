@@ -1,8 +1,9 @@
 Class {
 	#name : 'IGCTemplateCollectorTest',
 	#superclass : 'IGBaseTest',
-	#category : 'CIG-Tests',
-	#package : 'CIG-Tests'
+	#category : 'CIG-Tests-C',
+	#package : 'CIG-Tests',
+	#tag : 'C'
 }
 
 { #category : 'tests' }

@@ -1,5 +1,5 @@
 Class {
-	#name : 'IGPharoVisitor',
+	#name : 'IGPharoVisitorOld',
 	#superclass : 'IGVisitor',
 	#instVars : [
 		'generator',
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addCPPHeaderTo: aNamespaceClass [
+IGPharoVisitorOld >> addCPPHeaderTo: aNamespaceClass [
 	| template |
 	
 	template := ('cppHeader
@@ -25,7 +25,7 @@ IGPharoVisitor >> addCPPHeaderTo: aNamespaceClass [
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addCPPName: aString to: aNamespaceClass [
+IGPharoVisitorOld >> addCPPName: aString to: aNamespaceClass [
 	| template |
 	
 	template := ('cppName
@@ -38,7 +38,7 @@ IGPharoVisitor >> addCPPName: aString to: aNamespaceClass [
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addClass: aName extends: aClass tag: aTag [
+IGPharoVisitorOld >> addClass: aName extends: aClass tag: aTag [
 	| builder |
 	
 	builder := aClass << aName asSymbol.
@@ -60,7 +60,7 @@ IGPharoVisitor >> addClass: aName extends: aClass tag: aTag [
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addFFILibrary: aUnit [
+IGPharoVisitorOld >> addFFILibrary: aUnit [
 	| ffiLibraryName class template |
 
 	ffiLibraryName := self libraryName.
@@ -81,7 +81,7 @@ IGPharoVisitor >> addFFILibrary: aUnit [
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addFFITrait: aUnit [
+IGPharoVisitorOld >> addFFITrait: aUnit [
 	| ffiTraitName ffiLibraryName trait template |
 
 	ffiLibraryName := self libraryName.
@@ -102,7 +102,7 @@ IGPharoVisitor >> addFFITrait: aUnit [
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addTypedefTo: aNamespaceClass [
+IGPharoVisitorOld >> addTypedefTo: aNamespaceClass [
 	| template |
 	
 	template := ('typedef
@@ -115,7 +115,7 @@ IGPharoVisitor >> addTypedefTo: aNamespaceClass [
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addTypes: aUnit [
+IGPharoVisitorOld >> addTypes: aUnit [
 	| class template |
 	
 	class := SharedPool << self typesName asSymbol
@@ -135,7 +135,7 @@ IGPharoVisitor >> addTypes: aUnit [
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> addTypesClass: aUnit [
+IGPharoVisitorOld >> addTypesClass: aUnit [
 	| typesName |
 
 	typesName := self typesName.
@@ -146,31 +146,31 @@ IGPharoVisitor >> addTypesClass: aUnit [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> classFor: aSymbol [
+IGPharoVisitorOld >> classFor: aSymbol [
 	
 	^ self class environment at: aSymbol asSymbol
 ]
 
 { #category : 'private - accessing' }
-IGPharoVisitor >> libraryName [
+IGPharoVisitorOld >> libraryName [
 
 	^ 'Lib', self file bindingsName capitalized
 ]
 
 { #category : 'private - accessing' }
-IGPharoVisitor >> libraryTrait [
+IGPharoVisitorOld >> libraryTrait [
 		
 	^ self class environment at: (self libraryTraitName asSymbol)
 ]
 
 { #category : 'private - accessing' }
-IGPharoVisitor >> libraryTraitName [
+IGPharoVisitorOld >> libraryTraitName [
 
 	^ 'LibT', self file bindingsName capitalized
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> namespaceFor: aNode [
+IGPharoVisitorOld >> namespaceFor: aNode [
 	| current |
 	
 	current := aNode.
@@ -182,7 +182,7 @@ IGPharoVisitor >> namespaceFor: aNode [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> namespaceForClass: aClass [
+IGPharoVisitorOld >> namespaceForClass: aClass [
 
 	^ (self namespaceFor: aClass) 
 		ifNotNil: [ :aNamespace | aNamespace basename capitalized ]
@@ -190,7 +190,7 @@ IGPharoVisitor >> namespaceForClass: aClass [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> namespaceForEnum: anEnum [
+IGPharoVisitorOld >> namespaceForEnum: anEnum [
 
 	^ (self namespaceFor: anEnum) 
 		ifNotNil: [ :aNamespace | aNamespace basename capitalized ]
@@ -198,25 +198,25 @@ IGPharoVisitor >> namespaceForEnum: anEnum [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> namespaceForStructure: aStructure [
+IGPharoVisitorOld >> namespaceForStructure: aStructure [
 
 	^ self namespaceForEnum: aStructure
 ]
 
 { #category : 'private - accessing' }
-IGPharoVisitor >> packageName [
+IGPharoVisitorOld >> packageName [
 
 	^ 'Lib', self file bindingsName capitalized
 ]
 
 { #category : 'private - accessing' }
-IGPharoVisitor >> prefix [
+IGPharoVisitorOld >> prefix [
 	
 	^ self file prefix
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> registerAllTypesIfNeeded: aCollection [
+IGPharoVisitorOld >> registerAllTypesIfNeeded: aCollection [
 
 	aCollection 
 		select: [ :each | each hasTypeReference and: [ each typeReference isUnknownReference not ] ]
@@ -227,7 +227,7 @@ IGPharoVisitor >> registerAllTypesIfNeeded: aCollection [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> registerDeclaration: aString as: otherString [
+IGPharoVisitorOld >> registerDeclaration: aString as: otherString [
 
 	types 
 		at: ((aString endsWith: '*')
@@ -237,7 +237,7 @@ IGPharoVisitor >> registerDeclaration: aString as: otherString [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> registerType: aNode [
+IGPharoVisitorOld >> registerType: aNode [
 
 	self 
 		registerDeclaration: aNode cDeclaration 
@@ -245,7 +245,7 @@ IGPharoVisitor >> registerType: aNode [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> superclassFor: aClass [
+IGPharoVisitorOld >> superclassFor: aClass [
 	| superclass |
 
 	superclass := aClass superclass ifNil: [ ^ FFIOpaqueObject ].
@@ -255,25 +255,25 @@ IGPharoVisitor >> superclassFor: aClass [
 ]
 
 { #category : 'private' }
-IGPharoVisitor >> types [
+IGPharoVisitorOld >> types [
 
 	^ types
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> typesClass [
+IGPharoVisitorOld >> typesClass [
 
 	^ self class environment at: self typesName asSymbol
 ]
 
 { #category : 'private - adding' }
-IGPharoVisitor >> typesName [
+IGPharoVisitorOld >> typesName [
 
 	^ self prefix, self file bindingsName capitalized, 'Typedef'
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitClass: aClass [
+IGPharoVisitorOld >> visitClass: aClass [
 	| class |
 
 	self registerType: aClass.
@@ -291,7 +291,7 @@ IGPharoVisitor >> visitClass: aClass [
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitConstructor: aConstructor [
+IGPharoVisitorOld >> visitConstructor: aConstructor [
 
 	(IGPharoGenerator on: self) 
 		generateConstructor: aConstructor;
@@ -299,7 +299,7 @@ IGPharoVisitor >> visitConstructor: aConstructor [
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitEnum: anEnum [
+IGPharoVisitorOld >> visitEnum: anEnum [
 	| enum template |
 
 	self registerType: anEnum.
@@ -329,14 +329,14 @@ IGPharoVisitor >> visitEnum: anEnum [
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitFunction: aFunction [
+IGPharoVisitorOld >> visitFunction: aFunction [
 
 	"add function to associated namespace or to main library if no namespace provided"
 	(IGPharoGenerator on: self) generateFunction: aFunction
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitMethod: aMethod [
+IGPharoVisitorOld >> visitMethod: aMethod [
 
 	(aMethod isPublic not 
 		or: [ aMethod isOperator ]) 
@@ -346,7 +346,7 @@ IGPharoVisitor >> visitMethod: aMethod [
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitNamespace: aNamespace [
+IGPharoVisitorOld >> visitNamespace: aNamespace [
 	| namespace |
 
 	(self includesNamespace: aNamespace cppDeclaration) ifTrue: [
@@ -364,7 +364,7 @@ IGPharoVisitor >> visitNamespace: aNamespace [
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitStructure: aStructure [
+IGPharoVisitorOld >> visitStructure: aStructure [
 	| struct template |
 
 	self registerType: aStructure.
@@ -396,7 +396,7 @@ IGPharoVisitor >> visitStructure: aStructure [
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitTypedef: aTypedef [
+IGPharoVisitorOld >> visitTypedef: aTypedef [
 	| type |
 
 	type := aTypedef resolveType.
@@ -406,7 +406,7 @@ IGPharoVisitor >> visitTypedef: aTypedef [
 ]
 
 { #category : 'visiting' }
-IGPharoVisitor >> visitUnit: aUnit [
+IGPharoVisitorOld >> visitUnit: aUnit [
 
 	self addFFILibrary: aUnit.
 	self addFFITrait: aUnit.

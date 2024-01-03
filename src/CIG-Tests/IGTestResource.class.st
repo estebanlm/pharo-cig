@@ -5,8 +5,9 @@ Class {
 		'translatedUnit',
 		'translatedUnitTvison'
 	],
-	#category : 'CIG-Tests',
-	#package : 'CIG-Tests'
+	#category : 'CIG-Tests-Base',
+	#package : 'CIG-Tests',
+	#tag : 'Base'
 }
 
 { #category : 'accessing' }

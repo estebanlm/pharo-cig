@@ -4,9 +4,9 @@ Class {
 	#instVars : [
 		'visitor'
 	],
-	#category : 'CIG-Generate-Pharo',
+	#category : 'CIG-Pharo',
 	#package : 'CIG',
-	#tag : 'Generate-Pharo'
+	#tag : 'Pharo'
 }
 
 { #category : 'instance creation' }

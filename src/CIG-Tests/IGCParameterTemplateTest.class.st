@@ -1,9 +1,9 @@
 Class {
 	#name : 'IGCParameterTemplateTest',
 	#superclass : 'IGCTemplateTest',
-	#category : 'CIG-Tests-Template',
+	#category : 'CIG-Tests-C-Template',
 	#package : 'CIG-Tests',
-	#tag : 'Template'
+	#tag : 'C-Template'
 }
 
 { #category : 'tests' }
