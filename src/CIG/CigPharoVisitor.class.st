@@ -36,11 +36,29 @@ CigPharoVisitor >> addFFITypesClass: aUnit [
 ]
 
 { #category : 'private' }
+CigPharoVisitor >> ensureBaseEnumerationClass: aUnit [ 
+	| generator |
+	
+	generator := CigPharoBaseEnumerationClassGenerator newFile: self file unit: aUnit.
+	generator baseEnumClass ifNotNil: [ ^ self ].
+	generator generate
+]
+
+{ #category : 'private' }
 CigPharoVisitor >> ensureBaseObjectClass: aUnit [
 	| generator |
 	
 	generator := CigPharoBaseObjectClassGenerator newFile: self file unit: aUnit.
 	generator baseObjectClass ifNotNil: [ ^ self ].
+	generator generate
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> ensureBaseStructureClass: aUnit [ 
+	| generator |
+	
+	generator := CigPharoBaseStructureClassGenerator newFile: self file unit: aUnit.
+	generator baseStructureClass ifNotNil: [ ^ self ].
 	generator generate
 ]
 
@@ -61,6 +79,8 @@ CigPharoVisitor >> visitConstructor: aConstructor [
 { #category : 'visiting' }
 CigPharoVisitor >> visitEnum: anEnum [
 
+	self ensureBaseEnumerationClass: anEnum root.
+	(CigPharoEnumGenerator newFile: self file enum: anEnum) generate
 ]
 
 { #category : 'visiting' }
@@ -82,7 +102,9 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitStructure: aStructure [
-
+	
+	self ensureBaseStructureClass: aStructure root.
+	(CigPharoStructureGenerator newFile: self file struct: aStructure) generate
 ]
 
 { #category : 'visiting' }

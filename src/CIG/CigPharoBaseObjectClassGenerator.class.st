@@ -9,7 +9,7 @@ Class {
 	#tag : 'Pharo'
 }
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseObjectClassGenerator >> addClass [
 	
 	generatedClass := FFIOpaqueObject << self baseObjectClassName asSymbol
@@ -20,7 +20,7 @@ CigPharoBaseObjectClassGenerator >> addClass [
 		install
 ]
 
-{ #category : 'generating' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseObjectClassGenerator >> addMethodAutoRelease [
 	
 	generatedClass 
@@ -30,7 +30,7 @@ CigPharoBaseObjectClassGenerator >> addMethodAutoRelease [
 		classified: 'finalization'
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseObjectClassGenerator >> addMethodDispose [
 	
 	generatedClass 
@@ -40,7 +40,7 @@ CigPharoBaseObjectClassGenerator >> addMethodDispose [
 		classified: 'finalization'
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseObjectClassGenerator >> addMethodFinalize [
 	
 	generatedClass 
@@ -51,7 +51,7 @@ CigPharoBaseObjectClassGenerator >> addMethodFinalize [
 		classified: 'finalization'
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseObjectClassGenerator >> addMethodInitialize [
 	
 	generatedClass 

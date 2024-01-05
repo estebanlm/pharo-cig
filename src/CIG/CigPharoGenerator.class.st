@@ -26,6 +26,21 @@ CigPharoGenerator class >> newFile: aFile unit: aUnit [
 ]
 
 { #category : 'private' }
+CigPharoGenerator >> baseEnumClass [
+
+	^ self class environment classNamed: self baseEnumClassName
+]
+
+{ #category : 'private' }
+CigPharoGenerator >> baseEnumClassName [
+
+	^ String streamContents: [ :stream |
+		stream 
+			<< self prefix capitalized
+			<< 'Enumeration' ]
+]
+
+{ #category : 'private' }
 CigPharoGenerator >> baseObjectClass [
 
 	^ self class environment classNamed: self baseObjectClassName
@@ -38,6 +53,21 @@ CigPharoGenerator >> baseObjectClassName [
 		stream 
 			<< self prefix capitalized
 			<< 'BaseObject' ]
+]
+
+{ #category : 'private' }
+CigPharoGenerator >> baseStructureClass [
+
+	^ self class environment classNamed: self baseStructureClassName
+]
+
+{ #category : 'private' }
+CigPharoGenerator >> baseStructureClassName [
+
+	^ String streamContents: [ :stream |
+		stream 
+			<< self prefix capitalized
+			<< 'Structure' ]
 ]
 
 { #category : 'private' }

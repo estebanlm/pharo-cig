@@ -1,16 +1,17 @@
 "
-A template to generate structure declarations.
+A template to generate enum declarations.
 "
 Class {
-	#name : 'CigPharoStructureTemplate',
+	#name : 'CigPharoEnumerationTemplate',
 	#superclass : 'CigPharoTemplate',
+	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Pharo-Template',
 	#package : 'CIG',
 	#tag : 'Pharo-Template'
 }
 
 { #category : 'private' }
-CigPharoStructureTemplate >> anonymousElementName [
+CigPharoEnumerationTemplate >> anonymousElementName [
 	| index |
 
 	index := self indexOfElement.
@@ -19,7 +20,7 @@ CigPharoStructureTemplate >> anonymousElementName [
 ]
 
 { #category : 'private' }
-CigPharoStructureTemplate >> anonymousTypeName [
+CigPharoEnumerationTemplate >> anonymousTypeName [
 	| index |
 	
 	index := self indexOfElement.
@@ -29,39 +30,32 @@ CigPharoStructureTemplate >> anonymousTypeName [
 ]
 
 { #category : 'accessing' }
-CigPharoStructureTemplate >> elementName [
+CigPharoEnumerationTemplate >> elementName [
 	
 	^ self element isAnonymous
 		ifTrue: [ self anonymousElementName ]
 		ifFalse: [ self element name ]
 ]
 
-{ #category : 'as yet unclassified' }
-CigPharoStructureTemplate >> generateFieldDesc [
+{ #category : 'generating' }
+CigPharoEnumerationTemplate >> generateEnumDecl [
 	"the structure is a field of another structure"
 	
 	^ String streamContents: [ :stream |
-		 stream << self typeName  << ' ' << self elementName ]
-]
-
-{ #category : 'as yet unclassified' }
-CigPharoStructureTemplate >> generateFieldsDesc [
-
-	^ String streamContents: [ :stream |
-		stream << 'fieldsDesc'; cr.
+		stream << 'enumDecl'; cr.
 		stream cr; tab.
 		stream << '^ #('; cr.
-		self element fields 
+		self element elements 
 			do: [ :each | 
 				stream tab.
-				stream << each phTemplate generateFieldDesc ]
-			separatedBy: [ stream << ';'; cr ].
-		stream cr; tab.
-		stream << ')' ]
+				stream << each name << ' ' << each value asString ]
+			separatedBy: [ 
+				stream cr ].
+		stream << ' )' ]
 ]
 
 { #category : 'accessing' }
-CigPharoStructureTemplate >> indexOfElement [
+CigPharoEnumerationTemplate >> indexOfElement [
 	
 	^ (self element parent elements 
 		select: [ :each | each kind = self element kind ]) 
@@ -69,13 +63,13 @@ CigPharoStructureTemplate >> indexOfElement [
 ]
 
 { #category : 'private' }
-CigPharoStructureTemplate >> prefix [
+CigPharoEnumerationTemplate >> prefix [
 	
-	^ 'struct'
+	^ 'enum'
 ]
 
 { #category : 'accessing' }
-CigPharoStructureTemplate >> typeName [
+CigPharoEnumerationTemplate >> typeName [
 
 	^ self element isAnonymous
 		ifTrue: [ self anonymousTypeName ]

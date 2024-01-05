@@ -44,6 +44,12 @@ CigEnum >> isUnnamed [
 ]
 
 { #category : 'accessing' }
+CigEnum >> phTemplate [
+
+	^ CigPharoEnumerationTemplate for: self
+]
+
+{ #category : 'accessing' }
 CigEnum >> resolveType [
 
 	^ CigEnumType new 

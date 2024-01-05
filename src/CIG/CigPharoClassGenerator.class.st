@@ -20,7 +20,7 @@ CigPharoClassGenerator class >> newFile: aLibraryGenerator class: aCigClass [
 		yourself
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoClassGenerator >> addClass [
 
 	generatedClass := self baseObjectClass << self classElement phDeclaration asSymbol
@@ -29,7 +29,7 @@ CigPharoClassGenerator >> addClass [
 		install
 ]
 
-{ #category : 'generating' }
+{ #category : 'as yet unclassified' }
 CigPharoClassGenerator >> addDisposeMethod [
 
 	generatedClass 
@@ -49,7 +49,7 @@ CigPharoClassGenerator >> classElement: aClass [
 	classElement := aClass
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoClassGenerator >> disposeTemplate [
 		
 	^ String streamContents: [ :stream |

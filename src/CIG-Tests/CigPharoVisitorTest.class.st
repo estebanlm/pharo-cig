@@ -53,6 +53,22 @@ CigPharoVisitorTest >> testAddFFITypesClass [
 ]
 
 { #category : 'tests' }
+CigPharoVisitorTest >> testEnsureBaseEnumerationClass [
+	| visitor class |
+	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: self translatedUnitTvision.
+
+	class := self class environment classNamed: 'TvEnumeration'.
+	self assert: class isNil.
+	
+	visitor ensureBaseEnumerationClass: self translatedUnitTvision.
+
+	class := self class environment classNamed: 'TvEnumeration'.
+	self assert: class notNil
+]
+
+{ #category : 'tests' }
 CigPharoVisitorTest >> testEnsureBaseObjectClass [
 	| visitor class |
 	
@@ -83,6 +99,22 @@ CigPharoVisitorTest >> testEnsureBaseObjectClassIncludesBaseMethods [
 	self assert: (class canUnderstand: #finalize).
 	self assert: (class canUnderstand: #dispose).
 	self assert: (class canUnderstand: #autoRelease)
+]
+
+{ #category : 'tests' }
+CigPharoVisitorTest >> testEnsureBaseStructureClass [
+	| visitor class |
+	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: self translatedUnitTvision.
+
+	class := self class environment classNamed: 'TvStructure'.
+	self assert: class isNil.
+	
+	visitor ensureBaseStructureClass: self translatedUnitTvision.
+
+	class := self class environment classNamed: 'TvStructure'.
+	self assert: class notNil
 ]
 
 { #category : 'tests' }
@@ -131,6 +163,30 @@ CigPharoVisitorTest >> testVisitClassWithManyConstructorsDisambiguatesName [
 	class := (self class environment classNamed: 'TvTView') class.
 	constructors := class methodDict keys select: [ :each | each beginsWith: 'tView_' ].
 	self assert: constructors size equals: 2
+]
+
+{ #category : 'tests' }
+CigPharoVisitorTest >> testVisitEnumGenerateClass [
+	| visitor element enum |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TVTransfer' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitEnum: element.
+	
+	enum := self class environment classNamed: 'TvTVTransfer'.
+	self assert: enum notNil.
+	
+	self assert: (enum class canUnderstand: #enumDecl).
+	self 
+		assert: (enum class >> #enumDecl) sourceCode
+		equals: 'enumDecl
+
+	^ #(
+	vtDataSize 0
+	vtSetData 1
+	vtGetData 2 )'
 ]
 
 { #category : 'tests' }
@@ -219,6 +275,35 @@ CigPharoVisitorTest >> testVisitMethodAddsMethodToClass [
 		equals: 'dragViewEvent: event mode: mode limits: limits minSize: minSize maxSize: maxSize
 
 	self ffiCall: #(void tv_TView_dragView(tv_TView* self, tv_TEvent* event, tv_uchar mode, tv_TRect* limits, tv_TPoint* minSize, tv_TPoint* maxSize))'
+]
+
+{ #category : 'tests' }
+CigPharoVisitorTest >> testVisitStructureGenerateSimpleStructure [
+	| element visitor class |
+
+	element := self translatedUnitTvision elementAtPath: { 'TResourceItem' }.
+	visitor := CigPharoVisitor newForTest.	
+	
+	visitor visitStructure: element.
+	class := self class environment classNamed: 'TvTResourceItem'.
+
+	self assert: class notNil.
+	
+	self 
+		assert: (class class >> #fieldsDesc) sourceCode
+		equals: 'fieldsDesc
+
+	^ #(
+	int32_t pos;
+	int32_t size;
+	char* key
+	)'
+]
+
+{ #category : 'tests' }
+CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnion [
+
+	self fail
 ]
 
 { #category : 'tests' }

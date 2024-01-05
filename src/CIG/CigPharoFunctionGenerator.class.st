@@ -48,5 +48,5 @@ CigPharoFunctionGenerator >> generate [
 { #category : 'private' }
 CigPharoFunctionGenerator >> protocol [
 
-	^ 'functions'
+	^ 'public'
 ]
