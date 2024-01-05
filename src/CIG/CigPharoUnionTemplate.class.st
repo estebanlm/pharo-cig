@@ -1,3 +1,6 @@
+"
+A template to create union declarations.
+"
 Class {
 	#name : 'CigPharoUnionTemplate',
 	#superclass : 'CigPharoStructureTemplate',

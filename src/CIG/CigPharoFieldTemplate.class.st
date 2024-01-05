@@ -1,3 +1,6 @@
+"
+Template for `CigField`, to properly generate its declarations.
+"
 Class {
 	#name : 'CigPharoFieldTemplate',
 	#superclass : 'CigPharoTemplate',

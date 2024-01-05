@@ -1,3 +1,6 @@
+"
+A template to generate function calls which return value needs to be passed as parameter in a buffer (since we cannot return it as usual).
+"
 Class {
 	#name : 'CigPharoFunctionReturnAsParameterTemplate',
 	#superclass : 'CigPharoFunctionTemplate',

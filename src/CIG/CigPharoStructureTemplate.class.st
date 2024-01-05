@@ -1,3 +1,6 @@
+"
+A template to generate structure declarations.
+"
 Class {
 	#name : 'CigPharoStructureTemplate',
 	#superclass : 'CigPharoTemplate',

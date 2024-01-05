@@ -1,3 +1,6 @@
+"
+A template to build function calls.
+"
 Class {
 	#name : 'CigPharoFunctionTemplate',
 	#superclass : 'CigPharoTemplate',
