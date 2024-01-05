@@ -1,9 +1,9 @@
 Class {
 	#name : 'CigElementTest',
 	#superclass : 'CigBaseTest',
-	#category : 'CIG-Tests-C',
+	#category : 'CIG-Tests-Base',
 	#package : 'CIG-Tests',
-	#tag : 'C'
+	#tag : 'Base'
 }
 
 { #category : 'accessing' }
@@ -85,4 +85,15 @@ CigElementTest >> testUnnamedArgumentAnswersAValidName [
 	self assert: params fourth name equals: 'arg4'.
 	self assert: params fifth name equals: 'arg5'.
 	
+]
+
+{ #category : 'tests' }
+CigElementTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNames [
+	| element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TEditor'. 'insertBuffer(const char *, uint, uint, Boolean, Boolean)' }.
+	
+	self 
+		assert: element phDeclaration 
+		equals: 'insertBufferArg1: arg1 arg2: arg2 arg3: arg3 arg4: arg4 arg5: arg5'
 ]

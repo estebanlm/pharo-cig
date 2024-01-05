@@ -22,6 +22,12 @@ CigVariable >> accept: aVisitor [
 	aVisitor visitVariable: self
 ]
 
+{ #category : 'accessing' }
+CigVariable >> cTemplate [
+	
+	^ CigCParameterTemplate forField: self
+]
+
 { #category : 'initialization' }
 CigVariable >> fromCursor: aCursor [
 	| type |

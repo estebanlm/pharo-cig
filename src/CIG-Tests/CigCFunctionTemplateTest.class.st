@@ -1,9 +1,9 @@
 Class {
 	#name : 'CigCFunctionTemplateTest',
 	#superclass : 'CigCTemplateTest',
-	#category : 'CIG-Tests-C-Template',
+	#category : 'CIG-Tests-C',
 	#package : 'CIG-Tests',
-	#tag : 'C-Template'
+	#tag : 'C'
 }
 
 { #category : 'tests' }

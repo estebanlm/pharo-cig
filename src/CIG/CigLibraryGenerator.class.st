@@ -45,7 +45,7 @@ Class {
 { #category : 'accessing' }
 CigLibraryGenerator >> bindingsName [
 
-	^ bindingsName ifNil: [ bindingsName := self files first basenameWithoutExtension ]
+	^ bindingsName
 ]
 
 { #category : 'accessing - configuration' }

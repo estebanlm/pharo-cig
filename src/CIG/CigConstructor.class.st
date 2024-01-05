@@ -50,7 +50,9 @@ CigConstructor >> phDeclaration [
 	| params |
 
 	^ (String streamContents: [ :stream | 
-			stream  << self spelling uncapitalized << '_new'.
+			stream 
+				<< (self disambiguate: self spelling arguments: self parameters) uncapitalized 
+				<< '_new'.
 			(params := self parameters) size = 1
 				ifTrue: [ 
 					stream << ': ' << params first name  ]

@@ -144,6 +144,12 @@ CigClassMember >> pathName [
 	^ self spelling
 ]
 
+{ #category : 'accessing' }
+CigClassMember >> phTemplate [
+	
+	^ CigPharoFunctionTemplate for: self
+]
+
 { #category : 'copying' }
 CigClassMember >> postCopy [
 

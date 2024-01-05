@@ -1,9 +1,9 @@
 Class {
 	#name : 'CigClassMemberTest',
 	#superclass : 'CigBaseTest',
-	#category : 'CIG-Tests-C',
+	#category : 'CIG-Tests-Base',
 	#package : 'CIG-Tests',
-	#tag : 'C'
+	#tag : 'Base'
 }
 
 { #category : 'tests' }

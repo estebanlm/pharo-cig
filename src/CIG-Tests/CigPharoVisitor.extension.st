@@ -5,6 +5,7 @@ CigPharoVisitor >> prepareForTest [
 	
 	types := Dictionary new.
 	file := CigLibraryGenerator new
-		prefix: 'XX';
+		prefix: 'Gft';
+		bindingsName: 'GeneratedForTest';
 		yourself
 ]

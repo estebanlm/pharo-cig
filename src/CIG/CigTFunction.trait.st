@@ -47,6 +47,25 @@ CigTFunction >> disambiguate: aString [
 		stream << aString << '_' <<  (nodes indexOf: self) asString ]
 ]
 
+{ #category : 'private' }
+CigTFunction >> disambiguate: aString arguments: aCollection [ 
+	| nodes |
+	
+	nodes := self parent elements 
+		select: [ :each | 
+			(each kind = self kind) 
+			and: [ each basename = self basename
+			and: [ each parameters size = aCollection size ] ] ].
+	
+	"this is the regular case"
+	nodes size = 1 
+		ifTrue: [ ^ aString ].
+	
+	"I need to dissambiguate"
+	^ String streamContents: [ :stream |
+		stream << aString << '_' <<  (nodes indexOf: self) asString ]
+]
+
 { #category : 'initialization' }
 CigTFunction >> fillFunctionWith: aCursor [
 

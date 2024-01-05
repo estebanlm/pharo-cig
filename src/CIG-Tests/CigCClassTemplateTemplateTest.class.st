@@ -1,13 +1,13 @@
 Class {
-	#name : 'CigClassTemplateTest',
-	#superclass : 'CigBaseTest',
+	#name : 'CigCClassTemplateTemplateTest',
+	#superclass : 'CigCTemplateTest',
 	#category : 'CIG-Tests-C',
 	#package : 'CIG-Tests',
 	#tag : 'C'
 }
 
 { #category : 'tests' }
-CigClassTemplateTest >> testMethodReturningConstTemplate [
+CigCClassTemplateTemplateTest >> testMethodReturningConstTemplate [
 	| element subclass method template |
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
@@ -22,7 +22,7 @@ CigClassTemplateTest >> testMethodReturningConstTemplate [
 ]
 
 { #category : 'tests' }
-CigClassTemplateTest >> testMethodReturningTemplateArgument [
+CigCClassTemplateTemplateTest >> testMethodReturningTemplateArgument [
 	| element subclass method template |
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
@@ -39,7 +39,7 @@ return (tv_TSpanTScreenCell*)_result;'
 ]
 
 { #category : 'tests' }
-CigClassTemplateTest >> testMethodReturningTemplateArgumentWithPointer [
+CigCClassTemplateTemplateTest >> testMethodReturningTemplateArgumentWithPointer [
 	| element subclass method template |
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
@@ -54,7 +54,7 @@ CigClassTemplateTest >> testMethodReturningTemplateArgumentWithPointer [
 ]
 
 { #category : 'tests' }
-CigClassTemplateTest >> testMethodReturningTemplateArgumentWithSpecialNewGenerateAnExtraArgument [
+CigCClassTemplateTemplateTest >> testMethodReturningTemplateArgumentWithSpecialNewGenerateAnExtraArgument [
 	| element subclass method template |
 
 	self skip. "I do not find a correct example of this :("
@@ -71,7 +71,7 @@ CigClassTemplateTest >> testMethodReturningTemplateArgumentWithSpecialNewGenerat
 ]
 
 { #category : 'tests' }
-CigClassTemplateTest >> testMethodWithTemplateTypeUpdatesAlsoTypeReference [
+CigCClassTemplateTemplateTest >> testMethodWithTemplateTypeUpdatesAlsoTypeReference [
 	| element subclass method |
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
@@ -90,7 +90,7 @@ CigClassTemplateTest >> testMethodWithTemplateTypeUpdatesAlsoTypeReference [
 ]
 
 { #category : 'tests' }
-CigClassTemplateTest >> testSubclassWithSpecializedType [
+CigCClassTemplateTemplateTest >> testSubclassWithSpecializedType [
 	| element subclass methods |
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
@@ -106,7 +106,7 @@ CigClassTemplateTest >> testSubclassWithSpecializedType [
 ]
 
 { #category : 'tests' }
-CigClassTemplateTest >> testSubclassWithSpecializedTypeCastsCorrectly [
+CigCClassTemplateTemplateTest >> testSubclassWithSpecializedTypeCastsCorrectly [
 	| element subclass |
 
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.

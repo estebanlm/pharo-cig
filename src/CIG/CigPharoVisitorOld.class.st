@@ -284,7 +284,7 @@ CigPharoVisitorOld >> visitClass: aClass [
 	self visitAll: aClass elements.
 	self file hasComments ifTrue: [ class comment: aClass comment ].
 	aClass isAbstract ifFalse: [ 
-		(CigPharoGenerator on: self) 
+		(CigPharoGeneratorOld on: self) 
 			generateDispose: aClass;
 			generateFinalize: aClass;
 			generateAutoRelease: aClass ]
@@ -293,7 +293,7 @@ CigPharoVisitorOld >> visitClass: aClass [
 { #category : 'visiting' }
 CigPharoVisitorOld >> visitConstructor: aConstructor [
 
-	(CigPharoGenerator on: self) 
+	(CigPharoGeneratorOld on: self) 
 		generateConstructor: aConstructor;
 		generateCreator: aConstructor
 ]
@@ -332,7 +332,7 @@ CigPharoVisitorOld >> visitEnum: anEnum [
 CigPharoVisitorOld >> visitFunction: aFunction [
 
 	"add function to associated namespace or to main library if no namespace provided"
-	(CigPharoGenerator on: self) generateFunction: aFunction
+	(CigPharoGeneratorOld on: self) generateFunction: aFunction
 ]
 
 { #category : 'visiting' }
@@ -342,7 +342,7 @@ CigPharoVisitorOld >> visitMethod: aMethod [
 		or: [ aMethod isOperator ]) 
 		ifTrue: [ ^ self ].
 
-	(CigPharoGenerator on: self) generateMethod: aMethod
+	(CigPharoGeneratorOld on: self) generateMethod: aMethod
 ]
 
 { #category : 'visiting' }

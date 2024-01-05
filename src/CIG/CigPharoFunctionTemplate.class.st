@@ -62,12 +62,7 @@ CigPharoFunctionTemplate >> generateComment [
 { #category : 'generating' }
 CigPharoFunctionTemplate >> generateHeader [
 	
-	^ (String streamContents: [ :stream | 
-			stream  << self element spelling uncapitalized.
-			self 
-				buildParameters: self parameters 
-				on: stream ])
-		trimmed
+	^ self element phDeclaration
 ]
 
 { #category : 'private' }

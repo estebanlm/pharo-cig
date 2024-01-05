@@ -1,6 +1,6 @@
 Class {
 	#name : 'CigPharoFunctionTemplateTest',
-	#superclass : 'CigBaseTest',
+	#superclass : 'CigPharoBaseTest',
 	#category : 'CIG-Tests-Pharo',
 	#package : 'CIG-Tests',
 	#tag : 'Pharo'

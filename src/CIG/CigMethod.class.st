@@ -100,15 +100,9 @@ CigMethod >> parametersAsList [
 CigMethod >> phDeclaration [
 
 	^ (String streamContents: [ :stream | 
-			stream  << self spelling uncapitalized.
+			stream  << (self disambiguate: self spelling arguments: self parameters) uncapitalized.
 			self buildParameters: self parameters on: stream ])
 		trimmed
-]
-
-{ #category : 'accessing' }
-CigMethod >> phTemplate [
-	
-	^ CigPharoFunctionTemplate for: self
 ]
 
 { #category : 'handling' }
