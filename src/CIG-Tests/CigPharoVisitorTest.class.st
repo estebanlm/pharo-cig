@@ -13,7 +13,7 @@ CigPharoVisitorTest >> addClass: aClass visitor: aVisitor [
 	(CigPharoClassGenerator newFile: aVisitor file element: aClass) generate
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testAddFFILibrary [
 	| visitor class |
 	
@@ -27,7 +27,7 @@ CigPharoVisitorTest >> testAddFFILibrary [
 	self assert: (class methods anySatisfy: [ :each | each selector = #macLibraryName ])
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testAddFFITrait [
 	| visitor trait |
 	
@@ -41,7 +41,7 @@ CigPharoVisitorTest >> testAddFFITrait [
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testAddFFITypesClass [
 	| visitor class |
 	
@@ -52,7 +52,7 @@ CigPharoVisitorTest >> testAddFFITypesClass [
 	self assert: class notNil
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testEnsureBaseEnumerationClass [
 	| visitor class |
 	
@@ -68,7 +68,7 @@ CigPharoVisitorTest >> testEnsureBaseEnumerationClass [
 	self assert: class notNil
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testEnsureBaseObjectClass [
 	| visitor class |
 	
@@ -84,7 +84,7 @@ CigPharoVisitorTest >> testEnsureBaseObjectClass [
 	self assert: class notNil
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testEnsureBaseObjectClassIncludesBaseMethods [
 	| visitor class |
 	
@@ -101,7 +101,7 @@ CigPharoVisitorTest >> testEnsureBaseObjectClassIncludesBaseMethods [
 	self assert: (class canUnderstand: #autoRelease)
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testEnsureBaseStructureClass [
 	| visitor class |
 	
@@ -117,7 +117,7 @@ CigPharoVisitorTest >> testEnsureBaseStructureClass [
 	self assert: class notNil
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testEnsureBaseUnionClass [
 	| visitor class |
 	
@@ -133,7 +133,7 @@ CigPharoVisitorTest >> testEnsureBaseUnionClass [
 	self assert: class notNil
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - classes' }
 CigPharoVisitorTest >> testVisitClassAddsClassDisposeMethod [
 	| visitor class element |
 	
@@ -153,7 +153,7 @@ CigPharoVisitorTest >> testVisitClassAddsClassDisposeMethod [
 	self ffiCall: #(void tv_TView_dispose(tv_TView* self))'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - classes' }
 CigPharoVisitorTest >> testVisitClassAddsClassToDefaultNamespace [
 	| visitor class element |
 	
@@ -167,7 +167,7 @@ CigPharoVisitorTest >> testVisitClassAddsClassToDefaultNamespace [
 	self assert: class notNil
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - classes' }
 CigPharoVisitorTest >> testVisitClassAddsClassToNamespace [
 	| visitor class element |
 	
@@ -182,7 +182,7 @@ CigPharoVisitorTest >> testVisitClassAddsClassToNamespace [
 	self assert: class packageTag name equals: #Utils
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - classes' }
 CigPharoVisitorTest >> testVisitClassWithManyConstructorsDisambiguatesName [
 	| visitor class element constructors |
 	
@@ -196,7 +196,7 @@ CigPharoVisitorTest >> testVisitClassWithManyConstructorsDisambiguatesName [
 	self assert: constructors size equals: 2
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - enum' }
 CigPharoVisitorTest >> testVisitEnumGenerateClass [
 	| visitor element enum |
 	
@@ -220,7 +220,7 @@ CigPharoVisitorTest >> testVisitEnumGenerateClass [
 	vtGetData 2 )'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - function' }
 CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 	| visitor class element |
 	
@@ -239,7 +239,7 @@ CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 	self ffiCall: #(void tv_fexpand_1(char* rpath))'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - methods' }
 CigPharoVisitorTest >> testVisitMethodAddsClassMethodToClassSide [
 	| visitor class element |
 	
@@ -260,7 +260,7 @@ CigPharoVisitorTest >> testVisitMethodAddsClassMethodToClassSide [
 	self ffiCall: #(void tv_TView_enableCommand(tv_ushort command))'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - methods' }
 CigPharoVisitorTest >> testVisitMethodAddsConstructorToClassSide [
 	| visitor class element |
 	
@@ -288,7 +288,7 @@ CigPharoVisitorTest >> testVisitMethodAddsConstructorToClassSide [
 	self ffiCall: #(tv_TView* tv_TView_new_1(tv_TRect* bounds))'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - methods' }
 CigPharoVisitorTest >> testVisitMethodAddsMethodToClass [
 	| visitor class element |
 	
@@ -308,7 +308,7 @@ CigPharoVisitorTest >> testVisitMethodAddsMethodToClass [
 	self ffiCall: #(void tv_TView_dragView(tv_TView* self, tv_TEvent* event, tv_uchar mode, tv_TRect* limits, tv_TPoint* minSize, tv_TPoint* maxSize))'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - namespace' }
 CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
 	| visitor class element |
 	
@@ -332,7 +332,7 @@ CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
 	self assert: class packageTag name equals: #Utils
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 CigPharoVisitorTest >> testVisitStructureGenerateSimpleStructure [
 	| element visitor class |
 
@@ -356,7 +356,7 @@ CigPharoVisitorTest >> testVisitStructureGenerateSimpleStructure [
 	)'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - struct' }
 CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnion [
 	| element visitor class nestedClass |
 
@@ -393,7 +393,7 @@ CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnion [
 	)'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - typedef' }
 CigPharoVisitorTest >> testVisitTypedefIsAddedToTypes [
 	| element visitor class |
 
@@ -408,7 +408,7 @@ CigPharoVisitorTest >> testVisitTypedefIsAddedToTypes [
 	self assert: (class localBindingOf: #no_noise_uint) value equals: #uint
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - typedef' }
 CigPharoVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 
@@ -426,7 +426,7 @@ CigPharoVisitorTest >> testVisitTypedefWithCallback [
 		equals: 'FFICallback'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - typedef' }
 CigPharoVisitorTest >> testVisitTypedefWithUint [
 	| element visitor |
 
