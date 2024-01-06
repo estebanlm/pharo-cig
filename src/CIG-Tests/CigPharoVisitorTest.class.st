@@ -327,7 +327,9 @@ CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
 	self assert: (class class canUnderstand: #cppPrefix).
 	self assert: (class class canUnderstand: #cppHeader).
 	self assert: (class class canUnderstand: #cppName).
-	self assert: (class class canUnderstand: #typedef)	
+	self assert: (class class canUnderstand: #typedef).
+	
+	self assert: class packageTag name equals: #Utils
 ]
 
 { #category : 'tests' }
