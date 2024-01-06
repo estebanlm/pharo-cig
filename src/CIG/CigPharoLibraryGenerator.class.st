@@ -4,9 +4,9 @@ Class {
 	#instVars : [
 		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
 { #category : 'private' }

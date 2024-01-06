@@ -57,7 +57,7 @@ CigPharoFunctionTemplate >> generateComment [
 		stream << '"'.
 		self element comment lines 
 			do: [ :each | stream << (each copyReplaceAll: '"' with: '""') trimmed ]
-			separatedBy: [ stream cr; tab ]/
+			separatedBy: [ stream cr; tab ].
 		stream << '"'.
 		stream cr ]
 ]

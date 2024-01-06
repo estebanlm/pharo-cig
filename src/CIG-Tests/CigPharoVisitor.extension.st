@@ -7,5 +7,7 @@ CigPharoVisitor >> prepareForTest [
 	file := CigLibraryGenerator new
 		prefix: 'Gft';
 		bindingsName: 'GeneratedForTest';
-		yourself
+		yourself.
+		
+	initializationRegistry := OrderedCollection new
 ]

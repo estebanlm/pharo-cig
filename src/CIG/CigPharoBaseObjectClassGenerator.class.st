@@ -4,9 +4,9 @@ Class {
 	#instVars : [
 		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
 { #category : 'as yet unclassified' }
@@ -70,7 +70,7 @@ CigPharoBaseObjectClassGenerator >> generate [
 	self addMethodDispose
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseObjectClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

@@ -2,7 +2,8 @@ Class {
 	#name : 'CigPharoVisitor',
 	#superclass : 'CigVisitor',
 	#instVars : [
-		'types'
+		'types',
+		'initializationRegistry'
 	],
 	#category : 'CIG-Pharo',
 	#package : 'CIG',
@@ -15,6 +16,12 @@ CigPharoVisitor >> addBaseClasses: aUnit [
 	self addFFILibrary: aUnit.
 	self addFFITrait: aUnit.
 	self addFFITypesClass: aUnit
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> addDeclaredTypesToTypedef: aUnit [
+
+	(CigPharoTypesPoolGenerator newFile: self file unit: aUnit) generateTypes: self types
 ]
 
 { #category : 'private' }
@@ -33,6 +40,12 @@ CigPharoVisitor >> addFFITrait: aUnit [
 CigPharoVisitor >> addFFITypesClass: aUnit [
 	
 	(CigPharoTypesPoolGenerator newFile: self file unit: aUnit) generate
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> endUnit: aUnit [
+
+	self addDeclaredTypesToTypedef: aUnit
 ]
 
 { #category : 'private' }
@@ -71,37 +84,57 @@ CigPharoVisitor >> ensureBaseUnionClass: aUnit [
 	generator generate
 ]
 
+{ #category : 'private' }
+CigPharoVisitor >> registerDeclaration: aDeclaration as: aString [
+
+	types 
+		at: ((aDeclaration endsWith: '*')
+			ifTrue: [ aDeclaration allButLast ]
+			ifFalse: [ aDeclaration ])
+		put: aString
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> types [
+
+	^ types
+]
+
 { #category : 'visiting' }
 CigPharoVisitor >> visitClass: aClass [
 	
 	self ensureBaseObjectClass: aClass root.
-	(CigPharoClassGenerator newFile: self file class: aClass) generate.
+	(CigPharoClassGenerator newFile: self file element: aClass) generateOn: self.
 	super visitClass: aClass
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitConstructor: aConstructor [
 
-	(CigPharoConstructorGenerator newFile: self file function: aConstructor) generate
+	(CigPharoConstructorGenerator newFile: self file element: aConstructor) generateOn: self
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitEnum: anEnum [
 
 	self ensureBaseEnumerationClass: anEnum root.
-	(CigPharoEnumGenerator newFile: self file enum: anEnum) generate
+	(CigPharoEnumGenerator newFile: self file element: anEnum) generateOn: self
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitFunction: aFunction [
 	
-	(CigPharoFunctionGenerator newFile: self file function: aFunction) generate
+	(CigPharoFunctionGenerator newFile: self file element: aFunction) generateOn: self
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitMethod: aMethod [
 
-	(CigPharoMethodGenerator newFile: self file function: aMethod) generate
+	(aMethod isPublic not 
+		or: [ aMethod isOperator ]) 
+		ifTrue: [ ^ self ].
+
+	(CigPharoMethodGenerator newFile: self file element: aMethod) generateOn: self
 ]
 
 { #category : 'visiting' }
@@ -111,7 +144,7 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 		self visitAll: (aNamespace elements select: [ :each | each isNamespace ]). 
 		 ^ self ].
 
-	(CigPharoNamespaceGenerator newFile: self file namespace: aNamespace) generate.
+	(CigPharoNamespaceGenerator newFile: self file element: aNamespace) generateOn: self.
 	self visitAll: aNamespace elements
 ]
 
@@ -121,26 +154,29 @@ CigPharoVisitor >> visitStructure: aStructure [
 	self ensureBaseStructureClass: aStructure root.
 	aStructure fieldAnonymousReferences 
 		do: [ :each | each accept: self ].
-	(CigPharoStructureGenerator newFile: self file struct: aStructure) generate
+	(CigPharoStructureGenerator newFile: self file element: aStructure) generateOn: self
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitTypedef: aTypedef [
-
+	
+	(CigPharoTypedefGenerator newFile: self file element: aTypedef) generateOn: self
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitUnion: anUnion [
+	| generator |
 	
 	self ensureBaseUnionClass: anUnion root.
 	anUnion fieldAnonymousReferences 
 		do: [ :each | each accept: self ].
-	(CigPharoUnionGenerator newFile: self file struct: anUnion) generate
+	(generator := CigPharoUnionGenerator newFile: self file element: anUnion) generateOn: self
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitUnit: aUnit [
 
 	self addBaseClasses: aUnit.
-	super visitUnit: aUnit
+	self visitAll: aUnit elements.
+	self endUnit: aUnit
 ]

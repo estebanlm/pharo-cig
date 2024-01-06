@@ -10,7 +10,7 @@ Class {
 CigPharoVisitorTest >> addClass: aClass visitor: aVisitor [ 
 	
 	aVisitor ensureBaseObjectClass: aClass root.
-	(CigPharoClassGenerator newFile: aVisitor file class: aClass) generate
+	(CigPharoClassGenerator newFile: aVisitor file element: aClass) generate
 ]
 
 { #category : 'tests' }
@@ -168,6 +168,21 @@ CigPharoVisitorTest >> testVisitClassAddsClassToDefaultNamespace [
 ]
 
 { #category : 'tests' }
+CigPharoVisitorTest >> testVisitClassAddsClassToNamespace [
+	| visitor class element |
+	
+	element := self translatedUnit elementAtPath: { 'noise'. 'utils'. 'Image' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitClass: element.
+	
+	class := self class environment classNamed: 'NuImage'.
+	self assert: class notNil.
+	self assert: class packageTag name equals: #Utils
+]
+
+{ #category : 'tests' }
 CigPharoVisitorTest >> testVisitClassWithManyConstructorsDisambiguatesName [
 	| visitor class element constructors |
 	
@@ -263,12 +278,12 @@ CigPharoVisitorTest >> testVisitMethodAddsConstructorToClassSide [
 		assert: (class class >> #newBounds:) sourceCode 
 		equals: 'newBounds: bounds
 
-	^ (self tView_new: bounds) initialize'.
+	^ (self tView_1_new: bounds) initialize'.
 	
-	self assert: (class class canUnderstand: #tView_new:).
+	self assert: (class class canUnderstand: #tView_1_new:).
 	self 
-		assert: (class class >> #tView_new:) sourceCode 
-		equals: 'tView_new: bounds
+		assert: (class class >> #tView_1_new:) sourceCode 
+		equals: 'tView_1_new: bounds
 
 	self ffiCall: #(tv_TView* tv_TView_new_1(tv_TRect* bounds))'
 ]
@@ -305,7 +320,7 @@ CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
 	 elements and that's not what I want to test :)
 	 but this may suppose a problem if the behavior of visitNamespace: is 
 	 changed"
-	(CigPharoNamespaceGenerator newFile: visitor file namespace: element) generate.
+	(CigPharoNamespaceGenerator newFile: visitor file element: element) generate.
 	
 	class := self class environment classNamed: 'NuUtilsNamespace'.
 	self assert: class notNil.
@@ -321,6 +336,7 @@ CigPharoVisitorTest >> testVisitStructureGenerateSimpleStructure [
 
 	element := self translatedUnitTvision elementAtPath: { 'TResourceItem' }.
 	visitor := CigPharoVisitor newForTest.	
+	visitor addBaseClasses: element root.
 	
 	visitor visitStructure: element.
 	class := self class environment classNamed: 'TvTResourceItem'.
@@ -376,6 +392,21 @@ CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnion [
 ]
 
 { #category : 'tests' }
+CigPharoVisitorTest >> testVisitTypedefIsAddedToTypes [
+	| element visitor class |
+
+	element := self elementAtPath: { 'noise'. 'uint' }.	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	visitor visitTypedef: element.
+	visitor endUnit: element root.
+	
+	class := self class environment classNamed: 'NuGeneratedForTestTypedef'.
+	self assert: (class includesKey: #no_noise_uint).
+	self assert: (class localBindingOf: #no_noise_uint) value equals: #uint
+]
+
+{ #category : 'tests' }
 CigPharoVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 
@@ -397,11 +428,12 @@ CigPharoVisitorTest >> testVisitTypedefWithCallback [
 CigPharoVisitorTest >> testVisitTypedefWithUint [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'uint' }.
-	
+	element := self elementAtPath: { 'noise'. 'uint' }.	
 	visitor := CigPharoVisitor newForTest.
-	visitor visitTypedef: element.
+	visitor addBaseClasses: element root.
 	
+	visitor visitTypedef: element.
+
 	self 
 		assert: visitor types keys first
 		equals: 'no_noise_uint'.

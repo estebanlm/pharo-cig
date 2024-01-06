@@ -4,12 +4,12 @@ Class {
 	#instVars : [
 		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseEnumerationClassGenerator >> addEnum [
 	
 	generatedClass := FFIEnumeration << self baseEnumClassName asSymbol
@@ -26,7 +26,7 @@ CigPharoBaseEnumerationClassGenerator >> generate [
 	self addEnum
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseEnumerationClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

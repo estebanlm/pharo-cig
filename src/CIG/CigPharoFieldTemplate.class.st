@@ -9,7 +9,7 @@ Class {
 	#tag : 'Pharo-Template'
 }
 
-{ #category : 'generating' }
+{ #category : 'as yet unclassified' }
 CigPharoFieldTemplate >> generateFieldDesc [
 
 	^ String streamContents: [ :stream |

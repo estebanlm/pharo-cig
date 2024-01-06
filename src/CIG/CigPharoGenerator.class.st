@@ -3,17 +3,28 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'file',
-		'unit'
+		'unit',
+		'element'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
 { #category : 'instance creation' }
 CigPharoGenerator class >> newFile: aFile [
 
 	^ self new file: aFile
+]
+
+{ #category : 'instance creation' }
+CigPharoGenerator class >> newFile: aFile element: anElement [
+
+	^ self new 
+		file: aFile;
+		unit: anElement root;
+		element: anElement;
+		yourself
 ]
 
 { #category : 'instance creation' }
@@ -92,6 +103,18 @@ CigPharoGenerator >> defaultNamespaceName [
 ]
 
 { #category : 'accessing' }
+CigPharoGenerator >> element [
+
+	^ element
+]
+
+{ #category : 'accessing' }
+CigPharoGenerator >> element: anElement [
+
+	element := anElement
+]
+
+{ #category : 'accessing' }
 CigPharoGenerator >> file [
 
 	^ file
@@ -107,6 +130,12 @@ CigPharoGenerator >> file: aLibraryGenerator [
 CigPharoGenerator >> generate [
 
 	self subclassResponsibility
+]
+
+{ #category : 'generating' }
+CigPharoGenerator >> generateOn: aVisitor [
+
+	self generate
 ]
 
 { #category : 'private' }
@@ -147,6 +176,14 @@ CigPharoGenerator >> libraryTypedefName [
 			<< self prefix capitalized
 			<< self file bindingsName capitalized 
 			<< 'Typedef' ]
+]
+
+{ #category : 'private' }
+CigPharoGenerator >> namespaceName [
+
+	^ (self element depth > 1 and: [ self element parent isNamespace ]) 
+		ifTrue: [ self element parent basename capitalized ]
+		ifFalse: [ self defaultNamespaceName ]
 ]
 
 { #category : 'private' }

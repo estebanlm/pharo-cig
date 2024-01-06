@@ -4,12 +4,12 @@ Class {
 	#instVars : [
 		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseStructureClassGenerator >> addStructure [
 	
 	generatedClass := FFIStructure << self baseStructureClassName asSymbol
@@ -26,7 +26,7 @@ CigPharoBaseStructureClassGenerator >> generate [
 	self addStructure
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseStructureClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

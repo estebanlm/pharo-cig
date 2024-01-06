@@ -2,35 +2,14 @@ Class {
 	#name : 'CigPharoStructureGenerator',
 	#superclass : 'CigPharoGenerator',
 	#instVars : [
-		'generatedClass',
-		'struct'
+		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'instance creation' }
-CigPharoStructureGenerator class >> newFile: aLibraryGenerator enum: anEnum [ 
-	
-	^ self new
-		file: aLibraryGenerator;
-		unit: anEnum root;
-		enum: anEnum;
-		yourself
-]
-
-{ #category : 'instance creation' }
-CigPharoStructureGenerator class >> newFile: aLibraryGenerator struct: aStructure [ 
-	
-	^ self new 
-		file: aLibraryGenerator;
-		unit: aStructure root;
-		struct: aStructure;
-		yourself
-]
-
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoStructureGenerator >> addStruct [
 	
 	generatedClass := (self baseClass << self structName)
@@ -39,15 +18,15 @@ CigPharoStructureGenerator >> addStruct [
 		install
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoStructureGenerator >> addStructFieldsDesc [
 	
 	generatedClass class 
-		compile: self struct phTemplate generateFieldsDesc
+		compile: self element phTemplate generateFieldsDesc
 		classified: 'enum declaration'
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoStructureGenerator >> baseClass [
 
 	^ self baseStructureClass
@@ -60,28 +39,10 @@ CigPharoStructureGenerator >> generate [
 	self addStructFieldsDesc
 ]
 
-{ #category : 'private' }
-CigPharoStructureGenerator >> namespaceName [
-	
-	^ self defaultNamespaceName
-]
-
-{ #category : 'accessing' }
-CigPharoStructureGenerator >> struct [
-
-	^ struct
-]
-
-{ #category : 'accessing' }
-CigPharoStructureGenerator >> struct: aStructure [ 
-	
-	struct := aStructure
-]
-
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoStructureGenerator >> structName [
 
-	^ self struct isAnonymous
-		ifTrue: [ self struct phTemplate anonymousTypeName ]
-		ifFalse: [ self struct phDeclaration ]
+	^ self element isAnonymous
+		ifTrue: [ self element phTemplate anonymousTypeName ]
+		ifFalse: [ self element phDeclaration ]
 ]

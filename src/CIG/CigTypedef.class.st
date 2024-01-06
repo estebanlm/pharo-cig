@@ -73,6 +73,12 @@ CigTypedef >> isTypedef [
 ]
 
 { #category : 'accessing' }
+CigTypedef >> phTemplate [
+	
+	^ CigPharoTypedefTemplate for: self
+]
+
+{ #category : 'accessing' }
 CigTypedef >> resolveType [
 	
 	^ CigTypedefType new

@@ -1,23 +1,10 @@
 Class {
 	#name : 'CigPharoFunctionGenerator',
 	#superclass : 'CigPharoGenerator',
-	#instVars : [
-		'function'
-	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
-
-{ #category : 'instance creation' }
-CigPharoFunctionGenerator class >> newFile: aLibraryGenerator function: aFunction [
-
-	^ self new
-		file: aLibraryGenerator;
-		unit: aFunction root; 
-		function: aFunction;
-		yourself
-]
 
 { #category : 'private' }
 CigPharoFunctionGenerator >> classForElement [
@@ -25,23 +12,11 @@ CigPharoFunctionGenerator >> classForElement [
 	^ self libraryClass
 ]
 
-{ #category : 'accessing' }
-CigPharoFunctionGenerator >> function [
-
-	^ function
-]
-
-{ #category : 'accessing' }
-CigPharoFunctionGenerator >> function: aFunction [
-
-	function := aFunction
-]
-
 { #category : 'generating' }
 CigPharoFunctionGenerator >> generate [
 
 	self classForElement
-		compile: self function phTemplate generate
+		compile: self element phTemplate generate
 		classified: self protocol
 ]
 

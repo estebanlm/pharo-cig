@@ -4,12 +4,12 @@ Class {
 	#instVars : [
 		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseUnionClassGenerator >> addUnion [
 	
 	generatedClass := FFIUnion << self baseUnionClassName asSymbol
@@ -26,7 +26,7 @@ CigPharoBaseUnionClassGenerator >> generate [
 	self addUnion
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoBaseUnionClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

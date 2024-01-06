@@ -2,28 +2,17 @@ Class {
 	#name : 'CigPharoEnumGenerator',
 	#superclass : 'CigPharoGenerator',
 	#instVars : [
-		'enum',
 		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
-
-{ #category : 'instance creation' }
-CigPharoEnumGenerator class >> newFile: aLibraryGenerator enum: anEnum [ 
-	
-	^ self new
-		file: aLibraryGenerator;
-		unit: anEnum root;
-		enum: anEnum;
-		yourself
-]
 
 { #category : 'as yet unclassified' }
 CigPharoEnumGenerator >> addEnum [
 	
-	generatedClass := (self baseEnumClass << self enum phDeclaration)
+	generatedClass := (self baseEnumClass << self element phDeclaration)
 		sharedPools: { self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
@@ -34,35 +23,13 @@ CigPharoEnumGenerator >> addEnum [
 CigPharoEnumGenerator >> addEnumDecl [
 	
 	generatedClass class 
-		compile: self enum phTemplate generateEnumDecl
+		compile: self element phTemplate generateEnumDecl
 		classified: 'enum declaration'
-]
-
-{ #category : 'as yet unclassified' }
-CigPharoEnumGenerator >> enum [
-
-	^ enum
-]
-
-{ #category : 'as yet unclassified' }
-CigPharoEnumGenerator >> enum: anEnum [
-
-	enum := anEnum
 ]
 
 { #category : 'generating' }
 CigPharoEnumGenerator >> generate [
 	
 	self addEnum.
-	self addEnumDecl.
-	
-	generatedClass 
-		initializeEnumeration;
-		rebuildEnumAccessors
-]
-
-{ #category : 'private' }
-CigPharoEnumGenerator >> namespaceName [
-	
-	^ self defaultNamespaceName
+	self addEnumDecl
 ]

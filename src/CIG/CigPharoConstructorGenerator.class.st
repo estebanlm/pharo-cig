@@ -1,25 +1,25 @@
 Class {
 	#name : 'CigPharoConstructorGenerator',
 	#superclass : 'CigPharoFunctionGenerator',
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
 
 { #category : 'private' }
 CigPharoConstructorGenerator >> classForElement [
 	| class |	
 	
-	class := self class environment classNamed: self function parent phDeclaration.
+	class := self class environment classNamed: self element parent phDeclaration.
 	^ class class
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoConstructorGenerator >> factoryMethodName [
 	
 	^ (String streamContents: [ :stream | 
 			stream  <<  'new'.
-			self function parameters ifNotEmpty: [ :params |
+			self element parameters ifNotEmpty: [ :params |
 				params first in: [ :each | 
 					stream << each name capitalized << ': ' << each name << ' ' ].
 				params allButFirst do: [ :each | 
@@ -27,13 +27,13 @@ CigPharoConstructorGenerator >> factoryMethodName [
 		trimmed
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoConstructorGenerator >> factoryMethodTemplate [
 ""
 	^ String streamContents: [ :stream | 
 		stream << self factoryMethodName; cr.
 		stream cr; tab.
-		stream << '^ (self ' << self function phTemplate generateHeader << ') initialize' ]
+		stream << '^ (self ' << self element phTemplate generateHeader << ') initialize' ]
 ]
 
 { #category : 'generating' }
@@ -53,7 +53,7 @@ CigPharoConstructorGenerator >> generateFactoryMethod [
 		classified: 'instance creation'
 ]
 
-{ #category : 'private' }
+{ #category : 'as yet unclassified' }
 CigPharoConstructorGenerator >> protocol [
 
 	^ 'private'

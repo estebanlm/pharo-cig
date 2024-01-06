@@ -2,23 +2,12 @@ Class {
 	#name : 'CigPharoNamespaceGenerator',
 	#superclass : 'CigPharoGenerator',
 	#instVars : [
-		'namespace',
 		'generatedClass'
 	],
-	#category : 'CIG-Pharo',
+	#category : 'CIG-Pharo-Generator',
 	#package : 'CIG',
-	#tag : 'Pharo'
+	#tag : 'Pharo-Generator'
 }
-
-{ #category : 'instance creation' }
-CigPharoNamespaceGenerator class >> newFile: aLibraryGenerator namespace: aNamespace [ 
-	
-	^ self new 
-		file: aLibraryGenerator;
-		unit: aNamespace root;
-		namespace: aNamespace;
-		yourself
-]
 
 { #category : 'private' }
 CigPharoNamespaceGenerator >> addCPPHeader [
@@ -47,9 +36,9 @@ CigPharoNamespaceGenerator >> addCPPPrefix [
 { #category : 'private' }
 CigPharoNamespaceGenerator >> addNamespace [
 	
-	generatedClass := Object << self namespace phDeclaration asSymbol
+	generatedClass := Object << self element phDeclaration asSymbol
 		traits: self libraryTrait;
-		tag: self namespace basename;
+		tag: self element basename;
 		package: self packageName;
 		install
 ]
@@ -77,7 +66,7 @@ CigPharoNamespaceGenerator >> cppNameTemplate [
 	^ String streamContents: [ :stream |
 		stream << 'cppName'; cr.
 		stream cr; tab.
-		stream << '^ ''' << self namespace cppDeclaration << '''' ]
+		stream << '^ ''' << self element cppDeclaration << '''' ]
 ]
 
 { #category : 'private' }
@@ -97,18 +86,6 @@ CigPharoNamespaceGenerator >> generate [
 	self addCPPHeader.
 	self addCPPName.
 	self addTypedef
-]
-
-{ #category : 'accessing' }
-CigPharoNamespaceGenerator >> namespace [
-
-	^ namespace
-]
-
-{ #category : 'accessing' }
-CigPharoNamespaceGenerator >> namespace: aNamespace [
-
-	namespace := aNamespace
 ]
 
 { #category : 'private' }
