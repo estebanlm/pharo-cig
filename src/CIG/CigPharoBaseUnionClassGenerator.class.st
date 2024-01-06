@@ -1,5 +1,5 @@
 Class {
-	#name : 'CigPharoBaseEnumerationClassGenerator',
+	#name : 'CigPharoBaseUnionClassGenerator',
 	#superclass : 'CigPharoGenerator',
 	#instVars : [
 		'generatedClass'
@@ -10,9 +10,9 @@ Class {
 }
 
 { #category : 'private' }
-CigPharoBaseEnumerationClassGenerator >> addEnum [
+CigPharoBaseUnionClassGenerator >> addUnion [
 	
-	generatedClass := FFIEnumeration << self baseEnumClassName asSymbol
+	generatedClass := FFIUnion << self baseUnionClassName asSymbol
 		traits: self libraryTrait;
 		sharedPools: { self libraryTypedefName asSymbol };
 		tag: self namespaceName;
@@ -21,13 +21,13 @@ CigPharoBaseEnumerationClassGenerator >> addEnum [
 ]
 
 { #category : 'generating' }
-CigPharoBaseEnumerationClassGenerator >> generate [
+CigPharoBaseUnionClassGenerator >> generate [
 
-	self addEnum
+	self addUnion
 ]
 
 { #category : 'private' }
-CigPharoBaseEnumerationClassGenerator >> namespaceName [
+CigPharoBaseUnionClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName
 ]

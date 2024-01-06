@@ -71,6 +71,21 @@ CigPharoGenerator >> baseStructureClassName [
 ]
 
 { #category : 'private' }
+CigPharoGenerator >> baseUnionClass [
+
+	^ self class environment classNamed: self baseUnionClassName
+]
+
+{ #category : 'private' }
+CigPharoGenerator >> baseUnionClassName [
+
+	^ String streamContents: [ :stream |
+		stream 
+			<< self prefix capitalized
+			<< 'Union' ]
+]
+
+{ #category : 'private' }
 CigPharoGenerator >> defaultNamespaceName [
 
 	^ 'Base'

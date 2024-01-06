@@ -12,6 +12,12 @@ CigUnion class >> kind [
 	^ CXCursor_UnionDecl
 ]
 
+{ #category : 'visiting' }
+CigUnion >> accept: aVisitor [
+
+	aVisitor visitUnion: self
+]
+
 { #category : 'accessing' }
 CigUnion >> phTemplate [
 	

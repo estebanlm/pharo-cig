@@ -12,7 +12,9 @@ Class {
 { #category : 'private' }
 CigPharoBaseStructureClassGenerator >> addStructure [
 	
-	generatedClass := FFIEnumeration << self baseStructureClassName asSymbol
+	generatedClass := FFIStructure << self baseStructureClassName asSymbol
+		traits: self libraryTrait;
+		sharedPools: { self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
 		install

@@ -118,6 +118,22 @@ CigPharoVisitorTest >> testEnsureBaseStructureClass [
 ]
 
 { #category : 'tests' }
+CigPharoVisitorTest >> testEnsureBaseUnionClass [
+	| visitor class |
+	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: self translatedUnitTvision.
+
+	class := self class environment classNamed: 'TvUnion'.
+	self assert: class isNil.
+	
+	visitor ensureBaseUnionClass: self translatedUnitTvision.
+
+	class := self class environment classNamed: 'TvUnion'.
+	self assert: class notNil
+]
+
+{ #category : 'tests' }
 CigPharoVisitorTest >> testVisitClassAddsClassDisposeMethod [
 	| visitor class element |
 	
@@ -278,6 +294,28 @@ CigPharoVisitorTest >> testVisitMethodAddsMethodToClass [
 ]
 
 { #category : 'tests' }
+CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
+	| visitor class element |
+	
+	element := self translatedUnit elementAtPath: { 'noise'. 'utils' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	"using the generator because the visit will (should) visit all namespace 
+	 elements and that's not what I want to test :)
+	 but this may suppose a problem if the behavior of visitNamespace: is 
+	 changed"
+	(CigPharoNamespaceGenerator newFile: visitor file namespace: element) generate.
+	
+	class := self class environment classNamed: 'NuUtilsNamespace'.
+	self assert: class notNil.
+	self assert: (class class canUnderstand: #cppPrefix).
+	self assert: (class class canUnderstand: #cppHeader).
+	self assert: (class class canUnderstand: #cppName).
+	self assert: (class class canUnderstand: #typedef)	
+]
+
+{ #category : 'tests' }
 CigPharoVisitorTest >> testVisitStructureGenerateSimpleStructure [
 	| element visitor class |
 
@@ -302,8 +340,39 @@ CigPharoVisitorTest >> testVisitStructureGenerateSimpleStructure [
 
 { #category : 'tests' }
 CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnion [
+	| element visitor class nestedClass |
 
-	self fail
+	element := self translatedUnitTvision elementAtPath: { 'MessageEvent' }.
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: self translatedUnitTvision.
+	
+	visitor visitStructure: element.
+	class := self class environment classNamed: 'TvMessageEvent'.
+	
+	self assert: class notNil.	
+	self 
+		assert: (class class >> #fieldsDesc) sourceCode
+		equals: 'fieldsDesc
+
+	^ #(
+	tv_ushort command;
+	TvMessageEventUnion1 union1
+	)'.
+	
+	nestedClass := self class environment classNamed: 'TvMessageEventUnion1'.
+	self assert: nestedClass notNil.	
+	self 
+		assert: (nestedClass class >> #fieldsDesc) sourceCode
+		equals: 'fieldsDesc
+
+	^ #(
+	void* infoPtr;
+	int32_t infoLong;
+	tv_ushort infoWord;
+	short infoInt;
+	tv_uchar infoByte;
+	char infoChar
+	)'
 ]
 
 { #category : 'tests' }

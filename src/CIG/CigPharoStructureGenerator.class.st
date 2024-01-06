@@ -30,21 +30,27 @@ CigPharoStructureGenerator class >> newFile: aLibraryGenerator struct: aStructur
 		yourself
 ]
 
-{ #category : 'adding' }
+{ #category : 'private' }
 CigPharoStructureGenerator >> addStruct [
 	
-	generatedClass := (self baseStructureClass << self struct phDeclaration)
+	generatedClass := (self baseClass << self structName)
 		tag: self namespaceName;
 		package: self packageName;
 		install
 ]
 
-{ #category : 'adding' }
+{ #category : 'private' }
 CigPharoStructureGenerator >> addStructFieldsDesc [
 	
 	generatedClass class 
 		compile: self struct phTemplate generateFieldsDesc
 		classified: 'enum declaration'
+]
+
+{ #category : 'private' }
+CigPharoStructureGenerator >> baseClass [
+
+	^ self baseStructureClass
 ]
 
 { #category : 'generating' }
@@ -70,4 +76,12 @@ CigPharoStructureGenerator >> struct [
 CigPharoStructureGenerator >> struct: aStructure [ 
 	
 	struct := aStructure
+]
+
+{ #category : 'private' }
+CigPharoStructureGenerator >> structName [
+
+	^ self struct isAnonymous
+		ifTrue: [ self struct phTemplate anonymousTypeName ]
+		ifFalse: [ self struct phDeclaration ]
 ]

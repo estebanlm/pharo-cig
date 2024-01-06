@@ -62,6 +62,15 @@ CigPharoVisitor >> ensureBaseStructureClass: aUnit [
 	generator generate
 ]
 
+{ #category : 'private' }
+CigPharoVisitor >> ensureBaseUnionClass: aUnit [ 
+	| generator |
+	
+	generator := CigPharoBaseUnionClassGenerator newFile: self file unit: aUnit.
+	generator baseUnionClass ifNotNil: [ ^ self ].
+	generator generate
+]
+
 { #category : 'visiting' }
 CigPharoVisitor >> visitClass: aClass [
 	
@@ -98,18 +107,35 @@ CigPharoVisitor >> visitMethod: aMethod [
 { #category : 'visiting' }
 CigPharoVisitor >> visitNamespace: aNamespace [
 
+	(self includesNamespace: aNamespace cppDeclaration) ifTrue: [
+		self visitAll: (aNamespace elements select: [ :each | each isNamespace ]). 
+		 ^ self ].
+
+	(CigPharoNamespaceGenerator newFile: self file namespace: aNamespace) generate.
+	self visitAll: aNamespace elements
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitStructure: aStructure [
 	
 	self ensureBaseStructureClass: aStructure root.
+	aStructure fieldAnonymousReferences 
+		do: [ :each | each accept: self ].
 	(CigPharoStructureGenerator newFile: self file struct: aStructure) generate
 ]
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitTypedef: aTypedef [
 
+]
+
+{ #category : 'visiting' }
+CigPharoVisitor >> visitUnion: anUnion [
+	
+	self ensureBaseUnionClass: anUnion root.
+	anUnion fieldAnonymousReferences 
+		do: [ :each | each accept: self ].
+	(CigPharoUnionGenerator newFile: self file struct: anUnion) generate
 ]
 
 { #category : 'visiting' }

@@ -64,6 +64,16 @@ CigStructure >> classMembers [
 ]
 
 { #category : 'accessing' }
+CigStructure >> fieldAnonymousReferences [
+	"I need a special accessor for this because this kind of structures/unions 
+	 that are anonymous are not declared elsewhere, so I need to be able to 
+	 declare them later (since uFFI does not allows nested structures, I need 
+	 to flatten them in Pharo)."
+	
+	^ self fields select: [ :each | each isStructure and: [ each isAnonymous ] ]
+]
+
+{ #category : 'accessing' }
 CigStructure >> fields [
 	
 	^ self elements select: [ :each | each isStructMember ]

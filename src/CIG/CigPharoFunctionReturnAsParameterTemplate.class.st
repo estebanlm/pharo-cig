@@ -15,6 +15,17 @@ CigPharoFunctionReturnAsParameterTemplate class >> handlesElement: anElement [
 	^ anElement exposesReturnValueAsParameter
 ]
 
+{ #category : 'generating' }
+CigPharoFunctionReturnAsParameterTemplate >> generateHeader [
+	
+	^ (String streamContents: [ :stream | 
+			stream  << self element spelling uncapitalized.
+			self 
+				buildParameters: self parameters 
+				on: stream ])
+		trimmed
+]
+
 { #category : 'private' }
 CigPharoFunctionReturnAsParameterTemplate >> parameterSizeForNameThreashold [
 

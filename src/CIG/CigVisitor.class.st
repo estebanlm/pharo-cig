@@ -93,6 +93,12 @@ CigVisitor >> visitTypedef: aTypedef [
 ]
 
 { #category : 'visiting' }
+CigVisitor >> visitUnion: aUnion [
+
+	self visitStructure: aUnion
+]
+
+{ #category : 'visiting' }
 CigVisitor >> visitUnit: aUnit [
 
 	self visitAll: aUnit elements

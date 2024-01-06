@@ -24,6 +24,7 @@ CigPharoEnumGenerator class >> newFile: aLibraryGenerator enum: anEnum [
 CigPharoEnumGenerator >> addEnum [
 	
 	generatedClass := (self baseEnumClass << self enum phDeclaration)
+		sharedPools: { self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
 		install
