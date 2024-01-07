@@ -9,12 +9,12 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseStructureClassGenerator >> addStructure [
 	
 	generatedClass := FFIStructure << self baseStructureClassName asSymbol
 		traits: self libraryTrait;
-		sharedPools: { self libraryTypedefName asSymbol };
+		sharedPools: { #CigCPPTypedef. self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
 		install
@@ -26,7 +26,7 @@ CigPharoBaseStructureClassGenerator >> generate [
 	self addStructure
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseStructureClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

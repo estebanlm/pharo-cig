@@ -9,12 +9,12 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseUnionClassGenerator >> addUnion [
 	
 	generatedClass := FFIUnion << self baseUnionClassName asSymbol
 		traits: self libraryTrait;
-		sharedPools: { self libraryTypedefName asSymbol };
+		sharedPools: { #CigCPPTypedef. self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
 		install
@@ -26,7 +26,7 @@ CigPharoBaseUnionClassGenerator >> generate [
 	self addUnion
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseUnionClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

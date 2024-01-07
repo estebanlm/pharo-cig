@@ -33,10 +33,23 @@ CigPharoStructureGenerator >> baseClass [
 ]
 
 { #category : 'generating' }
+CigPharoStructureGenerator >> doInitialize [
+
+	generatedClass rebuildFieldAccessors
+]
+
+{ #category : 'generating' }
 CigPharoStructureGenerator >> generate [
 	
 	self addStruct.
 	self addStructFieldsDesc
+]
+
+{ #category : 'generating' }
+CigPharoStructureGenerator >> generateOn: aVisitor [
+	
+	super generateOn: aVisitor.
+	aVisitor registerForInitialization: self
 ]
 
 { #category : 'as yet unclassified' }

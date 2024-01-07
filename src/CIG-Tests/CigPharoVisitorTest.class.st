@@ -133,7 +133,7 @@ CigPharoVisitorTest >> testEnsureBaseUnionClass [
 	self assert: class notNil
 ]
 
-{ #category : 'tests - classes' }
+{ #category : 'tests - class' }
 CigPharoVisitorTest >> testVisitClassAddsClassDisposeMethod [
 	| visitor class element |
 	
@@ -153,7 +153,7 @@ CigPharoVisitorTest >> testVisitClassAddsClassDisposeMethod [
 	self ffiCall: #(void tv_TView_dispose(tv_TView* self))'
 ]
 
-{ #category : 'tests - classes' }
+{ #category : 'tests - class' }
 CigPharoVisitorTest >> testVisitClassAddsClassToDefaultNamespace [
 	| visitor class element |
 	
@@ -167,7 +167,7 @@ CigPharoVisitorTest >> testVisitClassAddsClassToDefaultNamespace [
 	self assert: class notNil
 ]
 
-{ #category : 'tests - classes' }
+{ #category : 'tests - class' }
 CigPharoVisitorTest >> testVisitClassAddsClassToNamespace [
 	| visitor class element |
 	
@@ -182,7 +182,24 @@ CigPharoVisitorTest >> testVisitClassAddsClassToNamespace [
 	self assert: class packageTag name equals: #Utils
 ]
 
-{ #category : 'tests - classes' }
+{ #category : 'tests - class' }
+CigPharoVisitorTest >> testVisitClassRegisterType [
+	| visitor typedefClass class element |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TView' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	visitor visitClass: element.
+	visitor endUnit: element root.
+	
+	typedefClass := self class environment classNamed: 'TvGeneratedForTestTypedef'.
+	class := self class environment classNamed: 'TvTView'.
+	self assert: typedefClass notNil.
+	self assert: (typedefClass includesKey: #tv_TView).
+	self assert: (typedefClass bindingOf: #tv_TView) value equals: class
+]
+
+{ #category : 'tests - class' }
 CigPharoVisitorTest >> testVisitClassWithManyConstructorsDisambiguatesName [
 	| visitor class element constructors |
 	
@@ -220,6 +237,23 @@ CigPharoVisitorTest >> testVisitEnumGenerateClass [
 	vtGetData 2 )'
 ]
 
+{ #category : 'tests - enum' }
+CigPharoVisitorTest >> testVisitEnumRegisterType [
+	| visitor element typedefClass enum |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TVTransfer' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	visitor visitEnum: element.
+	visitor endUnit: element root.
+	
+	typedefClass := self class environment classNamed: 'TvGeneratedForTestTypedef'.
+	enum := self class environment classNamed: 'TvTVTransfer'.	
+	self assert: typedefClass notNil.
+	self assert: (typedefClass includesKey: #tv_TVTransfer).
+	self assert: (typedefClass bindingOf: #tv_TVTransfer) value equals: enum
+]
+
 { #category : 'tests - function' }
 CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 	| visitor class element |
@@ -239,7 +273,7 @@ CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 	self ffiCall: #(void tv_fexpand_1(char* rpath))'
 ]
 
-{ #category : 'tests - methods' }
+{ #category : 'tests - method' }
 CigPharoVisitorTest >> testVisitMethodAddsClassMethodToClassSide [
 	| visitor class element |
 	
@@ -260,7 +294,7 @@ CigPharoVisitorTest >> testVisitMethodAddsClassMethodToClassSide [
 	self ffiCall: #(void tv_TView_enableCommand(tv_ushort command))'
 ]
 
-{ #category : 'tests - methods' }
+{ #category : 'tests - method' }
 CigPharoVisitorTest >> testVisitMethodAddsConstructorToClassSide [
 	| visitor class element |
 	
@@ -288,7 +322,7 @@ CigPharoVisitorTest >> testVisitMethodAddsConstructorToClassSide [
 	self ffiCall: #(tv_TView* tv_TView_new_1(tv_TRect* bounds))'
 ]
 
-{ #category : 'tests - methods' }
+{ #category : 'tests - method' }
 CigPharoVisitorTest >> testVisitMethodAddsMethodToClass [
 	| visitor class element |
 	
@@ -391,6 +425,38 @@ CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnion [
 	tv_uchar infoByte;
 	char infoChar
 	)'
+]
+
+{ #category : 'tests - struct' }
+CigPharoVisitorTest >> testVisitStructureInitializeStruct [
+	| element visitor class |
+
+	element := self translatedUnitTvision elementAtPath: { 'TResourceItem' }.
+	visitor := CigPharoVisitor newForTest.	
+	visitor addBaseClasses: element root.
+	visitor visitStructure: element.
+	visitor endUnit: element root.
+	
+	class := self class environment classNamed: 'TvTResourceItem'.
+	self assert: class notNil.
+	self assert: class classPool keys equals: #(OFFSET_KEY OFFSET_SIZE OFFSET_POS)
+]
+
+{ #category : 'tests - struct' }
+CigPharoVisitorTest >> testVisitStructureRegisterType [
+	| element visitor class typedefClass |
+
+	element := self translatedUnitTvision elementAtPath: { 'TResourceItem' }.
+	visitor := CigPharoVisitor newForTest.	
+	visitor addBaseClasses: element root.
+	visitor visitStructure: element.
+	visitor endUnit: element root.
+	
+	typedefClass := self class environment classNamed: 'TvGeneratedForTestTypedef'.
+	class := self class environment classNamed: 'TvTResourceItem'.
+	self assert: typedefClass notNil.
+	self assert: (typedefClass includesKey: #tv_TResourceItem).
+	self assert: (typedefClass bindingOf: #tv_TResourceItem) value equals: class
 ]
 
 { #category : 'tests - typedef' }

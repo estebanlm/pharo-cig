@@ -9,18 +9,18 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseObjectClassGenerator >> addClass [
 	
 	generatedClass := FFIOpaqueObject << self baseObjectClassName asSymbol
 		traits: self libraryTrait;
-		sharedPools: { self libraryTypedefName asSymbol };
+		sharedPools: { #CigCPPTypedef. self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
 		install
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseObjectClassGenerator >> addMethodAutoRelease [
 	
 	generatedClass 
@@ -30,7 +30,7 @@ CigPharoBaseObjectClassGenerator >> addMethodAutoRelease [
 		classified: 'finalization'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseObjectClassGenerator >> addMethodDispose [
 	
 	generatedClass 
@@ -40,7 +40,7 @@ CigPharoBaseObjectClassGenerator >> addMethodDispose [
 		classified: 'finalization'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseObjectClassGenerator >> addMethodFinalize [
 	
 	generatedClass 
@@ -51,7 +51,7 @@ CigPharoBaseObjectClassGenerator >> addMethodFinalize [
 		classified: 'finalization'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseObjectClassGenerator >> addMethodInitialize [
 	
 	generatedClass 
@@ -70,7 +70,7 @@ CigPharoBaseObjectClassGenerator >> generate [
 	self addMethodDispose
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseObjectClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

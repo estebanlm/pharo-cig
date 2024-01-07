@@ -9,9 +9,9 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoEnumGenerator >> addEnum [
-	
+
 	generatedClass := (self baseEnumClass << self element phDeclaration)
 		sharedPools: { self libraryTypedefName asSymbol };
 		tag: self namespaceName;
@@ -19,12 +19,20 @@ CigPharoEnumGenerator >> addEnum [
 		install
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoEnumGenerator >> addEnumDecl [
-	
+
 	generatedClass class 
 		compile: self element phTemplate generateEnumDecl
 		classified: 'enum declaration'
+]
+
+{ #category : 'generating' }
+CigPharoEnumGenerator >> doInitialize [
+
+	generatedClass
+		initializeEnumeration;
+		rebuildEnumAccessors
 ]
 
 { #category : 'generating' }
@@ -32,4 +40,11 @@ CigPharoEnumGenerator >> generate [
 	
 	self addEnum.
 	self addEnumDecl
+]
+
+{ #category : 'generating' }
+CigPharoEnumGenerator >> generateOn: aVisitor [
+	
+	super generateOn: aVisitor.
+	aVisitor registerForInitialization: self
 ]

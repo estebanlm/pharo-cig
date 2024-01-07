@@ -9,12 +9,12 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseEnumerationClassGenerator >> addEnum [
 	
 	generatedClass := FFIEnumeration << self baseEnumClassName asSymbol
 		traits: self libraryTrait;
-		sharedPools: { self libraryTypedefName asSymbol };
+		sharedPools: { #CigCPPTypedef. self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
 		install
@@ -26,7 +26,7 @@ CigPharoBaseEnumerationClassGenerator >> generate [
 	self addEnum
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoBaseEnumerationClassGenerator >> namespaceName [
 
 	^ self defaultNamespaceName

@@ -45,7 +45,8 @@ CigPharoVisitor >> addFFITypesClass: aUnit [
 { #category : 'private' }
 CigPharoVisitor >> endUnit: aUnit [
 
-	self addDeclaredTypesToTypedef: aUnit
+	self addDeclaredTypesToTypedef: aUnit.
+	self executeInitializations
 ]
 
 { #category : 'private' }
@@ -85,6 +86,13 @@ CigPharoVisitor >> ensureBaseUnionClass: aUnit [
 ]
 
 { #category : 'private' }
+CigPharoVisitor >> executeInitializations [
+
+	initializationRegistry do: [ :each | 
+		each doInitialize ]
+]
+
+{ #category : 'private' }
 CigPharoVisitor >> registerDeclaration: aDeclaration as: aString [
 
 	types 
@@ -92,6 +100,20 @@ CigPharoVisitor >> registerDeclaration: aDeclaration as: aString [
 			ifTrue: [ aDeclaration allButLast ]
 			ifFalse: [ aDeclaration ])
 		put: aString
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> registerForInitialization: aGenerator [
+
+	initializationRegistry add: aGenerator
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> registerType: anElement [
+
+	self 
+		registerDeclaration: anElement cDeclaration 
+		as: anElement phDeclaration
 ]
 
 { #category : 'private' }
@@ -105,7 +127,8 @@ CigPharoVisitor >> visitClass: aClass [
 	
 	self ensureBaseObjectClass: aClass root.
 	(CigPharoClassGenerator newFile: self file element: aClass) generateOn: self.
-	super visitClass: aClass
+	super visitClass: aClass.
+	self registerType: aClass
 ]
 
 { #category : 'visiting' }
@@ -118,7 +141,8 @@ CigPharoVisitor >> visitConstructor: aConstructor [
 CigPharoVisitor >> visitEnum: anEnum [
 
 	self ensureBaseEnumerationClass: anEnum root.
-	(CigPharoEnumGenerator newFile: self file element: anEnum) generateOn: self
+	(CigPharoEnumGenerator newFile: self file element: anEnum) generateOn: self.
+	self registerType: anEnum
 ]
 
 { #category : 'visiting' }
@@ -154,7 +178,8 @@ CigPharoVisitor >> visitStructure: aStructure [
 	self ensureBaseStructureClass: aStructure root.
 	aStructure fieldAnonymousReferences 
 		do: [ :each | each accept: self ].
-	(CigPharoStructureGenerator newFile: self file element: aStructure) generateOn: self
+	(CigPharoStructureGenerator newFile: self file element: aStructure) generateOn: self.
+	self registerType: aStructure
 ]
 
 { #category : 'visiting' }
