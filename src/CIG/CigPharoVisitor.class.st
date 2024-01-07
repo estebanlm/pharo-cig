@@ -117,6 +117,13 @@ CigPharoVisitor >> registerType: anElement [
 ]
 
 { #category : 'private' }
+CigPharoVisitor >> reset [
+
+	types := Dictionary new.
+	initializationRegistry := OrderedCollection new
+]
+
+{ #category : 'private' }
 CigPharoVisitor >> types [
 
 	^ types
@@ -201,6 +208,7 @@ CigPharoVisitor >> visitUnion: anUnion [
 { #category : 'visiting' }
 CigPharoVisitor >> visitUnit: aUnit [
 
+	self reset.
 	self addBaseClasses: aUnit.
 	self visitAll: aUnit elements.
 	self endUnit: aUnit
