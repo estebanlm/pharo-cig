@@ -9,10 +9,10 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoClassGenerator >> addClass [
 
-	generatedClass := self baseObjectClass << self element phDeclaration asSymbol
+	generatedClass := self baseClass << self element phDeclaration asSymbol
 		tag: self namespaceName;
 		package: self packageName;
 		install
@@ -24,6 +24,22 @@ CigPharoClassGenerator >> addDisposeMethod [
 	generatedClass 
 		compile: self disposeTemplate
 		classified: 'finalizing' 
+]
+
+{ #category : 'private' }
+CigPharoClassGenerator >> baseClass [
+	| superclass |
+
+	superclass := self element superclass ifNil: [ ^ self baseObjectClass ].
+	^ superclass reference 
+		ifNotNil: [ :anElement | self classFor: anElement phDeclaration ]
+		ifNil: [ self baseObjectClass ]
+]
+
+{ #category : 'private' }
+CigPharoClassGenerator >> classFor: aName [
+
+	^ self class environment classNamed: aName
 ]
 
 { #category : 'as yet unclassified' }

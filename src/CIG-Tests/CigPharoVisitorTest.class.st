@@ -183,6 +183,24 @@ CigPharoVisitorTest >> testVisitClassAddsClassToNamespace [
 ]
 
 { #category : 'tests - class' }
+CigPharoVisitorTest >> testVisitClassAddsClassWithCorrectSuperclass [
+	| visitor class subclass element subElement |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TView' }. 
+	subElement := self translatedUnitTvision elementAtPath: { 'TFrame' }.
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitClass: element.
+	visitor visitClass: subElement.
+	
+	class := self class environment classNamed: 'TvTView'.
+	subclass := self class environment classNamed: 'TvTFrame'.
+
+	self assert: subclass superclass equals: class
+]
+
+{ #category : 'tests - class' }
 CigPharoVisitorTest >> testVisitClassRegisterType [
 	| visitor typedefClass class element |
 	
