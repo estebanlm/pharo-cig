@@ -1,3 +1,7 @@
+"
+The std::string class element.
+It is need to translate from std::string to char* and viceversa.
+"
 Class {
 	#name : 'CigStdStringElement',
 	#superclass : 'CigElement',

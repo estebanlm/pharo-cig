@@ -1,3 +1,7 @@
+"
+Special elements are used to include into the node tree elements that wont be parsed but are nevertheless needed for a correct translation.
+An example of this is the std:: namespace, the standard library of C++ from which we just take what we need (and just to translate it).
+"
 Class {
 	#name : 'CigSpecialElement',
 	#superclass : 'CigElement',

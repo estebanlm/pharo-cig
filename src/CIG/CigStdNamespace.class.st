@@ -1,3 +1,7 @@
+"
+This is the std:: C++ namespace, from which we just want what we need to translet from/to C++.
+
+"
 Class {
 	#name : 'CigStdNamespace',
 	#superclass : 'CigSpecialElement',

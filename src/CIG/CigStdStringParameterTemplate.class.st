@@ -1,5 +1,5 @@
 "
-A special template to handle std::string types.
+A special template to handle std::string type translation.
 "
 Class {
 	#name : 'CigStdStringParameterTemplate',
