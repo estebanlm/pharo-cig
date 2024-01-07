@@ -102,7 +102,7 @@ CigCClassTemplateTemplateTest >> testSubclassWithSpecializedType [
 	self denyEmpty: methods.
 	self 
 		assertCollection: (methods collect: #name) 
-		hasSameElements: #('TSpan<T>()' 'TSpan<T>(T *, int)' 'TSpan<T>(decltype(nullptr))' 'data()' 'size()' 'size_bytes()' 'empty()' 'front()' 'back()' 'subspan(int)' 'subspan(int, int)' 'begin()' 'cbegin()' 'end()' 'cend()')
+		hasSameElements: #('TSpanChar()' 'TSpanChar(T *, int)' 'TSpanChar(decltype(nullptr))' 'data()' 'size()' 'size_bytes()' 'empty()' 'front()' 'back()' 'subspan(int)' 'subspan(int, int)' 'begin()' 'cbegin()' 'end()' 'cend()')
 ]
 
 { #category : 'tests' }
