@@ -1,3 +1,6 @@
+"
+Adds element container capabilities, also ways to traverse and find specific elements.
+"
 Trait {
 	#name : 'CigTElementContainer',
 	#instVars : [

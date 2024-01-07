@@ -1,3 +1,6 @@
+"
+base template for C templates (templates used for C generation)
+"
 Class {
 	#name : 'CigCTemplate',
 	#superclass : 'CigTemplate',

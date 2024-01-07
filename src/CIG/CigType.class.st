@@ -60,46 +60,6 @@ CigType class >> replaceTypeTemplate: aClassTemplate type: typeString in: aStrin
 			stream << '&' ] ]
 ]
 
-{ #category : 'accessing' }
-CigType >> cDeclarationForFFI [
-	
-	self flag: #TODO. "This will not work all the time, since we need to declare 
-	some C types differently (e.g. unsigned = uint, unsigned long = ulong, etc.)"
-	^ self cDeclaration
-]
-
-{ #category : 'private' }
-CigType >> cDeclarationFromReference [
-	| typeName |
-	
-	typeName := self typeReference typeName.
-	^ (self parent root elementAtPath: (typeName substrings: '::'))
-		ifNotNil: [ :aNode | aNode cDeclaration ]
-]
-
-{ #category : 'private' }
-CigType >> cDeclarationFromReferenceWithSpecialization: aCollection [
-	| typeName |
-	
-	typeName := self typeReference typeName.
-	^ (self parent root elementAtPath: (typeName substrings: '::'))
-		ifNotNil: [ :aNode | aNode cDeclarationWithSpecialization: aCollection ]
-]
-
-{ #category : 'private' }
-CigType >> cppDeclarationFromReference [
-
-	^ (self parent root elementAtPath: (self typeReference typeName substrings: '::'))
-		ifNotNil: [ :aNode | aNode cppDeclaration ]
-]
-
-{ #category : 'private' }
-CigType >> cppDeclarationFromReferenceWithSpecialization: aCollection [
-
-	^ (self parent root elementAtPath: (self typeReference typeName substrings: '::'))
-		ifNotNil: [ :aNode | aNode cppDeclarationWithSpecialization: aCollection ]
-]
-
 { #category : 'testing' }
 CigType >> definesFunction [
 	
@@ -236,34 +196,6 @@ CigType >> parseType [
 		parsedType := CigFunctionParser parse: self name ]
 ]
 
-{ #category : 'private' }
-CigType >> phDeclarationFromReferenceWith: aPrefix [
-	
-	^ aPrefix, self typeReference typeBasename capitalized
-]
-
-{ #category : 'accessing' }
-CigType >> phDeclarationWith: aPrefix [
-	| parsed typeName |
-
-	parsed := self parseType.
-	typeName := parsed name.
-	
-	^ String streamContents: [ :stream |
-		self typeReference 
-			ifNotNil: [ 
-				stream << ((self phDeclarationFromReferenceWith: aPrefix) ifNil: [ aPrefix, typeName ]) ]
-			ifNil: [
-				self 
-					resolveFFIType: typeName
-					ifFound: [ :aType | stream << '#' << aType typeName ]
-					ifAbsent: [ stream << typeName ] ].
-				
-		parsed isReference ifTrue: [ stream << '*' ].
-		1 to: parsed arity do: [ :each |
-			stream << '*' ] ]
-]
-
 { #category : 'accessing' }
 CigType >> pointerArity [
 	
@@ -280,27 +212,10 @@ CigType >> requiresCast [
 		and: [ self element definesFunction ] ]
 ]
 
-{ #category : 'private' }
-CigType >> resolveFFIType: aString ifFound: foundBlock ifAbsent: absentBlock [
-
-	^ [ 
-		foundBlock value: (FFIExternalType resolveType: aString) ]
-	on: Error 
-	do: [ :e | absentBlock value ]
-]
-
 { #category : 'accessing' }
 CigType >> root [
 	
 	^ self parent root
-]
-
-{ #category : 'private' }
-CigType >> tryKnownType: aString ifFound: aBlock [
-	"a place to check for known types and go back and forth"
-
-	self flag: #TODO. "Put this in a config file"	
-	aString = 'std::string' ifTrue: [ ^ aBlock value: 'const char*' ]
 ]
 
 { #category : 'accessing' }

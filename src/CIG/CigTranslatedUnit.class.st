@@ -1,7 +1,7 @@
 "
-Contains the translated nodes taken from traversing the libclang cursor.
+Contains the translated node tree taken from traversing the libclang cursor.
 
-The method `IGTranslatedUnit>>#generateFrom:` takes a `ICHeaderGenerator` instance and performs the AST traverse to form the node tree.
+The method `CigTranslatedUnit>>#generateFrom:` takes a `CigLibraryGenerator` instance and performs the AST traverse to form the node tree.
 "
 Class {
 	#name : 'CigTranslatedUnit',

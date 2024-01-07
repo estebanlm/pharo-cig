@@ -1,3 +1,6 @@
+"
+Base template for generations.
+"
 Class {
 	#name : 'CigTemplate',
 	#superclass : 'Object',
