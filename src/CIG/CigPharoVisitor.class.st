@@ -141,6 +141,7 @@ CigPharoVisitor >> visitClass: aClass [
 { #category : 'visiting' }
 CigPharoVisitor >> visitClassTemplate: aClassTemplate [
 		
+	"add a superclass (mostly empty)"
 	self visitClass: aClassTemplate asBaseClass.
 	"we add one subclass for each specialized type"
 	aClassTemplate typeSpecializations do: [ :each |
@@ -149,6 +150,11 @@ CigPharoVisitor >> visitClassTemplate: aClassTemplate [
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitConstructor: aConstructor [
+
+	"abstract classes do not have public constructors"
+	aConstructor parent isAbstract ifTrue: [ ^ self ].
+	"we just want public constructors"
+	aConstructor isPublic ifFalse: [ ^ self ].
 
 	(CigPharoConstructorGenerator newFile: self file element: aConstructor) generateOn: self
 ]
@@ -164,6 +170,15 @@ CigPharoVisitor >> visitEnum: anEnum [
 { #category : 'visiting' }
 CigPharoVisitor >> visitFunction: aFunction [
 	
+	"skip operators because they are not really used in pharo. 
+	 skip function with va_list because we don't know what to do with them.
+	 skip functions with variadics (...) because we also can't forward them easily 
+	 to its C++ counterpart (doable in gcc, but feels too much work for lose gain)"
+	(aFunction isOperator 
+		or: [ aFunction hasVariadicListArgument
+		or: [ aFunction isVariadic ] ])
+		ifTrue: [ ^ self ].
+
 	(CigPharoFunctionGenerator newFile: self file element: aFunction) generateOn: self
 ]
 
@@ -171,7 +186,9 @@ CigPharoVisitor >> visitFunction: aFunction [
 CigPharoVisitor >> visitMethod: aMethod [
 
 	(aMethod isPublic not 
-		or: [ aMethod isOperator ]) 
+		or: [ aMethod isOperator
+		or: [ aMethod hasVariadicListArgument
+		or: [ aMethod isVariadic ] ] ])
 		ifTrue: [ ^ self ].
 
 	(CigPharoMethodGenerator newFile: self file element: aMethod) generateOn: self
@@ -190,6 +207,16 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitStructure: aStructure [
+
+	"skip if is annonymous (for now at least)"
+	aStructure isAnonymous ifTrue: [ ^ self ].
+	"skip if is template specialization"
+	aStructure isTemplateSpecialization ifTrue: [ ^ self ].
+	"act as class if it behaves as a class"
+	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
+	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
+	"otherwise, generate the structure (unless is opaque, of course)"	
+	aStructure isOpaque ifTrue: [ ^ self ].	
 	
 	self ensureBaseStructureClass: aStructure root.
 	aStructure fieldAnonymousReferences 
@@ -207,6 +234,16 @@ CigPharoVisitor >> visitTypedef: aTypedef [
 { #category : 'visiting' }
 CigPharoVisitor >> visitUnion: anUnion [
 	| generator |
+	
+	"skip if is annonymous (for now at least)"
+	anUnion isAnonymous ifTrue: [ ^ self ].
+	"skip if is template specialization"
+	anUnion isTemplateSpecialization ifTrue: [ ^ self ].
+	"act as class if it behaves as a class"
+	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
+	anUnion isClass ifTrue: [ ^ self visitClass: anUnion ].
+	"otherwise, generate the structure (unless is opaque, of course)"	
+	anUnion isOpaque ifTrue: [ ^ self ].	
 	
 	self ensureBaseUnionClass: anUnion root.
 	anUnion fieldAnonymousReferences 
