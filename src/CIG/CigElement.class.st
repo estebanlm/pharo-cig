@@ -343,12 +343,6 @@ CigElement >> phDeclaration [
 			<< self name capitalized ]
 ]
 
-{ #category : 'accessing' }
-CigElement >> phDeclarationWith: aPrefix [
-
-	^ (aPrefix, self name capitalized) asSymbol
-]
-
 { #category : 'printing' }
 CigElement >> printOn: stream [
 

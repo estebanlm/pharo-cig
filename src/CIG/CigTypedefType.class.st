@@ -5,10 +5,3 @@ Class {
 	#package : 'CIG',
 	#tag : 'Base'
 }
-
-{ #category : 'accessing' }
-CigTypedefType >> phDeclarationWith: prefix [
-
-	parent definesFunction ifTrue: [ ^ 'FFICallback' ].
-	^ super phDeclarationWith: prefix
-]

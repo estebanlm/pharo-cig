@@ -78,16 +78,5 @@ CigNamespace >> path [
 { #category : 'accessing' }
 CigNamespace >> phDeclaration [
 
-	^ String streamContents: [ :stream | 
-		stream 
-			<< self root prefix capitalized 
-			<< self name capitalized
-			<< 'Namespace' ]
-]
-
-{ #category : 'accessing' }
-CigNamespace >> phDeclarationWith: aPrefix [
-
-	^ (super phDeclarationWith: aPrefix), 'Namespace'
-
+	^ super phDeclaration, 'Namespace'
 ]
