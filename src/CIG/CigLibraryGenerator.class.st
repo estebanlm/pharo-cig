@@ -5,17 +5,17 @@ It takes the declaring header (plus some configuration files) and is capable of 
 ## Example
 
 ```
-(noise := IGHeaderGenerator new)
+
+(noise := CigLibraryGenerator new)
 	prefix: 'No';
 	bindingsName: 'noise'; 
 	file: '/home/esteban/dev/vm/libnoise/include/noise/noise.h';
-	includePaths: {
-		'/home/esteban/dev/vm/libnoise/include'.
-		'/home/esteban/dev/vm/libnoise/include/noise' };
-	libs: { 
-		'noise' };
+	cIncludePath: '/home/esteban/dev/vm/libnoise/include';
+	cIncludePath: '/home/esteban/dev/vm/libnoise/include/noise';
+	cLib: 'noise';
+	withCBindings;
 	withMakefile;
-	withoutClasses.
+	withClasses.
 
 	noise generate.
 ```

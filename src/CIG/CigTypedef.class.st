@@ -81,7 +81,7 @@ CigTypedef >> phTemplate [
 { #category : 'accessing' }
 CigTypedef >> resolveType [
 	
-	^ CigTypedefType new
+	^ CigType new
 		parent: self;
 		name: self name;
 		typeReference: self typeReference;
