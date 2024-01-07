@@ -245,6 +245,8 @@ CigCVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 CigCVisitor >> visitStructure: aStructure [
 
+	"skip if is annonymous (for now at least)"
+	aStructure isAnonymous ifTrue: [ ^ self ].
 	"skip if is template specialization"
 	aStructure isTemplateSpecialization ifTrue: [ ^ self ].
 	"act as class if it behaves as a class"
@@ -252,6 +254,7 @@ CigCVisitor >> visitStructure: aStructure [
 	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
 	"otherwise, generate the structure (unless is opaque, of course)"	
 	aStructure isOpaque ifTrue: [ ^ self ].	
+		
 	self hStream << aStructure cTemplate generate; cr
 ]
 

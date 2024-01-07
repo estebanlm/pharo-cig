@@ -18,7 +18,7 @@ CigClassTemplate >> accept: aVisitor [
 	aVisitor visitClassTemplate: self
 ]
 
-{ #category : 'adding' }
+{ #category : 'converting' }
 CigClassTemplate >> addSubclassWithSpecializedType: aString [
 	"this creates the subclass an adds it as element (so it can be found in the 
 	 generating process)"

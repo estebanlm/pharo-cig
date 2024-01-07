@@ -218,6 +218,32 @@ CigPharoVisitorTest >> testVisitClassRegisterType [
 	self assert: (typedefClass bindingOf: #xx_TView) value equals: class
 ]
 
+{ #category : 'tests - classtemplate' }
+CigPharoVisitorTest >> testVisitClassTemplateAddClassAndSubclasses [
+	| visitor class subclass element |
+	
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitClassTemplate: element.
+	
+	class := self class environment classNamed: 'XxTSpan'.
+	self assert: class notNil.
+	
+	subclass := self class environment classNamed: 'XxTSpanChar'.
+	self assert: subclass notNil.
+	self assert: subclass superclass equals: class.
+	
+	subclass := self class environment classNamed: 'XxTSpanTScreenCell'.
+	self assert: subclass notNil.
+	self assert: subclass superclass equals: class.
+	
+	subclass := self class environment classNamed: 'XxTSpanUint32_t'.
+	self assert: subclass notNil.
+	self assert: subclass superclass equals: class
+]
+
 { #category : 'tests - class' }
 CigPharoVisitorTest >> testVisitClassWithManyConstructorsDisambiguatesName [
 	| visitor class element constructors |

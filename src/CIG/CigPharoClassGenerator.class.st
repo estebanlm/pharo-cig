@@ -46,7 +46,9 @@ CigPharoClassGenerator >> baseClass [
 { #category : 'private' }
 CigPharoClassGenerator >> classFor: aName [
 
-	^ self class environment classNamed: aName
+	"ensuring I have a concrete name and not a template (it may arrive like 
+	 that when creating a template specialization hierarchy)"
+	^ self class environment classNamed: (aName copyUpTo: $<)
 ]
 
 { #category : 'as yet unclassified' }
@@ -63,7 +65,8 @@ CigPharoClassGenerator >> disposeTemplate [
 CigPharoClassGenerator >> generate [
 
 	self addClass.
-	self addDisposeMethod.
+	self element shouldExposeDispose
+		ifTrue: [ self addDisposeMethod ].
 	self addClassComment
 ]
 

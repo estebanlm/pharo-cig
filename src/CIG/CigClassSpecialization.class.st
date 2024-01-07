@@ -29,6 +29,11 @@ CigClassSpecialization class >> kind [
 	^ nil
 ]
 
+{ #category : 'visiting' }
+CigClassSpecialization >> accept: aVisitor [
+	"this will be handled by the specialization caller"
+]
+
 { #category : 'private' }
 CigClassSpecialization >> basicFromClassTemplate: aClassTemplate [
 
@@ -51,19 +56,20 @@ CigClassSpecialization >> cppDeclaration [
 CigClassSpecialization >> fromClassTemplate: aClassTemplate [
 	"this is used to construct the specialised class superclass"
 	
+	isAbstract := true.
 	name := aClassTemplate basename.
 	self basicFromClassTemplate: aClassTemplate.
-	elements := (aClassTemplate elements 
-		reject: [ :each | each isClassMember and: [ each isTemplateOf: aClassTemplate ] ])
-		collect: [ :each | 
-			each copy
-				parent: self;
-				yourself ]
+	elements := #()
 ]
 
 { #category : 'initialization' }
 CigClassSpecialization >> fromClassTemplate: aClassTemplate specializedype: aString [
 
+	isAbstract := false.
+	superclass := (CigSuperclass newName: aClassTemplate basename)
+		parent: self;
+		typePath: aClassTemplate parent path allButFirst, { aClassTemplate basename };
+		yourself.
 	name := aClassTemplate basename, aString capitalized.
 	templateName := String streamContents: [ :stream | 
 		stream << aClassTemplate basename << '<' << aString << '>' ].
@@ -73,4 +79,16 @@ CigClassSpecialization >> fromClassTemplate: aClassTemplate specializedype: aStr
 		(each asSpecializationOf: aClassTemplate type: aString)
 			parent: self;
 			yourself ]
+]
+
+{ #category : 'testing' }
+CigClassSpecialization >> isAbstract [
+
+	^ isAbstract
+]
+
+{ #category : 'accessing' }
+CigClassSpecialization >> superclass [
+
+	^ superclass ifNil: [ super superclass ]
 ]

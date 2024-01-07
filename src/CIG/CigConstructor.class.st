@@ -77,3 +77,15 @@ CigConstructor >> resolveReturnType [
 			yourself);
 		yourself
 ]
+
+{ #category : 'private' }
+CigConstructor >> specializeClassTemplate: aClassTemplate type: typeString [
+
+	super specializeClassTemplate: aClassTemplate type: typeString.
+	name := name 
+		copyReplaceAll: aClassTemplate name 
+		with: (aClassTemplate basename, typeString capitalized).
+	spelling := spelling 
+		copyReplaceAll: aClassTemplate name
+		with: 	aClassTemplate basename, typeString capitalized
+]

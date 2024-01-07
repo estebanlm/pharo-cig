@@ -52,3 +52,9 @@ CigSuperclass >> typePath [
 
 	^ typePath
 ]
+
+{ #category : 'accessing' }
+CigSuperclass >> typePath: anArray [
+
+	typePath := anArray
+]

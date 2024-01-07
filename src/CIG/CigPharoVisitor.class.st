@@ -139,6 +139,15 @@ CigPharoVisitor >> visitClass: aClass [
 ]
 
 { #category : 'visiting' }
+CigPharoVisitor >> visitClassTemplate: aClassTemplate [
+		
+	self visitClass: aClassTemplate asBaseClass.
+	"we add one subclass for each specialized type"
+	aClassTemplate typeSpecializations do: [ :each |
+		self visitClass: (aClassTemplate addSubclassWithSpecializedType: each) ]
+]
+
+{ #category : 'visiting' }
 CigPharoVisitor >> visitConstructor: aConstructor [
 
 	(CigPharoConstructorGenerator newFile: self file element: aConstructor) generateOn: self
