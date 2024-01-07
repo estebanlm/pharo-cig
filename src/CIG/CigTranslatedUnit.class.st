@@ -271,6 +271,13 @@ CigTranslatedUnit >> prefix [
 	^ prefix
 ]
 
+{ #category : 'private' }
+CigTranslatedUnit >> prefix: aString [ 
+
+	"this is used for tests"
+	prefix := aString
+]
+
 { #category : 'accessing' }
 CigTranslatedUnit >> root [
 	

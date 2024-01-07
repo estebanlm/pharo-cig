@@ -12,7 +12,7 @@ Class {
 { #category : 'private' }
 CigPharoClassGenerator >> addClass [
 
-	generatedClass := self baseClass << self element phDeclaration asSymbol
+	generatedClass := self baseClass << self nameForClass
 		tag: self namespaceName;
 		package: self packageName;
 		install
@@ -57,4 +57,10 @@ CigPharoClassGenerator >> generate [
 
 	self addClass.
 	self addDisposeMethod
+]
+
+{ #category : 'private' }
+CigPharoClassGenerator >> nameForClass [
+	
+	^ element phDeclaration asSymbol
 ]

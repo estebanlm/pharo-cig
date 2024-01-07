@@ -27,5 +27,5 @@ CigPharoFieldTemplateTest >> testGenerateUnionFieldDesc [
 	
 	self 
 		assert: template generateFieldDesc
-		equals: 'TvMessageEventUnion1 union1'
+		equals: 'XxMessageEventUnion1 union1'
 ]

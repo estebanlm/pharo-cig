@@ -17,7 +17,7 @@ CigPharoFunctionTemplateTest >> testGenerateFunction [
 		assert: template generate
 		equals: 'fexpand: rpath
 
-	self ffiCall: #(void tv_fexpand_1(char* rpath))'
+	self ffiCall: #(void xx_fexpand_1(char* rpath))'
 ]
 
 { #category : 'tests' }
@@ -31,7 +31,7 @@ CigPharoFunctionTemplateTest >> testGenerateMethod [
 		assert: template generate
 		equals: 'getBounds
 
-	self ffiCall: #(tv_TRect* tv_TView_getBounds(tv_TView* self))'
+	self ffiCall: #(xx_TRect* xx_TView_getBounds(xx_TView* self))'
 ]
 
 { #category : 'tests' }
@@ -45,5 +45,5 @@ CigPharoFunctionTemplateTest >> testGenerateMethodWithResultAsArgument [
 		assert: template generate
 		equals: 'getColor: color result: result
 
-	self ffiCall: #(void tv_TView_getColor(tv_TView* self, tv_ushort color, tv_TAttrPair* result))'
+	self ffiCall: #(void xx_TView_getColor(xx_TView* self, xx_ushort color, xx_TAttrPair* result))'
 ]

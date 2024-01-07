@@ -100,6 +100,15 @@ CigClass >> isDeclaration [
 ]
 
 { #category : 'accessing' }
+CigClass >> phDeclaration [
+
+	^ String streamContents: [ :stream | 
+		stream 
+			<< self root prefix capitalized 
+			<< self name capitalized ]
+]
+
+{ #category : 'accessing' }
 CigClass >> resolveType [
 
 	^ CigType new 

@@ -36,7 +36,7 @@ CigPharoStructureTemplateTest >> testGenerateStructWithUnion [
 		equals: 'fieldsDesc
 
 	^ #(
-	tv_ushort command;
-	TvMessageEventUnion1 union1
+	xx_ushort command;
+	XxMessageEventUnion1 union1
 	)'
 ]

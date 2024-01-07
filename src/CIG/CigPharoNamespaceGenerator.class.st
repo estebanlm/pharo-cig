@@ -36,9 +36,9 @@ CigPharoNamespaceGenerator >> addCPPPrefix [
 { #category : 'private' }
 CigPharoNamespaceGenerator >> addNamespace [
 	
-	generatedClass := Object << self element phDeclaration asSymbol
+	generatedClass := Object << self nameForClass
 		traits: self libraryTrait;
-		tag: self element basename;
+		tag: self element basename capitalized;
 		package: self packageName;
 		install
 ]
@@ -86,6 +86,12 @@ CigPharoNamespaceGenerator >> generate [
 	self addCPPHeader.
 	self addCPPName.
 	self addTypedef
+]
+
+{ #category : 'private' }
+CigPharoNamespaceGenerator >> nameForClass [
+	
+	^ self element phDeclaration asSymbol
 ]
 
 { #category : 'private' }

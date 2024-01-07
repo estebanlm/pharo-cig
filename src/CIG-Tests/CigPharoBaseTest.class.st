@@ -21,3 +21,21 @@ CigPharoBaseTest >> tearDown [
 		
 	super tearDown
 ]
+
+{ #category : 'accessing' }
+CigPharoBaseTest >> translatedUnit [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnit
+		prefix: 'xx';
+		yourself
+]
+
+{ #category : 'accessing' }
+CigPharoBaseTest >> translatedUnitTvision [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnitTvision
+		prefix: 'xx';
+		yourself
+]

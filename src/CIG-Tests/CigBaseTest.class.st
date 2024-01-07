@@ -26,10 +26,14 @@ CigBaseTest >> elementAtPath: aPath [
 CigBaseTest >> translatedUnit [
 
 	^ CigTestResource current translatedUnit
+		prefix: 'nu';
+		yourself
 ]
 
 { #category : 'accessing' }
 CigBaseTest >> translatedUnitTvision [
 
 	^ CigTestResource current translatedUnitTvision
+		prefix: 'tv';
+		yourself
 ]
