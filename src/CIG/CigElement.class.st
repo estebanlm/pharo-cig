@@ -337,7 +337,10 @@ CigElement >> pathName [
 { #category : 'accessing' }
 CigElement >> phDeclaration [
 
-	^ '' join: (self path collect: [ :each | each capitalized ])
+	^ String streamContents: [ :stream | 
+		stream 
+			<< self root prefix capitalized 
+			<< self name capitalized ]
 ]
 
 { #category : 'accessing' }

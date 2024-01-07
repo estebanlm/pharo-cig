@@ -33,7 +33,6 @@ Class {
 		'bindingsName',
 		'fileReference',
 		'namespaces',
-		'withComments',
 		'defines',
 		'definesBeforeHeader'
 	],
@@ -272,12 +271,6 @@ CigLibraryGenerator >> hasClasses [
 ]
 
 { #category : 'testing' }
-CigLibraryGenerator >> hasComments [
-
-	^ withComments
-]
-
-{ #category : 'testing' }
 CigLibraryGenerator >> hasMakefile [
 
 	^ withMakefile
@@ -295,8 +288,7 @@ CigLibraryGenerator >> initialize [
 	super initialize.
 	self withCBindings.
 	self withoutMakefile.
-	self withoutClasses.
-	self withoutComments
+	self withoutClasses
 ]
 
 { #category : 'accessing' }
@@ -407,12 +399,6 @@ CigLibraryGenerator >> withClasses [
 ]
 
 { #category : 'accessing - configuration' }
-CigLibraryGenerator >> withComments [
-
-	withComments := true
-]
-
-{ #category : 'accessing - configuration' }
 CigLibraryGenerator >> withMakefile [
 
 	withMakefile := true
@@ -428,12 +414,6 @@ CigLibraryGenerator >> withoutCBindings [
 CigLibraryGenerator >> withoutClasses [
 
 	withClasses := false
-]
-
-{ #category : 'accessing - configuration' }
-CigLibraryGenerator >> withoutComments [
-
-	withComments := false
 ]
 
 { #category : 'accessing - configuration' }

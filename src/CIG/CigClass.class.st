@@ -82,6 +82,12 @@ CigClass >> fromCursor: aCursor [
 ]
 
 { #category : 'testing' }
+CigClass >> hasComment [
+	
+	^ self comment isEmptyOrNil not
+]
+
+{ #category : 'testing' }
 CigClass >> isAbstract [
 
 	^ self methods anySatisfy: [ :each | each isPureVirtual ]

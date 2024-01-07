@@ -18,6 +18,13 @@ CigPharoClassGenerator >> addClass [
 		install
 ]
 
+{ #category : 'private' }
+CigPharoClassGenerator >> addClassComment [
+
+	self element hasComment ifFalse: [ ^ self ].
+	generatedClass comment: self element comment
+]
+
 { #category : 'as yet unclassified' }
 CigPharoClassGenerator >> addDisposeMethod [
 
@@ -56,7 +63,8 @@ CigPharoClassGenerator >> disposeTemplate [
 CigPharoClassGenerator >> generate [
 
 	self addClass.
-	self addDisposeMethod
+	self addDisposeMethod.
+	self addClassComment
 ]
 
 { #category : 'private' }
