@@ -395,7 +395,7 @@ CigCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
 ]
 
 { #category : 'tests - method' }
-CigCVisitorTest >> testVisitMethodWithTypeReferenceNowQualifyingReturnType [
+CigCVisitorTest >> testVisitMethodWithTypeReference [
 	| element visitor |
 
 	element := self translatedUnitTvision elementAtPath: { 'TCellChar'. 'moveWideCharTrail()' }.

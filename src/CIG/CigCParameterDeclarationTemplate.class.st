@@ -12,6 +12,24 @@ CigCParameterDeclarationTemplate class >> handlesType: aType [
 	^ aType isAnyDeclaration
 ]
 
+{ #category : 'private' }
+CigCParameterDeclarationTemplate >> addCastTo: stream [
+	
+	stream << '('.
+	self type hasElement 
+		ifTrue: [ stream << self type element cppDeclaration ]
+		ifFalse: [ stream << self type name ].
+	self type parseType arity 
+		timesRepeat: [ stream << '*' ].
+	stream << ')'
+]
+
+{ #category : 'private' }
+CigCParameterDeclarationTemplate >> addFunctionCastTo: stream [
+	
+	stream << '(' << self type name << ')'
+]
+
 { #category : 'generating' }
 CigCParameterDeclarationTemplate >> castReturn: aString [ 
 	| cast |
@@ -35,14 +53,11 @@ CigCParameterDeclarationTemplate >> generateArgument [
 	^ String streamContents: [ :stream | 
 		self type isReference 
 			ifTrue: [ stream << '*' ].
-		self type requiresCast ifTrue: [ 
-			stream << '('.
-			self type hasElement 
-				ifTrue: [ stream << self type element cppDeclaration ]
-				ifFalse: [ stream << self type name ].
-			self type parseType arity 
-				timesRepeat: [ stream << '*' ].
-			stream << ')' ].
+		self type requiresCast 
+			ifTrue: [ self addCastTo: stream ]
+			ifFalse: [ 
+				self type definesFunction 
+					ifTrue: [ self addFunctionCastTo: stream ] ].
 		stream << self element name ]
 ]
 

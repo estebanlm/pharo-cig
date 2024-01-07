@@ -121,6 +121,18 @@ CigCMethodTemplateTest >> testGenerateBodyStaticReturningClass [
 ]
 
 { #category : 'tests' }
+CigCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterCallback [
+	| template element |
+
+	element := self translatedUnitTvision elementAtPath: { 'TTimerQueue'. 'TTimerQueue(TTimePoint (&)())' }.
+	template := CigCMethodTemplate for: element.
+
+	self 
+		assert: template generateBody trimmed
+		equals: 'return (tv_TTimerQueue*)(new TTimerQueue((TTimePoint (&)())getTimeMs));'
+]
+
+{ #category : 'tests' }
 CigCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterClassReference [
 	| template element |
 

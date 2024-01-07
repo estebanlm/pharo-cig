@@ -13,7 +13,6 @@ Class {
 CigPharoEnumGenerator >> addEnum [
 
 	generatedClass := (self baseEnumClass << self element phDeclaration)
-		sharedPools: { self libraryTypedefName asSymbol };
 		tag: self namespaceName;
 		package: self packageName;
 		install
