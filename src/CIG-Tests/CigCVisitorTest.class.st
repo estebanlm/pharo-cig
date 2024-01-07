@@ -448,6 +448,30 @@ CigCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
 }'
 ]
 
+{ #category : 'tests - struct' }
+CigCVisitorTest >> testVisitStructureWithAnonymousUnionGeneratesCorrectCStruct [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'MessageEvent' }.
+	
+	visitor := CigCVisitor newForTest.
+	visitor visitStructure: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'struct tv_MessageEvent {
+	tv_ushort command;
+	union {
+		void* infoPtr;
+		int32_t infoLong;
+		tv_ushort infoWord;
+		short infoInt;
+		tv_uchar infoByte;
+		char infoChar;
+	};
+};'.
+]
+
 { #category : 'tests - typedef' }
 CigCVisitorTest >> testVisitTypedefWithArrayDeclaresCorrectly [
 	| element visitor |

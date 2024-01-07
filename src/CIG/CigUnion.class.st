@@ -19,6 +19,12 @@ CigUnion >> accept: aVisitor [
 ]
 
 { #category : 'accessing' }
+CigUnion >> cTemplate [
+	
+	^ CigCUnionTemplate for: self
+]
+
+{ #category : 'accessing' }
 CigUnion >> phTemplate [
 	
 	^ CigPharoUnionTemplate for: self

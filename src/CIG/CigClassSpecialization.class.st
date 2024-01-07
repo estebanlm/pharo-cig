@@ -1,8 +1,11 @@
 Class {
 	#name : 'CigClassSpecialization',
 	#superclass : 'CigClass',
+	#classTraits : '{} + TraitedClass',
 	#instVars : [
-		'templateName'
+		'templateName',
+		'isAbstract',
+		'superclass'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
