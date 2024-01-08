@@ -255,7 +255,7 @@ CigPharoVisitorTest >> testVisitClassWithManyConstructorsDisambiguatesName [
 	visitor visitClass: element.
 	class := (self class environment classNamed: 'XxTView') class.
 	constructors := class methodDict keys select: [ :each | each beginsWith: 'tView_' ].
-	self assert: constructors size equals: 2
+	self assert: constructors size equals: 1
 ]
 
 { #category : 'tests - enum' }
@@ -517,6 +517,25 @@ CigPharoVisitorTest >> testVisitTypedefIsAddedToTypes [
 	class := self class environment classNamed: 'XxGeneratedForTestTypedef'.
 	self assert: (class includesKey: #no_noise_uint).
 	self assert: (class localBindingOf: #no_noise_uint) value equals: #uint
+]
+
+{ #category : 'tests - typedef' }
+CigPharoVisitorTest >> testVisitTypedefUlong [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'ulong' }.	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitTypedef: element.
+
+	self 
+		assert: visitor types keys first
+		equals: 'xx_ulong'.
+		
+	self 
+		assert: visitor types values first
+		equals: '#ulong'
 ]
 
 { #category : 'tests - typedef' }

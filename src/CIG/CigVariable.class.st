@@ -51,6 +51,12 @@ CigVariable >> isVariable [
 ]
 
 { #category : 'accessing' }
+CigVariable >> phTemplate [
+	
+	^ CigPharoFieldTemplate for: self
+]
+
+{ #category : 'accessing' }
 CigVariable >> resolveType [
 	
 	^ CigType new 

@@ -28,19 +28,5 @@ CigPharoTypedefTemplate class >> handlesElement: anElement [
 { #category : 'generating' }
 CigPharoTypedefTemplate >> generate [
 
-	^ String streamContents: [ :stream | | typeName |
-			typeName := self element cTemplate generateCType.
-			self
-				resolveFFIType: typeName
-				ifFound: [ :aType | stream << '#' << aType typeName ]
-				ifAbsent: [ stream << typeName ] ]
-]
-
-{ #category : 'private' }
-CigPharoTypedefTemplate >> resolveFFIType: aString ifFound: foundBlock ifAbsent: absentBlock [
-
-	^ [ 
-		foundBlock value: (FFIExternalType resolveType: aString) ]
-	on: Error 
-	do: [ :e | absentBlock value ]
+	^ self element cTemplate generateFFIType
 ]

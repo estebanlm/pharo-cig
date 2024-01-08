@@ -8,10 +8,28 @@ Class {
 		'parsedType',
 		'element'
 	],
+	#classVars : [
+		'TypeMap'
+	],
+	#pools : [
+		'CigCPPTypedef'
+	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
 	#tag : 'Base'
 }
+
+{ #category : 'private' }
+CigType class >> createTypeMap [
+
+	^ Dictionary newFromPairs: {
+	'unsigned'. #uint.
+	'unsigned int'. #uint.
+	'unsigned long'. #ulong.
+	'unsigned short'. #ushort.
+	'unsigned char'. #uchar.
+	}
+]
 
 { #category : 'utils' }
 CigType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: aString [ 
@@ -58,6 +76,30 @@ CigType class >> replaceTypeTemplate: aClassTemplate type: typeString in: aStrin
 			stream << '*' ].
 		type isReference ifTrue: [ 
 			stream << '&' ] ]
+]
+
+{ #category : 'utils' }
+CigType class >> resolveFFIType: aString [
+
+	^ [ FFICallout new 
+			requestor: self; 
+			resolveType: aString.
+		 "it can be solved, just answer it"
+		 aString ]
+	on: Error 
+	do: [ :e | | type |
+		type := aString copyWithoutAll: #($* $&).
+		"it can't be solved, trying a conversion table"
+		self typeMap 
+			at: type
+			ifPresent: [ :aType | aString copyReplaceAll: type with: aType ]
+			ifAbsent: [ self error: 'C type can''t be mapped to a n FFIType' ] ]
+]
+
+{ #category : 'private' }
+CigType class >> typeMap [
+		
+	^ TypeMap ifNil: [ TypeMap := self createTypeMap ]
 ]
 
 { #category : 'testing' }

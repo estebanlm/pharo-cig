@@ -32,6 +32,12 @@ CigEnum >> cTemplate [
 ]
 
 { #category : 'testing' }
+CigEnum >> isAnonymous [
+	
+	^ self name beginsWith: '(unnamed'
+]
+
+{ #category : 'testing' }
 CigEnum >> isEnum [
 
 	^ true

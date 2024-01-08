@@ -7,6 +7,18 @@ Class {
 }
 
 { #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateExistingStructFieldDesc [
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'fLink' }.
+	template := element fields first phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'xx_fLink* f'
+]
+
+{ #category : 'tests' }
 CigPharoFieldTemplateTest >> testGenerateSimpleFieldDesc [
 	| element template |
 
@@ -28,4 +40,16 @@ CigPharoFieldTemplateTest >> testGenerateUnionFieldDesc [
 	self 
 		assert: template generateFieldDesc
 		equals: 'XxMessageEventUnion1 union1'
+]
+
+{ #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateUnsignedFieldDesc [
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'ffblk' }.
+	template := element fields fourth phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'uint ff_ftime'
 ]

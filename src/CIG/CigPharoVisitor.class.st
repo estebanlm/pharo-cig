@@ -162,6 +162,8 @@ CigPharoVisitor >> visitConstructor: aConstructor [
 { #category : 'visiting' }
 CigPharoVisitor >> visitEnum: anEnum [
 
+	anEnum isAnonymous ifTrue: [ ^ self ].
+
 	self ensureBaseEnumerationClass: anEnum root.
 	(CigPharoEnumGenerator newFile: self file element: anEnum) generateOn: self.
 	self registerType: anEnum
@@ -209,7 +211,7 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 CigPharoVisitor >> visitStructure: aStructure [
 
 	"skip if is annonymous (for now at least)"
-	aStructure isAnonymous ifTrue: [ ^ self ].
+	(aStructure isAnonymous and: [ aStructure isNested not ]) ifTrue: [ ^ self ].
 	"skip if is template specialization"
 	aStructure isTemplateSpecialization ifTrue: [ ^ self ].
 	"act as class if it behaves as a class"
@@ -236,7 +238,7 @@ CigPharoVisitor >> visitUnion: anUnion [
 	| generator |
 	
 	"skip if is annonymous (for now at least)"
-	anUnion isAnonymous ifTrue: [ ^ self ].
+	(anUnion isAnonymous and: [ anUnion isNested not ]) ifTrue: [ ^ self ].
 	"skip if is template specialization"
 	anUnion isTemplateSpecialization ifTrue: [ ^ self ].
 	"act as class if it behaves as a class"

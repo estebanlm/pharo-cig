@@ -3,6 +3,9 @@ Class {
 	#superclass : 'CigElement',
 	#traits : 'CigTClass',
 	#classTraits : 'CigTClass classTrait',
+	#instVars : [
+		'comment'
+	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -64,6 +67,12 @@ CigStructure >> classMembers [
 ]
 
 { #category : 'accessing' }
+CigStructure >> comment [
+
+	^ comment
+]
+
+{ #category : 'accessing' }
 CigStructure >> fieldAnonymousReferences [
 	"I need a special accessor for this because this kind of structures/unions 
 	 that are anonymous are not declared elsewhere, so I need to be able to 
@@ -77,6 +86,20 @@ CigStructure >> fieldAnonymousReferences [
 CigStructure >> fields [
 	
 	^ self elements select: [ :each | each isStructMember ]
+]
+
+{ #category : 'initialization' }
+CigStructure >> fromCursor: aCursor [
+
+	super fromCursor: aCursor.
+	comment := aCursor rawComment.
+
+]
+
+{ #category : 'testing' }
+CigStructure >> hasComment [
+	
+	^ self comment isEmptyOrNil not
 ]
 
 { #category : 'testing' }
@@ -95,6 +118,12 @@ CigStructure >> isAnonymous [
 CigStructure >> isClass [
 
 	^ self classMembers notEmpty or: [ self isOpaque ]
+]
+
+{ #category : 'testing' }
+CigStructure >> isNested [
+	
+	^ self parent isStructure
 ]
 
 { #category : 'testing' }
@@ -137,4 +166,12 @@ CigStructure >> resolveType [
 			parent: self;
 			yourself);
 		yourself
+]
+
+{ #category : 'accessing' }
+CigStructure >> superclass [
+
+	^ self elements 
+		detect: [ :each | each isSuperclass ]
+		ifNone: [ nil ]
 ]

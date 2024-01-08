@@ -57,3 +57,9 @@ CigCParameterBasicTypeTemplate >> generateCType [
 		(1 + startArity) to: parsed arity do: [ :each |
 			stream << '*' ] ]
 ]
+
+{ #category : 'generating' }
+CigCParameterBasicTypeTemplate >> generateFFIType [
+	
+	^ CigType resolveFFIType: self generateCType
+]

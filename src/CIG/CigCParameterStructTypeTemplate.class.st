@@ -50,11 +50,11 @@ CigCParameterStructTypeTemplate >> generateArgument [
 
 { #category : 'generating' }
 CigCParameterStructTypeTemplate >> generateCType [
-	| typeName  startArity parsed |
+	| typeName startArity parsed |
 	
 	typeName := (self elementAtPath: (self type typeReference typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cDeclaration ]
-		ifNil: [ typeName ].
+		ifNil: [ type name ].
 
 	startArity := 0.
 	parsed := self type parseType.
@@ -63,4 +63,12 @@ CigCParameterStructTypeTemplate >> generateCType [
 		stream << 'struct ' << typeName.
 		(1 + startArity) to: parsed arity do: [ :each |
 			stream << '*' ] ]
+]
+
+{ #category : 'as yet unclassified' }
+CigCParameterStructTypeTemplate >> generateFFIType [
+	
+	^ (self elementAtPath: (self type typeReference typeName substrings: '::'))
+		ifNotNil: [ :aNode | aNode cDeclaration ]
+		ifNil: [ type name ]
 ]

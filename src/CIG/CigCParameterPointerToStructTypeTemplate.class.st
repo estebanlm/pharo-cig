@@ -23,3 +23,15 @@ CigCParameterPointerToStructTypeTemplate >> castReturn: aString [
 	^ String streamContents: [ :stream | 
 		stream << 'return (' << self generateCType << ')(' << aString << ')' ]
 ]
+
+{ #category : 'generating' }
+CigCParameterPointerToStructTypeTemplate >> generateFFIType [
+	| startArity parsed |
+
+	startArity := 0.
+	parsed := self type parseType.
+	^ String streamContents: [ :stream |
+		stream << super generateFFIType.
+		(1 + startArity) to: parsed arity do: [ :each |
+			stream << '*' ] ]
+]

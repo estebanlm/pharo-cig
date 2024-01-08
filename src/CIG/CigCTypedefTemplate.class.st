@@ -25,6 +25,19 @@ CigCTypedefTemplate >> generateCType [
 	^ self typeTemplate generateCType
 ]
 
+{ #category : 'generating' }
+CigCTypedefTemplate >> generateFFIType [
+	| ffiType shouldEnclose |
+
+	ffiType := CigType resolveFFIType: self typeName.
+	shouldEnclose := ffiType includesAnyOf: '*&'. 
+	^ String streamContents: [ :stream |
+		stream << '#'.
+		shouldEnclose ifTrue: [ stream nextPut: $' ].
+		stream << ffiType.
+		shouldEnclose ifTrue: [ stream nextPut: $' ] ]
+]
+
 { #category : 'accessing' }
 CigCTypedefTemplate >> type [
 

@@ -35,7 +35,7 @@ CigCParameterClassReferenceTemplate >> generateArgument [
 		stream << '*(' << (self type element cppDeclaration) << '*)' << self element name ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'generating' }
 CigCParameterClassReferenceTemplate >> generateCType [
 	| typeName |
 	

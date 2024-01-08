@@ -86,10 +86,9 @@ CigCParameterTemplate >> generateCType [
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'generating' }
 CigCParameterTemplate >> generateFFIType [
 	
-	self flag: #TODO. "This, of course, will not work for all types. We need a map"
 	^ self generateCType
 ]
 
