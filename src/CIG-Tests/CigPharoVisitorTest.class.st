@@ -53,6 +53,22 @@ CigPharoVisitorTest >> testAddFFITypesClass [
 ]
 
 { #category : 'tests - base' }
+CigPharoVisitorTest >> testEnsureBaseClassesIncludeNamespaceTypedefs [
+	| visitor class |
+	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: self translatedUnit.
+	visitor ensureBaseObjectClass: self translatedUnit.
+
+	class := self class environment classNamed: 'XxBaseObject'.
+	self assert: class notNil.
+	
+	self 
+		assert: class sharedPoolNames asArray
+		equals: #(CigCPPTypedef CigNoiseTypedef XxGeneratedForTestTypedef)
+]
+
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testEnsureBaseEnumerationClass [
 	| visitor class |
 	

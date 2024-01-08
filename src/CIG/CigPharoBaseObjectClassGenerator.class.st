@@ -1,6 +1,6 @@
 Class {
 	#name : 'CigPharoBaseObjectClassGenerator',
-	#superclass : 'CigPharoGenerator',
+	#superclass : 'CigPharoBaseClassGenerator',
 	#instVars : [
 		'generatedClass'
 	],
@@ -14,7 +14,7 @@ CigPharoBaseObjectClassGenerator >> addClass [
 	
 	generatedClass := FFIOpaqueObject << self baseObjectClassName asSymbol
 		traits: self libraryTrait;
-		sharedPools: { #CigCPPTypedef. self libraryTypedefName asSymbol };
+		sharedPools: self sharedPoolNames;
 		tag: self namespaceName;
 		package: self packageName;
 		install
@@ -68,10 +68,4 @@ CigPharoBaseObjectClassGenerator >> generate [
 	self addMethodFinalize.
 	self addMethodAutoRelease.
 	self addMethodDispose
-]
-
-{ #category : 'private' }
-CigPharoBaseObjectClassGenerator >> namespaceName [
-
-	^ self defaultNamespaceName
 ]

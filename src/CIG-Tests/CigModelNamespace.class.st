@@ -23,3 +23,9 @@ CigModelNamespace class >> cppPrefix [
 
 	^ 'no'
 ]
+
+{ #category : 'accessing' }
+CigModelNamespace class >> typedef [
+
+	^ CigNoiseTypedef
+]

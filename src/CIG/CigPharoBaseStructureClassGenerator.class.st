@@ -1,6 +1,6 @@
 Class {
 	#name : 'CigPharoBaseStructureClassGenerator',
-	#superclass : 'CigPharoGenerator',
+	#superclass : 'CigPharoBaseClassGenerator',
 	#instVars : [
 		'generatedClass'
 	],
@@ -14,7 +14,7 @@ CigPharoBaseStructureClassGenerator >> addStructure [
 	
 	generatedClass := FFIStructure << self baseStructureClassName asSymbol
 		traits: self libraryTrait;
-		sharedPools: { #CigCPPTypedef. self libraryTypedefName asSymbol };
+		sharedPools: self sharedPoolNames;
 		tag: self namespaceName;
 		package: self packageName;
 		install
@@ -24,10 +24,4 @@ CigPharoBaseStructureClassGenerator >> addStructure [
 CigPharoBaseStructureClassGenerator >> generate [
 
 	self addStructure
-]
-
-{ #category : 'private' }
-CigPharoBaseStructureClassGenerator >> namespaceName [
-
-	^ self defaultNamespaceName
 ]

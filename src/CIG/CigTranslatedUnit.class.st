@@ -211,7 +211,7 @@ CigTranslatedUnit >> installedNamespaceFor: aNamespace [
 	| originName |
 
 	originName := aNamespace originNamespaceName.
-	^ namespaces
+	^ self namespaces
 		detect: [ :each | each cppName = originName ]
 		ifNone: [ nil ]
 ]
@@ -233,6 +233,12 @@ CigTranslatedUnit >> isNamespace [
 CigTranslatedUnit >> name [
 
 	^ '__Unit__'
+]
+
+{ #category : 'accessing' }
+CigTranslatedUnit >> namespaces [
+
+	^ namespaces
 ]
 
 { #category : 'private' }
