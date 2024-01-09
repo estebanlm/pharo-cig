@@ -365,3 +365,9 @@ CigElement >> typeReference [
 		detect: [ :each | each isTypeReference ]
 		ifNone: [ nil ]
 ]
+
+{ #category : 'private' }
+CigElement >> typeReferences [
+
+	^ self elements select: [ :each | each isTypeReference ]
+]

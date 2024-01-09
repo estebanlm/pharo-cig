@@ -1,11 +1,10 @@
 Class {
 	#name : 'CigFunction',
 	#superclass : 'CigElement',
-	#traits : 'CigTFunction + CigTTemplateSpecialization',
-	#classTraits : 'CigTFunction classTrait + CigTTemplateSpecialization classTrait',
+	#traits : 'CigTFunction',
+	#classTraits : 'CigTFunction classTrait',
 	#instVars : [
-		'underlyingTypeName',
-		'underlyingTypeKind'
+		'elaboratedSpec'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -62,13 +61,8 @@ CigFunction >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	self fillFunctionWith: aCursor.
 	type := aCursor type.
-	type kind  = CXType_Elaborated ifTrue: [ 
-		| underlyingType |
-		underlyingType :=  type namedType.
-		underlyingTypeName := underlyingType spelling.
-		underlyingTypeKind := underlyingType kind.
-		(underlyingTypeName indexOf: $<) > 0 
-			ifTrue: [ self checkForTemplateSpecialization: underlyingType ] ]
+	type kind = CXType_Elaborated ifTrue: [ 
+		elaboratedSpec := CigElaboratedTypeSpec fromType: type namedType ]
 ]
 
 { #category : 'testing' }
@@ -96,6 +90,14 @@ CigFunction >> isReturnTypeVoid [
 	^ self returnTypeName = 'void'
 ]
 
+{ #category : 'testing' }
+CigFunction >> isTemplateSpecialization [
+
+	^ elaboratedSpec 
+		ifNotNil: [ elaboratedSpec isTemplateSpecialization ]
+		ifNil: [ false ]
+]
+
 { #category : 'accessing' }
 CigFunction >> pathName [
 
@@ -121,6 +123,12 @@ CigFunction >> phTemplate [
 CigFunction >> returnTypeName [
 
 	^ returnTypeName
+]
+
+{ #category : 'accessing' }
+CigFunction >> specializationTypes [
+
+	^ elaboratedSpec ifNotNil: #specializationTypes
 ]
 
 { #category : 'accessing' }

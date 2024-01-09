@@ -40,8 +40,14 @@ CigParameterType >> fromParameter: aParameter [
 { #category : 'private' }
 CigParameterType >> typeReferenceFrom: aParameter [
 
-	aParameter typeReference ifNotNil: [ :ref | ^ ref ]. 
-	
+	aParameter typeReferences ifNotEmpty: [ :references | 
+		"which one is good?"
+		| parsedName |
+		parsedName := (CigFunctionParser parse: aParameter typeName) name.
+		references 
+			detect: [ :each | each typeName endsWith: parsedName ]
+			ifFound: [ :each | ^ each ] ].
+
 	aParameter isTemplateSpecialization ifTrue: [ 
 		^ (CigTypeReference newName: 'class ', aParameter typeName)
 			parent: aParameter;

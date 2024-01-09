@@ -162,7 +162,7 @@ CigStructure >> resolveType [
 	^ CigType new 
 		parent: self;
 		name: self name;
-		typeReference: ((CigTypeReference newName: 'class ', self name)
+		typeReference: ((CigTypeReference newName: 'class ', self cppDeclaration)
 			parent: self;
 			yourself);
 		yourself

@@ -20,5 +20,7 @@ CigStdNamespace class >> elementName [
 CigStdNamespace >> initialize [
 
 	super initialize.
-	self addElement: CigStdStringElement new
+	self addElement: CigStdStringElement new.
+	self addElement: CigStdArrayElement new.
+	self addElement: CigStdChronoNamespace new
 ]

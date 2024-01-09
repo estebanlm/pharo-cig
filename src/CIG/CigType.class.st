@@ -110,8 +110,8 @@ CigType >> definesFunction [
 
 { #category : 'accessing' }
 CigType >> element [
-	"if there is a typeRefernce, tries to answer it"
-	
+	"if there is a typeReference, tries to answer it"
+
 	^ element ifNil: [ 
 		element := self typeReferenceForParsedType 
 			ifNotNil: [ 

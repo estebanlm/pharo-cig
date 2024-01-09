@@ -178,10 +178,7 @@ CigCVisitor >> visitClassTemplate: aClassTemplate [
 { #category : 'visiting' }
 CigCVisitor >> visitConstructor: aConstructor [
 
-	"abstract classes do not have public constructors"
-	aConstructor parent isAbstract ifTrue: [ ^ self ].
-	"we just want public constructors"
-	aConstructor isPublic ifFalse: [ ^ self ].
+	aConstructor canBeExported ifFalse: [ ^ self ].
 	
 	self hStream << aConstructor cTemplate generateHeader << ';'; cr.
 	self cStream << aConstructor cTemplate generate; cr
@@ -218,8 +215,7 @@ CigCVisitor >> visitFunction: aFunction [
 { #category : 'visiting' }
 CigCVisitor >> visitMethod: aMethod [
 
-	"skip not public methods."
-	aMethod isPublic ifFalse: [ ^ self ].
+	aMethod canBeExported ifFalse: [ ^ self ].
 
 	self visitFunction: aMethod
 ]

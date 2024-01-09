@@ -42,7 +42,7 @@ CigFunctionParser >> parseType [
 		templateTypeName := ''.
 		stream next.
 		[ stream peek = #> ] whileFalse: [ 
-			templateTypeName := templateTypeName, stream next ].
+			templateTypeName := templateTypeName, stream next asString ].
 		stream next ].
 	
 	referenceMarker := false.

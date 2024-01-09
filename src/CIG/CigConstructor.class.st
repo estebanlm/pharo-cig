@@ -1,6 +1,7 @@
 Class {
 	#name : 'CigConstructor',
 	#superclass : 'CigClassMember',
+	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -31,6 +32,15 @@ CigConstructor >> cDeclaration [
 CigConstructor >> cTemplate [
 	
 	^ CigCMethodTemplate for: self
+]
+
+{ #category : 'testing' }
+CigConstructor >> canBeExported [
+
+	"abstract classes do not have constructors"
+	self parent isAbstract ifTrue: [ ^ false ].
+
+	^ super canBeExported
 ]
 
 { #category : 'accessing' }
