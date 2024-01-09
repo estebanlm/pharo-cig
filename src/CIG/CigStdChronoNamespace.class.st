@@ -5,7 +5,6 @@ This is the std:: C++ namespace, from which we just want what we need to transle
 Class {
 	#name : 'CigStdChronoNamespace',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node-Special',
 	#package : 'CIG',
 	#tag : 'Node-Special'

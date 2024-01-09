@@ -4,7 +4,6 @@ A template to generate enum declarations.
 Class {
 	#name : 'CigPharoEnumerationTemplate',
 	#superclass : 'CigPharoTemplate',
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Pharo-Template',
 	#package : 'CIG',
 	#tag : 'Pharo-Template'

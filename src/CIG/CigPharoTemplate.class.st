@@ -5,7 +5,6 @@ Templates can generate strings that later can be compiled in the generators (see
 Class {
 	#name : 'CigPharoTemplate',
 	#superclass : 'CigTemplate',
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Pharo-Template',
 	#package : 'CIG',
 	#tag : 'Pharo-Template'

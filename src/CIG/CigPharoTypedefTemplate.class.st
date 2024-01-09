@@ -4,7 +4,6 @@ Template for `CigField`, to properly generate its declarations.
 Class {
 	#name : 'CigPharoTypedefTemplate',
 	#superclass : 'CigPharoTemplate',
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Pharo-Template',
 	#package : 'CIG',
 	#tag : 'Pharo-Template'

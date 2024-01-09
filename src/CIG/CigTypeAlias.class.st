@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigTypeAlias',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'elaboratedSpec'
 	],

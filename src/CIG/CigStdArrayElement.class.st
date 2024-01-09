@@ -5,7 +5,6 @@ It is need to translate from std::array to void* and viceversa.
 Class {
 	#name : 'CigStdArrayElement',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node-Special',
 	#package : 'CIG',
 	#tag : 'Node-Special'

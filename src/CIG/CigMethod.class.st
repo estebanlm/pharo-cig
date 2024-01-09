@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigMethod',
 	#superclass : 'CigClassMember',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'isVirtual',
 		'isPureVirtual',
