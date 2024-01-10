@@ -12,9 +12,9 @@ Trait {
 { #category : 'private' }
 CigTTemplateSpecialization >> checkForTemplateSpecialization: aType name: aTypeName [
 	| templateArgs |
+	
+	(aTypeName includes: $<) ifFalse: [ ^ self ].
 
-	"not interested on this."
-	aType kind = CXType_Typedef ifTrue: [ ^ self ].
 	"check for arguments"
 	templateArgs := aType numTemplateArguments.
 	templateArgs > 0 ifFalse: [ ^ self ].

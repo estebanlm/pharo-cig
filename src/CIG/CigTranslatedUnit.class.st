@@ -46,22 +46,13 @@ CigTranslatedUnit >> addElement: anElement [
 
 { #category : 'private' }
 CigTranslatedUnit >> addNode: currentNode parent: parentNode [
-	| parent current pass |
+	| parent current |
 
 	currentNode location isInSystemHeader ifTrue: [ ^ self ]. 	
 
-	pass := false.
 	parent := self findParent: parentNode.
-	(parent name = 'text')
-		ifTrue: [ 
-			pass := true.
-			(currentNode withAllParents allButFirst collect: #displayName) crTrace.
-			currentNode displayName crTrace ].	
-
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
 		ifNotNil: [ ^ self ]. 
-
-	pass ifTrue: [ '<enter>' crTrace ].
 
 	current := self newNode: currentNode.	
 	(current isUnknown and: [ self isGeneratingWithUnknown not ])

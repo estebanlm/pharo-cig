@@ -46,7 +46,6 @@ CigCTypedefTemplate >> type [
 
 { #category : 'accessing' }
 CigCTypedefTemplate >> typeName [
-	| typeName |
 	
 	self element definesFunction 
 		ifTrue: [ ^ 'void*' ].

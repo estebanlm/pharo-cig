@@ -1,11 +1,13 @@
 Class {
 	#name : 'CigBaseTypedef',
 	#superclass : 'CigElement',
+	#traits : 'CigTTemplateSpecialization',
+	#classTraits : 'CigTTemplateSpecialization classTrait',
 	#instVars : [
 		'underlyingTypeKind',
-		'underlyingTypeSpelling',
 		'definesFunction',
-		'definesArray'
+		'definesArray',
+		'underlyingTypeName'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -51,14 +53,17 @@ CigBaseTypedef >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
 	type := aCursor typedefDeclUnderlyingType.
-	underlyingTypeSpelling := type spelling.
+	underlyingTypeName := type spelling.
 	underlyingTypeKind := type kind.
-	definesFunction := (underlyingTypeSpelling beginsWith: 'std::function') 
-		or: [ (underlyingTypeKind = CXType_Pointer 
+	definesFunction := (underlyingTypeName beginsWith: 'std::function') 
+		or: [ (
+			(underlyingTypeKind = CXType_Pointer or: [ underlyingTypeKind = CXType_MemberPointer ]) 
 			and: [ type pointeeType resultType ~= CXType_Invalid ]) ].
 	definesArray := underlyingTypeKind = CXType_ConstantArray 
 			or: [ underlyingTypeKind = CXType_IncompleteArray
-			or: [ underlyingTypeKind = CXType_VariableArray ] ]
+			or: [ underlyingTypeKind = CXType_VariableArray ] ].
+		
+	self checkForTemplateSpecialization: type name: underlyingTypeName
 ]
 
 { #category : 'testing' }
@@ -96,5 +101,5 @@ CigBaseTypedef >> underlyingTypeKind [
 { #category : 'accessing' }
 CigBaseTypedef >> underlyingTypeName [
 
-	^ underlyingTypeSpelling
+	^ underlyingTypeName
 ]
