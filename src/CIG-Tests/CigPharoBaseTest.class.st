@@ -32,6 +32,15 @@ CigPharoBaseTest >> translatedUnit [
 ]
 
 { #category : 'accessing' }
+CigPharoBaseTest >> translatedUnitFinalcut [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnitFinalcut
+		prefix: 'xx';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigPharoBaseTest >> translatedUnitTvision [
 
 	"change prefix to ensure it does not collides with existing classes"

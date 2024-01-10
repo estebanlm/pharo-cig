@@ -35,6 +35,12 @@ CigVisitor >> visit: anObject [
 ]
 
 { #category : 'visiting' }
+CigVisitor >> visitAlias: anAlias [
+
+	self visitTypedef: anAlias
+]
+
+{ #category : 'visiting' }
 CigVisitor >> visitAll: aCollection [
 
 	aCollection do: [ :each | 

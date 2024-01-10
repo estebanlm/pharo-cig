@@ -31,6 +31,14 @@ CigBaseTest >> translatedUnit [
 ]
 
 { #category : 'accessing' }
+CigBaseTest >> translatedUnitFinalcut [
+
+	^ CigTestResource current translatedUnitFinalcut
+		prefix: 'fc';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigBaseTest >> translatedUnitTvision [
 
 	^ CigTestResource current translatedUnitTvision
