@@ -86,16 +86,8 @@ CigCVisitorTest >> testVisitClassWithNestedEnumEmitsEnum [
 	self 
 		assert: visitor hStream contents trimmed 
 		equals: 'typedef void tv_THardwareInfo;
-enum tv_THardwareInfo_ConsoleType {
-    cnInput = 0,
-    cnOutput = 1,
-    cnStartup = 2
-};
-enum tv_THardwareInfo_PlatformType {
-    plDPMI32 = 1,
-    plWinNT = 2,
-    plOS2 = 4
-};'
+typedef THardwareInfo::ConsoleType tv_THardwareInfo_ConsoleType;
+typedef THardwareInfo::PlatformType tv_THardwareInfo_PlatformType;'
 ]
 
 { #category : 'tests - class' }
@@ -161,7 +153,7 @@ CigCVisitorTest >> testVisitEnumWithOneLevelEmitsTypedef [
 	
 	self 
 		assert: visitor hStream contents trimmed 
-		equals: 'typedef int tv_StreamableInit;'
+		equals: 'typedef StreamableInit tv_StreamableInit;'
 ]
 
 { #category : 'tests - function' }

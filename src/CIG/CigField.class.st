@@ -37,7 +37,7 @@ CigField >> fromCursor: aCursor [
 	type := aCursor type.
 	typeName := type spelling.
 	typeKind := type kind.
-	isPublic := aCursor cxxAccessSpecifier = 1
+	isPublic := aCursor isPublic
 ]
 
 { #category : 'testing' }

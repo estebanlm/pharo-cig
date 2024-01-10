@@ -9,12 +9,13 @@ Class {
 { #category : 'private' }
 CigCEnumTypedefTemplate class >> handlesElement: anElement [
 
-	^ anElement depth = 1
+	^ true
+	"^ anElement depth = 1"
 ]
 
 { #category : 'generating' }
 CigCEnumTypedefTemplate >> generate [
 	
 	^ String streamContents: [ :stream |
-		stream << 'typedef int ' << self element fullName << ';' ]
+		stream << 'typedef ' << self element cppDeclaration << ' ' << self element fullName << ';' ]
 ]

@@ -9,7 +9,8 @@ Class {
 { #category : 'private' }
 CigCEnumDefaultTemplate class >> handlesElement: anElement [
 
-	^ anElement depth > 1
+	^ false
+	"^ anElement depth > 1"
 ]
 
 { #category : 'generating' }

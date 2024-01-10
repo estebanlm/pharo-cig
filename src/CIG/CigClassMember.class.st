@@ -1,11 +1,12 @@
 Class {
 	#name : 'CigClassMember',
 	#superclass : 'CigElement',
-	#traits : 'CigTFunction',
-	#classTraits : 'CigTFunction classTrait',
+	#traits : 'CigTFunction + CigTTemplateSpecialization',
+	#classTraits : 'CigTFunction classTrait + CigTTemplateSpecialization classTrait',
 	#instVars : [
 		'isPublic',
-		'elaboratedSpec'
+		'underlyingTypeName',
+		'underlyingTypeKind'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -43,6 +44,17 @@ CigClassMember >> exposesReturnValueAsParameter [
 ]
 
 { #category : 'initialization' }
+CigClassMember >> extractElaborated: aType [ 
+
+	underlyingTypeName := aType spelling.
+	underlyingTypeKind := aType kind.
+	(underlyingTypeName indexOf: $<) > 0 ifTrue: [ 
+		self 
+			checkForTemplateSpecialization: aType 
+			name: underlyingTypeName ]
+]
+
+{ #category : 'initialization' }
 CigClassMember >> fromCursor: aCursor [
 	| type |
 
@@ -51,8 +63,8 @@ CigClassMember >> fromCursor: aCursor [
 	isPublic := aCursor cxxAccessSpecifier = 1.
 	
 	type := aCursor type.
-	type kind  = CXType_Elaborated ifTrue: [ 
-		elaboratedSpec := CigElaboratedTypeSpec fromType: type namedType ]
+	type kind  = CXType_Elaborated 
+		ifTrue: [ self extractElaborated: type namedType ]
 ]
 
 { #category : 'testing' }
@@ -133,14 +145,6 @@ CigClassMember >> isTemplateOf: aClassTemplate [
 		or: [ self hasAnyParameterTypeClassTemplateOf: aClassTemplate ] ] ]
 ]
 
-{ #category : 'testing' }
-CigClassMember >> isTemplateSpecialization [
-
-	^ elaboratedSpec 
-		ifNotNil: [ elaboratedSpec isTemplateSpecialization ]
-		ifNil: [ false ]
-]
-
 { #category : 'accessing' }
 CigClassMember >> parametersAsList [
 
@@ -170,12 +174,6 @@ CigClassMember >> postCopy [
 CigClassMember >> returnTypeName [
 
 	^ returnTypeName
-]
-
-{ #category : 'accessing' }
-CigClassMember >> specializationTypes [
-
-	^ elaboratedSpec ifNotNil: #specializationTypes
 ]
 
 { #category : 'private' }
@@ -231,11 +229,11 @@ CigClassMember >> spelling [
 { #category : 'accessing' }
 CigClassMember >> underlyingTypeKind [
 
-	^ elaboratedSpec ifNotNil: #underlyingTypeKind
+	^ underlyingTypeKind
 ]
 
 { #category : 'accessing' }
 CigClassMember >> underlyingTypeName [
 
-	^ elaboratedSpec ifNotNil: #underlyingTypeName
+	^ underlyingTypeName
 ]

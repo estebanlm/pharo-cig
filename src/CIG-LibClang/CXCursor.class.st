@@ -213,6 +213,12 @@ CXCursor >> equalTo: aCursor [
 ]
 
 { #category : 'testing' }
+CXCursor >> isClass [
+
+	^ self kind = CXCursor_ClassDecl
+]
+
+{ #category : 'testing' }
 CXCursor >> isEnumConstantDeclaration [
 
 	^ self kind = CXCursor_EnumConstantDecl
@@ -237,6 +243,12 @@ CXCursor >> isFunctionInlined [
 ]
 
 { #category : 'testing' }
+CXCursor >> isGlobal [
+
+	^ self kind = CXCursor_TranslationUnit
+]
+
+{ #category : 'testing' }
 CXCursor >> isNamespace [
 
 	^ self kind = CXCursor_Namespace
@@ -246,6 +258,16 @@ CXCursor >> isNamespace [
 CXCursor >> isParameterDeclaration [
 
 	^ self kind = CXCursor_ParmDecl
+]
+
+{ #category : 'testing' }
+CXCursor >> isPublic [
+	| parent |
+	
+	parent := self parent.
+	parent ifNil: [ ^ true ].
+	
+	^ parent isClass not or: [ self cxxAccessSpecifier = 1 ]
 ]
 
 { #category : 'testing' }

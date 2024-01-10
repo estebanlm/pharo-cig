@@ -1,10 +1,12 @@
 Class {
 	#name : 'CigFunction',
 	#superclass : 'CigElement',
-	#traits : 'CigTFunction',
-	#classTraits : 'CigTFunction classTrait',
+	#traits : 'CigTFunction + CigTTemplateSpecialization',
+	#classTraits : 'CigTFunction classTrait + CigTTemplateSpecialization classTrait',
 	#instVars : [
-		'elaboratedSpec'
+		'elaboratedSpec',
+		'underlyingTypeName',
+		'underlyingTypeKind'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -55,14 +57,25 @@ CigFunction >> exposesReturnValueAsParameter [
 ]
 
 { #category : 'initialization' }
+CigFunction >> extractElaborated: aType [
+	
+	underlyingTypeName := aType spelling.
+	underlyingTypeKind := aType kind.
+	(underlyingTypeName indexOf: $<) > 0 ifTrue: [ 
+		self 
+			checkForTemplateSpecialization: aType 
+			name: underlyingTypeName ]
+]
+
+{ #category : 'initialization' }
 CigFunction >> fromCursor: aCursor [
 	| type |
 	
 	super fromCursor: aCursor.
 	self fillFunctionWith: aCursor.
 	type := aCursor type.
-	type kind = CXType_Elaborated ifTrue: [ 
-		elaboratedSpec := CigElaboratedTypeSpec fromType: type namedType ]
+	type kind  = CXType_Elaborated 
+		ifTrue: [ self extractElaborated: type namedType ]
 ]
 
 { #category : 'testing' }

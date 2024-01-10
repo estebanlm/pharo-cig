@@ -1,6 +1,10 @@
 Class {
 	#name : 'CigEnum',
 	#superclass : 'CigElement',
+	#classTraits : '{} + TraitedClass',
+	#instVars : [
+		'isPublic'
+	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -31,6 +35,13 @@ CigEnum >> cTemplate [
 	^ CigCEnumTemplate for: self
 ]
 
+{ #category : 'initialization' }
+CigEnum >> fromCursor: aCursor [
+
+	super fromCursor: aCursor.
+	isPublic := aCursor isPublic
+]
+
 { #category : 'testing' }
 CigEnum >> isAnonymous [
 	
@@ -41,6 +52,12 @@ CigEnum >> isAnonymous [
 CigEnum >> isEnum [
 
 	^ true
+]
+
+{ #category : 'testing' }
+CigEnum >> isPublic [
+
+	^ isPublic
 ]
 
 { #category : 'testing' }

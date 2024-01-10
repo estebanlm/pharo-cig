@@ -217,6 +217,12 @@ CigElement >> isParameter [
 ]
 
 { #category : 'testing' }
+CigElement >> isPublic [
+		
+	^ true
+]
+
+{ #category : 'testing' }
 CigElement >> isStructMember [
 
 	^ false

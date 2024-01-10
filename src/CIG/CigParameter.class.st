@@ -1,13 +1,17 @@
 Class {
 	#name : 'CigParameter',
 	#superclass : 'CigElement',
+	#traits : 'CigTTemplateSpecialization',
+	#classTraits : 'CigTTemplateSpecialization classTrait',
 	#instVars : [
 		'typeName',
 		'typeKind',
 		'templateTypes',
 		'definesFunction',
 		'argumentIndex',
-		'elaboratedSpec'
+		'underlyingTypeName',
+		'underlyingTypeKind',
+		'recordKind'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -93,6 +97,18 @@ CigParameter >> disambiguatePossibleIntSizeT: aCursor [
 ]
 
 { #category : 'initialization' }
+CigParameter >> extractElaborated: aType [
+
+	underlyingTypeName := aType spelling.
+	underlyingTypeKind := aType kind.
+	(underlyingTypeName indexOf: $<) > 0 
+		ifTrue: [ self checkForTemplateSpecialization: aType name: underlyingTypeName ].
+	
+	underlyingTypeKind = CXType_Record 
+		ifTrue: [ recordKind := aType typeDeclaration kind ]
+]
+
+{ #category : 'initialization' }
 CigParameter >> fromCursor: aCursor [
 	| type |
 
@@ -109,7 +125,7 @@ CigParameter >> fromCursor: aCursor [
 		name := 'arg{1}' format: { argumentIndex } ].
 		
 	typeKind = CXType_Elaborated ifTrue: [ 
-		elaboratedSpec := CigElaboratedTypeSpec fromType: type namedType ].
+		self extractElaborated: type namedType ].
 		
 	definesFunction := ({ CXType_Pointer. CXType_LValueReference } includes: typeKind)
 		and: [ { CXType_FunctionProto. CXType_FunctionNoProto } includes: type pointeeType kind ].		
@@ -172,14 +188,6 @@ CigParameter >> isTemplateOf: aClassTemplate [
 ]
 
 { #category : 'testing' }
-CigParameter >> isTemplateSpecialization [
-
-	^ elaboratedSpec 
-		ifNotNil: [ elaboratedSpec isTemplateSpecialization ]
-		ifNil: [ false ]
-]
-
-{ #category : 'testing' }
 CigParameter >> matchesCursor: aCursor [
 
 	^ self kind = aCursor kind 
@@ -197,7 +205,7 @@ CigParameter >> parseType: aString [
 { #category : 'accessing' }
 CigParameter >> recordKind [
 
-	^ elaboratedSpec ifNotNil: #recordKind
+	^ recordKind
 ]
 
 { #category : 'accessing' }
@@ -212,12 +220,6 @@ CigParameter >> resolveType [
 			ifNone: [ #() ] ].
 
 	^ CigParameterType fromParameter: self
-]
-
-{ #category : 'accessing' }
-CigParameter >> specializationTypes [
-
-	^ elaboratedSpec ifNotNil: #specializationTypes
 ]
 
 { #category : 'private' }
@@ -258,11 +260,11 @@ CigParameter >> typeName [
 { #category : 'accessing' }
 CigParameter >> underlyingTypeKind [
 
-	^ elaboratedSpec ifNotNil: #underlyingTypeKind
+	^ underlyingTypeKind
 ]
 
 { #category : 'accessing' }
 CigParameter >> underlyingTypeName [
 
-	^ elaboratedSpec ifNotNil: #underlyingTypeName
+	^ underlyingTypeName
 ]

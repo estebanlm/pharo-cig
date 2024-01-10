@@ -15,11 +15,7 @@ CigCEnumTemplateTest >> testGenerateNested [
 	
 	self
 		assert: template generate
-		equals: 'enum tv_THardwareInfo_ConsoleType {
-    cnInput = 0,
-    cnOutput = 1,
-    cnStartup = 2
-};'
+		equals: 'typedef THardwareInfo::ConsoleType tv_THardwareInfo_ConsoleType;'
 ]
 
 { #category : 'tests' }
@@ -27,9 +23,9 @@ CigCEnumTemplateTest >> testGenerateTypedef [
 	| element template |
 
 	element := self translatedUnitTvision elementAtPath: { 'StreamableInit' }.
-	template := CigCEnumTemplate for: element.
+	template := element cTemplate.
 	
 	self
 		assert: template generate 
-		equals: 'typedef int tv_StreamableInit;'
+		equals: 'typedef StreamableInit tv_StreamableInit;'
 ]

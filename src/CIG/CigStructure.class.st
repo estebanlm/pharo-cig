@@ -4,7 +4,8 @@ Class {
 	#traits : 'CigTClass',
 	#classTraits : 'CigTClass classTrait',
 	#instVars : [
-		'comment'
+		'comment',
+		'isPublic'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -93,6 +94,7 @@ CigStructure >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
 	comment := aCursor rawComment.
+	isPublic := aCursor isPublic
 
 ]
 
@@ -130,6 +132,12 @@ CigStructure >> isNested [
 CigStructure >> isOpaque [
 
 	^ elements isNil
+]
+
+{ #category : 'testing' }
+CigStructure >> isPublic [
+
+	^ isPublic
 ]
 
 { #category : 'testing' }

@@ -50,6 +50,9 @@ CigCHeaderDeclareVisitor >> visitDefinesBeforeHeader: aUnit [
 { #category : 'visiting' }
 CigCHeaderDeclareVisitor >> visitEnum: anEnum [
 
+	"skip if not public (it can be nested in a class)"
+	anEnum isPublic ifFalse: [ ^ self ].
+
 	"skipping unnamed enums"
 	anEnum isUnnamed ifTrue: [ ^ self ].
 

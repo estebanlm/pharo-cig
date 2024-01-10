@@ -5,7 +5,8 @@ Class {
 	#classTraits : 'CigTClass classTrait',
 	#instVars : [
 		'comment',
-		'isDeclaration'
+		'isDeclaration',
+		'isPublic'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -78,7 +79,8 @@ CigClass >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
 	comment := aCursor rawComment.
-	isDeclaration := (aCursor source includesAll: '{}') not
+	isDeclaration := (aCursor source includesAll: '{}') not.
+	isPublic := aCursor isPublic
 ]
 
 { #category : 'testing' }
@@ -103,6 +105,12 @@ CigClass >> isClass [
 CigClass >> isDeclaration [
 
 	^ isDeclaration
+]
+
+{ #category : 'testing' }
+CigClass >> isPublic [
+
+	^ isPublic
 ]
 
 { #category : 'accessing' }

@@ -1,3 +1,7 @@
+"
+variables can be different things consts, globals, etc.
+variables can also act as structure members (yeah, weird... but this is how c++ works :P)
+"
 Class {
 	#name : 'CigVariable',
 	#superclass : 'CigElement',

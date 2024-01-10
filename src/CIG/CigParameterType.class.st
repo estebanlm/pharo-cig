@@ -43,6 +43,9 @@ CigParameterType >> typeReferenceFrom: aParameter [
 	aParameter typeReferences ifNotEmpty: [ :references | 
 		"which one is good?"
 		| parsedName |
+		
+		references size = 1 ifTrue: [ ^ references anyOne ].
+		
 		parsedName := (CigFunctionParser parse: aParameter typeName) name.
 		references 
 			detect: [ :each | each typeName endsWith: parsedName ]

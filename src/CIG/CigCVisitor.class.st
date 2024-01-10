@@ -241,6 +241,8 @@ CigCVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 CigCVisitor >> visitStructure: aStructure [
 
+	"skip if not public (it can be nested in a class)"
+	aStructure isPublic ifFalse: [ ^ self ].
 	"skip if is annonymous (for now at least)"
 	aStructure isAnonymous ifTrue: [ ^ self ].
 	"skip if is template specialization"

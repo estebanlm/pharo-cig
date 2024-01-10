@@ -1,6 +1,7 @@
 Class {
 	#name : 'CigDestructor',
 	#superclass : 'CigClassMember',
+	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
