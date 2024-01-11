@@ -86,6 +86,7 @@ CigTranslatedUnit >> elementAtPath: aPath [
 
 	current := self.
 	aPath do: [ :each |
+		current ifNil: [ ^ nil ].
 		current := current findElementMatching: [ :eachElement | eachElement isEqualToPath: each ] ].
 	^ current
 ]
@@ -279,6 +280,12 @@ CigTranslatedUnit >> prefix: aString [
 CigTranslatedUnit >> root [
 	
 	^ self
+]
+
+{ #category : 'accessing' }
+CigTranslatedUnit >> scopeLookupPath: aPath [
+
+	^ self elementAtPath: aPath
 ]
 
 { #category : 'utils' }

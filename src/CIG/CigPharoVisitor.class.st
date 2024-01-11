@@ -162,6 +162,9 @@ CigPharoVisitor >> visitConstructor: aConstructor [
 { #category : 'visiting' }
 CigPharoVisitor >> visitEnum: anEnum [
 
+	"skip if not public"
+	anEnum isPublic ifFalse: [ ^ self ].
+	"skip if not namec"
 	anEnum isAnonymous ifTrue: [ ^ self ].
 
 	self ensureBaseEnumerationClass: anEnum root.
@@ -210,6 +213,8 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 CigPharoVisitor >> visitStructure: aStructure [
 
+	"skip if not public"
+	aStructure isPublic ifFalse: [ ^ self ].
 	"skip if is annonymous (for now at least)"
 	(aStructure isAnonymous and: [ aStructure isNested not ]) ifTrue: [ ^ self ].
 	"skip if is template specialization"
@@ -230,6 +235,7 @@ CigPharoVisitor >> visitStructure: aStructure [
 { #category : 'visiting' }
 CigPharoVisitor >> visitTypedef: aTypedef [
 	
+	aTypedef isPublic ifFalse: [ ^ self ].
 	(CigPharoTypedefGenerator newFile: self file element: aTypedef) generateOn: self
 ]
 
@@ -237,6 +243,8 @@ CigPharoVisitor >> visitTypedef: aTypedef [
 CigPharoVisitor >> visitUnion: anUnion [
 	| generator |
 	
+	"skip if not public"
+	anUnion isPublic ifFalse: [ ^ self ].
 	"skip if is annonymous (for now at least)"
 	(anUnion isAnonymous and: [ anUnion isNested not ]) ifTrue: [ ^ self ].
 	"skip if is template specialization"

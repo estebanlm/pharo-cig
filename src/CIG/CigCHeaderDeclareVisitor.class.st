@@ -84,6 +84,7 @@ CigCHeaderDeclareVisitor >> visitStructure: aStructure [
 { #category : 'visiting' }
 CigCHeaderDeclareVisitor >> visitTypedef: aTypedef [
 
+	aTypedef isPublic ifFalse: [ ^ self ].
 	self hStream << aTypedef cTemplate generate; cr
 ]
 

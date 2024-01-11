@@ -65,7 +65,7 @@ CigPharoVisitorTest >> testEnsureBaseClassesIncludeNamespaceTypedefs [
 	
 	self 
 		assert: class sharedPoolNames asArray
-		equals: #(CigCPPTypedef CigNoiseTypedef XxGeneratedForTestTypedef)
+		equals: #(CigNoiseTypedef XxGeneratedForTestTypedef)
 ]
 
 { #category : 'tests - base' }

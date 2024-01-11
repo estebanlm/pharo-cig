@@ -53,6 +53,12 @@ CigLibraryGenerator >> bindingsName: aString [
 	bindingsName := aString
 ]
 
+{ #category : 'building' }
+CigLibraryGenerator >> build [
+	
+	LibC system: 'make'
+]
+
 { #category : 'accessing - scripting' }
 CigLibraryGenerator >> cDefine: aString [
 

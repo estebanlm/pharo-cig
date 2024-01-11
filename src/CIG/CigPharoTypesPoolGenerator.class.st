@@ -36,7 +36,7 @@ CigPharoTypesPoolGenerator >> classInitializationTemplate: aDictionary [
 		
 	^ String streamContents: [ :stream |
 		stream << 'initialize'; cr; cr.
-		aDictionary associations 
+		self cppTypes, aDictionary associations 
 			do: [ :assoc | stream <<  String tab <<  assoc key << ' := ' << assoc value ]
 			separatedBy: [ stream << '.'; cr ] ]
 ]
@@ -44,9 +44,22 @@ CigPharoTypesPoolGenerator >> classInitializationTemplate: aDictionary [
 { #category : 'private' }
 CigPharoTypesPoolGenerator >> collectSharedVariables: aDictionary [
 		
-	^ aDictionary keys 
+	^ (self cppKeys), (aDictionary keys) 
 		collect: #asSymbol 
 		as: Array
+]
+
+{ #category : 'private' }
+CigPharoTypesPoolGenerator >> cppKeys [
+		
+	^ CigCPPTypedef classPool keys
+]
+
+{ #category : 'private' }
+CigPharoTypesPoolGenerator >> cppTypes [
+		
+	^ CigCPPTypedef classPool associations 
+		collect: [ :each | each key -> ('#', each value) ]
 ]
 
 { #category : 'generating' }

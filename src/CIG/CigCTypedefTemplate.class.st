@@ -38,6 +38,31 @@ CigCTypedefTemplate >> generateFFIType [
 		shouldEnclose ifTrue: [ stream nextPut: $' ] ]
 ]
 
+{ #category : 'private' }
+CigCTypedefTemplate >> resolveTypeName: aString [ 
+	
+	^ (self element parent scopeLookup: aString)
+		ifNotNil: [ :anElement | anElement cppDeclaration ]
+		ifNil: [ aString ]
+]
+
+{ #category : 'private' }
+CigCTypedefTemplate >> resolveTypeNameSpecialization: aString [ 
+	| declarations |
+
+	declarations := self element specializationTypes 
+		collect: [ :each | 
+			(self element parent scopeLookup: each) 
+				ifNotNil: [ :anElement | anElement cppDeclaration ]
+				ifNil: [ each ] ].
+
+	^ String streamContents: [ :stream |
+		stream << (self resolveTypeName: aString).
+		stream << '<'.
+		stream << declarations asCommaString.
+		stream << '>' ]
+]
+
 { #category : 'accessing' }
 CigCTypedefTemplate >> type [
 
@@ -46,14 +71,16 @@ CigCTypedefTemplate >> type [
 
 { #category : 'accessing' }
 CigCTypedefTemplate >> typeName [
+	| typeName |
 	
+	typeName := self element underlyingTypeName.
 	self element definesFunction 
 		ifTrue: [ ^ 'void*' ].
 	self element definesArray 
-		ifTrue: [  ^ (CigFunctionParser parse: self element underlyingTypeName) name, '*'  ].
-	
-	^ self element underlyingTypeName 
-	
+		ifTrue: [  ^ (CigFunctionParser parse: typeName) name, '*'  ].
+	^ self element isTemplateSpecialization
+		ifTrue: [ self resolveTypeNameSpecialization: (typeName copyUpTo: $<) ]
+		ifFalse: [ self resolveTypeName: typeName ]
 ]
 
 { #category : 'accessing' }

@@ -114,6 +114,7 @@ CigElement >> elementAtPath: aPath [
 
 	current := self.
 	aPath do: [ :each |
+		current ifNil: [ ^ nil ].
 		current := current findElementMatching: [ :eachElement | eachElement isEqualToPath: each ] ].
 	^ current
 ]
@@ -362,6 +363,19 @@ CigElement >> root [
 	^ self parent 
 		ifNotNil: [ self parent root ]
 		ifNil: [ self ]
+]
+
+{ #category : 'accessing' }
+CigElement >> scopeLookup: aString [
+
+	^ self scopeLookupPath: (aString substrings: '::')
+]
+
+{ #category : 'accessing' }
+CigElement >> scopeLookupPath: aPath [
+
+	^ (self elementAtPath: aPath)
+		ifNil:[ self parent scopeLookupPath: aPath ]
 ]
 
 { #category : 'private' }

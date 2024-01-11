@@ -87,7 +87,7 @@ CigCTypedefTemplateTest >> testGenerateNestedAliasBasicType [
 	
 	self 
 		assert: template generate
-		equals: 'typedef std::array<wchar_t, UNICODE_MAX> fc_finalcut_FUnicode;'
+		equals: 'typedef std::array<wchar_t, finalcut::UNICODE_MAX> fc_finalcut_FUnicode;'
 ]
 
 { #category : 'tests' }
@@ -101,5 +101,29 @@ CigCTypedefTemplateTest >> testGenerateNestedAliasClassTemplateWithVariableType 
 	 so. UNICODE_MAX = 5"
 	self 
 		assert: template generate
-		equals: 'typedef std::array<wchar_t, fc_finalcut_UNICODE_MAX> fc_finalcut_FUnicode;'
+		equals: 'typedef std::array<wchar_t, finalcut::UNICODE_MAX> fc_finalcut_FUnicode;'
+]
+
+{ #category : 'tests' }
+CigCTypedefTemplateTest >> testGenerateNestedClassTemplate [
+	| element template |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FRingBuffer<T, Capacity>'. 'ring_iterator<Type, N>'. 'iterator_category' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generate
+		equals: 'typedef std::forward_iterator_tag fc_finalcut_FRingBuffer_ring_iterator_iterator_category;'
+]
+
+{ #category : 'tests' }
+CigCTypedefTemplateTest >> testGenerateScopedType [
+	| element template |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FOutput'. 'FSetPalette' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generate
+		equals: 'typedef finalcut::FColorPalette::FSetPalette fc_finalcut_FOutput_FSetPalette;'
 ]

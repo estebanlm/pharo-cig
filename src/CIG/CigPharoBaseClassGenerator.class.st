@@ -16,8 +16,8 @@ CigPharoBaseClassGenerator >> namespaceName [
 CigPharoBaseClassGenerator >> sharedPoolNames [
 
 	^ Array streamContents: [ :stream |
-		stream nextPut: #CigCPPTypedef.
-		(self unit namespaces collect: #typedef as: Set)
+		((self unit namespaces collect: #typedef as: Set)
+			sorted: #name ascending)
 			do: [ :each | stream nextPut: each name ].
 		stream nextPut: self libraryTypedefName asSymbol ]
 ]

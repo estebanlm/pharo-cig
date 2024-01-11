@@ -101,6 +101,12 @@ CigClassTemplate >> isEqualToPath: aString [
 ]
 
 { #category : 'accessing' }
+CigClassTemplate >> pathName [
+
+	^ self basename
+]
+
+{ #category : 'accessing' }
 CigClassTemplate >> templateTypeParameters [
 	
 	^ self elements select: [ :each | each isTemplateTypeParameter ]

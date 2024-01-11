@@ -72,6 +72,19 @@ CigTElementContainer >> inspectionElements [
 		yourself
 ]
 
+{ #category : 'accessing' }
+CigTElementContainer >> scopeLookup: aString [
+
+	^ self scopeLookupPath: (aString substrings: '::')
+]
+
+{ #category : 'accessing' }
+CigTElementContainer >> scopeLookupPath: aPath [
+
+	^ (self elementAtPath: aPath)
+		ifNil:[ self parent scopeLookupPath: aPath ]
+]
+
 { #category : 'private - traversing' }
 CigTElementContainer >> traverseElementsDo: aBlock [
 
