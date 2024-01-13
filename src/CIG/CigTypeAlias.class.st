@@ -29,7 +29,7 @@ CigTypeAlias >> fromCursor: aCursor [
 	isPublic := aCursor isPublic
 ]
 
-{ #category : 'testing' }
+{ #category : 'nil' }
 CigTypeAlias >> isPublic [
 
 	^ isPublic

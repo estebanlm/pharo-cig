@@ -18,11 +18,7 @@ CigCClassTemplateTemplate >> generateHeader [
 
 	cName := self element cDeclaration allButLast.
 	^ String streamContents: [ :stream |  
-		stream << 'typedef void ' << cName << ';'.
-		stream cr.
-		self typeSpecializations 
-			do: [ :each | stream << 'typedef void ' <<  cName << each capitalized << ';' ]
-			separatedBy: [ stream cr ] ]
+		stream << 'typedef void ' << cName << ';' ]
 ]
 
 { #category : 'private' }

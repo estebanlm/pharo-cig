@@ -17,7 +17,7 @@ CigFunctionParser class >> parse: aString [
 { #category : 'accessing' }
 CigFunctionParser >> parseType [
 	" parse type name and optional number of asterisks, following it"
-	| templateTypeName referenceMarker typeName ptrArity |
+	| templates templateTypeName referenceMarker typeName ptrArity |
 
 	typeName := stream next.
 	typeName ifNil: [ ^ self error: 'type name expected' ].
@@ -39,10 +39,22 @@ CigFunctionParser >> parseType [
 
 	"extract template"
 	(stream atEnd not and: [ stream peek = #< ]) ifTrue: [ 
+		| enclosing |
+		enclosing := 0.
+		templates := #().
 		templateTypeName := ''.
 		stream next.
-		[ stream peek = #> ] whileFalse: [ 
-			templateTypeName := templateTypeName, stream next asString ].
+		[ (stream peek = #>) and: [ enclosing = 0 ] ] whileFalse: [
+			stream peek = #< ifTrue: [ enclosing := enclosing + 1 ].
+			stream peek = #> ifTrue: [ enclosing := enclosing - 1 ].
+			(stream peek = #, and: [ enclosing = 0 ])
+				ifTrue: [ 
+					templates := templates copyWith: templateTypeName.
+					templateTypeName := ''.
+					stream next ] 
+				ifFalse: [ 
+					templateTypeName := templateTypeName, stream next asString ] ].
+		templates := templates copyWith: templateTypeName.
 		stream next ].
 	
 	referenceMarker := false.
@@ -61,7 +73,7 @@ CigFunctionParser >> parseType [
 		typeName. 
 		ptrArity.			
 		referenceMarker.
-		templateTypeName }
+		templates }
 ]
 
 { #category : 'accessing' }

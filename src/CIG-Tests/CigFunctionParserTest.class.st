@@ -7,6 +7,17 @@ Class {
 }
 
 { #category : 'tests' }
+CigFunctionParserTest >> testParseClassTemplateNestedType [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'std::array<std::array<x,42>, 2>';
+		parseType.
+	
+	self assert: type fourth equals: #('std::array<x,42>' '2')
+]
+
+{ #category : 'tests' }
 CigFunctionParserTest >> testParseClassTemplateType [
 	| type |
 
@@ -14,7 +25,7 @@ CigFunctionParserTest >> testParseClassTemplateType [
 		setOn: 'TSpan<T>';
 		parseType.
 	
-	self assert: type fourth equals: 'T'
+	self assert: type fourth equals: #('T')
 ]
 
 { #category : 'tests' }
@@ -48,4 +59,12 @@ CigFunctionParserTest >> testParseReferenceType [
 		parseType.
 	
 	self assert: type second equals: 2
+]
+
+{ #category : 'tests' }
+CigFunctionParserTest >> testParseSpecializationType [
+	| name |
+
+	name := (CigFunctionParser parse: 'std::array<wchar_t, 2>') nameWithArity.
+	self assert: name equals: 'std::array<wchar_t, 2>'
 ]

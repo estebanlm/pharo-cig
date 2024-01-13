@@ -3,7 +3,7 @@ Class {
 	#superclass : 'FFITypeDeclaration',
 	#instVars : [
 		'reference',
-		'templateName'
+		'templates'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -17,7 +17,7 @@ CigTypeDeclaration class >> fromArray: anArray [
 		name: anArray first;
 		arity: anArray second;
 		reference: anArray third;
-		templateName: anArray  fourth;
+		templates: anArray fourth;
 		yourself
 ]
 
@@ -39,15 +39,18 @@ CigTypeDeclaration >> isReference [
 { #category : 'testing' }
 CigTypeDeclaration >> isTemplate [
 
-	^ templateName notNil
+	^ templates notNil
 ]
 
 { #category : 'accessing' }
 CigTypeDeclaration >> nameWithArity [
 
-	^ self name, (self arity > 0 
-		ifTrue: [ String new: self arity withAll: $* ]
-		ifFalse: [ '' ])
+	^ String streamContents: [ :stream |
+		stream << self name.
+		self templateName ifNotNil: [ 
+			stream << '<' << self templateName << '>' ].
+		self arity > 0 ifTrue: [ 
+			stream << (String new: self arity withAll: $*) ] ]
 ]
 
 { #category : 'accessing' }
@@ -69,11 +72,17 @@ CigTypeDeclaration >> reference: aBoolean [
 { #category : 'accessing' }
 CigTypeDeclaration >> templateName [
 
-	^ templateName
+	^ templates ifNotNil: #asCommaString
 ]
 
 { #category : 'accessing' }
-CigTypeDeclaration >> templateName: aString [
+CigTypeDeclaration >> templates [
 
-	templateName := aString
+	^ templates
+]
+
+{ #category : 'accessing' }
+CigTypeDeclaration >> templates: anArray [
+
+	templates := anArray
 ]

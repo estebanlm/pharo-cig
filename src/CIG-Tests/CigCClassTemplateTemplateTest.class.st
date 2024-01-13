@@ -7,6 +7,35 @@ Class {
 }
 
 { #category : 'tests' }
+CigCClassTemplateTemplateTest >> testGenerateClassSpecializationHeaders [
+	| element visitor |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	visitor := CigCHeaderDeclareVisitor newForTest.
+	visitor visitClassTemplate: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'typedef void tv_TSpan;
+typedef void tv_TSpanChar;
+typedef void tv_TSpanTScreenCell;
+typedef void tv_TSpanUint32_t;'
+
+]
+
+{ #category : 'tests' }
+CigCClassTemplateTemplateTest >> testGenerateClassTemplateHeader [
+	| element template |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generateHeader
+		equals: 'typedef void tv_TSpan;'
+]
+
+{ #category : 'tests' }
 CigCClassTemplateTemplateTest >> testMethodReturningConstTemplate [
 	| element subclass method template |
 

@@ -42,6 +42,15 @@ CigCHeaderDeclareVisitor >> visitClass: aClass [
 ]
 
 { #category : 'visiting' }
+CigCHeaderDeclareVisitor >> visitClassTemplate: aClassTemplate [
+
+	self hStream << aClassTemplate cTemplate generateHeader; cr.
+	"we add one subclass for each specialized type"
+	aClassTemplate typeSpecializations do: [ :each |
+		self visitClass: (aClassTemplate addSubclassWithSpecializedType: each) ]
+]
+
+{ #category : 'visiting' }
 CigCHeaderDeclareVisitor >> visitDefinesBeforeHeader: aUnit [
 
 	self addDefines: aUnit definesBeforeHeader

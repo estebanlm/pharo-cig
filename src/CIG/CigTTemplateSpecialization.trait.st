@@ -24,14 +24,23 @@ CigTTemplateSpecialization >> checkForTemplateSpecialization: aType name: aTypeN
 		| argType |
 		argType := aType templateArgumentAsType: index.
 		specializationTypes add: (argType spelling 
-			ifNotEmpty: [ :aName | (CigFunctionParser parse: aName) nameWithArity ]
+			ifNotEmpty: [ :aName | | n |
+				n := (CigFunctionParser parse: aName) nameWithArity.
+				(aName -> n) crTrace.
+				n ]
 			ifEmpty: [ self extractSpecializationValueIndex: index + 1 of: aTypeName ]) ]
+]
+
+{ #category : 'private' }
+CigTTemplateSpecialization >> extractSpecializationTypesOf: aName [
+	
+	^ (CigFunctionParser parse: aName) templates
 ]
 
 { #category : 'private' }
 CigTTemplateSpecialization >> extractSpecializationValueIndex: index of: aName [
 
-	^ (((aName copyAfter: $<) copyUpToLast: $>) substrings: ', ') at: index
+	^ (self extractSpecializationTypesOf: aName) at: index
 ]
 
 { #category : 'testing' }

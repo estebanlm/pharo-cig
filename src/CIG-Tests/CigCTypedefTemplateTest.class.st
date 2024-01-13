@@ -117,6 +117,20 @@ CigCTypedefTemplateTest >> testGenerateNestedClassTemplate [
 ]
 
 { #category : 'tests' }
+CigCTypedefTemplateTest >> testGenerateNestedClassTemplateWithClassTemplate [
+	| element template |
+
+	"test that a defined template type can also contain a template type"
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FCharMap'. 'Cp437UcsType' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generate
+		equals: 'typedef std::array<std::array<wchar_t, 2>, 256> fc_finalcut_FCharMap_Cp437UcsType;'
+]
+
+{ #category : 'tests' }
 CigCTypedefTemplateTest >> testGenerateScopedType [
 	| element template |
 
