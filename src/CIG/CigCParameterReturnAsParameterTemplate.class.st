@@ -33,6 +33,8 @@ CigCParameterReturnAsParameterTemplate >> generateArgument [
 CigCParameterReturnAsParameterTemplate >> generateCType [
 	| typeName typeReference |
 	
+	self type hasElement ifTrue: [ ^ self type element cDeclaration ].
+	
 	typeReference := self type typeReference. 
 	typeReference ifNil: [ ^ self type name ].
 	

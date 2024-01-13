@@ -21,6 +21,7 @@ CigStdNamespace >> initialize [
 
 	super initialize.
 	self addElement: CigStdStringElement new.
+	self addElement: CigStdSharedPtrElement new.
 	self addElement: CigStdArrayElement new.
 	self addElement: CigStdChronoNamespace new
 ]

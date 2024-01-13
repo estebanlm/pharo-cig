@@ -39,6 +39,8 @@ CigCParameterClassReferenceTemplate >> generateArgument [
 CigCParameterClassReferenceTemplate >> generateCType [
 	| typeName |
 	
+	self type hasElement ifTrue: [ ^ self type element cDeclaration ].
+	
 	typeName := self type typeReference typeName.
 	^ (self elementAtPath: (typeName substrings: '::'))
 		ifNotNil: [ :aNode | aNode cDeclaration ]

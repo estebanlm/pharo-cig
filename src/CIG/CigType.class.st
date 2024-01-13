@@ -118,8 +118,8 @@ CigType >> element [
 				"it can be an element from the tree (class, etc.)"
 				self root elementAtPath: self typeReference namePath ]
 			ifNil: [ 
-				"it can be a typedef"
-				self root elementAtPath: (self parseType nameWithSpecialization substrings: '::') ] ]
+				"it can be a typedef or an existing node without a type reference"
+				self parent scopeLookup: self parseType nameWithSpecialization ] ]
 ]
 
 { #category : 'testing' }

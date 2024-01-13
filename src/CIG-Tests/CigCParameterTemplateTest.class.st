@@ -66,6 +66,20 @@ CigCParameterTemplateTest >> testCastReturnConstBasic [
 	self assert: (template castReturn: 'x') equals: 'return (const char*)(x)'
 ]
 
+{ #category : 'tests - stdsharedptr' }
+CigCParameterTemplateTest >> testCastReturnStdSharedPtrType [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FColorPalette'. 'getInstance()' }.
+	template := CigCParameterTemplate forReturn: element.
+	
+	self 
+		assert: (template castReturn: 'x') 
+		equals: 'auto _tmp = x;
+auto _result = _tmp.get();
+return (FColorPalette*)_result'
+]
+
 { #category : 'tests - stdstring' }
 CigCParameterTemplateTest >> testCastReturnStdStringType [
 	| template element |
@@ -124,6 +138,22 @@ CigCParameterTemplateTest >> testGenerateArgumentReferenceArgument [
 	self 
 		assert: template generateArgument
 		equals: '*index'
+]
+
+{ #category : 'tests - stdsharedptr' }
+CigCParameterTemplateTest >> testGenerateArgumentStdSharedPtrType [
+	| template element |
+
+	"I do not have an example of this for the moment, when I find it, this is the
+	 place to put the test :)"
+	self skip.
+	
+	template := element parameters first cTemplate.
+
+	self 
+		assert: template generateArgument 
+		equals: 'std::shared_ptr<FColorPalette>(x);
+'
 ]
 
 { #category : 'tests - stdstring' }
@@ -192,6 +222,16 @@ CigCParameterTemplateTest >> testGenerateClassSpecialization [
 	self 
 		assert: template generate 
 		equals: 'tv_TSpan* span'
+]
+
+{ #category : 'tests' }
+CigCParameterTemplateTest >> testGenerateConstClassType [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FString'. 'split(const FString &)' }.
+	template := CigCParameterTemplate forParameter: element parameters first.
+	
+	self assert: template generate equals: 'fc_finalcut_FString* arg1'
 ]
 
 { #category : 'tests - struct' }
