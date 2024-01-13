@@ -95,7 +95,8 @@ CigCParameterTemplate >> generateFFIType [
 { #category : 'accessing' }
 CigCParameterTemplate >> name [
 
-	^ self element name
+	^ self element name 
+		ifEmpty: [ self anonymousName ]
 ]
 
 { #category : 'accessing' }

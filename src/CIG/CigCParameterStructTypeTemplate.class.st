@@ -60,12 +60,12 @@ CigCParameterStructTypeTemplate >> generateCType [
 	parsed := self type parseType.
 	
 	^ String streamContents: [ :stream |
-		stream << 'struct ' << typeName.
+		stream << type element cTemplate structureType << ' ' << typeName.
 		(1 + startArity) to: parsed arity do: [ :each |
 			stream << '*' ] ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'generating' }
 CigCParameterStructTypeTemplate >> generateFFIType [
 	
 	^ (self elementAtPath: (self type typeReference typeName substrings: '::'))
