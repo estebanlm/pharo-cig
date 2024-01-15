@@ -32,6 +32,12 @@ CigVariable >> cTemplate [
 	^ CigCParameterTemplate forField: self
 ]
 
+{ #category : 'testing' }
+CigVariable >> canBeFieldOfStructure [
+
+	^ true
+]
+
 { #category : 'initialization' }
 CigVariable >> fromCursor: aCursor [
 	| type |

@@ -83,11 +83,7 @@ CigCHeaderDeclareVisitor >> visitNamespace: aNamespace [
 CigCHeaderDeclareVisitor >> visitStructure: aStructure [
 
 	aStructure isClass ifTrue: [ 
-		self hStream << (CigCClassTemplate for: aStructure) generateHeader; cr.
-		^ self ].
-
-	"aStructure isOpaque ifTrue: [ ^ self ].	
-	self hStream << aStructure cTemplate generate; cr"
+		self hStream << (CigCClassTemplate for: aStructure) generateHeader; cr ]
 ]
 
 { #category : 'visiting' }

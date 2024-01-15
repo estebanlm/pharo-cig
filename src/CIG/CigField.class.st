@@ -29,6 +29,15 @@ CigField >> cTemplate [
 	^ CigCParameterTemplate forField: self
 ]
 
+{ #category : 'testing' }
+CigField >> canBeFieldOfStructure [
+	| type |
+
+	type := self resolveType.
+	^ type isSpecial not 
+		and: [ (type isPointer not and: [ type isClass ]) not ]
+]
+
 { #category : 'initialization' }
 CigField >> fromCursor: aCursor [
 	| type |
@@ -50,6 +59,12 @@ CigField >> isField [
 CigField >> isPublic [
 
 	^ isPublic
+]
+
+{ #category : 'testing' }
+CigField >> isSpecial [
+	
+	^ self resolveType isSpecial
 ]
 
 { #category : 'testing' }

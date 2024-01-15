@@ -64,6 +64,12 @@ CigTypeDeclaration >> nameWithSpecialization [
 ]
 
 { #category : 'accessing' }
+CigTypeDeclaration >> nameWithoutNamespace [
+	
+	^ (self name substrings: '::') last
+]
+
+{ #category : 'accessing' }
 CigTypeDeclaration >> reference: aBoolean [
 
 	reference := aBoolean

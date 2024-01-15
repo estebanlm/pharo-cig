@@ -23,5 +23,9 @@ CigStdNamespace >> initialize [
 	self addElement: CigStdStringElement new.
 	self addElement: CigStdSharedPtrElement new.
 	self addElement: CigStdArrayElement new.
-	self addElement: CigStdChronoNamespace new
+	self addElement: CigStdChronoNamespace new.
+	self addElement: CigStdStringElement new.
+	self addElement: (CigStdElement newName: 'atomic').
+	self addElement: (CigStdElement newName: 'mutex').
+	
 ]

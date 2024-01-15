@@ -216,7 +216,6 @@ CigCVisitor >> visitFunction: aFunction [
 CigCVisitor >> visitMethod: aMethod [
 
 	aMethod canBeExported ifFalse: [ ^ self ].
-
 	self visitFunction: aMethod
 ]
 
@@ -241,17 +240,11 @@ CigCVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 CigCVisitor >> visitStructure: aStructure [
 
-	"skip if not public (it can be nested in a class)"
-	aStructure isPublic ifFalse: [ ^ self ].
-	"skip if is annonymous (for now at least)"
-	aStructure isAnonymous ifTrue: [ ^ self ].
-	"skip if is template specialization"
-	aStructure isTemplateSpecialization ifTrue: [ ^ self ].
+	aStructure canBeExported ifFalse: [ ^ self ].
 	"act as class if it behaves as a class"
 	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
-	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
-	"otherwise, generate the structure (unless is opaque, of course)"	
-	aStructure isOpaque ifTrue: [ ^ self ].	
+	aStructure isClass
+		ifTrue: [ ^ self visitClass: aStructure ].
 		
 	self hStream << aStructure cTemplate generate; cr
 ]

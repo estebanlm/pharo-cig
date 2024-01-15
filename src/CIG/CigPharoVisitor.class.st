@@ -213,17 +213,11 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 { #category : 'visiting' }
 CigPharoVisitor >> visitStructure: aStructure [
 
-	"skip if not public"
-	aStructure isPublic ifFalse: [ ^ self ].
-	"skip if is annonymous (for now at least)"
-	(aStructure isAnonymous and: [ aStructure isNested not ]) ifTrue: [ ^ self ].
-	"skip if is template specialization"
-	aStructure isTemplateSpecialization ifTrue: [ ^ self ].
+	aStructure canBeExported ifFalse: [ ^ self ].
 	"act as class if it behaves as a class"
 	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
-	aStructure isClass ifTrue: [ ^ self visitClass: aStructure ].
-	"otherwise, generate the structure (unless is opaque, of course)"	
-	aStructure isOpaque ifTrue: [ ^ self ].	
+	aStructure isClass
+		ifTrue: [ ^ self visitClass: aStructure ].
 	
 	self ensureBaseStructureClass: aStructure root.
 	aStructure fieldAnonymousReferences 
@@ -240,25 +234,19 @@ CigPharoVisitor >> visitTypedef: aTypedef [
 ]
 
 { #category : 'visiting' }
-CigPharoVisitor >> visitUnion: anUnion [
+CigPharoVisitor >> visitUnion: aUnion [
 	| generator |
 	
-	"skip if not public"
-	anUnion isPublic ifFalse: [ ^ self ].
-	"skip if is annonymous (for now at least)"
-	(anUnion isAnonymous and: [ anUnion isNested not ]) ifTrue: [ ^ self ].
-	"skip if is template specialization"
-	anUnion isTemplateSpecialization ifTrue: [ ^ self ].
+	aUnion canBeExported ifFalse: [ ^ self ].
 	"act as class if it behaves as a class"
 	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
-	anUnion isClass ifTrue: [ ^ self visitClass: anUnion ].
-	"otherwise, generate the structure (unless is opaque, of course)"	
-	anUnion isOpaque ifTrue: [ ^ self ].	
-	
-	self ensureBaseUnionClass: anUnion root.
-	anUnion fieldAnonymousReferences 
+	aUnion isClass
+		ifTrue: [ ^ self visitClass: aUnion ].
+
+	self ensureBaseUnionClass: aUnion root.
+	aUnion fieldAnonymousReferences 
 		do: [ :each | each accept: self ].
-	(generator := CigPharoUnionGenerator newFile: self file element: anUnion) generateOn: self
+	(generator := CigPharoUnionGenerator newFile: self file element: aUnion) generateOn: self
 ]
 
 { #category : 'visiting' }

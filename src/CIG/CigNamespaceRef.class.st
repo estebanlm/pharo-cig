@@ -16,3 +16,9 @@ CigNamespaceRef class >> kind [
 CigNamespaceRef >> accept: aVisitor [
 	
 ]
+
+{ #category : 'testing' }
+CigNamespaceRef >> isNamespaceReference [
+
+	^ true
+]

@@ -212,6 +212,12 @@ CigElement >> isNamespace [
 ]
 
 { #category : 'testing' }
+CigElement >> isNamespaceReference [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CigElement >> isParameter [
 
 	^ false
@@ -221,6 +227,12 @@ CigElement >> isParameter [
 CigElement >> isPublic [
 		
 	^ true
+]
+
+{ #category : 'testing' }
+CigElement >> isSpecial [
+	
+	^ false
 ]
 
 { #category : 'testing' }

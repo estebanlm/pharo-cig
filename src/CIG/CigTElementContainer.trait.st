@@ -39,7 +39,7 @@ CigTElementContainer >> findDeepElementMatching: aBlock [
 CigTElementContainer >> findElementMatching: aBlock [
 
 	^ self elements 
-		detect: [ :eachElement | aBlock value: eachElement ]
+		detect: [ :eachElement | eachElement isUnknown not and: [  aBlock value: eachElement ] ]
 		ifNone: [ nil ]
 ]
 

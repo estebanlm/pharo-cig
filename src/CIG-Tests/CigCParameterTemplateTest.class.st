@@ -16,7 +16,7 @@ CigCParameterTemplateTest >> testCastReturnBasicType [
 	self assert: (template castReturn: 'x') equals: 'return x'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testCastReturnClassReference [
 	| template element |
 
@@ -30,7 +30,7 @@ CigCParameterTemplateTest >> testCastReturnClassReference [
 return (tv_TColorBIOS*)_result'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testCastReturnClassReferencePassingReference [
 	| template element |
 
@@ -42,7 +42,7 @@ CigCParameterTemplateTest >> testCastReturnClassReferencePassingReference [
 		equals: 'return (tv_TRect*)&(x)'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testCastReturnClassReferenceWithNamespace [
 	| template element |
 
@@ -202,7 +202,7 @@ CigCParameterTemplateTest >> testGenerateCallback [
 		equals: 'nu_noise_utils_NoiseMapCallback pCallback'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testGenerateClassReference [
 	| template element |
 
@@ -212,7 +212,7 @@ CigCParameterTemplateTest >> testGenerateClassReference [
 	self assert: template generate equals: 'tv_TColorAttr* attr'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testGenerateClassSpecialization [
 	| template element |
 
@@ -224,7 +224,7 @@ CigCParameterTemplateTest >> testGenerateClassSpecialization [
 		equals: 'tv_TSpan* span'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testGenerateConstClassType [
 	| template element |
 
@@ -276,6 +276,18 @@ CigCParameterTemplateTest >> testGenerateFunctionParameter [
 	template := CigCParameterTemplate forParameter: element parameters first.
 	
 	self assert: template generate equals: 'void* accept'
+]
+
+{ #category : 'tests - class' }
+CigCParameterTemplateTest >> testGenerateHeaderReturnClassInstance [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FWidget'. 'termToWidgetPos(const FPoint &)' }.
+	template := element cTemplate.
+	
+	self 
+		assert: template generateHeader  
+		equals: 'fc_finalcut_FPoint* fc_finalcut_FWidget_termToWidgetPos(fc_finalcut_FWidget* self, fc_finalcut_FPoint* arg1)'
 ]
 
 { #category : 'tests - enum' }
@@ -377,7 +389,7 @@ CigCParameterTemplateTest >> testResolveBasicType [
 	self assert: template class equals: CigCParameterBasicTypeTemplate
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testResolveClassReference [
 	| template element |
 

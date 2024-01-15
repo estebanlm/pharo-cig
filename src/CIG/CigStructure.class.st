@@ -44,7 +44,7 @@ CigStructure >> cDeclaration [
 	| decl |
 	
 	decl := super cDeclaration.
-	^ self isClass 
+	^ self isClass
 		ifTrue: [ decl, '*' ]
 		ifFalse: [ decl ]
 ]
@@ -59,6 +59,25 @@ CigStructure >> cDisposeTemplate [
 CigStructure >> cTemplate [
 	
 	^ CigCStructTemplate for: self
+]
+
+{ #category : 'testing' }
+CigStructure >> canBeExported [
+
+	"skip if not public (it can be nested in a class)"
+	self isPublic ifFalse: [ ^ false ].
+	"skip if is annonymous (for now at least)"
+	(self isAnonymous and: [ self isNested not]) ifTrue: [ ^ false ].
+	"skip if is template specialization"
+	self isTemplateSpecialization ifTrue: [ ^ false ].
+
+	^ true
+]
+
+{ #category : 'testing' }
+CigStructure >> canBeFieldOfStructure [
+	
+	^ true
 ]
 
 { #category : 'accessing' }
@@ -119,7 +138,9 @@ CigStructure >> isAnonymous [
 { #category : 'testing' }
 CigStructure >> isClass [
 
-	^ self classMembers notEmpty or: [ self isOpaque ]
+	^ self classMembers notEmpty 
+		or: [ self isOpaque
+		or: [ self fields anySatisfy: [ :each | each canBeFieldOfStructure not ] ] ]
 ]
 
 { #category : 'testing' }

@@ -114,9 +114,9 @@ CigType >> element [
 
 	^ element ifNil: [ 
 		element := self typeReferenceForParsedType 
-			ifNotNil: [ 
+			ifNotNil: [ :aTypeReference |
 				"it can be an element from the tree (class, etc.)"
-				self root elementAtPath: self typeReference namePath ]
+				aTypeReference matchingElementInUnit ]
 			ifNil: [ 
 				"it can be a typedef or an existing node without a type reference"
 				self parent scopeLookup: self parseType nameWithSpecialization ] ]
@@ -185,6 +185,12 @@ CigType >> isReference [
 	 e.g Module &m"
 	
 	^ self parseType isReference
+]
+
+{ #category : 'testing' }
+CigType >> isSpecial [
+	
+	^ self hasElement and: [ self element isSpecial ]
 ]
 
 { #category : 'testing' }
@@ -280,7 +286,7 @@ CigType >> typeReferenceForParsedType [
 	typeRef := self typeReference.
 	typeRef ifNil: [ ^ nil ].
 	
-	^ (typeRef name endsWith: self parseType name)
+	^ (typeRef name endsWith: self parseType nameWithoutNamespace)
 		ifTrue: [ typeRef ]
 		ifFalse: [ nil ]
 ]

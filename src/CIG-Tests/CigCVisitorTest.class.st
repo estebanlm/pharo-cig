@@ -387,6 +387,27 @@ CigCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
 ]
 
 { #category : 'tests - method' }
+CigCVisitorTest >> testVisitMethodWithReturnClassInstance [
+	| element visitor |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FWidget'. 'termToWidgetPos(const FPoint &)' }.
+	visitor := CigCVisitor newForTest.
+	visitor visitMethod: element.
+	
+	self 
+		assert: visitor hStream contents trimmed
+		equals: 'fc_finalcut_FPoint* fc_finalcut_FWidget_termToWidgetPos(fc_finalcut_FWidget* self, fc_finalcut_FPoint* arg1);'.
+	
+	self 
+		assert: visitor cStream contents trimmed
+		equals: 'fc_finalcut_FPoint* fc_finalcut_FWidget_termToWidgetPos(fc_finalcut_FWidget* self, fc_finalcut_FPoint* arg1) {
+	auto _result = new finalcut::FPoint();
+	*_result = ((finalcut::FWidget*)self)->termToWidgetPos(*(finalcut::FPoint*)arg1);
+	return (fc_finalcut_FPoint*)_result;
+}'
+]
+
+{ #category : 'tests - method' }
 CigCVisitorTest >> testVisitMethodWithTypeReference [
 	| element visitor |
 
