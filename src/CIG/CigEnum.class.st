@@ -57,7 +57,7 @@ CigEnum >> isEnum [
 { #category : 'testing' }
 CigEnum >> isPublic [
 
-	^ isPublic
+	^ self parent isPublic: self
 ]
 
 { #category : 'testing' }

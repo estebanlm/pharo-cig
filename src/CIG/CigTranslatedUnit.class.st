@@ -221,6 +221,12 @@ CigTranslatedUnit >> isNamespace [
 	^ false
 ]
 
+{ #category : 'testing' }
+CigTranslatedUnit >> isPublic: anElement [
+
+	^ true
+]
+
 { #category : 'accessing' }
 CigTranslatedUnit >> name [
 

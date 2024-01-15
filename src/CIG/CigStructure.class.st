@@ -114,7 +114,6 @@ CigStructure >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	comment := aCursor rawComment.
 	isPublic := aCursor isPublic
-
 ]
 
 { #category : 'testing' }
@@ -158,7 +157,7 @@ CigStructure >> isOpaque [
 { #category : 'testing' }
 CigStructure >> isPublic [
 
-	^ isPublic
+	^ self parent isPublic: self
 ]
 
 { #category : 'testing' }

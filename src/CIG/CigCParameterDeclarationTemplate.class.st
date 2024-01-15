@@ -81,8 +81,6 @@ CigCParameterDeclarationTemplate >> generateCType [
 	typeName := parsed name.
 	
 	^ String streamContents: [ :stream |
-		"there may still be a typedef type (format namespace::type), we just 
-	    replace that"
 
 		self type isConst 
 			ifTrue: [ stream << 'const ' ].

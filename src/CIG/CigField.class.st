@@ -34,6 +34,8 @@ CigField >> canBeFieldOfStructure [
 	| type |
 
 	type := self resolveType.
+	"WARNING: do not invert isPointer and isClass check, it can generare an
+	 infinite loop (in case of structures link linked lists, etc.)"
 	^ type isSpecial not 
 		and: [ (type isPointer not and: [ type isClass ]) not ]
 ]
@@ -58,7 +60,7 @@ CigField >> isField [
 { #category : 'testing' }
 CigField >> isPublic [
 
-	^ isPublic
+	^ self parent isPublic: self
 ]
 
 { #category : 'testing' }

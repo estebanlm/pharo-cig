@@ -21,7 +21,9 @@ CigStructureTest >> testStructureWithClassInstanceTypeExportsAsClass [
 
 	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FTermData'. 'TerminalProperties' }.
 
-	self assert: element canBeExported.
+	"can't be exported (as this is in the private section)"
+	self deny: element canBeExported.
+	"... but I will check it anyway"
 	self assert: element isClass
 ]
 
@@ -31,6 +33,8 @@ CigStructureTest >> testStructureWithSpecialTypesExportsAsClass [
 
 	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FTermData'. 'SynchronizationState' }.
 
-	self assert: element canBeExported.
+	"it can't be exported as this is in the private section"
+	self deny: element canBeExported.
+	"... but I test it anyway"
 	self assert: element isClass
 ]

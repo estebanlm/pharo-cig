@@ -32,5 +32,5 @@ CigTypeAlias >> fromCursor: aCursor [
 { #category : 'nil' }
 CigTypeAlias >> isPublic [
 
-	^ isPublic
+	^ self parent isPublic: self
 ]

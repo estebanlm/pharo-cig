@@ -96,6 +96,14 @@ CigElement >> canBeAddedTo: anElement [
 	^ true
 ]
 
+{ #category : 'private' }
+CigElement >> closestAccessSpecifierOf: anElement [
+
+	^ (self elements copyUpTo: anElement) reversed 
+		detect: [ :each | each isAccessSpecifier ]
+		ifNone: [ nil ]
+]
+
 { #category : 'accessing' }
 CigElement >> cppDeclaration [
 
@@ -155,6 +163,12 @@ CigElement >> fullNameWith: delim [
 CigElement >> hash [
 
 	^ self species hash bitXor: self name hash
+]
+
+{ #category : 'testing' }
+CigElement >> isAccessSpecifier [
+
+	^ false
 ]
 
 { #category : 'testing' }
@@ -226,6 +240,12 @@ CigElement >> isParameter [
 { #category : 'testing' }
 CigElement >> isPublic [
 		
+	^ true
+]
+
+{ #category : 'testing' }
+CigElement >> isPublic: anElement [
+
 	^ true
 ]
 

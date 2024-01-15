@@ -320,6 +320,18 @@ CigCParameterTemplateTest >> testGenerateNestedEnumType [
 	self assert: template generateCType equals: 'tv_THardwareInfo_PlatformType'
 ]
 
+{ #category : 'tests - struct' }
+CigCParameterTemplateTest >> testGenerateNestedStructReferenceArgument [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'getFAttributeByte(const FCharAttribute &, std::size_t)' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generateArgument
+		equals: '*(struct finalcut::FCharAttribute*)fchar_attr'
+]
+
 { #category : 'tests - self' }
 CigCParameterTemplateTest >> testGenerateSelfArgumentForClassWithinNamespace [
 	| template element |

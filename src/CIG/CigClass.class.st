@@ -113,6 +113,14 @@ CigClass >> isPublic [
 	^ isPublic
 ]
 
+{ #category : 'testing' }
+CigClass >> isPublic: anElement [
+
+	^ (self closestAccessSpecifierOf: anElement)
+		ifNotNil: [ :accessElement | accessElement isPublic ]
+		ifNil: [ true ]
+]
+
 { #category : 'accessing' }
 CigClass >> resolveType [
 

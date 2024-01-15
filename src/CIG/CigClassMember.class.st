@@ -113,8 +113,8 @@ CigClassMember >> isOperator [
 { #category : 'testing' }
 CigClassMember >> isPublic [
 
-	^ isPublic and: [ 
-		self parameters noneSatisfy: [ :each | each isDeclType ] ]
+	^ (self parent isPublic: self)
+		and: [ self parameters noneSatisfy: [ :each | each isDeclType ] ]
 ]
 
 { #category : 'testing' }
