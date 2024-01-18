@@ -34,7 +34,7 @@ CigCParameterStructTypeTemplate >> generateArgument [
 	
 	self type hasElement ifFalse: [ ^ self element name ]. 
 	name := type parseType name.
-	(self element scopeLookup: name)
+	(self element parent scopeLookup: name)
 		ifNotNil: [ :anElement | name := anElement cppDeclaration ].
 	^ String streamContents: [ :stream | 
 		self type isReference 
