@@ -23,10 +23,10 @@ CigFunctionParser >> parseType [
 	typeName ifNil: [ ^ self error: 'type name expected' ].
 
 	"skip 'const' , which is often used but has no any use for us "
-	(#('const' 'class' 'volatile') includes: typeName) 
-		ifTrue: [
-			typeName := stream next.
-			typeName ifNil: [ ^ self error: 'type name expected' ] ].
+	[ #('const' 'class' 'volatile') includes: typeName ]
+	whileTrue: [
+		typeName := stream next.
+		typeName ifNil: [ ^ self error: 'type name expected' ] ].
 
 	"parsing struct types"
 	(#('struct') includes: typeName) 
@@ -38,7 +38,7 @@ CigFunctionParser >> parseType [
 			typeName := prefix, ' ', typeName ].
 
 	"extract template"
-	(stream atEnd not and: [ stream peek = #< ]) ifTrue: [ 
+	(stream atEnd not and: [ (stream peek = #<) or: [ stream peek = #<! ] ]) ifTrue: [ 
 		| enclosing |
 		enclosing := 0.
 		templates := #().

@@ -7,6 +7,24 @@ Class {
 }
 
 { #category : 'tests' }
+CigExtractSpecializationTypeTest >> testExtractSpecializationTypesWithComplexDeclaration [
+	| types |
+
+	types := CigFunction new extractSpecializationTypesOf: 'std::enable_if_t<!std::is_member_function_pointer<T>::value && !std::is_function<std::remove_pointer_t<T>>::value && !std::is_function<T>::value && std::is_pointer<T>::value && std::is_object<T>::value && !std::is_class<T>::value, std::nullptr_t>'.
+	self 
+		assert: types
+		equals: #('std::is_member_function_pointer<T>::value&&!std::is_function<std::remove_pointer_t<T>>::value&&!std::is_function<T>::value&&std::is_pointer<T>::value&&std::is_object<T>::value&&!std::is_class<T>::value' 'std::nullptr_t')
+]
+
+{ #category : 'tests' }
+CigExtractSpecializationTypeTest >> testExtractSpecializationTypesWithConstQualifier [
+	| types |
+
+	types := CigFunction new extractSpecializationTypesOf: 'const volatile __tuple_element_t<__i, _Tp>'.
+	self assert: types equals: #('__i' '_Tp')
+]
+
+{ #category : 'tests' }
 CigExtractSpecializationTypeTest >> testExtractSpecializationTypesWithConstant [
 	| types |
 
