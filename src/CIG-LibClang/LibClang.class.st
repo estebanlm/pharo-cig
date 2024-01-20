@@ -5,6 +5,14 @@ Class {
 	#package : 'CIG-LibClang'
 }
 
+{ #category : 'accessing' }
+LibClang >> runner [
+
+	^ TFProcessLocalWorker new 
+		defaultWorker: super runner;
+		yourself
+]
+
 { #category : 'accessing - platform' }
 LibClang >> unix64LibraryName [
 

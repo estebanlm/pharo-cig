@@ -58,10 +58,33 @@ CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename arguments:
 			arguments freeArrayOfStrings ]
 ]
 
+{ #category : 'private' }
+CXTranslationUnit >> clang_getDiagnostic: index [
+
+	^ self ffiCall: #(CXDiagnostic clang_getDiagnostic(self, uint index))
+]
+
+{ #category : 'private' }
+CXTranslationUnit >> clang_getNumDiagnostics [
+
+	^ self ffiCall: #(uint clang_getNumDiagnostics(self)) 	
+]
+
 { #category : 'accessing - cursor' }
 CXTranslationUnit >> cursor [
 
 	^ self ffiCall: #(CXCursor clang_getTranslationUnitCursor(self))
+]
+
+{ #category : 'accessing' }
+CXTranslationUnit >> diagnostics [
+	| num |
+
+	num := self clang_getNumDiagnostics.
+	^ Array streamContents: [ :stream |
+		 0 to: num - 1 do: [ :i | 
+			stream nextPut: (self clang_getDiagnostic: i) spelling.
+			 ] ]
 ]
 
 { #category : 'accessing' }
