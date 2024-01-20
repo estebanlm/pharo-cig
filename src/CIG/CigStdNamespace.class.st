@@ -20,14 +20,14 @@ CigStdNamespace class >> elementName [
 CigStdNamespace >> initialize [
 
 	super initialize.
-	self addElement: CigStdStringElement new.
-	self addElement: CigStdSharedPtrElement new.
-	self addElement: CigStdArrayElement new.
-	self addElement: CigStdChronoNamespace new.
-	"self addElement: CigStdStringElement new."
+
+	self addElement: (CigStdElement newName: 'shared_ptr').
+	self addElement: (CigStdElement newName: 'array').
+	self addElement: ((CigStdElement newName: 'chrome')
+		addElement: (CigStdElement newName: 'nanoseconds');
+		yourself).
 	self addElement: (CigStdElement newName: 'string').
 	self addElement: (CigStdElement newName: 'wstring').
 	self addElement: (CigStdElement newName: 'atomic').
-	self addElement: (CigStdElement newName: 'mutex').
-	
+	self addElement: (CigStdElement newName: 'mutex')
 ]
