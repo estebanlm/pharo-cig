@@ -34,7 +34,8 @@ CigClassMember >> asSpecializationOf: aClassTemplate type: typeString [
 CigClassMember >> canBeExported [
 
 	^ self isPublic 
-		and: [ self parameters allSatisfy: [ :each | each canBeExported ] ]
+		and: [ (self parameters allSatisfy: [ :each | each canBeExported ])
+		and: [ (self root isExcludedFromExport: self) not ] ]
 ]
 
 { #category : 'testing' }

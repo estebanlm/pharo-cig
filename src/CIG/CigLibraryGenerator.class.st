@@ -34,7 +34,8 @@ Class {
 		'fileReference',
 		'namespaces',
 		'defines',
-		'definesBeforeHeader'
+		'definesBeforeHeader',
+		'excluding'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -222,6 +223,29 @@ CigLibraryGenerator >> diagnostics [
 	index dispose.
 	
 	^ diagnostics
+]
+
+{ #category : 'accessing - scripting' }
+CigLibraryGenerator >> exclude: aString [
+
+	excluding ifNil: [ excluding := #() ].
+	excluding := excluding copyWith: aString
+]
+
+{ #category : 'accessing' }
+CigLibraryGenerator >> excluding [
+	
+	^ excluding ifNil: [ #() ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> excluding: aCollection [
+	"a list of elements that will be excluded from generation (it will not be visible 
+	 by Pharo). 
+	 aCollection is a list of strings with cppDeclaration of elements. 
+	 e.g. 'finalcut::FString::begin' (the method begin)"
+	
+	excluding := aCollection
 ]
 
 { #category : 'accessing - configuration' }

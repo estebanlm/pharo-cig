@@ -14,7 +14,8 @@ Class {
 		'prefix',
 		'namespaces',
 		'defines',
-		'definesBeforeHeader'
+		'definesBeforeHeader',
+		'excluding'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -180,6 +181,7 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	namespaces := aHeader namespaces.
 	definesBeforeHeader := aHeader cDefinesBeforeHeader.
 	defines := aHeader cDefines.
+	excluding := aHeader excluding.
 	elements := OrderedCollection new.
 	self traverseASTWith: aHeader.
 	"add special elements at the end"
@@ -223,6 +225,12 @@ CigTranslatedUnit >> installedNamespaceFor: aNamespace [
 	^ self namespaces
 		detect: [ :each | each cppName = originName ]
 		ifNone: [ nil ]
+]
+
+{ #category : 'testing' }
+CigTranslatedUnit >> isExcludedFromExport: anElement [
+
+	^ excluding includes: anElement cppDeclaration
 ]
 
 { #category : 'testing' }
@@ -311,7 +319,7 @@ CigTranslatedUnit >> scopeLookupPath: aPath [
 	^ self elementAtPath: aPath
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilities' }
 CigTranslatedUnit >> selectTemplateClasses [
 	
 	^ Array streamContents: [ :stream |
@@ -320,7 +328,7 @@ CigTranslatedUnit >> selectTemplateClasses [
 				ifTrue: [ stream << each ] ] ]
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilities' }
 CigTranslatedUnit >> selectVariadicFunctions [
 	
 	^ Array streamContents: [ :stream |
@@ -387,7 +395,7 @@ CigTranslatedUnit >> traverseElementsDo: aBlock excluding: excludes [
 		each traverseElementsDo: aBlock excluding: excludes ]
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilities' }
 CigTranslatedUnit >> typeSpecializationsOf: aName [
 
 	^ CigTypeSpecializationCollector new

@@ -47,6 +47,13 @@ CigFunction >> cTemplate [
 ]
 
 { #category : 'testing' }
+CigFunction >> canBeExported [
+	
+	^ (self parameters allSatisfy: [ :each | each canBeExported ])
+		and: [ (self root isExcludedFromExport: self) not ]
+]
+
+{ #category : 'testing' }
 CigFunction >> exposesReturnValueAsParameter [
 	| type |
 
