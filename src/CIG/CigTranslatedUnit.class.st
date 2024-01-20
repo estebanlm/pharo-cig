@@ -48,13 +48,11 @@ CigTranslatedUnit >> addElement: anElement [
 CigTranslatedUnit >> addNode: currentNode parent: parentNode [
 	| parent current |
 
-	currentNode location isInSystemHeader ifTrue: [ ^ self ]. 	
-
 	parent := self findParent: parentNode.
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
 		ifNotNil: [ ^ self ]. 
 
-	current := self newNode: currentNode.	
+	current := self newNode: currentNode.
 	(current isUnknown and: [ self isGeneratingWithUnknown not ])
 		ifTrue: [ ^ self ].
 
@@ -66,6 +64,25 @@ CigTranslatedUnit >> addNode: currentNode parent: parentNode [
 CigTranslatedUnit >> allDefines [
 
 	^ self definesBeforeHeader, self defines
+]
+
+{ #category : 'private' }
+CigTranslatedUnit >> anyExclusionsMatches: currentNode [
+
+	self flag: #TODO. "refactor this to be able to add exlusions in a non exclusive way"
+	^ (currentNode displayName beginsWith: 'hash<')
+		and: [ currentNode parent displayName = 'std' ]
+]
+
+{ #category : 'generating' }
+CigTranslatedUnit >> currentIsPartOfLibrary: currentNode header: aHeader [
+	| currentLocation result |
+
+	currentLocation := currentNode location fileName asFileReference parent fullName.
+	result := (currentLocation beginsWith: aHeader fileReference parent fullName)
+		and: [ (self anyExclusionsMatches: currentNode) not  ].  
+
+	^ result
 ]
 
 { #category : 'accessing' }
@@ -323,26 +340,34 @@ CigTranslatedUnit >> specialElements [
 
 { #category : 'generating' }
 CigTranslatedUnit >> traverseASTWith: aHeader [
-	| index tu cursor |
+	| index unit cursor |
 	
 	index := CXIndex createIndex: 0 diagnostics: 0. 
-	tu := CXTranslationUnit 
+	unit := CXTranslationUnit 
 		parseIndex: index 
 		fileName: aHeader fileReference fullName
 		arguments: {
 				'-E'.
-				'-xc++'.
+				'-xc++'
 			}, 
 			aHeader cIncludePathsAsArguments,
 			aHeader cDefinesBeforeHeaderAsArguments,
 			aHeader cDefinesAsArguments.
 
-	cursor := tu cursor.
+	cursor := unit cursor.
 	cursor visitChildren: [ :current :parent :data |
-		self addNode: current parent: parent.
-		CXChildVisit recurse ].
+		[ 
+			(self currentIsPartOfLibrary: current header: aHeader)
+				ifTrue: [ 
+					self addNode: current parent: parent.
+					CXChildVisit recurse ]
+				ifFalse: [
+					CXChildVisit continue ] ]
+		on: Error 
+			fork: [ :e | e debug ] 
+			return: [ CXChildVisit continue ] ].
 
-	tu dispose.
+	unit dispose.
 	index dispose
 ]
 

@@ -94,6 +94,20 @@ auto _result = _tmp.c_str();
 return (char*)_result'
 ]
 
+{ #category : 'tests - stdstring' }
+CigCParameterTemplateTest >> testCastReturnStdWStringType [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FString'. 'toWString()' }.
+	template := CigCParameterTemplate forReturn: element.
+	
+	self 
+		assert: (template castReturn: 'x') 
+		equals: 'auto _tmp = x;
+auto _result = _tmp.c_str();
+return (wchar_t*)_result'
+]
+
 { #category : 'tests - struct' }
 CigCParameterTemplateTest >> testCastReturnStructPointerType [
 	| template element |
@@ -166,6 +180,18 @@ CigCParameterTemplateTest >> testGenerateArgumentStdString [
 	self 
 		assert: template generateArgument 
 		equals: 'std::string(filename)'
+]
+
+{ #category : 'tests - stdstring' }
+CigCParameterTemplateTest >> testGenerateArgumentStdWString [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FString'. 'internal_assign(std::wstring)' }.
+	template := element parameters first cTemplate.
+
+	self 
+		assert: template generateArgument 
+		equals: 'std::wstring(arg1)'
 ]
 
 { #category : 'tests' }

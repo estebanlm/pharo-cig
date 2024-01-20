@@ -410,7 +410,7 @@ CXCursor >> visitChildren: aBlock [
 	callback := CXCallback 
 		signature: #(int (CXCursor current, CXCursor parent, void *data)) 
 		block: aBlock.
-		
+
 	^ self clang_visitChildren: callback
 ]
 
