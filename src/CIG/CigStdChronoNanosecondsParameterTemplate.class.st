@@ -34,5 +34,5 @@ CigStdChronoNanosecondsParameterTemplate >> generateArgument [
 { #category : 'generating' }
 CigStdChronoNanosecondsParameterTemplate >> generateCType [
 	
-	^ 'int64'
+	^ 'int64_t'
 ]
