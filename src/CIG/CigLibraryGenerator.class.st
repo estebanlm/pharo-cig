@@ -194,6 +194,36 @@ CigLibraryGenerator >> defaultPrefix [
 	^ (self bindingsName first: 2) capitalized
 ]
 
+{ #category : 'utils' }
+CigLibraryGenerator >> diagnostics [
+	"makes a tree of elements I can use to generate the wrapper file and classes."
+	| elements cursor tu index diagnostics |
+	
+	index := CXIndex createIndex: 0 diagnostics: 0. 
+	tu := CXTranslationUnit 
+		parseIndex: index 
+		fileName: self fileReference fullName
+		arguments: {
+				'-E'.
+				'-xc++'.
+			}, 
+			self cIncludePathsAsArguments.
+	
+	elements := OrderedCollection new.
+	cursor := tu cursor.
+	cursor visitChildren: [ :current :parent :data |
+		current location isInSystemHeader 
+			ifFalse: [ elements add: current displayName -> current kindSpelling ].
+		CXChildVisit recurse ].
+
+	diagnostics := tu diagnostics.
+
+	tu dispose.
+	index dispose.
+	
+	^ diagnostics
+]
+
 { #category : 'accessing - configuration' }
 CigLibraryGenerator >> file: aFileReferenceOrString [
 
@@ -310,7 +340,7 @@ CigLibraryGenerator >> libraryName [
 	^ self cFileReference basenameWithoutExtension
 ]
 
-{ #category : 'private' }
+{ #category : 'utils' }
 CigLibraryGenerator >> listElements [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
 	| elements cursor tu index |
