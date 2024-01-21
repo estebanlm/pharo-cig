@@ -138,12 +138,19 @@ CXCursor >> cxxAccessSpecifier [
 ]
 
 { #category : 'testing' }
+CXCursor >> cxxMethodIsDeleted [
+
+	^ self ffiCall: #(Boolean clang_CXXMethod_isDeleted(CXCursor self))
+]
+
+{ #category : 'testing' }
 CXCursor >> cxxMethodIsPureVirtual [
 
-	self source ifNotNil: [ :aString | 
+	"self source ifNotNil: [ :aString | 
 		^ aString endsWith: '0' ].
 	
-	^ false
+	^ false"
+	^ self ffiCall: #(Boolean clang_CXXMethod_isPureVirtual(CXCursor self))
 ]
 
 { #category : 'testing' }

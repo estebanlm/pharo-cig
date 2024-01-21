@@ -7,6 +7,15 @@ Class {
 }
 
 { #category : 'tests' }
+CigClassMemberTest >> testDeletedConstructorCantBeExported [
+	| element |
+
+	element := self translatedUnitFinalcut  elementAtPath: { 'finalcut'. 'FAccelEvent'. 'FAccelEvent(const FAccelEvent &)' }.
+	self assert: element isDeleted.
+	self deny: element canBeExported
+]
+
+{ #category : 'tests' }
 CigClassMemberTest >> testParameterTypeTemplate [
 	| element |
 

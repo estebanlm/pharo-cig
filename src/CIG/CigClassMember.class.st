@@ -6,7 +6,8 @@ Class {
 	#instVars : [
 		'isPublic',
 		'underlyingTypeName',
-		'underlyingTypeKind'
+		'underlyingTypeKind',
+		'isDeleted'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -34,8 +35,9 @@ CigClassMember >> asSpecializationOf: aClassTemplate type: typeString [
 CigClassMember >> canBeExported [
 
 	^ self isPublic 
+		and: [ self isDeleted not
 		and: [ (self parameters allSatisfy: [ :each | each canBeExported ])
-		and: [ (self root isExcludedFromExport: self) not ] ]
+		and: [ (self root isExcludedFromExport: self) not ] ] ]
 ]
 
 { #category : 'testing' }
@@ -62,6 +64,7 @@ CigClassMember >> fromCursor: aCursor [
 	super fromCursor: aCursor.
 	self fillFunctionWith: aCursor.
 	isPublic := aCursor cxxAccessSpecifier = 1.
+	isDeleted := aCursor cxxMethodIsDeleted.
 	
 	type := aCursor type.
 	type kind  = CXType_Elaborated 
@@ -96,6 +99,12 @@ CigClassMember >> isClassMember [
 CigClassMember >> isConstructor [
 
 	^ false
+]
+
+{ #category : 'testing' }
+CigClassMember >> isDeleted [
+
+	^ isDeleted
 ]
 
 { #category : 'testing' }
