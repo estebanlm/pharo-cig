@@ -23,19 +23,28 @@ CigPharoBaseTest >> tearDown [
 ]
 
 { #category : 'accessing' }
-CigPharoBaseTest >> translatedUnit [
+CigPharoBaseTest >> translatedUnitFinalcut [
 
 	"change prefix to ensure it does not collides with existing classes"
-	^ super translatedUnit
+	^ super translatedUnitFinalcut
 		prefix: 'xx';
 		yourself
 ]
 
 { #category : 'accessing' }
-CigPharoBaseTest >> translatedUnitFinalcut [
+CigPharoBaseTest >> translatedUnitNoise [
 
 	"change prefix to ensure it does not collides with existing classes"
-	^ super translatedUnitFinalcut
+	^ super translatedUnitNoise
+		prefix: 'xx';
+		yourself
+]
+
+{ #category : 'accessing' }
+CigPharoBaseTest >> translatedUnitNoiseutils [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnitNoiseutils
 		prefix: 'xx';
 		yourself
 ]

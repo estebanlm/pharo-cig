@@ -18,7 +18,7 @@ CigPharoVisitorTest >> testAddFFILibrary [
 	| visitor class |
 	
 	visitor := CigPharoVisitor newForTest.
-	visitor addFFILibrary: self translatedUnit.
+	visitor addFFILibrary: self translatedUnitNoiseutils.
 	
 	class := self class environment classNamed: 'LibGeneratedForTest'.
 	self assert: class notNil.
@@ -32,7 +32,7 @@ CigPharoVisitorTest >> testAddFFITrait [
 	| visitor trait |
 	
 	visitor := CigPharoVisitor newForTest.
-	visitor addFFITrait: self translatedUnit.
+	visitor addFFITrait: self translatedUnitNoiseutils.
 	
 	trait := self class environment classNamed: 'LibTGeneratedForTest'.
 	self assert: trait notNil.
@@ -46,7 +46,7 @@ CigPharoVisitorTest >> testAddFFITypesClass [
 	| visitor class |
 	
 	visitor := CigPharoVisitor newForTest.
-	visitor addFFITypesClass: self translatedUnit.
+	visitor addFFITypesClass: self translatedUnitNoiseutils.
 	
 	class := self class environment classNamed: 'XxGeneratedForTestTypedef'.
 	self assert: class notNil
@@ -57,15 +57,15 @@ CigPharoVisitorTest >> testEnsureBaseClassesIncludeNamespaceTypedefs [
 	| visitor class |
 	
 	visitor := CigPharoVisitor newForTest.
-	visitor addBaseClasses: self translatedUnit.
-	visitor ensureBaseObjectClass: self translatedUnit.
+	visitor addBaseClasses: self translatedUnitNoiseutils .
+	visitor ensureBaseObjectClass: self translatedUnitNoiseutils.
 
 	class := self class environment classNamed: 'XxBaseObject'.
 	self assert: class notNil.
 	
 	self 
 		assert: class sharedPoolNames asArray
-		equals: #(CigNoiseTypedef XxGeneratedForTestTypedef)
+		equals: #(XxGeneratedForTestTypedef)
 ]
 
 { #category : 'tests - base' }
@@ -188,7 +188,7 @@ CigPharoVisitorTest >> testVisitClassAddsClassToDefaultNamespace [
 CigPharoVisitorTest >> testVisitClassAddsClassToNamespace [
 	| visitor class element |
 	
-	element := self translatedUnit elementAtPath: { 'noise'. 'utils'. 'Image' }. 
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'Image' }. 
 	visitor := CigPharoVisitor newForTest.
 	visitor addBaseClasses: element root.
 	
@@ -321,7 +321,7 @@ CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 	
 	element := self translatedUnitTvision elementAtPath: { 'fexpand(char *)' }. 
 	visitor := CigPharoVisitor newForTest.
-	visitor addFFILibrary: self translatedUnit.
+	visitor addFFILibrary: self translatedUnitTvision.
 	class := self class environment classNamed: 'LibGeneratedForTest'.
 	
 	visitor visitFunction: element.
@@ -407,7 +407,7 @@ CigPharoVisitorTest >> testVisitMethodAddsMethodToClass [
 CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
 	| visitor class element |
 	
-	element := self translatedUnit elementAtPath: { 'noise'. 'utils' }. 
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils' }. 
 	visitor := CigPharoVisitor newForTest.
 	visitor addBaseClasses: element root.
 	
@@ -524,15 +524,15 @@ CigPharoVisitorTest >> testVisitStructureRegisterType [
 CigPharoVisitorTest >> testVisitTypedefIsAddedToTypes [
 	| element visitor class |
 
-	element := self elementAtPath: { 'noise'. 'uint' }.	
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'uint' }.	
 	visitor := CigPharoVisitor newForTest.
 	visitor addBaseClasses: element root.
 	visitor visitTypedef: element.
 	visitor endUnit: element root.
 	
 	class := self class environment classNamed: 'XxGeneratedForTestTypedef'.
-	self assert: (class includesKey: #no_noise_uint).
-	self assert: (class localBindingOf: #no_noise_uint) value equals: #uint
+	self assert: (class includesKey: #xx_noise_uint).
+	self assert: (class localBindingOf: #xx_noise_uint) value equals: #uint
 ]
 
 { #category : 'tests - typedef' }
@@ -558,7 +558,7 @@ CigPharoVisitorTest >> testVisitTypedefUlong [
 CigPharoVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMapCallback' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapCallback' }.
 	
 	visitor := CigPharoVisitor newForTest.
 	visitor visitTypedef: element.
@@ -576,7 +576,7 @@ CigPharoVisitorTest >> testVisitTypedefWithCallback [
 CigPharoVisitorTest >> testVisitTypedefWithUint [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'uint' }.	
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'uint' }.	
 	visitor := CigPharoVisitor newForTest.
 	visitor addBaseClasses: element root.
 	
@@ -584,7 +584,7 @@ CigPharoVisitorTest >> testVisitTypedefWithUint [
 
 	self 
 		assert: visitor types keys first
-		equals: 'no_noise_uint'.
+		equals: 'xx_noise_uint'.
 		
 	self 
 		assert: visitor types values first

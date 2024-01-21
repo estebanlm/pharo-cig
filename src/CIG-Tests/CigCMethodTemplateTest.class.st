@@ -160,12 +160,12 @@ CigCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterPointerClassRef
 CigCMethodTemplateTest >> testGenerateBodyVoidMethodWithParameterStructReference [
 	| template element |
 
-	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'getMouseEvent(MouseEventType &)' }.
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'getFAttributeWord(const FCharAttribute &)' }.
 	template := element cTemplate.
 		
 	self 
 		assert: template generateBody trimmed
-		equals: 'return THardwareInfo::getMouseEvent(*(struct MouseEventType*)event);'
+		equals: 'return finalcut::getFAttributeWord(*(struct finalcut::FCharAttribute*)fchar_attr);'
 ]
 
 { #category : 'tests' }

@@ -10,7 +10,7 @@ Class {
 CigClassTest >> testConstructorNameIsNew [
 	| element |
 	
-	element := self elementAtPath: { 'noise'. 'module'. 'Module'. 'Module(int)' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'module'. 'Module'. 'Module(int)' }.
 
 	self 
 		assert: element cDeclaration 
@@ -36,10 +36,10 @@ CigClassTest >> testMethodAnsweringAClassWithtReferenceAnswerACorrectPointer [
 CigClassTest >> testShouldExposeDispose [
 	| element |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'RendererNormalMap' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'RendererNormalMap' }.
 	self assert: element shouldExposeDispose.
 	
-	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder' }.
 	self deny: element shouldExposeDispose
 ]
 

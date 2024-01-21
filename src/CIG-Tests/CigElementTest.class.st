@@ -16,7 +16,7 @@ CigElementTest class >> resources [
 CigElementTest >> testClassCDeclaration [
 	| element |
 
-	element := self elementAtPath: { 'noise'. 'module'. 'Module' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'module'. 'Module' }.
 
 	self assert: element cDeclaration equals: 'no_noise_module_Module*'
 ]
@@ -25,7 +25,7 @@ CigElementTest >> testClassCDeclaration [
 CigElementTest >> testClassCPPDeclaration [
 	| element |
 
-	element := self elementAtPath: { 'noise'. 'module'. 'Module' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'module'. 'Module' }.
 
 	self assert: element cppDeclaration equals: 'noise::module::Module'
 ]
@@ -41,24 +41,23 @@ CigElementTest >> testFullNameWithAnswerCorrectName [
 		equals: 'tv_TCellChar'.
 
 	"class with namespace"
-	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMap' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMap' }.
 	self 
 		assert: (element fullNameWith: '_')
 		equals: 'nu_noise_utils_NoiseMap'.
 		
 	"class on different library (installed as a namespace)"
-	element := self elementAtPath: { 'noise'. 'module'. 'Module' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'module'. 'Module' }.
 	self 
 		assert: (element fullNameWith: '_')
-		equals: 'no_noise_module_Module'.
-
+		equals: 'no_noise_module_Module'
 ]
 
 { #category : 'tests' }
 CigElementTest >> testStructureCDeclaration [
 	| element |
 
-	element := self elementAtPath: { 'noise'. 'module'. 'ControlPoint' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'module'. 'ControlPoint' }.
 
 	self assert: element cDeclaration equals: 'no_noise_module_ControlPoint'
 ]
@@ -67,7 +66,7 @@ CigElementTest >> testStructureCDeclaration [
 CigElementTest >> testStructureCPPDeclaration [
 	| element |
 
-	element := self elementAtPath: { 'noise'. 'module'. 'ControlPoint' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'module'. 'ControlPoint' }.
 	
 	self assert: element cppDeclaration equals: 'noise::module::ControlPoint'
 ]

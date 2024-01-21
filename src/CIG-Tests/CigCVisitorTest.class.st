@@ -18,7 +18,7 @@ CigCVisitorTest >> testVisitClassGeneratesATypedef [
 		assert: visitor hStream contents trimmed lines first
 		equals: 'typedef void tv_TView;'.
 		
-	element := self elementAtPath: { 'noise'. 'module'. 'Module' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'. 'module'. 'Module' }.
 	visitor := CigCHeaderDeclareVisitor newForTest.
 	visitor visitClass: element.
 	self 
@@ -65,13 +65,12 @@ typedef void tv_TSpanUint32_t;'
 CigCVisitorTest >> testVisitClassWithDispose [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'RendererNormalMap' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'RendererNormalMap' }.
 	
 	visitor := CigCVisitor newForTest.
 	visitor visitClass: element.
 	
 	self assert: (visitor hStream contents includesSubstring: 'void nu_noise_utils_RendererNormalMap_dispose')
-		
 ]
 
 { #category : 'tests - class' }
@@ -266,7 +265,7 @@ CigCVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNa
 CigCVisitorTest >> testVisitMethodParameterStdStringCastsCorrectly [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)' }.
 	
 	visitor := CigCVisitor newForTest.
 	visitor visitMethod: element.
@@ -286,7 +285,7 @@ CigCVisitorTest >> testVisitMethodParameterStdStringCastsCorrectly [
 CigCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetBorderValue()' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetBorderValue()' }.
 	
 	visitor := CigCVisitor newForTest.
 	visitor visitMethod: element.
@@ -308,7 +307,7 @@ CigCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 CigCVisitorTest >> testVisitMethodReturningClassPtrGeneratesCorrectReturnType [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetConstSlabPtr(int)' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetConstSlabPtr(int)' }.
 	
 	visitor := CigCVisitor newForTest.
 	visitor visitMethod: element.
@@ -328,7 +327,7 @@ CigCVisitorTest >> testVisitMethodReturningClassPtrGeneratesCorrectReturnType [
 CigCVisitorTest >> testVisitMethodReturningStdStringCastsCorrectly [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'GetDestFilename()' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'GetDestFilename()' }.
 	
 	visitor := CigCVisitor newForTest.
 	visitor visitMethod: element.
@@ -503,7 +502,7 @@ CigCVisitorTest >> testVisitTypedefWithArrayDeclaresCorrectly [
 CigCVisitorTest >> testVisitTypedefWithCallback [
 	| element visitor |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMapCallback' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapCallback' }.
 	
 	visitor := CigCHeaderDeclareVisitor newForTest.
 	visitor visitTypedef: element.

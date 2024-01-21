@@ -125,14 +125,6 @@ CigTranslatedUnit >> findDeepElementMatching: aBlock [
 	^ nil
 ]
 
-{ #category : 'private' }
-CigTranslatedUnit >> findElementMatching: aBlock [
-
-	^ self elements
-		detect: [ :eachElement | aBlock value: eachElement ]
-		ifNone: [ nil ]
-]
-
 { #category : 'accessing' }
 CigTranslatedUnit >> findElementMatchingCursor: aCursor [
 

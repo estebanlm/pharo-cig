@@ -93,11 +93,11 @@ CigTypeTest >> testResolveFFIType [
 CigTypeTest >> testResolveTypeForClassCanAnswerElementClass [
 	| element type |
 	
-	element := self elementAtPath: { 'noise'. 'utils'. 'GradientPoint'. 'color' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'GradientPoint'. 'color' }.
 	
 	type := element resolveType.
 	
 	self 
 		assert: type element
-		equals: (self elementAtPath: { 'noise'. 'utils'. 'Color' })
+		equals: (self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'Color' })
 ]

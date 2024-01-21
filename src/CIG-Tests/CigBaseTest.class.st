@@ -17,24 +17,26 @@ CigBaseTest class >> isAbstract [
 ]
 
 { #category : 'accessing' }
-CigBaseTest >> elementAtPath: aPath [
-
-	^ self translatedUnit elementAtPath: aPath
-]
-
-{ #category : 'accessing' }
-CigBaseTest >> translatedUnit [
-
-	^ CigTestResource current translatedUnit
-		prefix: 'nu';
-		yourself
-]
-
-{ #category : 'accessing' }
 CigBaseTest >> translatedUnitFinalcut [
 
 	^ CigTestResource current translatedUnitFinalcut
 		prefix: 'fc';
+		yourself
+]
+
+{ #category : 'accessing' }
+CigBaseTest >> translatedUnitNoise [
+
+	^ CigTestResource current translatedUnitNoise
+		prefix: 'no';
+		yourself
+]
+
+{ #category : 'accessing' }
+CigBaseTest >> translatedUnitNoiseutils [
+
+	^ CigTestResource current translatedUnitNoiseutils
+		prefix: 'nu';
 		yourself
 ]
 

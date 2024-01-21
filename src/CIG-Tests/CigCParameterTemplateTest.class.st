@@ -46,7 +46,8 @@ CigCParameterTemplateTest >> testCastReturnClassReferencePassingReference [
 CigCParameterTemplateTest >> testCastReturnClassReferenceWithNamespace [
 	| template element |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetBorderValue()' }.
+	element := self translatedUnitNoiseutils 
+		elementAtPath: { 'noise'. 'utils'. 'Image'. 'GetBorderValue()' }.
 	template := CigCParameterTemplate forReturn: element.
 	
 	self 
@@ -84,7 +85,7 @@ return (FColorPalette*)_result'
 CigCParameterTemplateTest >> testCastReturnStdStringType [
 	| template element |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'GetDestFilename()' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'GetDestFilename()' }.
 	template := CigCParameterTemplate forReturn: element.
 	
 	self 
@@ -174,7 +175,7 @@ CigCParameterTemplateTest >> testGenerateArgumentStdSharedPtrType [
 CigCParameterTemplateTest >> testGenerateArgumentStdString [
 	| template element |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'WriterBMP'. 'SetDestFilename(const std::string &)' }.
 	template := element parameters first cTemplate.
 
 	self 
@@ -220,7 +221,7 @@ CigCParameterTemplateTest >> testGenerateBasicType [
 CigCParameterTemplateTest >> testGenerateCallback [
 	| template element |
 
-	element := self elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder'. 'SetCallback(NoiseMapCallback)' }.
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder'. 'SetCallback(NoiseMapCallback)' }.
 	template := element parameters first cTemplate.
 	
 	self 
@@ -362,13 +363,12 @@ CigCParameterTemplateTest >> testGenerateNestedStructReferenceArgument [
 CigCParameterTemplateTest >> testGenerateSelfArgumentForClassWithinNamespace [
 	| template element |
 
-	element := self elementAtPath: { 'noise'.  'module'. 'Module'. 'GetSourceModule(int)' }.
+	element := self translatedUnitNoise elementAtPath: { 'noise'.  'module'. 'Module'. 'GetSourceModule(int)' }.
 	template := element cTemplate selfTemplate.
 	
 	self 
 		assert: template generateArgument
 		equals: '*(noise::module::Module*)Module'
-	
 ]
 
 { #category : 'tests - self' }
@@ -409,12 +409,12 @@ CigCParameterTemplateTest >> testGenerateStructPointerType [
 CigCParameterTemplateTest >> testGenerateStructReferenceArgument [
 	| template element |
 
-	element := self translatedUnitTvision elementAtPath: { 'THardwareInfo'. 'getMouseEvent(MouseEventType &)' }.
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'getFAttributeWord(const FCharAttribute &)' }.
 	template := element parameters first cTemplate.
 	
 	self 
 		assert: template generateArgument
-		equals: '*(struct MouseEventType*)event'
+		equals: '*(struct finalcut::FCharAttribute*)fchar_attr'
 ]
 
 { #category : 'tests' }
