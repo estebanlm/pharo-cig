@@ -413,7 +413,7 @@ CigElement >> scopeLookupPath: aPath [
 { #category : 'private' }
 CigElement >> typeReference [
 
-	^ self elements 
+	^ self elements
 		detect: [ :each | each isTypeReference ]
 		ifNone: [ nil ]
 ]

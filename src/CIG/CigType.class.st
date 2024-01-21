@@ -31,7 +31,7 @@ CigType class >> createTypeMap [
 	}
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilities' }
 CigType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: aString [ 
 	| type classType classTemplateType |
 	
@@ -58,7 +58,7 @@ CigType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: a
 			stream << '&' ] ]
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilities' }
 CigType class >> replaceTypeTemplate: aClassTemplate type: typeString in: aString [
 	| type |
 
@@ -78,7 +78,7 @@ CigType class >> replaceTypeTemplate: aClassTemplate type: typeString in: aStrin
 			stream << '&' ] ]
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilities' }
 CigType class >> resolveFFIType: aString [
 
 	^ [ FFICallout new 
@@ -113,7 +113,7 @@ CigType >> element [
 	"if there is a typeReference, tries to answer it"
 
 	^ element ifNil: [ 
-		element := self typeReferenceForParsedType 
+		element := self typeReferenceForParsedType
 			ifNotNil: [ :aTypeReference |
 				"it can be an element from the tree (class, etc.)"
 				aTypeReference matchingElementInUnit ]
@@ -213,6 +213,12 @@ CigType >> isTypedef [
 		and: [ self element isTypedef ]
 ]
 
+{ #category : 'private' }
+CigType >> matchTypeName: aName with: otherName [
+
+	^ (aName substrings: '::') last = otherName
+]
+
 { #category : 'accessing' }
 CigType >> name [
 
@@ -286,7 +292,7 @@ CigType >> typeReferenceForParsedType [
 	typeRef := self typeReference.
 	typeRef ifNil: [ ^ nil ].
 	
-	^ (typeRef name endsWith: self parseType nameWithoutNamespace)
+	^ (self matchTypeName: typeRef name with: self parseType nameWithoutNamespace)
 		ifTrue: [ typeRef ]
 		ifFalse: [ nil ]
 ]

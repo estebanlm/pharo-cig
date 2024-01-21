@@ -120,6 +120,16 @@ CigCParameterTemplateTest >> testCastReturnStructPointerType [
 ]
 
 { #category : 'tests' }
+CigCParameterTemplateTest >> testCastsCorrectReturnEvenWhenTypeReferenceNotAssociated [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FPoint'. 'getX()' }.
+	template := CigCParameterTemplate forReturn: element.
+	
+	self assert: (template castReturn: 'x') equals: 'return x'
+]
+
+{ #category : 'tests' }
 CigCParameterTemplateTest >> testGenerateArgumentClassSpecialization [
 	| template element |
 
