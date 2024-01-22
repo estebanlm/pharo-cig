@@ -38,7 +38,9 @@ CigSuperclass >> isSuperclass [
 { #category : 'accessing' }
 CigSuperclass >> name [
 
-	^ typePath last
+	^ typePath 
+		ifNotEmpty: [ :aPath | aPath last ]
+		ifEmpty: [ '(none)' ]
 ]
 
 { #category : 'accessing' }
