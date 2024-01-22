@@ -25,8 +25,6 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'includePaths',
-		'withMakefile',
-		'withCBindings',
 		'withClasses',
 		'libs',
 		'prefix',
@@ -52,12 +50,6 @@ CigLibraryGenerator >> bindingsName [
 CigLibraryGenerator >> bindingsName: aString [
 
 	bindingsName := aString
-]
-
-{ #category : 'building' }
-CigLibraryGenerator >> build [
-	
-	LibC system: 'make'
 ]
 
 { #category : 'accessing - scripting' }
@@ -262,51 +254,8 @@ CigLibraryGenerator >> fileReference [
 
 { #category : 'generating' }
 CigLibraryGenerator >> generate [
-	| unit |
-
-	('Initiate generation of {1}' format: { self fileReference basename }) asBeaconSignal emit.
-	'Collecting nodes' asBeaconSignal emit.
 	
-	unit := self translateUnit.
-
-	self hasCBindings ifTrue: [ self generateCBindingsWith: unit ].
-	self hasMakefile ifTrue: [ self generateMakefile ].
-	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ]
-]
-
-{ #category : 'generating' }
-CigLibraryGenerator >> generateCBindingsWith: unit [
-
-	('Generating C file: {1}.' format: { self cFileReference basename }) asBeaconSignal emit.
-	CigCVisitor new
-		file: self;
-		visit: unit
-]
-
-{ #category : 'generating' }
-CigLibraryGenerator >> generateMakefile [
-	| template |
-
-	'Generating Makefile.' asBeaconSignal emit.
-
-	template := '
-INCLUDE_DIRS={include}
-LIBS={libs}
-
-{libName}.so: {libName}.cpp
-	clang -xc++ -fPIC --shared $(INCLUDE_DIRS) $(LIBS) {libName}.cpp -o {libName}.so
-' format: { 
-		#libName->self libraryName.
-		#include->(String streamContents: [ :s | 
-			self cIncludePathsAsArguments asStringOn: s delimiter: ' ' ]).
-		#libs->(String streamContents: [ :s | 
-			self cLibsAsArguments asStringOn: s delimiter: ' ' ]) }
-	asDictionary.
-
-	self makefileReference 
-		ensureDelete;
-		writeStreamDo: [ :stream |
-			(ZnNewLineWriterStream on: stream) << template ]	
+	self subclassResponsibility
 ]
 
 { #category : 'generating' }
@@ -319,21 +268,9 @@ CigLibraryGenerator >> generatePharoClassesWith: aUnit [
 ]
 
 { #category : 'testing' }
-CigLibraryGenerator >> hasCBindings [
-
-	^ withCBindings
-]
-
-{ #category : 'testing' }
 CigLibraryGenerator >> hasClasses [
 
 	^ withClasses
-]
-
-{ #category : 'testing' }
-CigLibraryGenerator >> hasMakefile [
-
-	^ withMakefile
 ]
 
 { #category : 'testing' }
@@ -346,9 +283,7 @@ CigLibraryGenerator >> includesNamespace: aString [
 CigLibraryGenerator >> initialize [
 
 	super initialize.
-	self withCBindings.
-	self withoutMakefile.
-	self withoutClasses
+	self withClasses
 ]
 
 { #category : 'accessing' }
@@ -447,37 +382,13 @@ CigLibraryGenerator >> translateUnitWithoutUnkown [
 ]
 
 { #category : 'accessing - configuration' }
-CigLibraryGenerator >> withCBindings [
-
-	withCBindings := true
-]
-
-{ #category : 'accessing - configuration' }
 CigLibraryGenerator >> withClasses [
 
 	withClasses := true
 ]
 
 { #category : 'accessing - configuration' }
-CigLibraryGenerator >> withMakefile [
-
-	withMakefile := true
-]
-
-{ #category : 'accessing - configuration' }
-CigLibraryGenerator >> withoutCBindings [
-
-	withCBindings := false
-]
-
-{ #category : 'accessing - configuration' }
 CigLibraryGenerator >> withoutClasses [
 
 	withClasses := false
-]
-
-{ #category : 'accessing - configuration' }
-CigLibraryGenerator >> withoutMakefile [
-
-	withMakefile := false
 ]
