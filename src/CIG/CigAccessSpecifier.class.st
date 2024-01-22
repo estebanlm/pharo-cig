@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigAccessSpecifier',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'accessSpecifier'
 	],

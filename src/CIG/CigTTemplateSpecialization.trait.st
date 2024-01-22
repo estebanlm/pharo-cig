@@ -3,7 +3,6 @@ Trait {
 	#instVars : [
 		'specializationTypes'
 	],
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'

@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigClassSpecialization',
 	#superclass : 'CigClass',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'templateName',
 		'isAbstract',

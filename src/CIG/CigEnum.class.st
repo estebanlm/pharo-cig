@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigEnum',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'isPublic'
 	],

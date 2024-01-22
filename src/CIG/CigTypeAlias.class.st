@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigTypeAlias',
 	#superclass : 'CigBaseTypedef',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'isPublic'
 	],
