@@ -49,8 +49,15 @@ CigFunction >> cTemplate [
 { #category : 'testing' }
 CigFunction >> canBeExported [
 	
-	^ (self parameters allSatisfy: [ :each | each canBeExported ])
-		and: [ (self root isExcludedFromExport: self) not ]
+	"skip operators because they are not really used in pharo. 
+	 skip function with va_list because we don't know what to do with them.
+	 skip functions with variadics (...) because we also can't forward them easily 
+	 to its C++ counterpart (doable in gcc, but feels too much work for lose gain)"
+	^ (self isOperator not)
+		and: [ (self hasVariadicListArgument not)
+		and: [ (self isVariadic not)
+		and: [ (self parameters allSatisfy: [ :each | each canBeExported ])
+		and: [ (self root isExcludedFromExport: self) not ] ] ] ]
 ]
 
 { #category : 'testing' }

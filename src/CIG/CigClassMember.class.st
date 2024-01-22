@@ -34,10 +34,13 @@ CigClassMember >> asSpecializationOf: aClassTemplate type: typeString [
 { #category : 'testing' }
 CigClassMember >> canBeExported [
 
-	^ self isPublic 
-		and: [ self isDeleted not
+	^ self isPublic
+		and: [ (self isOperator not)
+		and: [ (self hasVariadicListArgument not)
+		and: [ (self isVariadic not)
+		and: [ (self isDeleted not)
 		and: [ (self parameters allSatisfy: [ :each | each canBeExported ])
-		and: [ (self root isExcludedFromExport: self) not ] ] ]
+		and: [ (self root isExcludedFromExport: self) not ] ] ] ] ] ]
 ]
 
 { #category : 'testing' }

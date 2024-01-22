@@ -199,14 +199,7 @@ CigCVisitor >> visitEnum: anEnum [
 { #category : 'visiting' }
 CigCVisitor >> visitFunction: aFunction [
 
-	"skip operators because they are not really used in pharo. 
-	 skip function with va_list because we don't know what to do with them.
-	 skip functions with variadics (...) because we also can't forward them easily 
-	 to its C++ counterpart (doable in gcc, but feels too much work for lose gain)"
-	(aFunction isOperator 
-		or: [ aFunction hasVariadicListArgument
-		or: [ aFunction isVariadic ] ])
-		ifTrue: [ ^ self ].
+	aFunction canBeExported ifFalse: [ ^ self ].
 	
 	self hStream << aFunction cTemplate generateHeader << ';'; cr.
 	self cStream << aFunction cTemplate generate; cr
@@ -215,7 +208,6 @@ CigCVisitor >> visitFunction: aFunction [
 { #category : 'visiting' }
 CigCVisitor >> visitMethod: aMethod [
 
-	aMethod canBeExported ifFalse: [ ^ self ].
 	self visitFunction: aMethod
 ]
 

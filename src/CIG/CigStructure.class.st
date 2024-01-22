@@ -70,6 +70,8 @@ CigStructure >> canBeExported [
 	(self isAnonymous and: [ self isNested not]) ifTrue: [ ^ false ].
 	"skip if is template specialization"
 	self isTemplateSpecialization ifTrue: [ ^ false ].
+	"if it does not have anyfield (but is not a class), it can't be exported"
+	(self isClass not and: [ self fields isEmpty ]) ifTrue: [ ^ false ].
 
 	^ true
 ]

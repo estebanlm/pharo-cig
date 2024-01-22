@@ -7,6 +7,14 @@ Class {
 }
 
 { #category : 'tests' }
+CigStructureTest >> testEmptyStructureCanNOTBeExported [
+	| element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'TimerClass' }.
+	self deny: element canBeExported
+]
+
+{ #category : 'tests' }
 CigStructureTest >> testFieldsAnswerAlsoVariables [
 	| element |
 
