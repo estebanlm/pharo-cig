@@ -86,6 +86,12 @@ CigTranslatedUnit >> currentIsPartOfLibrary: currentNode header: aHeader [
 	^ result
 ]
 
+{ #category : 'private' }
+CigTranslatedUnit >> defaultClangArguments [
+	
+	^ self subclassResponsibility
+]
+
 { #category : 'accessing' }
 CigTranslatedUnit >> defines [
 
@@ -96,6 +102,34 @@ CigTranslatedUnit >> defines [
 CigTranslatedUnit >> definesBeforeHeader [
 
 	^ definesBeforeHeader
+]
+
+{ #category : 'utilities' }
+CigTranslatedUnit >> diagnosticsFrom: aHeader [
+	"makes a tree of elements I can use to generate the wrapper file and classes."
+	| cursor tu index diagnostics |
+	
+	index := CXIndex createIndex: 0 diagnostics: 0. 
+	tu := CXTranslationUnit 
+		parseIndex: index 
+		fileName: aHeader fileReference fullName
+		arguments: 
+			self defaultClangArguments, 
+			aHeader cIncludePathsAsArguments.
+	
+	elements := OrderedCollection new.
+	cursor := tu cursor.
+	cursor visitChildren: [ :current :parent :data |
+		current location isInSystemHeader 
+			ifFalse: [ elements add: current displayName -> current kindSpelling ].
+		CXChildVisit recurse ].
+
+	diagnostics := tu diagnostics.
+
+	tu dispose.
+	index dispose.
+	
+	^ diagnostics
 ]
 
 { #category : 'accessing' }
@@ -175,9 +209,7 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	defines := aHeader cDefines.
 	excluding := aHeader excluding.
 	elements := OrderedCollection new.
-	self traverseASTWith: aHeader.
-	"add special elements at the end"
-	elements addAll: self specialElements
+	self traverseASTWith: aHeader
 ]
 
 { #category : 'testing' }
@@ -242,6 +274,32 @@ CigTranslatedUnit >> isNamespace [
 CigTranslatedUnit >> isPublic: anElement [
 
 	^ true
+]
+
+{ #category : 'utilities' }
+CigTranslatedUnit >> listElementsFrom: aHeader [
+	"makes a tree of elements I can use to generate the wrapper file and classes."
+	| cursor tu index |
+	
+	index := CXIndex createIndex: 0 diagnostics: 0. 
+	tu := CXTranslationUnit 
+		parseIndex: index 
+		fileName: aHeader fileReference fullName
+		arguments: 
+			self defaultClangArguments, 
+			aHeader cIncludePathsAsArguments.
+	
+	elements := OrderedCollection new.
+	cursor := tu cursor.
+	cursor visitChildren: [ :current :parent :data |
+		current location isInSystemHeader 
+			ifFalse: [ elements add: current displayName -> current kindSpelling ].
+		CXChildVisit recurse ].
+
+	tu dispose.
+	index dispose.
+	
+	^ elements
 ]
 
 { #category : 'accessing' }
@@ -330,14 +388,6 @@ CigTranslatedUnit >> selectVariadicFunctions [
 			ifTrue: [ stream << each ] ] ]
 ]
 
-{ #category : 'private' }
-CigTranslatedUnit >> specialElements [
-	"a place to keep special elements with special templates (like std namespace)"
-	
-	^ CigSpecialElement allElements
-		collect: [ :each | each parent: self; yourself ]
-]
-
 { #category : 'generating' }
 CigTranslatedUnit >> traverseASTWith: aHeader [
 	| index unit cursor |
@@ -346,10 +396,8 @@ CigTranslatedUnit >> traverseASTWith: aHeader [
 	unit := CXTranslationUnit 
 		parseIndex: index 
 		fileName: aHeader fileReference fullName
-		arguments: {
-				'-E'.
-				'-xc++'
-			}, 
+		arguments: 
+			self defaultClangArguments, 
 			aHeader cIncludePathsAsArguments,
 			aHeader cDefinesBeforeHeaderAsArguments,
 			aHeader cDefinesAsArguments.

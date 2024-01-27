@@ -74,7 +74,7 @@ CigEnum >> phTemplate [
 { #category : 'accessing' }
 CigEnum >> resolveType [
 
-	^ CigEnumType new 
+	^ CigType new 
 		parent: self;
 		name: self name;
 		yourself

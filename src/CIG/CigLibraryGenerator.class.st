@@ -187,34 +187,11 @@ CigLibraryGenerator >> defaultPrefix [
 	^ (self bindingsName first: 2) capitalized
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilies' }
 CigLibraryGenerator >> diagnostics [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
-	| elements cursor tu index diagnostics |
-	
-	index := CXIndex createIndex: 0 diagnostics: 0. 
-	tu := CXTranslationUnit 
-		parseIndex: index 
-		fileName: self fileReference fullName
-		arguments: {
-				'-E'.
-				'-xc++'.
-			}, 
-			self cIncludePathsAsArguments.
-	
-	elements := OrderedCollection new.
-	cursor := tu cursor.
-	cursor visitChildren: [ :current :parent :data |
-		current location isInSystemHeader 
-			ifFalse: [ elements add: current displayName -> current kindSpelling ].
-		CXChildVisit recurse ].
 
-	diagnostics := tu diagnostics.
-
-	tu dispose.
-	index dispose.
-	
-	^ diagnostics
+	^ self newTranslatedUnit diagnosticsFrom: self
 ]
 
 { #category : 'accessing - scripting' }
@@ -299,32 +276,11 @@ CigLibraryGenerator >> libraryName [
 	^ self cFileReference basenameWithoutExtension
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilies' }
 CigLibraryGenerator >> listElements [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
-	| elements cursor tu index |
-	
-	index := CXIndex createIndex: 0 diagnostics: 0. 
-	tu := CXTranslationUnit 
-		parseIndex: index 
-		fileName: self fileReference fullName
-		arguments: {
-				'-E'.
-				'-xc++'.
-			}, 
-			self cIncludePathsAsArguments.
-	
-	elements := OrderedCollection new.
-	cursor := tu cursor.
-	cursor visitChildren: [ :current :parent :data |
-		current location isInSystemHeader 
-			ifFalse: [ elements add: current displayName -> current kindSpelling ].
-		CXChildVisit recurse ].
 
-	tu dispose.
-	index dispose.
-	
-	^ elements
+	^ self newTranslatedUnit listElementsFrom: self
 ]
 
 { #category : 'accessing' }
@@ -352,6 +308,12 @@ CigLibraryGenerator >> namespaces: aCollection [
 	namespaces := aCollection
 ]
 
+{ #category : 'private' }
+CigLibraryGenerator >> newTranslatedUnit [
+
+	^ self subclassResponsibility
+]
+
 { #category : 'accessing' }
 CigLibraryGenerator >> prefix [
 
@@ -367,7 +329,7 @@ CigLibraryGenerator >> prefix: aPrefix [
 { #category : 'generating' }
 CigLibraryGenerator >> translateUnit [
 	
-	^ CigTranslatedUnit new
+	^ self newTranslatedUnit
 		generateFrom: self;
 		yourself
 ]
@@ -375,7 +337,7 @@ CigLibraryGenerator >> translateUnit [
 { #category : 'generating' }
 CigLibraryGenerator >> translateUnitWithoutUnkown [
 	
-	^ CigTranslatedUnit new
+	^ self newTranslatedUnit
 		withoutUnknown;
 		generateFrom: self;
 		yourself

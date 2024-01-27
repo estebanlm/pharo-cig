@@ -144,6 +144,7 @@ CigElement >> findDeepElementMatching: aBlock [
 CigElement >> fromCursor: aCursor [
 
 	name := aCursor displayName.
+	location := aCursor location fileName.
 	kind := aCursor kind
 ]
 
@@ -326,6 +327,12 @@ CigElement >> kind [
 CigElement >> kind: aKind [
 	
 	kind := aKind
+]
+
+{ #category : 'accessing' }
+CigElement >> location [
+
+	^ location
 ]
 
 { #category : 'testing' }

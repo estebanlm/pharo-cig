@@ -32,6 +32,12 @@ CigType class >> createTypeMap [
 	}
 ]
 
+{ #category : 'instance creation' }
+CigType class >> fromParameter: aParameter [
+
+	^ self new fromParameter: aParameter
+]
+
 { #category : 'utilities' }
 CigType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: aString [ 
 
@@ -123,7 +129,13 @@ CigType class >> typeMap [
 { #category : 'testing' }
 CigType >> definesFunction [
 	
-	^ false
+	^ definesFunction ifNil: [ false ]
+]
+
+{ #category : 'accessing' }
+CigType >> definesFunction: aBoolean [
+
+	definesFunction := aBoolean
 ]
 
 { #category : 'accessing' }
@@ -138,6 +150,16 @@ CigType >> element [
 			ifNil: [ 
 				"it can be a typedef or an existing node without a type reference"
 				self parent scopeLookup: self parseType nameWithSpecialization ] ]
+]
+
+{ #category : 'initialization' }
+CigType >> fromParameter: aParameter [
+
+	self
+		parent: aParameter;
+		name: aParameter typeName;
+		definesFunction: aParameter definesFunction;
+		typeReference: (self typeReferenceFrom: aParameter)
 ]
 
 { #category : 'testing' }
@@ -313,4 +335,41 @@ CigType >> typeReferenceForParsedType [
 	^ (self matchTypeName: typeRef name with: self parseType nameWithoutNamespace)
 		ifTrue: [ typeRef ]
 		ifFalse: [ nil ]
+]
+
+{ #category : 'private' }
+CigType >> typeReferenceFrom: aParameter [
+
+	aParameter typeReferences ifNotEmpty: [ :references | 
+		"which one is good?"
+		| parsedName |
+		
+		references size = 1 ifTrue: [ ^ references anyOne ].
+		
+		parsedName := (CigFunctionParser parse: aParameter typeName) name.
+		references 
+			detect: [ :each | each typeName endsWith: parsedName ]
+			ifFound: [ :each | ^ each ] ].
+
+	aParameter isTemplateSpecialization ifTrue: [ 
+		^ (CigTypeReference newName: 'class ', aParameter typeName)
+			parent: aParameter;
+			yourself ].
+	
+	aParameter recordKind = CigClass kind ifTrue: [ 
+		^ (CigTypeReference newName: 'class ', aParameter typeName)
+			parent: aParameter;
+			yourself ].
+
+	aParameter recordKind = CigStructure kind ifTrue: [ 
+		^ (CigTypeReference newName: 'struct ', aParameter typeName)
+			parent: aParameter;
+			yourself ].
+
+	aParameter underlyingTypeKind = CigTypedef typeKind ifTrue: [ 
+		^ (CigTypeReference newName: 'typedef ', aParameter underlyingTypeName)
+			parent: aParameter;
+			yourself ].
+
+	^ nil
 ]

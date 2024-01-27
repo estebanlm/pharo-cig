@@ -26,7 +26,8 @@ Class {
 	#superclass : 'CigLibraryGenerator',
 	#instVars : [
 		'withMakefile',
-		'withCBindings'
+		'withCBindings',
+		'cClassSpecializations'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -37,6 +38,22 @@ Class {
 CigCppLibraryGenerator >> buildBindingsLibrary [
 	
 	LibC system: 'make'
+]
+
+{ #category : 'accessing - configuration' }
+CigCppLibraryGenerator >> cClassSpecializations: aDictionary [
+
+	cClassSpecializations := aDictionary
+]
+
+{ #category : 'accessing - scripting' }
+CigCppLibraryGenerator >> cSpecialize: aTemplateName as: aClassName [
+	"add a direct class specialization (process of generation will try to detect the ones 
+	 client use, but sometimes you want to add some extra maps to use by yourself that are 
+	 not specified."
+
+	cClassSpecializations ifNil: [ cClassSpecializations := OrderedDictionary new ].
+	cClassSpecializations at: aTemplateName put: aClassName
 ]
 
 { #category : 'generating' }
@@ -106,6 +123,12 @@ CigCppLibraryGenerator >> initialize [
 	super initialize.
 	self withCBindings.
 	self withMakefile
+]
+
+{ #category : 'private' }
+CigCppLibraryGenerator >> newTranslatedUnit [
+
+	^ CigCppTranslatedUnit new
 ]
 
 { #category : 'accessing - configuration' }

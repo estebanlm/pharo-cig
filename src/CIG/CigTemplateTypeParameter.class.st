@@ -18,7 +18,7 @@ CigTemplateTypeParameter >> accept: aVisitor [
 	
 ]
 
-{ #category : 'testing' }
+{ #category : 'as yet unclassified' }
 CigTemplateTypeParameter >> isTemplateTypeParameter [
 
 	^ true

@@ -27,11 +27,11 @@ CigStdArrayParameterTemplate >> castReturn: aString [
 { #category : 'generating' }
 CigStdArrayParameterTemplate >> generateArgument [
 	
-	^ '*(std::array<{type}>*)std::memcpy((new std::array<{type}>).data(), {name}, {size})' 
+	^ '*(std::array<{type}, {size}>*)std::memcpy((new std::array<{type}, {size}>).data(), {name}, {size})' 
 		format: {
-			#type -> self type parseType templateName.
+			#type -> self templateTypeName.
 			#name -> self element name.
-			#size -> (self type parseType templateName substrings: ', ') second.
+			#size -> self templateSize.
 		} 
 		asDictionary
 ]
@@ -40,4 +40,20 @@ CigStdArrayParameterTemplate >> generateArgument [
 CigStdArrayParameterTemplate >> generateCType [
 	
 	^ 'void*'
+]
+
+{ #category : 'private' }
+CigStdArrayParameterTemplate >> templateSize [
+
+	^ (self type parseType templateName substrings: ', ') second
+]
+
+{ #category : 'private' }
+CigStdArrayParameterTemplate >> templateTypeName [
+	| typeName |
+
+	typeName := (self type parseType templateName substrings: ', ') first.
+	^ (self type parent scopeLookup: typeName)
+		ifNotNil: [ :anElement | anElement cppDeclaration ]
+		ifNil: [ typeName ]
 ]

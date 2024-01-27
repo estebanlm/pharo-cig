@@ -33,3 +33,9 @@ CigCLibraryGenerator >> generate [
 
 	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ]
 ]
+
+{ #category : 'private' }
+CigCLibraryGenerator >> newTranslatedUnit [
+
+	^ CigCTranslatedUnit new
+]

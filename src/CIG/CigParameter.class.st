@@ -219,11 +219,11 @@ CigParameter >> resolveType [
 			ifFound: [ :aParam | aParam elements ]
 			ifNone: [ #() ] ].
 
-	^ CigParameterType fromParameter: self
+	^ CigType fromParameter: self
 ]
 
 { #category : 'private' }
-CigParameter >> specializeClassTemplate: aClassTemplate type: aString [ 
+CigParameter >> specializeClassTemplate: aClassTemplate types: aString [ 
 
 	(self isTemplateOf: aClassTemplate) ifTrue: [ 
 		typeName := CigType 
