@@ -1,6 +1,7 @@
 Class {
 	#name : 'CigClassSpecialization',
 	#superclass : 'CigClass',
+	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'templateName',
 		'isAbstract',
@@ -18,11 +19,11 @@ CigClassSpecialization class >> fromClassTemplate: aClassTemplate [
 ]
 
 { #category : 'instance creation' }
-CigClassSpecialization class >> fromClassTemplate: aClassTemplate specializedype: aString [
+CigClassSpecialization class >> fromClassTemplate: aClassTemplate specializedTypes: aCollection [
 
 	^ self new 
 		fromClassTemplate: aClassTemplate 
-		specializedype: aString
+		specializedTypes: aCollection
 ]
 
 { #category : 'accessing' }
@@ -65,20 +66,20 @@ CigClassSpecialization >> fromClassTemplate: aClassTemplate [
 ]
 
 { #category : 'initialization' }
-CigClassSpecialization >> fromClassTemplate: aClassTemplate specializedype: aString [
+CigClassSpecialization >> fromClassTemplate: aClassTemplate specializedTypes: aCollection [
 
 	isAbstract := false.
 	superclass := (CigSuperclass newName: aClassTemplate basename)
 		parent: self;
 		typePath: aClassTemplate parent path allButFirst, { aClassTemplate basename };
 		yourself.
-	name := aClassTemplate basename, aString capitalized.
+	name := aClassTemplate specializedNameWithTypes: aCollection.
 	templateName := String streamContents: [ :stream | 
-		stream << aClassTemplate basename << '<' << aString << '>' ].
+		stream << aClassTemplate basename << '<' << aCollection asCommaString << '>' ].
 	self basicFromClassTemplate: aClassTemplate.
 	"I am just interested in class members here"
 	elements := aClassTemplate classMembers collect: [ :each | 
-		(each asSpecializationOf: aClassTemplate type: aString)
+		(each asSpecializationOf: aClassTemplate types: aCollection)
 			parent: self;
 			yourself ]
 ]

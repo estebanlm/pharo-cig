@@ -6,7 +6,8 @@ Class {
 		'name',
 		'typeReference',
 		'parsedType',
-		'element'
+		'element',
+		'definesFunction'
 	],
 	#classVars : [
 		'TypeMap'
@@ -33,20 +34,26 @@ CigType class >> createTypeMap [
 
 { #category : 'utilities' }
 CigType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: aString [ 
+
+	^ self 
+		replaceTypeClassTemplate: aClassTemplate 
+		types: { typeString } 
+		in: aString
+]
+
+{ #category : 'utilities' }
+CigType class >> replaceTypeClassTemplate: aClassTemplate types: aCollection in: aString [ 
 	| type classType classTemplateType |
-	
-	aClassTemplate templateTypeParameters size > 1 ifTrue: [ 
-		self error: 'I can''t handle more than one parameter class templates.' ].
 	
 	type := CigFunctionParser parse: aString.
 	classTemplateType := String streamContents: [ :stream | 
-			stream << aClassTemplate basename << '<' << aClassTemplate templateTypeParameters first name << '>' ].
+		stream << aClassTemplate basename << '<' << ((aClassTemplate templateTypeParameters collect: #name) asCommaString) << '>' ].
 	
 	(aString includesSubstring: classTemplateType)
 		ifFalse: [ self error: 'Class templates do not correspond to type to match.' ]. 
 	
 	classType := String streamContents: [ :stream | 
-			stream << aClassTemplate basename << '<' << typeString << '>' ].
+		stream << aClassTemplate basename << '<' << aCollection asCommaString << '>' ].
 		
 	^ String streamContents: [ :stream | 
 		(aString includesSubstring: 'const ')
@@ -60,18 +67,29 @@ CigType class >> replaceTypeClassTemplate: aClassTemplate type: typeString in: a
 
 { #category : 'utilities' }
 CigType class >> replaceTypeTemplate: aClassTemplate type: typeString in: aString [
-	| type |
 
+	^ self 
+		replaceTypeTemplate: aClassTemplate 
+		types: { typeString } 
+		in: aString
+
+]
+
+{ #category : 'utilities' }
+CigType class >> replaceTypeTemplate: aClassTemplate types: aCollection in: aString [
+	| type params index |
 
 	type := CigFunctionParser parse: aString.
 
-	(aClassTemplate templateTypeParameters anySatisfy: [ :each | each name = type name ])
+	params := aClassTemplate templateTypeParameters.
+	(params anySatisfy: [ :each | each name = type name ])
 		ifFalse: [ self error: 'Class templates do not correspond to type to match.' ]. 
 		
 	^ String streamContents: [ :stream | 
 		(aString includesSubstring: 'const ') 
 			ifTrue: [ stream << 'const ' ].
-		stream << typeString.
+		index := params indexOf: (params detect: [ :each | each name = type name ]).
+		stream << (aCollection at: index).
 		(type arity - (type isReference ifTrue: [ 1 ] ifFalse: [ 0 ])) timesRepeat: [ 
 			stream << '*' ].
 		type isReference ifTrue: [ 

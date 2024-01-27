@@ -1,6 +1,7 @@
 Class {
 	#name : 'CigTypeReference',
 	#superclass : 'CigElement',
+	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -96,7 +97,7 @@ CigTypeReference >> referenceType [
 ]
 
 { #category : 'private' }
-CigTypeReference >> specializeTypeClassTemplate: aClassTemplate type: typeString [
+CigTypeReference >> specializeTypeClassTemplate: aClassTemplate types: typeString [
 	| newTypeName |
 
 	newTypeName := CigType 
@@ -108,7 +109,7 @@ CigTypeReference >> specializeTypeClassTemplate: aClassTemplate type: typeString
 ]
 
 { #category : 'private' }
-CigTypeReference >> specializeTypeTemplate: aClassTemplate type: typeString [
+CigTypeReference >> specializeTypeTemplate: aClassTemplate types: typeString [
 	| newTypeName |
 
 	newTypeName := CigType 

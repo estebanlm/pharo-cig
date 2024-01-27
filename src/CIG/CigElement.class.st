@@ -6,7 +6,8 @@ Class {
 	#instVars : [
 		'name',
 		'parent',
-		'kind'
+		'kind',
+		'location'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -227,6 +228,12 @@ CigElement >> isNamespace [
 
 { #category : 'testing' }
 CigElement >> isNamespaceReference [
+
+	^ false
+]
+
+{ #category : 'testing' }
+CigElement >> isNonTypeTemplateParameter [
 
 	^ false
 ]

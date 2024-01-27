@@ -20,13 +20,19 @@ CigClassTemplate >> accept: aVisitor [
 
 { #category : 'converting' }
 CigClassTemplate >> addSubclassWithSpecializedType: aString [
+	
+	^ self addSubclassWithSpecializedTypes: { aString }
+]
+
+{ #category : 'converting' }
+CigClassTemplate >> addSubclassWithSpecializedTypes: aCollection [
 	"this creates the subclass an adds it as element (so it can be found in the 
 	 generating process)"
 	| specializedClass |
 	
-	specializedClass := self asSubclassWithSpecializedType: aString.
+	specializedClass := self asSubclassWithSpecializedTypes: aCollection.
 	self flag: #TODO. "ensure a replace. Demeters law!"
-	self parent elements remove: specializedClass ifAbsent: [  ].
+	self parent elements remove: specializedClass ifAbsent: [ ].
 	self parent addElement: specializedClass.
 	^ specializedClass
 ]
@@ -38,11 +44,11 @@ CigClassTemplate >> asBaseClass [
 ]
 
 { #category : 'converting' }
-CigClassTemplate >> asSubclassWithSpecializedType: aString [ 
+CigClassTemplate >> asSubclassWithSpecializedTypes: aCollection [
 	
 	^ CigClassSpecialization 
 		fromClassTemplate: self 
-		specializedype: aString
+		specializedTypes: aCollection
 ]
 
 { #category : 'accessing' }
@@ -107,9 +113,19 @@ CigClassTemplate >> pathName [
 ]
 
 { #category : 'accessing' }
+CigClassTemplate >> specializedNameWithTypes: aCollection [
+
+	^ String streamContents: [ :stream |
+		stream << self basename.
+		aCollection do: [ :each | 
+			stream << each capitalized ] ]
+]
+
+{ #category : 'accessing' }
 CigClassTemplate >> templateTypeParameters [
 	
-	^ self elements select: [ :each | each isTemplateTypeParameter ]
+	^ self elements select: [ :each | 
+		each isTemplateTypeParameter or: [ each isNonTypeTemplateParameter ] ]
 ]
 
 { #category : 'accessing' }

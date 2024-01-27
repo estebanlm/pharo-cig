@@ -36,6 +36,18 @@ CigCClassTemplateTemplateTest >> testGenerateClassTemplateHeader [
 ]
 
 { #category : 'tests' }
+CigCClassTemplateTemplateTest >> testMethodReturningClassTemplateArgumentHasCorrectType [
+	| element subclass method |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	subclass := element addSubclassWithSpecializedType: 'TScreenCell'.
+
+	method := subclass elementAtPath: { 'subspan(int)' }.
+
+	self assert: method returnTypeName equals: 'TSpan<TScreenCell>'
+]
+
+{ #category : 'tests' }
 CigCClassTemplateTemplateTest >> testMethodReturningConstTemplate [
 	| element subclass method template |
 
@@ -65,6 +77,18 @@ CigCClassTemplateTemplateTest >> testMethodReturningTemplateArgument [
 		equals: 'auto _result = new TSpan<TScreenCell>();
 *_result = ((TSpan<TScreenCell>*)self)->subspan(pos);
 return (tv_TSpanTScreenCell*)_result;'
+]
+
+{ #category : 'tests' }
+CigCClassTemplateTemplateTest >> testMethodReturningTemplateArgumentHasCorrectType [
+	| element subclass method |
+
+	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
+	subclass := element addSubclassWithSpecializedType: 'TScreenCell'.
+
+	method := subclass elementAtPath: { 'data()' }.
+
+	self assert: method returnTypeName equals: 'TScreenCell*'
 ]
 
 { #category : 'tests' }

@@ -24,10 +24,10 @@ CigClassMember class >> kind [
 ]
 
 { #category : 'converting' }
-CigClassMember >> asSpecializationOf: aClassTemplate type: typeString [
-	
+CigClassMember >> asSpecializationOf: aClassTemplate types: aCollection [
+
 	^ self copy 
-		specializeClassTemplate: aClassTemplate type: typeString;
+		specializeClassTemplate: aClassTemplate types: aCollection;
 		yourself
 ]
 
@@ -190,47 +190,47 @@ CigClassMember >> returnTypeName [
 ]
 
 { #category : 'private' }
-CigClassMember >> specializeClassTemplate: aClassTemplate type: typeString [
+CigClassMember >> specializeClassTemplate: aClassTemplate types: aCollection [
 
-	self specializeTypeTemplate: aClassTemplate type: typeString.
-	self specializeTypeClassTemplate: aClassTemplate type: typeString.
+	self specializeTypeTemplate: aClassTemplate types: aCollection.
+	self specializeTypeClassTemplate: aClassTemplate types: aCollection.
 
 	parameters := self parameters collect: [ :each |
 		(each isTemplateOf: aClassTemplate)
 			ifTrue: [ 
 				each copy
 					specializeClassTemplate: aClassTemplate 
-					type: typeString ]
+					types: aCollection ]
 			ifFalse: [ 
 				each copy ] ]
 ]
 
 { #category : 'private' }
-CigClassMember >> specializeTypeClassTemplate: aClassTemplate type: typeString [
+CigClassMember >> specializeTypeClassTemplate: aClassTemplate types: aCollection [
 
 	(self isReturnTypeClassTemplateOf: aClassTemplate) ifFalse: [ ^ self ]. 
 	
 	returnTypeName := CigType
 		replaceTypeClassTemplate: aClassTemplate
-		type: typeString
+		types: aCollection
 		in: returnTypeName.
 
 	self typeReference ifNotNil: [ :aTypeReference |
-		aTypeReference specializeTypeClassTemplate: aClassTemplate type: typeString ]
+		aTypeReference specializeTypeClassTemplate: aClassTemplate types: aCollection ]
 ]
 
 { #category : 'private' }
-CigClassMember >> specializeTypeTemplate: aClassTemplate type: typeString [
+CigClassMember >> specializeTypeTemplate: aClassTemplate types: aCollection [
 		
 	(self isReturnTypeTemplateOf: aClassTemplate) ifFalse: [ ^ self ].
 	 
 	returnTypeName := CigType 
 		replaceTypeTemplate: aClassTemplate
-		type: typeString
+		types: aCollection
 		in: returnTypeName.
 		
 	self typeReference ifNotNil: [ :aTypeReference |
-		aTypeReference specializeTypeTemplate: aClassTemplate type: typeString ]
+		aTypeReference specializeTypeTemplate: aClassTemplate types: aCollection ]
 ]
 
 { #category : 'accessing' }

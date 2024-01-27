@@ -129,7 +129,7 @@ CigCParameterTemplateTest >> testCastsCorrectReturnEvenWhenTypeReferenceNotAssoc
 	self assert: (template castReturn: 'x') equals: 'return x'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testGenerateArgumentClassSpecialization [
 	| template element |
 
@@ -141,7 +141,7 @@ CigCParameterTemplateTest >> testGenerateArgumentClassSpecialization [
 		equals: '*(TSpan<TScreenCell>*)cells'
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testGenerateArgumentPointerClassReference [
 	| template element |
 
@@ -163,6 +163,18 @@ CigCParameterTemplateTest >> testGenerateArgumentReferenceArgument [
 	self 
 		assert: template generateArgument
 		equals: '*index'
+]
+
+{ #category : 'tests - class' }
+CigCParameterTemplateTest >> testGenerateArgumentStdArrayAndConstant [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'drawGenericBlockShadow(FWidget *, const std::array<FChar, 4> &)' }.
+	template := element parameters second cTemplate.
+	
+	self 
+		assert: template generateArgument
+		equals: '*(std::array<finalcut::FChar, 4>*)std::memcpy((new std::array<finalcut::FChar, 4>).data(), arg2, 4)'
 ]
 
 { #category : 'tests - stdsharedptr' }

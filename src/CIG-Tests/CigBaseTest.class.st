@@ -41,6 +41,14 @@ CigBaseTest >> translatedUnitNoiseutils [
 ]
 
 { #category : 'accessing' }
+CigBaseTest >> translatedUnitStdArray [
+
+	^ CigTestResource current translatedUnitStdArray
+		prefix: 'Std';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigBaseTest >> translatedUnitTvision [
 
 	^ CigTestResource current translatedUnitTvision

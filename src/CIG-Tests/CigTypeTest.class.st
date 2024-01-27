@@ -32,6 +32,31 @@ CigTypeTest >> testReplaceTypeClassTemplateTypeIn [
 ]
 
 { #category : 'tests' }
+CigTypeTest >> testReplaceTypeClassTemplateTypesIn [
+	| element result |
+
+	element := self translatedUnitStdArray elementAtPath: { 'std'. 'array<_Tp, _Nm>' }.
+
+	result := CigType 
+		replaceTypeClassTemplate: element
+		types: { 'char'. 4 }
+		in: 'array<_Tp, _Nm> *'.
+	self assert: result equals: 'array<char, 4>*'.
+	
+	result := CigType 
+		replaceTypeClassTemplate: element
+		types: { 'char'. 4 }
+		in: 'array<_Tp, _Nm>'.
+	self assert: result equals: 'array<char, 4>'.
+
+	result := CigType
+		replaceTypeClassTemplate: element
+		types: { 'char'. 4 }
+		in: 'array<_Tp, _Nm>*'.
+	self assert: result equals: 'array<char, 4>*'
+]
+
+{ #category : 'tests' }
 CigTypeTest >> testReplaceTypeTemplateTypeIn [
 	| element result |
 
@@ -72,6 +97,25 @@ CigTypeTest >> testReplaceTypeTemplateTypeIn [
 		type: 'char'
 		in: 'T *&'.
 	self assert: result equals: 'char*&'
+]
+
+{ #category : 'tests' }
+CigTypeTest >> testReplaceTypeTemplateTypes [
+	| element result |
+
+	element := self translatedUnitStdArray elementAtPath: { 'std'. 'array<_Tp, _Nm>' }.
+
+	result := CigType 
+		replaceTypeTemplate: element
+		types: { 'char'. 'int' }
+		in: '_Tp *'.
+	self assert: result equals: 'char*'.
+	
+	result := CigType 
+		replaceTypeTemplate: element
+		types: { 'char'. 'int' }
+		in: '_Nm *'.
+	self assert: result equals: 'int*'
 ]
 
 { #category : 'tests' }
