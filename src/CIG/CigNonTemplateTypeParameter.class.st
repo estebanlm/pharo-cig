@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigNonTemplateTypeParameter',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
