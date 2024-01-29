@@ -6,17 +6,6 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'instance creation' }
-CigPharoTypedefGenerator class >> newFile: aLibraryGenerator typedef: aTypedef [ 
-	
-	^ self new
-		file: aLibraryGenerator;
-		unit: aTypedef root;
-		typedef: aTypedef;
-		yourself
-	
-]
-
 { #category : 'generating' }
 CigPharoTypedefGenerator >> generate [
 	"in fact, typedef just has to register to be added after"

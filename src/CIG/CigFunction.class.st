@@ -29,12 +29,6 @@ CigFunction >> accept: aVisitor [
 ]
 
 { #category : 'accessing' }
-CigFunction >> argumentsAsList [
-
-	^ (self parameters collect: [ :each | each asArgumentString ]) asCommaString
-]
-
-{ #category : 'accessing' }
 CigFunction >> cDeclaration [
 
 	^ self disambiguate: super cDeclaration
