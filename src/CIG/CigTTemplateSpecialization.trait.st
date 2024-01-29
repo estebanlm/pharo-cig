@@ -23,10 +23,7 @@ CigTTemplateSpecialization >> checkForTemplateSpecialization: aType name: aTypeN
 		| argType |
 		argType := aType templateArgumentAsType: index.
 		specializationTypes add: (argType spelling 
-			ifNotEmpty: [ :aName | | n |
-				n := (CigFunctionParser parse: aName) nameWithArity.
-				(aName -> n) crTrace.
-				n ]
+			ifNotEmpty: [ :aName | (CigFunctionParser parse: aName) nameWithArity ]
 			ifEmpty: [ self extractSpecializationValueIndex: index + 1 of: aTypeName ]) ]
 ]
 

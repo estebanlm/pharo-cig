@@ -27,12 +27,23 @@ Class {
 	#instVars : [
 		'withMakefile',
 		'withCBindings',
-		'cClassSpecializations'
+		'cClassSpecializations',
+		'including',
+		'withSpecialElements'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
 	#tag : 'Base'
 }
+
+{ #category : 'translating' }
+CigCppLibraryGenerator class >> translateUnitWithoutSpecial: aFileName [
+
+	^ self new
+		file: aFileName;
+		withoutSpecialElements;
+		translateUnit
+]
 
 { #category : 'building' }
 CigCppLibraryGenerator >> buildBindingsLibrary [
@@ -54,6 +65,16 @@ CigCppLibraryGenerator >> cSpecialize: aTemplateName as: aClassName [
 
 	cClassSpecializations ifNil: [ cClassSpecializations := OrderedDictionary new ].
 	cClassSpecializations at: aTemplateName put: aClassName
+]
+
+{ #category : 'accessing - scripting' }
+CigCppLibraryGenerator >> from: aFileName include: aCollection [
+
+	including ifNil: [ including := Dictionary new ].
+	(including 
+		at: aFileName
+		ifAbsentPut: [ OrderedCollection new ])
+		addAll: aCollection
 ]
 
 { #category : 'generating' }
@@ -117,10 +138,23 @@ CigCppLibraryGenerator >> hasMakefile [
 	^ withMakefile
 ]
 
+{ #category : 'testing' }
+CigCppLibraryGenerator >> hasSpecialElements [
+
+	^ withSpecialElements
+]
+
+{ #category : 'accessing' }
+CigCppLibraryGenerator >> including [
+
+	^ including ifNil: [ Dictionary new ]
+]
+
 { #category : 'initialization' }
 CigCppLibraryGenerator >> initialize [
 
 	super initialize.
+	self withSpecialElements.
 	self withCBindings.
 	self withMakefile
 ]
@@ -144,6 +178,12 @@ CigCppLibraryGenerator >> withMakefile [
 ]
 
 { #category : 'accessing - configuration' }
+CigCppLibraryGenerator >> withSpecialElements [
+
+	withSpecialElements := true
+]
+
+{ #category : 'accessing - configuration' }
 CigCppLibraryGenerator >> withoutCBindings [
 
 	withCBindings := false
@@ -153,4 +193,10 @@ CigCppLibraryGenerator >> withoutCBindings [
 CigCppLibraryGenerator >> withoutMakefile [
 
 	withMakefile := false
+]
+
+{ #category : 'accessing - configuration' }
+CigCppLibraryGenerator >> withoutSpecialElements [
+
+	withSpecialElements := false
 ]

@@ -40,6 +40,14 @@ Class {
 	#tag : 'Base'
 }
 
+{ #category : 'translating' }
+CigLibraryGenerator class >> translateUnit: aFileName [
+
+	^ self new 
+		file: aFileName;
+		translateUnit
+]
+
 { #category : 'accessing' }
 CigLibraryGenerator >> bindingsName [
 
@@ -184,7 +192,9 @@ CigLibraryGenerator >> cLibsAsArguments [
 { #category : 'private' }
 CigLibraryGenerator >> defaultPrefix [
 
-	^ (self bindingsName first: 2) capitalized
+	^ self bindingsName 
+		ifNotNil: [ :aName | (aName first: 2) capitalized ]
+		ifNil: [ '' ]
 ]
 
 { #category : 'utilies' }
@@ -203,7 +213,7 @@ CigLibraryGenerator >> exclude: aString [
 
 { #category : 'accessing' }
 CigLibraryGenerator >> excluding [
-	
+
 	^ excluding ifNil: [ #() ]
 ]
 

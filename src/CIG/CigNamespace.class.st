@@ -21,6 +21,15 @@ CigNamespace class >> kind [
 	^ CXCursor_Namespace
 ]
 
+{ #category : 'instance creation' }
+CigNamespace class >> newName: aName path: aPath [
+
+	^ (self newName: aName)
+		originPath: aPath;
+		yourself
+	
+]
+
 { #category : 'visiting' }
 CigNamespace >> accept: aVisitor [
 
@@ -63,6 +72,12 @@ CigNamespace >> originNamespaceName [
 	
 	^ String streamContents: [ :stream |
 		originPath asStringOn: stream delimiter: '::' ]
+]
+
+{ #category : 'initialization' }
+CigNamespace >> originPath: aPath [
+
+	originPath := aPath
 ]
 
 { #category : 'accessing' }

@@ -10,6 +10,26 @@ Class {
 }
 
 { #category : 'private' }
+CigCppTranslatedUnit >> addIncludedElements [
+
+	including keysAndValuesDo: [ :aFileName :aCollection |
+		| unit |
+		unit := CigCppLibraryGenerator translateUnitWithoutSpecial: aFileName.
+		aCollection do: [ :eachCppDeclaration | | element |
+			element := unit elementAtPath: (eachCppDeclaration substrings: '::').
+			self insertSpecialElement: element ] ]
+]
+
+{ #category : 'private' }
+CigCppTranslatedUnit >> addSpecialElements [
+
+	self specialElements do: [ :each | 
+		each traverseElementsDo: [ :anElement |
+			(self elementAtPath: anElement path allButFirst) 
+				ifNil: [ self insertSpecialElement: anElement ] ] ]
+]
+
+{ #category : 'private' }
 CigCppTranslatedUnit >> defaultClangArguments [
 	
 	^ { '-E'. '-xc++' }
@@ -18,9 +38,41 @@ CigCppTranslatedUnit >> defaultClangArguments [
 { #category : 'generating' }
 CigCppTranslatedUnit >> generateFrom: aHeader [
 
+	including := aHeader including.
 	super generateFrom: aHeader.	
-	"add special elements at the end"
-	elements addAll: self specialElements
+	self addIncludedElements.
+	aHeader hasSpecialElements 
+		ifTrue: [ self addSpecialElements ]
+]
+
+{ #category : 'private' }
+CigCppTranslatedUnit >> insertSpecialElement: element [
+
+	self 
+		insertSpecialElement: element 
+		at: element parent path allButFirst
+]
+
+{ #category : 'private' }
+CigCppTranslatedUnit >> insertSpecialElement: anElement at: aPath [
+
+	"root element"
+	aPath ifEmpty: [ 
+		self addElement: anElement.
+		^ anElement ].
+
+	"look for path to add element"
+	(self elementAtPath: aPath) ifNotNil: [ :parent | 
+		parent addElement: anElement.
+		^ anElement ].
+	
+	"add an empty namespace and then add the element there"
+	(self 
+		insertSpecialElement: (CigNamespace newName: aPath last path: aPath)
+		at: aPath allButLast)
+		addElement: anElement.
+
+	^ anElement
 ]
 
 { #category : 'private' }
