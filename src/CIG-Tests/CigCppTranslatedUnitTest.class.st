@@ -7,7 +7,7 @@ Class {
 }
 
 { #category : 'tests' }
-CigCppTranslatedUnitTest >> testAddSpecialElements [
+CigCppTranslatedUnitTest >> testAddIncludedElements [
 	| gen |
 	
 	gen := CigCppTranslatedUnit newForTest.

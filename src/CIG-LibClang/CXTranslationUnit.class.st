@@ -21,8 +21,8 @@ CXTranslationUnit class >> clang_parseIndex: CIdx
 		void *"const char **"command_line_args,
 		int num_command_line_args,
 		"struct CXUnsavedFile *"void *unsaved_files,
-		uint  	num_unsaved_files,
-		uint  	options 
+		uint num_unsaved_files,
+		uint options 
 	))
 ]
 
@@ -53,6 +53,24 @@ CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename arguments:
 			numCommandLineArguments: aCollection size
 			unsavedFiles: ExternalAddress null
 			numUnsavedFiles: 0
+			options: 0 ]
+		ensure: [ 
+			arguments freeArrayOfStrings ]
+]
+
+{ #category : 'instance creaton' }
+CXTranslationUnit class >> parseIndex: CIdx unsavedFile: anUnsavedFile arguments: aCollection [
+	| arguments |
+	
+	arguments := ExternalAddress arrayOfStringsFrom: aCollection.
+	^ [
+		self 
+			clang_parseIndex: CIdx 
+			fileName: anUnsavedFile Filename utf8StringFromCString
+			commandLineArguments: arguments
+			numCommandLineArguments: aCollection size
+			unsavedFiles: anUnsavedFile
+			numUnsavedFiles: 1
 			options: 0 ]
 		ensure: [ 
 			arguments freeArrayOfStrings ]

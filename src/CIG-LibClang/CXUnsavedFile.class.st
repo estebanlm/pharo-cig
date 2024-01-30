@@ -17,8 +17,8 @@ CXUnsavedFile class >> fieldsDesc [
 	"
 	
 	^ #(
-  char *Filename;
-  char *Contents;
+  void *Filename;
+  void *Contents;
   ulong Length;	
 	)
 ]
@@ -36,7 +36,7 @@ CXUnsavedFile class >> newFileName: aString contents: contentsString [
 { #category : 'accessing - structure variables' }
 CXUnsavedFile >> Contents [
 	"This method was automatically generated"
-	^ExternalData fromHandle: (handle pointerAt: OFFSET_CONTENTS) type: ExternalType char asPointerType
+	^ExternalData fromHandle: (handle pointerAt: OFFSET_CONTENTS) type: ExternalType void asPointerType
 ]
 
 { #category : 'accessing - structure variables' }
@@ -48,7 +48,7 @@ CXUnsavedFile >> Contents: anObject [
 { #category : 'accessing - structure variables' }
 CXUnsavedFile >> Filename [
 	"This method was automatically generated"
-	^ExternalData fromHandle: (handle pointerAt: OFFSET_FILENAME) type: ExternalType char asPointerType
+	^ExternalData fromHandle: (handle pointerAt: OFFSET_FILENAME) type: ExternalType void asPointerType
 ]
 
 { #category : 'accessing - structure variables' }

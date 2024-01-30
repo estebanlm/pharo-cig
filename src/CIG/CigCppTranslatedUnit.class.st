@@ -4,6 +4,10 @@ A translation unit for C++ sources
 Class {
 	#name : 'CigCppTranslatedUnit',
 	#superclass : 'CigTranslatedUnit',
+	#classTraits : '{} + TraitedClass',
+	#instVars : [
+		'including'
+	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
 	#tag : 'Base'
