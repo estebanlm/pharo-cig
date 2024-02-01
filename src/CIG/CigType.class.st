@@ -1,3 +1,8 @@
+"
+A class that contains a resolved type : in includes all information used to correctly generate C and Pharo bindings.
+It can parse the type from a string to generate a `CigTypeDeclaration` (which splits types into its components).
+It also collaborates with its owner and translation unit to retrieve an element reference when needed.
+"
 Class {
 	#name : 'CigType',
 	#superclass : 'Object',

@@ -123,6 +123,12 @@ CXCursor >> clang_getCursorSpelling [
 ]
 
 { #category : 'private' }
+CXCursor >> clang_getIncludedFile [
+
+	^ self ffiCall: #(CXFile clang_getIncludedFile(CXCursor self))
+]
+
+{ #category : 'private' }
 CXCursor >> clang_visitChildren: visitor [
 
 	^ self ffiCall: #(uint clang_visitChildren(
@@ -217,6 +223,12 @@ CXCursor >> enumConstantValue [
 CXCursor >> equalTo: aCursor [
 
 	^ self ffiCall: #(Boolean clang_equalCursors(CXCursor self	, CXCursor aCursor))
+]
+
+{ #category : 'accessing - include' }
+CXCursor >> includedFileName [
+
+	^ self clang_getIncludedFile fileName
 ]
 
 { #category : 'testing' }

@@ -68,3 +68,13 @@ CXUnsavedFile >> Length: anObject [
 	"This method was automatically generated"
 	^handle platformUnsignedLongAt: OFFSET_LENGTH put: anObject
 ]
+
+{ #category : 'finalizing' }
+CXUnsavedFile >> dispose [
+	| filename contents |
+
+	(filename := self Filename) isNull 
+		ifFalse: [ filename free ].
+	(contents := self Contents) isNull 
+		ifFalse: [ contents free ]
+]

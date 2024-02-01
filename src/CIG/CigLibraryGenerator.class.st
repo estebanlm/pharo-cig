@@ -24,12 +24,12 @@ Class {
 	#name : 'CigLibraryGenerator',
 	#superclass : 'Object',
 	#instVars : [
+		'imports',
 		'includePaths',
 		'withClasses',
 		'libs',
 		'prefix',
 		'bindingsName',
-		'fileReference',
 		'namespaces',
 		'defines',
 		'definesBeforeHeader',
@@ -228,15 +228,12 @@ CigLibraryGenerator >> excluding: aCollection [
 ]
 
 { #category : 'accessing - configuration' }
-CigLibraryGenerator >> file: aFileReferenceOrString [
+CigLibraryGenerator >> from: aString import: aCollection [
 
-	fileReference := aFileReferenceOrString asFileReference
-]
-
-{ #category : 'accessing' }
-CigLibraryGenerator >> fileReference [
-
-	^ fileReference
+	(imports 
+		at: aString
+		ifAbsentPut: [ CigImportTarget newName: aString ])
+		import: aCollection
 ]
 
 { #category : 'generating' }
@@ -245,7 +242,7 @@ CigLibraryGenerator >> generate [
 	self subclassResponsibility
 ]
 
-{ #category : 'generating' }
+{ #category : 'private - generating' }
 CigLibraryGenerator >> generatePharoClassesWith: aUnit [
 	
 	'Generating Pharo classes.' asBeaconSignal emit.
@@ -260,6 +257,21 @@ CigLibraryGenerator >> hasClasses [
 	^ withClasses
 ]
 
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> import: aString [
+
+	(imports 
+		at: aString
+		ifAbsentPut: [ CigImportTarget newName: aString ])
+		importAll
+]
+
+{ #category : 'accessing' }
+CigLibraryGenerator >> imports [
+
+	^ imports
+]
+
 { #category : 'testing' }
 CigLibraryGenerator >> includesNamespace: aString [
 
@@ -270,6 +282,7 @@ CigLibraryGenerator >> includesNamespace: aString [
 CigLibraryGenerator >> initialize [
 
 	super initialize.
+	imports := Dictionary new.
 	self withClasses
 ]
 
@@ -277,7 +290,7 @@ CigLibraryGenerator >> initialize [
 CigLibraryGenerator >> libraryClassName [
 	"Pharo class name to store the wrapped functions"
 	
-	^ self fileReference basenameWithoutExtension capitalized
+	^ self bindingsName basenameWithoutExtension capitalized
 ]
 
 { #category : 'accessing' }
@@ -291,12 +304,6 @@ CigLibraryGenerator >> listElements [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
 
 	^ self newTranslatedUnit listElementsFrom: self
-]
-
-{ #category : 'accessing' }
-CigLibraryGenerator >> makefileReference [
-	
-	^ FileLocator imageDirectory / 'Makefile'
 ]
 
 { #category : 'accessing - scripting' }

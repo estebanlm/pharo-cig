@@ -26,7 +26,7 @@ Class {
 CigCLibraryGenerator >> generate [
 	| unit |
 
-	('Initiate generation of {1}' format: { self fileReference basename }) asBeaconSignal emit.
+	('Initiate generation of {1}' format: { self bindingsName }) asBeaconSignal emit.
 	'Collecting nodes' asBeaconSignal emit.
 	
 	unit := self translateUnit.

@@ -42,6 +42,16 @@ CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename [
 
 { #category : 'instance creaton' }
 CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename arguments: aCollection [
+	
+	^ self 
+		parseIndex: CIdx 
+		fileName: source_filename 
+		arguments: aCollection
+		recordPreprocessor: false
+]
+
+{ #category : 'instance creaton' }
+CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename arguments: aCollection recordPreprocessor: aBoolean [
 	| arguments |
 	
 	arguments := ExternalAddress arrayOfStringsFrom: aCollection.
@@ -53,13 +63,23 @@ CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename arguments:
 			numCommandLineArguments: aCollection size
 			unsavedFiles: ExternalAddress null
 			numUnsavedFiles: 0
-			options: 0 ]
+			options: (aBoolean ifTrue: [ 1 ] ifFalse: [ 0 ]) ]
 		ensure: [ 
 			arguments freeArrayOfStrings ]
 ]
 
 { #category : 'instance creaton' }
 CXTranslationUnit class >> parseIndex: CIdx unsavedFile: anUnsavedFile arguments: aCollection [
+	
+	^ self 
+		parseIndex: CIdx 
+		unsavedFile: anUnsavedFile 
+		arguments: aCollection
+		recordPreprocessor: false
+]
+
+{ #category : 'instance creaton' }
+CXTranslationUnit class >> parseIndex: CIdx unsavedFile: anUnsavedFile arguments: aCollection recordPreprocessor: aBoolean [
 	| arguments |
 	
 	arguments := ExternalAddress arrayOfStringsFrom: aCollection.
@@ -71,7 +91,7 @@ CXTranslationUnit class >> parseIndex: CIdx unsavedFile: anUnsavedFile arguments
 			numCommandLineArguments: aCollection size
 			unsavedFiles: anUnsavedFile
 			numUnsavedFiles: 1
-			options: 0 ]
+			options: (aBoolean ifTrue: [ 1 ] ifFalse: [ 0 ]) ]
 		ensure: [ 
 			arguments freeArrayOfStrings ]
 ]

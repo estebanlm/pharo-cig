@@ -40,7 +40,7 @@ Class {
 CigCppLibraryGenerator class >> translateUnitWithoutSpecial: aFileName [
 
 	^ self new
-		file: aFileName;
+		import: aFileName;
 		withoutSpecialElements;
 		translateUnit
 ]
@@ -68,7 +68,7 @@ CigCppLibraryGenerator >> cSpecialize: aTemplateName as: aClassName [
 ]
 
 { #category : 'accessing - scripting' }
-CigCppLibraryGenerator >> from: aFileName include: aCollection [
+CigCppLibraryGenerator >> from: aFileName import: aCollection [
 
 	including ifNil: [ including := Dictionary new ].
 	(including 
@@ -81,7 +81,7 @@ CigCppLibraryGenerator >> from: aFileName include: aCollection [
 CigCppLibraryGenerator >> generate [
 	| unit |
 
-	('Initiate generation of {1}' format: { self fileReference basename }) asBeaconSignal emit.
+	('Initiate generation of {1}' format: { self bindingsName basename }) asBeaconSignal emit.
 	'Collecting nodes' asBeaconSignal emit.
 	
 	unit := self translateUnit.
@@ -157,6 +157,12 @@ CigCppLibraryGenerator >> initialize [
 	self withSpecialElements.
 	self withCBindings.
 	self withMakefile
+]
+
+{ #category : 'accessing' }
+CigCppLibraryGenerator >> makefileReference [
+	
+	^ FileLocator imageDirectory / 'Makefile'
 ]
 
 { #category : 'private' }

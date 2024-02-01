@@ -75,6 +75,17 @@ CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 		and: [ currentNode parent displayName = 'std' ]
 ]
 
+{ #category : 'private - generating' }
+CigTranslatedUnit >> currentIsPartOfLibrary: currentNode baseDirectory: baseDir [
+	| currentLocation result |
+
+	currentLocation := currentNode location fileName asFileReference parent fullName.
+	result := (currentLocation beginsWith: baseDir)
+		and: [ (self anyExclusionsMatches: currentNode) not  ].  
+
+	^ result
+]
+
 { #category : 'generating' }
 CigTranslatedUnit >> currentIsPartOfLibrary: currentNode header: aHeader [
 	| currentLocation result |
@@ -209,7 +220,42 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	defines := aHeader cDefines.
 	excluding := aHeader excluding.
 	elements := OrderedCollection new.
-	self traverseASTWith: aHeader
+	
+	aHeader imports valuesDo: [ :each |
+		self generateTarget: each from: aHeader ]
+]
+
+{ #category : 'generating' }
+CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
+	| index unit cursor fileName baseDirectory |
+	
+	fileName := self resolveIncludeFileName: aTarget name.
+	baseDirectory := fileName asFileReference parent fullName.
+	index := CXIndex createIndex: 0 diagnostics: 0. 
+	unit := CXTranslationUnit 
+		parseIndex: index 
+		fileName: fileName
+		arguments: 
+			self defaultClangArguments, 
+			aHeader cIncludePathsAsArguments,
+			aHeader cDefinesBeforeHeaderAsArguments,
+			aHeader cDefinesAsArguments.
+
+	cursor := unit cursor.
+	cursor visitChildren: [ :current :parent :data |
+		[ 
+			(self currentIsPartOfLibrary: current baseDirectory: baseDirectory)
+				ifTrue: [
+					self addNode: current parent: parent.
+					CXChildVisit recurse ]
+				ifFalse: [
+					CXChildVisit continue ] ]
+		on: Error 
+		fork: [ :e | e pass ] 
+		return: [ CXChildVisit break ] ].
+
+	unit dispose.
+	index dispose
 ]
 
 { #category : 'testing' }
@@ -357,6 +403,28 @@ CigTranslatedUnit >> prefix: aString [
 	prefix := aString
 ]
 
+{ #category : 'private' }
+CigTranslatedUnit >> resolveIncludeFileName: aString [
+
+	"resolve the easy way: if is an absolute path or a relative to something 
+	 the system can find, answer it"
+	aString asFileReference exists ifTrue: [ ^ aString ].
+	
+	^ self resolveIncludeFileNameFromTranslationUnit: aString	
+]
+
+{ #category : 'private' }
+CigTranslatedUnit >> resolveIncludeFileNameFromTranslationUnit: aString [	
+	"use a translation unit on a fake file to find it. This is a kind of a hack,
+	 but accordingly to the collective knowledge, the only way of getting this value
+	 from libclang"
+
+	^ CigImportResolver new 
+		arguments: self defaultClangArguments;
+		import: aString;
+		resolve
+]
+
 { #category : 'accessing' }
 CigTranslatedUnit >> root [
 	
@@ -388,7 +456,7 @@ CigTranslatedUnit >> selectVariadicFunctions [
 			ifTrue: [ stream << each ] ] ]
 ]
 
-{ #category : 'generating' }
+{ #category : 'private - generating' }
 CigTranslatedUnit >> traverseASTWith: aHeader [
 	| index unit cursor |
 	

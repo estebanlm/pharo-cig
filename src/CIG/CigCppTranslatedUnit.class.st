@@ -42,9 +42,7 @@ CigCppTranslatedUnit >> defaultClangArguments [
 { #category : 'generating' }
 CigCppTranslatedUnit >> generateFrom: aHeader [
 
-	including := aHeader including.
 	super generateFrom: aHeader.	
-	self addIncludedElements.
 	aHeader hasSpecialElements 
 		ifTrue: [ self addSpecialElements ]
 ]
