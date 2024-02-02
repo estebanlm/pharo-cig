@@ -7,16 +7,16 @@ Class {
 }
 
 { #category : 'tests' }
-CigTranslatedUnitTest >> testAddIncludedElements [
-	| gen |
-	
-	gen := CigCppTranslatedUnit newForTest.
-	gen including: { '/usr/include/c++/13.2.1/array' -> #('std::array') } asDictionary.
-	
-	gen addIncludedElements.
-	
-	self assert: (gen elementAtPath: { 'std'. 'array' }) isNotNil
-		
+CigTranslatedUnitTest >> testFromImport [
+	| unit |
+
+	unit := CigCppLibraryGenerator new
+		from: 'array' import: #('std::array');
+		withoutSpecialElements;
+		translateUnit.
+
+	self assert: (unit elementAtPath: { 'std'. 'array' }) notNil.
+	self assert: (unit elementAtPath: { 'std' }) elements size equals: 1
 ]
 
 { #category : 'tests' }

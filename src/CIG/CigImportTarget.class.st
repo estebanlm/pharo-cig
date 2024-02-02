@@ -43,3 +43,17 @@ CigImportTarget >> name [
 
 	^ name
 ]
+
+{ #category : 'adding' }
+CigImportTarget >> processNode: aCursor ifAdd: addBlock ifInsert: insertBlock [
+	| cppName |
+
+	imports ifNil: [ ^ addBlock value ].
+	
+	cppName := '::' join: aCursor path.
+	(cppName = 'std::array') ifTrue: [
+		imports crTrace
+		].
+	(imports includes: cppName)
+		ifTrue: [ insertBlock value ]
+]

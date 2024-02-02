@@ -28,7 +28,6 @@ Class {
 		'withMakefile',
 		'withCBindings',
 		'cClassSpecializations',
-		'including',
 		'withSpecialElements'
 	],
 	#category : 'CIG-Base',
@@ -65,16 +64,6 @@ CigCppLibraryGenerator >> cSpecialize: aTemplateName as: aClassName [
 
 	cClassSpecializations ifNil: [ cClassSpecializations := OrderedDictionary new ].
 	cClassSpecializations at: aTemplateName put: aClassName
-]
-
-{ #category : 'accessing - scripting' }
-CigCppLibraryGenerator >> from: aFileName import: aCollection [
-
-	including ifNil: [ including := Dictionary new ].
-	(including 
-		at: aFileName
-		ifAbsentPut: [ OrderedCollection new ])
-		addAll: aCollection
 ]
 
 { #category : 'generating' }
@@ -142,12 +131,6 @@ CigCppLibraryGenerator >> hasMakefile [
 CigCppLibraryGenerator >> hasSpecialElements [
 
 	^ withSpecialElements
-]
-
-{ #category : 'accessing' }
-CigCppLibraryGenerator >> including [
-
-	^ including ifNil: [ Dictionary new ]
 ]
 
 { #category : 'initialization' }

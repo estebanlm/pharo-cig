@@ -359,6 +359,17 @@ CXCursor >> parent [
 ]
 
 { #category : 'accessing' }
+CXCursor >> path [
+
+	^ self withAllParents allButFirst collect: [ :each | 
+			| elementName |
+			elementName := each displayName.
+			each kind = CXCursor_ClassTemplate
+				ifTrue: [ elementName := elementName copyUpTo: $< ].
+			elementName ]
+]
+
+{ #category : 'accessing' }
 CXCursor >> rawComment [
 	| string |
 	

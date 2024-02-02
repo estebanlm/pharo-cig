@@ -1,6 +1,10 @@
 Class {
 	#name : 'CigNonTemplateTypeParameter',
 	#superclass : 'CigElement',
+	#classTraits : '{} + TraitedClass',
+	#instVars : [
+		'parentSpelling'
+	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -16,6 +20,13 @@ CigNonTemplateTypeParameter class >> kind [
 CigNonTemplateTypeParameter >> accept: aVisitor [
 	"nothing, handled by its parent (a class template)"
 	
+]
+
+{ #category : 'initialization' }
+CigNonTemplateTypeParameter >> fromCursor: aCursor [
+
+	super fromCursor: aCursor.
+	parentSpelling := aCursor parent spelling.
 ]
 
 { #category : 'as yet unclassified' }

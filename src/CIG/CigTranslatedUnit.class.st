@@ -67,7 +67,7 @@ CigTranslatedUnit >> allDefines [
 	^ self definesBeforeHeader, self defines
 ]
 
-{ #category : 'private' }
+{ #category : 'private - generating' }
 CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 
 	self flag: #TODO. "refactor this to be able to add exlusions in a non exclusive way"
@@ -75,23 +75,12 @@ CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 		and: [ currentNode parent displayName = 'std' ]
 ]
 
-{ #category : 'private - generating' }
-CigTranslatedUnit >> currentIsPartOfLibrary: currentNode baseDirectory: baseDir [
-	| currentLocation result |
-
-	currentLocation := currentNode location fileName asFileReference parent fullName.
-	result := (currentLocation beginsWith: baseDir)
-		and: [ (self anyExclusionsMatches: currentNode) not  ].  
-
-	^ result
-]
-
 { #category : 'generating' }
-CigTranslatedUnit >> currentIsPartOfLibrary: currentNode header: aHeader [
-	| currentLocation result |
+CigTranslatedUnit >> currentIsPartOfLibrary: currentNode baseDirectory: baseDir [
+	| location result |
 
-	currentLocation := currentNode location fileName asFileReference parent fullName.
-	result := (currentLocation beginsWith: aHeader fileReference parent fullName)
+	location := currentNode location.
+	result := location isInSystemHeader not
 		and: [ (self anyExclusionsMatches: currentNode) not  ].  
 
 	^ result
@@ -246,7 +235,10 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 		[ 
 			(self currentIsPartOfLibrary: current baseDirectory: baseDirectory)
 				ifTrue: [
-					self addNode: current parent: parent.
+					aTarget 
+						processNode: current
+						ifAdd: [ self addNode: current parent: parent ]
+						ifInsert: [ self insertNode: current ].
 					CXChildVisit recurse ]
 				ifFalse: [
 					CXChildVisit continue ] ]
@@ -270,6 +262,54 @@ CigTranslatedUnit >> initialize [
 	super initialize.
 	elements := OrderedCollection new.
 	self withUnknown
+]
+
+{ #category : 'private' }
+CigTranslatedUnit >> insertElement: element [
+	"inserts an element. 
+	 oposite to #addElement: it inserts it in its path, by creating namespaces between the 
+	 root at the element if needed."
+
+	self 
+		insertElement: element 
+		at: element parent path allButFirst
+]
+
+{ #category : 'private' }
+CigTranslatedUnit >> insertElement: anElement at: aPath [
+	"complement of #insertElement: (see there for details). 
+	 this method should not be used directly."
+
+	"root element"
+	aPath ifEmpty: [ 
+		self addElement: anElement.
+		^ anElement ].
+
+	"look for path to add element"
+	(self elementAtPath: aPath) ifNotNil: [ :parent | 
+		parent addElement: anElement.
+		^ anElement ].
+	
+	"add an empty namespace and then add the element there"
+	(self 
+		insertElement: (CigNamespace newName: aPath last path: aPath)
+		at: aPath allButLast)
+		addElement: anElement.
+
+	^ anElement
+]
+
+{ #category : 'private' }
+CigTranslatedUnit >> insertNode: aCursor [
+	"inserts an element. 
+	 oposite to #addElement: it inserts it in its path, by creating namespaces between the 
+	 root at the element if needed."
+	| element |
+	
+	element := self newNode: aCursor.
+	self 
+		insertElement: element 
+		at: aCursor parent path
 ]
 
 { #category : 'inspecting' }
@@ -309,7 +349,7 @@ CigTranslatedUnit >> isGeneratingWithUnknown [
 	^ registerUnknown
 ]
 
-{ #category : 'private' }
+{ #category : 'testing' }
 CigTranslatedUnit >> isNamespace [
 	"for polymorphism with elements"
 	
@@ -403,6 +443,13 @@ CigTranslatedUnit >> prefix: aString [
 	prefix := aString
 ]
 
+{ #category : 'utilities' }
+CigTranslatedUnit >> removeAllUnknowns [
+
+	self traverseElementsDo: [ :eachElement | 
+		eachElement elements removeAll: (eachElement elements select: [ :each | each isUnknown ]) ]
+]
+
 { #category : 'private' }
 CigTranslatedUnit >> resolveIncludeFileName: aString [
 
@@ -454,37 +501,6 @@ CigTranslatedUnit >> selectVariadicFunctions [
 			((each isFunction or: [ each isClassMember ])
 			and: [ each isVariadic ])
 			ifTrue: [ stream << each ] ] ]
-]
-
-{ #category : 'private - generating' }
-CigTranslatedUnit >> traverseASTWith: aHeader [
-	| index unit cursor |
-	
-	index := CXIndex createIndex: 0 diagnostics: 0. 
-	unit := CXTranslationUnit 
-		parseIndex: index 
-		fileName: aHeader fileReference fullName
-		arguments: 
-			self defaultClangArguments, 
-			aHeader cIncludePathsAsArguments,
-			aHeader cDefinesBeforeHeaderAsArguments,
-			aHeader cDefinesAsArguments.
-
-	cursor := unit cursor.
-	cursor visitChildren: [ :current :parent :data |
-		[ 
-			(self currentIsPartOfLibrary: current header: aHeader)
-				ifTrue: [ 
-					self addNode: current parent: parent.
-					CXChildVisit recurse ]
-				ifFalse: [
-					CXChildVisit continue ] ]
-		on: Error 
-			fork: [ :e | e debug ] 
-			return: [ CXChildVisit continue ] ].
-
-	unit dispose.
-	index dispose
 ]
 
 { #category : 'private - traversing' }

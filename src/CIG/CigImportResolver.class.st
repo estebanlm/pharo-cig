@@ -13,6 +13,17 @@ Class {
 	#tag : 'Base'
 }
 
+{ #category : 'resolving' }
+CigImportResolver class >> sanitize: aString [
+	| sanitizedFileName localName |
+
+	sanitizedFileName	:= aString asFileReference canonicalize fullName.
+	localName := FileLocator workingDirectory fullName.
+	^ (sanitizedFileName beginsWith: localName)
+		ifTrue: [ sanitizedFileName allButFirst: localName size ]
+		ifFalse: [ sanitizedFileName ]
+]
+
 { #category : 'accessing' }
 CigImportResolver >> arguments [
 
@@ -73,11 +84,6 @@ int main() \{
 
 { #category : 'resolving' }
 CigImportResolver >> sanitize: aString [
-	| sanitizedFileName localName |
 
-	sanitizedFileName	:= aString asFileReference canonicalize fullName.
-	localName := FileLocator workingDirectory fullName.
-	^ (sanitizedFileName beginsWith: localName)
-		ifTrue: [ sanitizedFileName allButFirst: localName size ]
-		ifFalse: [ sanitizedFileName ]
+	^ self class sanitize: aString
 ]
