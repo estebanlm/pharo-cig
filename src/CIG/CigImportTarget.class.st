@@ -51,9 +51,6 @@ CigImportTarget >> processNode: aCursor ifAdd: addBlock ifInsert: insertBlock [
 	imports ifNil: [ ^ addBlock value ].
 	
 	cppName := '::' join: aCursor path.
-	(cppName = 'std::array') ifTrue: [
-		imports crTrace
-		].
 	(imports includes: cppName)
 		ifTrue: [ insertBlock value ]
 ]

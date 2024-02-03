@@ -57,13 +57,13 @@ CigCppLibraryGenerator >> cClassSpecializations: aDictionary [
 ]
 
 { #category : 'accessing - scripting' }
-CigCppLibraryGenerator >> cSpecialize: aTemplateName as: aClassName [
+CigCppLibraryGenerator >> cSpecialize: aTemplateName [
 	"add a direct class specialization (process of generation will try to detect the ones 
 	 client use, but sometimes you want to add some extra maps to use by yourself that are 
 	 not specified."
 
-	cClassSpecializations ifNil: [ cClassSpecializations := OrderedDictionary new ].
-	cClassSpecializations at: aTemplateName put: aClassName
+	cClassSpecializations ifNil: [ cClassSpecializations := Set new ].
+	cClassSpecializations add: aTemplateName
 ]
 
 { #category : 'generating' }
