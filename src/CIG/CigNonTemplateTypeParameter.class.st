@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigNonTemplateTypeParameter',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'parentSpelling'
 	],
