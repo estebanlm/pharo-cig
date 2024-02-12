@@ -13,6 +13,17 @@ Class {
 }
 
 { #category : 'private' }
+CigTypeSpecializationCollector >> checkForDefinedTemplateSpecialization: aClassTemplate [
+	| cppDecl |
+		
+	cppDecl := aClassTemplate cppDeclaration.
+	aClassTemplate root classSpecializations do: [ :each | | parsed |
+		parsed := CigFunctionParser parse: each.
+		parsed name = cppDecl 
+			ifTrue: [ collected add: parsed templates ] ]
+]
+
+{ #category : 'private' }
 CigTypeSpecializationCollector >> checkForTemplateSpecialization: aFunction [
 		
 	aFunction isTemplateSpecialization ifFalse: [ ^ self ].
@@ -38,6 +49,13 @@ CigTypeSpecializationCollector >> typeName [
 CigTypeSpecializationCollector >> typeName: aString [
 
 	typeName := aString
+]
+
+{ #category : 'visiting' }
+CigTypeSpecializationCollector >> visitClassTemplate: aClassTemplate [
+
+	self checkForDefinedTemplateSpecialization: aClassTemplate.
+	super visitClassTemplate: aClassTemplate
 ]
 
 { #category : 'visiting' }

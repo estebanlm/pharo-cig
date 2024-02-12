@@ -20,6 +20,18 @@ CigTranslatedUnitTest >> testFromImport [
 ]
 
 { #category : 'tests' }
+CigTranslatedUnitTest >> testFromImportImportsAlsoInnerElements [
+	| unit |
+
+	unit := CigCppLibraryGenerator new
+		from: 'array' import: #('std::array');
+		withoutSpecialElements;
+		translateUnit.
+
+	self assert: (unit elementAtPath: { 'std'. 'array' }) elements isNotEmpty
+]
+
+{ #category : 'tests' }
 CigTranslatedUnitTest >> testResolveIncludeFileName [
 	| unit |
 

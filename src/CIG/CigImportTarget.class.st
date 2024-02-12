@@ -18,6 +18,14 @@ CigImportTarget class >> newName: aString [
 		yourself
 ]
 
+{ #category : 'private' }
+CigImportTarget >> belongsToImportedElement: aCursor [
+	| path |
+	
+	path := aCursor path allButLast.
+	^ self isPathImported: path	
+]
+
 { #category : 'accessing' }
 CigImportTarget >> import: aCollection [
 
@@ -38,6 +46,14 @@ CigImportTarget >> initializeName: aName [
 	name := aName
 ]
 
+{ #category : 'private' }
+CigImportTarget >> isPathImported: path [	
+
+	path ifEmpty: [ ^ false ].
+	(imports includes: ('::' join: path)) ifTrue: [ ^ true ].
+	^ self isPathImported: path allButLast
+]
+
 { #category : 'accessing' }
 CigImportTarget >> name [
 
@@ -48,7 +64,8 @@ CigImportTarget >> name [
 CigImportTarget >> processNode: aCursor ifAdd: addBlock ifInsert: insertBlock [
 	| cppName |
 
-	imports ifNil: [ ^ addBlock value ].
+	(imports isNil or: [ self belongsToImportedElement: aCursor ])
+		ifTrue: [ ^ addBlock value ].
 	
 	cppName := '::' join: aCursor path.
 	(imports includes: cppName)

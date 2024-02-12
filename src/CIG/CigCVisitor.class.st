@@ -172,7 +172,11 @@ CigCVisitor >> visitClassTemplate: aClassTemplate [
 
 	"we add one subclass for each specialized type"
 	aClassTemplate typeSpecializations do: [ :each |
-		self visitClass: (aClassTemplate addSubclassWithSpecializedType: each) ]
+		self flag: #TODO. "In fact, I should not receive any string here, just arrays 
+		(with potentially just one element)"
+		self visitClass: (aClassTemplate addSubclassWithSpecializedTypes: (each isString
+			ifTrue: [ { each } ]
+			ifFalse: [ each ])) ]
 ]
 
 { #category : 'visiting' }

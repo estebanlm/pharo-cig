@@ -4,24 +4,14 @@ A translation unit for C++ sources
 Class {
 	#name : 'CigCppTranslatedUnit',
 	#superclass : 'CigTranslatedUnit',
+	#classTraits : '{} + TraitedClass',
 	#instVars : [
-		'including'
+		'classSpecializations'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
 	#tag : 'Base'
 }
-
-{ #category : 'private' }
-CigCppTranslatedUnit >> addIncludedElements [
-
-	including keysAndValuesDo: [ :aFileName :aCollection |
-		| unit |
-		unit := CigCppLibraryGenerator translateUnitWithoutSpecial: aFileName.
-		aCollection do: [ :eachCppDeclaration | | element |
-			element := unit elementAtPath: (eachCppDeclaration substrings: '::').
-			self insertElement: element ] ]
-]
 
 { #category : 'private' }
 CigCppTranslatedUnit >> addSpecialElements [
@@ -30,6 +20,12 @@ CigCppTranslatedUnit >> addSpecialElements [
 		each traverseElementsDo: [ :anElement |
 			(self elementAtPath: anElement path allButFirst) 
 				ifNil: [ self insertElement: anElement ] ] ]
+]
+
+{ #category : 'accessing' }
+CigCppTranslatedUnit >> classSpecializations [
+
+	^ classSpecializations ifNil: [ #() ]
 ]
 
 { #category : 'private' }
@@ -41,6 +37,7 @@ CigCppTranslatedUnit >> defaultClangArguments [
 { #category : 'generating' }
 CigCppTranslatedUnit >> generateFrom: aHeader [
 
+	classSpecializations := aHeader cClassSpecializations.
 	super generateFrom: aHeader.	
 	aHeader hasSpecialElements 
 		ifTrue: [ self addSpecialElements ]

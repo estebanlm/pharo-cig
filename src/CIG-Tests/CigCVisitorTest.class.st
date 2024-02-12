@@ -61,6 +61,28 @@ typedef void tv_TSpanTScreenCell;
 typedef void tv_TSpanUint32_t;'
 ]
 
+{ #category : 'tests - classtemplate' }
+CigCVisitorTest >> testVisitClassTemplateGeneratesDefinedSpecialization [
+	| unit element visitor result |
+
+	unit := CigCppLibraryGenerator new
+		prefix: 'xx';
+		from: 'array' import: #('std::array');
+		cSpecialize: 'std::array<char, 4>';
+		withoutSpecialElements;
+		translateUnit.
+
+	element := unit elementAtPath: { 'std'. 'array' }.
+	
+	visitor := CigCVisitor newForTest.
+	visitor visitClassTemplate: element.
+	
+	result := visitor hStream contents.
+	
+	"check for different generated methods"
+	self assert: (result includesSubstring: 'void xx_std_arrayChar4_dispose(xx_std_arrayChar4* self);')
+]
+
 { #category : 'tests - class' }
 CigCVisitorTest >> testVisitClassWithDispose [
 	| element visitor |

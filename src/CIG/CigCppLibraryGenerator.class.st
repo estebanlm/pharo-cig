@@ -51,6 +51,13 @@ CigCppLibraryGenerator >> buildBindingsLibrary [
 ]
 
 { #category : 'accessing - configuration' }
+CigCppLibraryGenerator >> cClassSpecializations [
+
+	^ cClassSpecializations
+
+]
+
+{ #category : 'accessing - configuration' }
 CigCppLibraryGenerator >> cClassSpecializations: aDictionary [
 
 	cClassSpecializations := aDictionary
