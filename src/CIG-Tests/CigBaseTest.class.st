@@ -44,7 +44,7 @@ CigBaseTest >> translatedUnitNoiseutils [
 CigBaseTest >> translatedUnitStdArray [
 
 	^ CigTestResource current translatedUnitStdArray
-		prefix: 'Std';
+		prefix: 'xx';
 		yourself
 ]
 

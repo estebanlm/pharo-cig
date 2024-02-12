@@ -80,7 +80,10 @@ CigClassSpecialization >> fromClassTemplate: aClassTemplate specializedTypes: aC
 	elements := aClassTemplate classMembers collect: [ :each | 
 		(each asSpecializationOf: aClassTemplate types: aCollection)
 			parent: self;
-			yourself ]
+			yourself ].
+	"if there is no constructor, add one by default"
+	self constructors ifEmpty: [ 
+		self addElement: (CigConstructor newDefaultConstructorOf: self) ]
 ]
 
 { #category : 'testing' }

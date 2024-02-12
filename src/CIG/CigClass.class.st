@@ -74,6 +74,12 @@ CigClass >> comment [
 	^ comment
 ]
 
+{ #category : 'accessing' }
+CigClass >> constructors [
+	
+	^ self elements select: [ :each | each isClassMember and: [ each isConstructor ] ]
+]
+
 { #category : 'initialization' }
 CigClass >> fromCursor: aCursor [
 

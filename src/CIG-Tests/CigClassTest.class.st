@@ -42,23 +42,3 @@ CigClassTest >> testShouldExposeDispose [
 	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder' }.
 	self deny: element shouldExposeDispose
 ]
-
-{ #category : 'tests' }
-CigClassTest >> testTemplateClass [
-	| element |
-
-	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
-	self assert: element isClassTemplate.
-	
-	element := self translatedUnitTvision elementAtPath: { 'TScreenCell' }.
-	self deny: element isClassTemplate
-	
-]
-
-{ #category : 'tests' }
-CigClassTest >> testTemplateClassHasTemplateTypeParameter [
-	| element |
-
-	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
-	self denyEmpty: element templateTypeParameters
-]

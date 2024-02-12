@@ -12,6 +12,12 @@ CigConstructor class >> kind [
 	^ CXCursor_Constructor
 ]
 
+{ #category : 'instance creation' }
+CigConstructor class >> newDefaultConstructorOf: aClass [ 
+	
+	^ self new forClass: aClass
+]
+
 { #category : 'visiting' }
 CigConstructor >> accept: aVisitor [
 
@@ -46,6 +52,19 @@ CigConstructor >> canBeExported [
 CigConstructor >> cppDeclaration [
 
 	^ self parent cppDeclaration
+]
+
+{ #category : 'initialization' }
+CigConstructor >> forClass: aClass [
+	
+	name := aClass name, '()'.
+	kind := self class kind.
+	spelling := aClass name.
+	returnTypeName := 'void'.
+	isPublic := true.
+	isDeleted := false.
+	isVariadic := false.
+	parameters := #()
 ]
 
 { #category : 'testing' }
