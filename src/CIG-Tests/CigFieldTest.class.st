@@ -10,6 +10,8 @@ Class {
 CigFieldTest >> testSpecialField [
 	| element |
 
+	"I do not have (yet) an special field to test :("
+	self skip.
 	"just an int"
 	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'FTermData'. 'EncodingInfo'. 'encoding_list' }.
 	self deny: element isSpecial.

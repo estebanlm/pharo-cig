@@ -81,6 +81,19 @@ auto _result = _tmp.get();
 return (FColorPalette*)_result'
 ]
 
+{ #category : 'tests - stdsizet' }
+CigCParameterTemplateTest >> testCastReturnStdSizeTType [
+	| template element |
+
+	"this is defined with a typedef to a std:size_t element"
+	element := self translatedUnitStdArray elementAtPath: { 'std'. 'array'. 'size()' }.
+	template := CigCParameterTemplate forReturn: element.
+	
+	self 
+		assert: (template castReturn: 'x') 
+		equals: 'return (size_t)x'
+]
+
 { #category : 'tests - stdstring' }
 CigCParameterTemplateTest >> testCastReturnStdStringType [
 	| template element |
@@ -499,4 +512,17 @@ CigCParameterTemplateTest >> testResolvePointerToStructType [
 	template := CigCParameterTemplate forParameter: element parameters first.
 	
 	self assert: template class equals: CigCParameterPointerToStructTypeTemplate
+]
+
+{ #category : 'tests - stdsizet' }
+CigCParameterTemplateTest >> testStdSizeTArgument [
+	| template element |
+
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'getFAttributeByte(const FCharAttribute &, std::size_t)' }.
+	template := element parameters second cTemplate.
+	
+	"std::size_t will just pass (it will be auto-casted)"
+	self 
+		assert: template generateArgument
+		equals: 'index'
 ]
