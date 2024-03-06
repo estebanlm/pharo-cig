@@ -150,6 +150,12 @@ CigCppLibraryGenerator >> initialize [
 ]
 
 { #category : 'accessing' }
+CigCppLibraryGenerator >> libraryName [
+
+	^ self cFileReference basenameWithoutExtension
+]
+
+{ #category : 'accessing' }
 CigCppLibraryGenerator >> makefileReference [
 	
 	^ FileLocator imageDirectory / 'Makefile'

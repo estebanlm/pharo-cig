@@ -296,7 +296,7 @@ CigLibraryGenerator >> libraryClassName [
 { #category : 'accessing' }
 CigLibraryGenerator >> libraryName [
 
-	^ self cFileReference basenameWithoutExtension
+	^ self subclassResponsibility
 ]
 
 { #category : 'utilies' }

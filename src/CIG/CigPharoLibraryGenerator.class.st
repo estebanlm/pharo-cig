@@ -55,7 +55,7 @@ CigPharoLibraryGenerator >> generate [
 
 { #category : 'private' }
 CigPharoLibraryGenerator >> linuxPlatformTemplate [
-		
+
 	^ String streamContents: [ :stream | 
 		stream << 'unix64LibraryName'; cr.
 		stream cr; tab.

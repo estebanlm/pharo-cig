@@ -28,6 +28,32 @@ CigPharoVisitorTest >> testAddFFILibrary [
 ]
 
 { #category : 'tests - base' }
+CigPharoVisitorTest >> testAddFFILibraryWhenCPPUsesBindings [
+	| visitor class |
+	
+	visitor := CigPharoVisitor newForTestAsCPP.
+	visitor addFFILibrary: self translatedUnitNoiseutils.
+	
+	class := self class environment classNamed: 'LibGeneratedForTest'.
+	self assert: class notNil.
+	self assert: (class methods anySatisfy: [ :each | each selector = #unix64LibraryName ]).
+	self assert: ((class >> #unix64LibraryName) sourceCode includesSubstring: 'GeneratedForTest_bindings.so')
+]
+
+{ #category : 'tests - base' }
+CigPharoVisitorTest >> testAddFFILibraryWhenCUsesLibrary [
+	| visitor class |
+	
+	visitor := CigPharoVisitor newForTestAsC.
+	visitor addFFILibrary: self translatedUnitRaylib.
+	
+	class := self class environment classNamed: 'LibGeneratedForTest'.
+	self assert: class notNil.
+	self assert: (class methods anySatisfy: [ :each | each selector = #unix64LibraryName ]).
+	self assert: ((class >> #unix64LibraryName) sourceCode includesSubstring: 'libGeneratedForTest.so')
+]
+
+{ #category : 'tests - base' }
 CigPharoVisitorTest >> testAddFFITrait [
 	| visitor trait |
 	

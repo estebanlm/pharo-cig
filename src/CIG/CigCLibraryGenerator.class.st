@@ -28,10 +28,16 @@ CigCLibraryGenerator >> generate [
 
 	('Initiate generation of {1}' format: { self bindingsName }) asBeaconSignal emit.
 	'Collecting nodes' asBeaconSignal emit.
-	
+
 	unit := self translateUnit.
 
 	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ]
+]
+
+{ #category : 'accessing' }
+CigCLibraryGenerator >> libraryName [
+
+	^ 'lib', self bindingsName
 ]
 
 { #category : 'private' }
