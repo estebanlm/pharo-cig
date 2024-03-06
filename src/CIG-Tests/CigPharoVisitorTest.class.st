@@ -536,6 +536,41 @@ CigPharoVisitorTest >> testVisitTypedefIsAddedToTypes [
 ]
 
 { #category : 'tests - typedef' }
+CigPharoVisitorTest >> testVisitTypedefSkipsHomonym [
+	| element visitor |
+
+	element := self translatedUnitRaylib 
+		findElementMatching: [ :anElement | 
+			anElement kind = CigTypedef kind
+			and: [ anElement name = 'Vector2' ] ].
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitTypedef: element.
+
+	self assert: visitor types isEmpty
+]
+
+{ #category : 'tests - typedef' }
+CigPharoVisitorTest >> testVisitTypedefToExistingStructure [
+	| element visitor |
+
+	element := self translatedUnitRaylib elementAtPath: { 'Quaternion' }.	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitTypedef: element.
+
+	self 
+		assert: visitor types keys first
+		equals: 'xx_Quaternion'.
+		
+	self 
+		assert: visitor types values first
+		equals: 'XxVector4'
+]
+
+{ #category : 'tests - typedef' }
 CigPharoVisitorTest >> testVisitTypedefUlong [
 	| element visitor |
 

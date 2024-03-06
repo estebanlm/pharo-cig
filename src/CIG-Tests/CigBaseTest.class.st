@@ -41,6 +41,14 @@ CigBaseTest >> translatedUnitNoiseutils [
 ]
 
 { #category : 'accessing' }
+CigBaseTest >> translatedUnitRaylib [
+
+	^ CigTestResource current translatedUnitRaylib
+		prefix: 'ray';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigBaseTest >> translatedUnitStdArray [
 
 	^ CigTestResource current translatedUnitStdArray

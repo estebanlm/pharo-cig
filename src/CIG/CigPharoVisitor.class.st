@@ -229,7 +229,10 @@ CigPharoVisitor >> visitStructure: aStructure [
 { #category : 'visiting' }
 CigPharoVisitor >> visitTypedef: aTypedef [
 	
-	aTypedef isPublic ifFalse: [ ^ self ].
+	(aTypedef isPublic not 
+		or: [ aTypedef isHomonym ]) 
+		ifTrue: [ ^ self ].
+
 	(CigPharoTypedefGenerator newFile: self file element: aTypedef) generateOn: self
 ]
 

@@ -27,9 +27,14 @@ CigCTypedefTemplate >> generateCType [
 
 { #category : 'generating' }
 CigCTypedefTemplate >> generateFFIType [
-	| ffiType shouldEnclose |
+	| ffiType typeName shouldEnclose |
 
-	ffiType := CigType resolveFFIType: self typeName.
+	typeName := self typeName.
+	"it may point to an element defined here"
+	(self lookupType: typeName) 
+		ifNotNil: [ :anElement | ^ anElement phDeclaration ].
+	"otherwise resolve it as a C type"
+	ffiType := CigType resolveFFIType: typeName.
 	shouldEnclose := ffiType includesAnyOf: '*&'. 
 	^ String streamContents: [ :stream |
 		stream << '#'.
@@ -39,9 +44,15 @@ CigCTypedefTemplate >> generateFFIType [
 ]
 
 { #category : 'private' }
+CigCTypedefTemplate >> lookupType: aString [
+
+	^ self element parent scopeLookup: aString
+]
+
+{ #category : 'private' }
 CigCTypedefTemplate >> resolveTypeName: aString [ 
 	
-	^ (self element parent scopeLookup: aString)
+	^ (self lookupType: aString)
 		ifNotNil: [ :anElement | anElement cppDeclaration ]
 		ifNil: [ aString ]
 ]

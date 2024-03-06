@@ -50,6 +50,15 @@ CigPharoBaseTest >> translatedUnitNoiseutils [
 ]
 
 { #category : 'accessing' }
+CigPharoBaseTest >> translatedUnitRaylib [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnitRaylib
+		prefix: 'xx';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigPharoBaseTest >> translatedUnitTvision [
 
 	"change prefix to ensure it does not collides with existing classes"
