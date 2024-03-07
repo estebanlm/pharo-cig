@@ -23,7 +23,7 @@ CigPharoStructureGenerator >> addStructFieldsDesc [
 	
 	generatedClass class 
 		compile: self element phTemplate generateFieldsDesc
-		classified: 'enum declaration'
+		classified: 'field definition'
 ]
 
 { #category : 'as yet unclassified' }

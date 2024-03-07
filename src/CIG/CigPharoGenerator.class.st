@@ -198,6 +198,16 @@ CigPharoGenerator >> prefix [
 	^ self unit prefix
 ]
 
+{ #category : 'private' }
+CigPharoGenerator >> sharedPoolNames [
+
+	^ Array streamContents: [ :stream |
+		((self unit namespaces collect: #typedef as: Set)
+			sorted: #name ascending)
+			do: [ :each | stream nextPut: each name ].
+		stream nextPut: self libraryTypedefName asSymbol ]
+]
+
 { #category : 'accessing' }
 CigPharoGenerator >> unit [
 

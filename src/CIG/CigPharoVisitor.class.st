@@ -13,9 +13,9 @@ Class {
 { #category : 'private' }
 CigPharoVisitor >> addBaseClasses: aUnit [
 
+	self addFFITypesClass: aUnit.
 	self addFFILibrary: aUnit.
-	self addFFITrait: aUnit.
-	self addFFITypesClass: aUnit
+	self addFFITrait: aUnit
 ]
 
 { #category : 'private' }

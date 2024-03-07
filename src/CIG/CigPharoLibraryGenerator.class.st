@@ -9,18 +9,19 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 CigPharoLibraryGenerator >> addClass [
 	| ffiLibraryName |
 
 	ffiLibraryName := self libraryName.
 	generatedClass := FFILibrary << ffiLibraryName asSymbol
+		sharedPools: self sharedPoolNames;
 		tag: 'Library';
 		package: self packageName;
 		install
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 CigPharoLibraryGenerator >> addLinuxPlatformAccessor [
 	
 	generatedClass
@@ -28,7 +29,7 @@ CigPharoLibraryGenerator >> addLinuxPlatformAccessor [
 		classified: 'accessing - platform'
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
 CigPharoLibraryGenerator >> addMacPlatformAccessor [
 	
 	generatedClass
@@ -36,7 +37,16 @@ CigPharoLibraryGenerator >> addMacPlatformAccessor [
 		classified: 'accessing - platform'
 ]
 
-{ #category : 'private' }
+{ #category : 'private - adding' }
+CigPharoLibraryGenerator >> addRunner [
+	
+
+	generatedClass
+		compile: self runnerTemplate
+		classified: 'accessing'
+]
+
+{ #category : 'private - adding' }
 CigPharoLibraryGenerator >> addWinPlatformAccessor [
 	
 	generatedClass
@@ -48,12 +58,13 @@ CigPharoLibraryGenerator >> addWinPlatformAccessor [
 CigPharoLibraryGenerator >> generate [
 
 	self addClass.
+	self addRunner.
 	self addLinuxPlatformAccessor.
 	self addWinPlatformAccessor.
-	self addMacPlatformAccessor
+	self addMacPlatformAccessor.
 ]
 
-{ #category : 'private' }
+{ #category : 'private - templates' }
 CigPharoLibraryGenerator >> linuxPlatformTemplate [
 
 	^ String streamContents: [ :stream | 
@@ -62,7 +73,7 @@ CigPharoLibraryGenerator >> linuxPlatformTemplate [
 		stream << '^ FFIUnix64LibraryFinder findLibrary: ''' << self file libraryName << '.so''' ]
 ]
 
-{ #category : 'private' }
+{ #category : 'private - templates' }
 CigPharoLibraryGenerator >> macPlatformTemplate [
 		
 	^ String streamContents: [ :stream | 
@@ -71,7 +82,17 @@ CigPharoLibraryGenerator >> macPlatformTemplate [
 		stream << '^ FFIMacLibraryFinder findLibrary: ''' << self file libraryName << '.dylib''' ]
 ]
 
-{ #category : 'private' }
+{ #category : 'private - templates' }
+CigPharoLibraryGenerator >> runnerTemplate [
+
+	^ 'runner
+	
+	^ TFProcessLocalWorker new 
+		defaultWorker: TFSameThreadRunner uniqueInstance;
+		yourself'
+]
+
+{ #category : 'private - templates' }
 CigPharoLibraryGenerator >> winPlatformTemplate [
 		
 	^ String streamContents: [ :stream | 
