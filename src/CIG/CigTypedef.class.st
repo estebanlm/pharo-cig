@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigTypedef',
 	#superclass : 'CigBaseTypedef',
-	#classTraits : '{} + TraitedClass',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
