@@ -84,7 +84,13 @@ CigCParameterStructTypeTemplate >> generateCType [
 { #category : 'generating' }
 CigCParameterStructTypeTemplate >> generateFFIType [
 	
-	^ (self elementAtPath: (self type typeReference typeName substrings: '::'))
-		ifNotNil: [ :aNode | aNode cDeclaration ]
-		ifNil: [ type name ]
+	^ self elementTypeName
+]
+
+{ #category : 'generating' }
+CigCParameterStructTypeTemplate >> generateForFFI [
+
+	^ '{1} {2}' format: { 
+		self generateFFIType.
+		self name }
 ]

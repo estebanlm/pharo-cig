@@ -360,6 +360,25 @@ CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 	self ffiCall: #(void xx_fexpand_1(char* rpath))'
 ]
 
+{ #category : 'tests - function' }
+CigPharoVisitorTest >> testVisitFunctionWithStructureGeneratesCallWithoutPrefix [
+	| visitor class element |
+	
+	element := self translatedUnitRaylib elementAtPath: { 'ClearBackground(Color)' }. 
+	visitor := CigPharoVisitor newForTestAsC.
+	visitor addFFILibrary: self translatedUnitRaylib.
+	class := self class environment classNamed: 'LibGeneratedForTest'.
+	
+	visitor visitFunction: element.
+	
+	self assert: (class canUnderstand: #clearBackground:).
+	self 
+		assert: (class >> #clearBackground:) sourceCode 
+		equals: 'clearBackground: color
+
+	self ffiCall: #(void ClearBackground(Color color))'
+]
+
 { #category : 'tests - method' }
 CigPharoVisitorTest >> testVisitMethodAddsClassMethodToClassSide [
 	| visitor class element |

@@ -6,6 +6,7 @@ Class {
 	#name : 'CigCPPTypedef',
 	#superclass : 'SharedPool',
 	#classVars : [
+		'bool',
 		'int16_t',
 		'int32_t',
 		'int64_t',
@@ -31,5 +32,7 @@ CigCPPTypedef class >> initialize [
 	uint8_t := #uint8.
   	uint16_t := #uint16.
   	uint32_t := #uint32.
-	uint64_t := #uint64
+	uint64_t := #uint64.
+
+	bool := #Boolean
 ]

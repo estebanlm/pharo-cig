@@ -46,7 +46,7 @@ CigPharoFunctionTemplate >> generate [
 			ifTrue: [ stream << self generateComment; cr ].
 		stream cr.
 		stream tab.
-		stream << 'self ffiCall: #(' << self element cTemplate generateHeader << ')' ]
+		stream << 'self ffiCall: #(' << self element cTemplate generateHeaderForFFI << ')' ]
 ]
 
 { #category : 'generating' }

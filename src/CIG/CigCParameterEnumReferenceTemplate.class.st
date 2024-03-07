@@ -37,3 +37,11 @@ CigCParameterEnumReferenceTemplate >> generateCType [
 		ifNotNil: [ :aNode | aNode cDeclaration ]
 		ifNil: [ typeName ]
 ]
+
+{ #category : 'generating' }
+CigCParameterEnumReferenceTemplate >> generateForFFI [
+
+	^ '{1} {2}' format: { 
+		self generateFFIType.
+		self name }
+]

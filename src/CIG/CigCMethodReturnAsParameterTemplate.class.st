@@ -43,6 +43,16 @@ CigCMethodReturnAsParameterTemplate >> generateHeader [
 ]
 
 { #category : 'accessing' }
+CigCMethodReturnAsParameterTemplate >> generateHeaderForFFI [
+
+	^ 'void {func}({parameters})'
+		format: {
+			#func -> self element cDeclaration.
+			#parameters -> self generateParametersForFFI
+		} asDictionary
+]
+
+{ #category : 'accessing' }
 CigCMethodReturnAsParameterTemplate >> parameters [
 	
 	^ parameters ifNil: [ 

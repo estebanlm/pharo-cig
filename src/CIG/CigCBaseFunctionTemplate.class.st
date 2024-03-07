@@ -63,11 +63,31 @@ CigCBaseFunctionTemplate >> generateHeader [
 ]
 
 { #category : 'generating' }
+CigCBaseFunctionTemplate >> generateHeaderForFFI [
+
+	^ '{type} {func}({parameters})'
+		format: {
+			#type -> self generateReturnType.
+			#func -> self element cDeclaration.
+			#parameters -> self generateParametersForFFI 
+		} asDictionary
+]
+
+{ #category : 'generating' }
 CigCBaseFunctionTemplate >> generateParameters [
 	
 	^ String streamContents: [ :stream |
 		self parameters 
 			do: [ :each | stream << each generate ]
+			separatedBy: [ stream << ', ' ] ]
+]
+
+{ #category : 'generating' }
+CigCBaseFunctionTemplate >> generateParametersForFFI [
+	
+	^ String streamContents: [ :stream |
+		self parameters 
+			do: [ :each | stream << each generateForFFI ]
 			separatedBy: [ stream << ', ' ] ]
 ]
 

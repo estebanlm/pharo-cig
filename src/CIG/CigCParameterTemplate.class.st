@@ -92,6 +92,12 @@ CigCParameterTemplate >> generateFFIType [
 	^ self generateCType
 ]
 
+{ #category : 'generating' }
+CigCParameterTemplate >> generateForFFI [
+
+	^ self generate
+]
+
 { #category : 'accessing' }
 CigCParameterTemplate >> name [
 

@@ -27,6 +27,15 @@ CigCInstanceMethodTemplate >> generateParameters [
 ]
 
 { #category : 'generating' }
+CigCInstanceMethodTemplate >> generateParametersForFFI [
+	
+	^ String streamContents: [ :stream |
+		({ self selfTemplate }, self parameters)
+			do: [ :each | stream << each generateForFFI ]
+			separatedBy: [ stream << ', ' ] ]
+]
+
+{ #category : 'generating' }
 CigCInstanceMethodTemplate >> generateSelf [
 		
 	^ String streamContents: [ :stream |

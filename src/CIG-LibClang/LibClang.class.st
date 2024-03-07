@@ -5,6 +5,12 @@ Class {
 	#package : 'CIG-LibClang'
 }
 
+{ #category : 'options' }
+LibClang class >> options [
+
+	^ #( -optStrict )
+]
+
 { #category : 'accessing' }
 LibClang >> runner [
 
