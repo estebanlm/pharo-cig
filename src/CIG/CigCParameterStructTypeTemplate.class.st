@@ -28,6 +28,24 @@ CigCParameterStructTypeTemplate >> castReturn: aString [
 		stream << 'return _result' ]
 ]
 
+{ #category : 'private' }
+CigCParameterStructTypeTemplate >> elementTypeName [
+	
+	self type hasTypeReference ifTrue: [  
+		(self elementWithFullName: self type typeReference typeName)
+			ifNotNil: [ :aNode | ^ aNode cDeclaration ] ].
+		
+	^ (self elementWithFullName: self type parseType name)
+		ifNotNil: [ :aNode | ^ aNode cDeclaration ]
+		ifNil: [ self type name ]
+]
+
+{ #category : 'private' }
+CigCParameterStructTypeTemplate >> elementWithFullName: aString [ 
+
+	^ self elementAtPath: (aString substrings: '::')
+]
+
 { #category : 'generating' }
 CigCParameterStructTypeTemplate >> generateArgument [
 	| name |
@@ -54,13 +72,9 @@ CigCParameterStructTypeTemplate >> generateArgument [
 CigCParameterStructTypeTemplate >> generateCType [
 	| typeName startArity parsed |
 	
-	typeName := (self elementAtPath: (self type typeReference typeName substrings: '::'))
-		ifNotNil: [ :aNode | aNode cDeclaration ]
-		ifNil: [ type name ].
-
-	startArity := 0.
+	typeName := self elementTypeName.
 	parsed := self type parseType.
-	
+	startArity := 0.	
 	^ String streamContents: [ :stream |
 		stream << type element cTemplate structureType << ' ' << typeName.
 		(1 + startArity) to: parsed arity do: [ :each |

@@ -21,6 +21,20 @@ CigPharoFunctionTemplateTest >> testGenerateFunction [
 ]
 
 { #category : 'tests' }
+CigPharoFunctionTemplateTest >> testGenerateFunctionForCLibraryDoesNotGeneratesPrefix [
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'InitWindow(int, int, const char *)' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generate
+		equals: 'initWindowWidth: width height: height title: title
+
+	self ffiCall: #(void InitWindow(int width, int height, const char* title))'
+]
+
+{ #category : 'tests' }
 CigPharoFunctionTemplateTest >> testGenerateMethod [
 	| element template |
 

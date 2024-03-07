@@ -14,3 +14,9 @@ CigCTranslatedUnit >> defaultClangArguments [
 	
 	^ { '-E' }
 ]
+
+{ #category : 'testing' }
+CigCTranslatedUnit >> shouldIncludeUnitPrefixOnFullName [
+
+	^ false
+]

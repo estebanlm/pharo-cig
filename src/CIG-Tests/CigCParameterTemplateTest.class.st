@@ -252,6 +252,19 @@ CigCParameterTemplateTest >> testGenerateBasicType [
 	self assert: template generate equals: 'tv_ushort arg1'
 ]
 
+{ #category : 'tests' }
+CigCParameterTemplateTest >> testGenerateCTypeInFunctionWithPointerToStructure [
+	"I will check the generation of the second argument, since this is the one that refers 
+	 to a pointer to a structure."
+	| template element |
+
+	element := self translatedUnitRaylib elementAtPath: { 'CheckCollisionPointPoly(Vector2, Vector2 *, int)' }.
+	template := element parameters second cTemplate.
+	self 
+		assert: template generateCType
+		equals: 'struct Vector2*'
+]
+
 { #category : 'tests - callbacks' }
 CigCParameterTemplateTest >> testGenerateCallback [
 	| template element |

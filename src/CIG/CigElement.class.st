@@ -155,10 +155,14 @@ CigElement >> fullName [
 ]
 
 { #category : 'accessing' }
-CigElement >> fullNameWith: delim [ 
+CigElement >> fullNameWith: delim [	
 
 	^ String streamContents: [ :stream |
-		self path asStringOn: stream delimiter: delim ]
+		| path |
+		path := self path.
+		self root shouldIncludeUnitPrefixOnFullName 
+			ifFalse: [ path := path allButFirst ].
+		path asStringOn: stream delimiter: delim ]
 ]
 
 { #category : 'comparing' }

@@ -589,7 +589,7 @@ CigPharoVisitorTest >> testVisitTypedefToExistingStructure [
 
 	self 
 		assert: visitor types keys first
-		equals: 'xx_Quaternion'.
+		equals: 'Quaternion'.
 		
 	self 
 		assert: visitor types values first

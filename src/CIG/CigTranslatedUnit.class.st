@@ -509,6 +509,12 @@ CigTranslatedUnit >> selectVariadicFunctions [
 			ifTrue: [ stream << each ] ] ]
 ]
 
+{ #category : 'testing' }
+CigTranslatedUnit >> shouldIncludeUnitPrefixOnFullName [
+
+	^ true
+]
+
 { #category : 'private - traversing' }
 CigTranslatedUnit >> traverseElementsDo: aBlock [
 
