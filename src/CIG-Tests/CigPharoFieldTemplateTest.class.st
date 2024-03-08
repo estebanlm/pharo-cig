@@ -43,13 +43,26 @@ CigPharoFieldTemplateTest >> testGenerateUnionFieldDesc [
 ]
 
 { #category : 'tests' }
-CigPharoFieldTemplateTest >> testGenerateUnsignedFieldDesc [
+CigPharoFieldTemplateTest >> testGenerateUnsignedCharFieldDesc [
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'Color' }.
+	template := element fields first phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'uchar r'
+]
+
+{ #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateUnsignedShortFieldDesc [
 	| element template |
 
 	element := self translatedUnitTvision elementAtPath: { 'ffblk' }.
 	template := element fields fourth phTemplate.
 	
+	"maps to xx_ushort because in this case there is a typedef that defines ushort :)" 
 	self 
 		assert: template generateFieldDesc
-		equals: 'uint ff_ftime'
+		equals: 'xx_ushort ff_ftime'
 ]

@@ -36,6 +36,11 @@ CigFunctionParser >> parseType [
 			typeName := stream next.
 			typeName ifNil: [ ^ self error: 'type name expected' ].
 			typeName := prefix, ' ', typeName ].
+		
+	(typeName = 'unsigned') ifTrue: [ 
+		stream atEnd 
+			ifTrue: [ typeName = #uint ]
+			ifFalse: [ typeName := ('u', stream next) asSymbol ] ].
 
 	"extract template"
 	(stream atEnd not and: [ (stream peek = #<) or: [ stream peek = #<! ] ]) ifTrue: [ 
