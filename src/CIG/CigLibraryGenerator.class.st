@@ -33,7 +33,8 @@ Class {
 		'namespaces',
 		'defines',
 		'definesBeforeHeader',
-		'excluding'
+		'excluding',
+		'ffiRunner'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -227,6 +228,12 @@ CigLibraryGenerator >> excluding: aCollection [
 	excluding := aCollection
 ]
 
+{ #category : 'accessing' }
+CigLibraryGenerator >> ffiRunner [
+
+	^ ffiRunner
+]
+
 { #category : 'accessing - configuration' }
 CigLibraryGenerator >> from: aString import: aCollection [
 
@@ -283,7 +290,8 @@ CigLibraryGenerator >> initialize [
 
 	super initialize.
 	imports := Dictionary new.
-	self withClasses
+	self withClasses.
+	self useSameThread
 ]
 
 { #category : 'accessing' }
@@ -358,6 +366,18 @@ CigLibraryGenerator >> translateUnitWithoutUnkown [
 		withoutUnknown;
 		generateFrom: self;
 		yourself
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> useMainThread [
+
+	ffiRunner := CigFFIRunnerMainThread new 
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> useSameThread [
+
+	ffiRunner := CigFFIRunnerSameThread new 
 ]
 
 { #category : 'accessing - configuration' }

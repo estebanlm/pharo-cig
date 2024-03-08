@@ -85,11 +85,12 @@ CigPharoLibraryGenerator >> macPlatformTemplate [
 { #category : 'private - templates' }
 CigPharoLibraryGenerator >> runnerTemplate [
 
-	^ 'runner
+	^ ('runner
 	
 	^ TFProcessLocalWorker new 
-		defaultWorker: TFSameThreadRunner uniqueInstance;
-		yourself'
+		defaultWorker: {1};
+		yourself')
+		format: { self file ffiRunner phTemplate }
 ]
 
 { #category : 'private - templates' }
