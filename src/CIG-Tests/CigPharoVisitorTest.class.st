@@ -361,6 +361,19 @@ CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 ]
 
 { #category : 'tests - function' }
+CigPharoVisitorTest >> testVisitFunctionWithNameEndingWithSameNameAsParameterDoesNotDuplicates [
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'DrawText(const char *, int, int, int, Color)' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateHeader
+		equals: 'drawText: text posX: posX posY: posY fontSize: fontSize color: color'
+	
+]
+
+{ #category : 'tests - function' }
 CigPharoVisitorTest >> testVisitFunctionWithStructureGeneratesCallWithoutPrefix [
 	| visitor class element |
 	

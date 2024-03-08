@@ -196,6 +196,13 @@ CigParameter >> matchesCursor: aCursor [
 				or: [ self argumentIndex = (self argumentIndexOf: aCursor) ] ]
 ]
 
+{ #category : 'testing' }
+CigParameter >> nameMatchesLastOf: aString [
+	
+	(aString size < self name size) ifTrue: [ ^ false ].	
+	^ (aString last: self name size) sameAs: self name
+]
+
 { #category : 'private' }
 CigParameter >> parseType: aString [
 

@@ -18,7 +18,11 @@ CigTFunction >> buildParameters: aCollection on: stream [
 	aCollection ifEmpty: [ ^ self ].
 	
 	aCollection first in: [ :each | 
-		aCollection size > 1 
+		"if I have more than one argument, and the first argument name will be 
+		 different of the end of the function name, I add it as part of the name
+		 otherwise, just skeep it"
+		((aCollection size > 1) 
+			and: [ (each nameMatchesLastOf: stream contents) not ])
 			ifTrue: [ stream << each name capitalized ].
 		stream << ': ' << each name << ' ' ].
 	aCollection allButFirst do: [ :each | 
