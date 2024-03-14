@@ -165,7 +165,7 @@ CigPharoVisitor >> visitEnum: anEnum [
 	"skip if not public"
 	anEnum isPublic ifFalse: [ ^ self ].
 	"skip if not namec"
-	anEnum isAnonymous ifTrue: [ ^ self ].
+	(anEnum isAnonymous or: [ anEnum isUnnamed ]) ifTrue: [ ^ self ].
 
 	self ensureBaseEnumerationClass: anEnum root.
 	(CigPharoEnumGenerator newFile: self file element: anEnum) generateOn: self.

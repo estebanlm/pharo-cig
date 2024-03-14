@@ -112,7 +112,7 @@ CigType class >> resolveFFIType: aString [
 
 	^ [ FFICallout new 
 			requestor: self; 
-			resolveType: aString.
+			resolveType: (CigFunctionParser parse: aString) nameWithArity.
 		 "it can be solved, just answer it"
 		 aString ]
 	on: Error 

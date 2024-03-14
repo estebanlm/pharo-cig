@@ -319,6 +319,16 @@ CigCParameterTemplateTest >> testGenerateFieldClass [
 	self assert: template generate equals: 'tv_TStreamableClass* forceLink'
 ]
 
+{ #category : 'tests - enum' }
+CigCParameterTemplateTest >> testGenerateFieldEnum [
+	| template element |
+
+	element := self translatedUnitIcal elementAtPath: { 'sspm_header'. 'major' }.
+	template := element cTemplate.
+	
+	self assert: template generateFFIType equals: 'sspm_major_type'
+]
+
 { #category : 'tests - struct' }
 CigCParameterTemplateTest >> testGenerateFunctionArgument [
 	| template element |

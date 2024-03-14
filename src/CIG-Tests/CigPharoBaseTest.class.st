@@ -32,6 +32,15 @@ CigPharoBaseTest >> translatedUnitFinalcut [
 ]
 
 { #category : 'accessing' }
+CigPharoBaseTest >> translatedUnitIcal [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnitIcal
+		prefix: 'xx';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigPharoBaseTest >> translatedUnitNoise [
 
 	"change prefix to ensure it does not collides with existing classes"
@@ -45,6 +54,15 @@ CigPharoBaseTest >> translatedUnitNoiseutils [
 
 	"change prefix to ensure it does not collides with existing classes"
 	^ super translatedUnitNoiseutils
+		prefix: 'xx';
+		yourself
+]
+
+{ #category : 'accessing' }
+CigPharoBaseTest >> translatedUnitOpenSSL [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnitOpenSSL
 		prefix: 'xx';
 		yourself
 ]

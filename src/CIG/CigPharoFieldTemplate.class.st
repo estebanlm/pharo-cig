@@ -13,5 +13,5 @@ Class {
 CigPharoFieldTemplate >> generateFieldDesc [
 
 	^ String streamContents: [ :stream |
-		stream << self element cTemplate generateFFIType << ' ' << self element name ]
+		stream << self element cTemplate generateFFITypeForField << ' ' << self element name ]
 ]

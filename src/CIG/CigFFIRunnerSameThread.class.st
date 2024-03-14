@@ -12,5 +12,5 @@ Class {
 { #category : 'accessing' }
 CigFFIRunnerSameThread >> phTemplate [
 
-	^ TFSameThreadRunner uniqueInstance
+	^ 'TFSameThreadRunner uniqueInstance'
 ]

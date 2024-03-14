@@ -105,6 +105,12 @@ CigStructure >> fieldAnonymousReferences [
 ]
 
 { #category : 'accessing' }
+CigStructure >> fieldNamed: aString [ 
+	
+	^ self fields detect: [ :each | each name = aString ]
+]
+
+{ #category : 'accessing' }
 CigStructure >> fields [
 	
 	^ self elements select: [ :each | each isStructMember ]
@@ -133,7 +139,7 @@ CigStructure >> isAbstract [
 { #category : 'testing' }
 CigStructure >> isAnonymous [
 	
-	^ self name beginsWith: '(anonymous'
+	^ self name includesSubstring: '(anonymous'
 ]
 
 { #category : 'testing' }

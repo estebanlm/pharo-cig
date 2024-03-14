@@ -93,6 +93,12 @@ CigCParameterTemplate >> generateFFIType [
 ]
 
 { #category : 'generating' }
+CigCParameterTemplate >> generateFFITypeForField [
+
+	^ self generateFFIType
+]
+
+{ #category : 'generating' }
 CigCParameterTemplate >> generateForFFI [
 
 	^ self generate

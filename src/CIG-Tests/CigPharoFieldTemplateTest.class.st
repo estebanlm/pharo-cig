@@ -7,6 +7,19 @@ Class {
 }
 
 { #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateConsField [
+	"const should be ignored"
+	| element template |
+
+	element := self translatedUnitIcal elementAtPath: { 'icaltimetype' }.
+	template := (element fieldNamed: 'zone') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'icaltimezone* zone'
+]
+
+{ #category : 'tests' }
 CigPharoFieldTemplateTest >> testGenerateExistingStructFieldDesc [
 	| element template |
 

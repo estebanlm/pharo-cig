@@ -28,8 +28,8 @@ CigFunctionParser >> parseType [
 		typeName := stream next.
 		typeName ifNil: [ ^ self error: 'type name expected' ] ].
 
-	"parsing struct types"
-	(#('struct') includes: typeName) 
+	"parsing struct and enum types"
+	(#('struct' 'enum') includes: typeName) 
 		ifTrue: [ 
 			| prefix |
 			prefix := typeName.

@@ -25,6 +25,14 @@ CigBaseTest >> translatedUnitFinalcut [
 ]
 
 { #category : 'accessing' }
+CigBaseTest >> translatedUnitIcal [
+
+	^ CigTestResource current translatedUnitIcal
+		prefix: 'ical';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigBaseTest >> translatedUnitNoise [
 
 	^ CigTestResource current translatedUnitNoise
@@ -37,6 +45,14 @@ CigBaseTest >> translatedUnitNoiseutils [
 
 	^ CigTestResource current translatedUnitNoiseutils
 		prefix: 'nu';
+		yourself
+]
+
+{ #category : 'accessing' }
+CigBaseTest >> translatedUnitOpenSSL [
+
+	^ CigTestResource current translatedUnitOpenSSL
+		prefix: 'ssl';
 		yourself
 ]
 

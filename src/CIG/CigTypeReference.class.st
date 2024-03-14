@@ -31,6 +31,12 @@ CigTypeReference >> isClass [
 ]
 
 { #category : 'testing' }
+CigTypeReference >> isEnum [
+
+	^ self referenceType = CigEnum
+]
+
+{ #category : 'testing' }
 CigTypeReference >> isStructure [
 
 	^ self referenceType = CigStructure

@@ -62,7 +62,7 @@ CigEnum >> isPublic [
 { #category : 'testing' }
 CigEnum >> isUnnamed [
 
-	^ self name beginsWith: '(unnamed enum'
+	^ self name includesSubstring: '(unnamed'
 ]
 
 { #category : 'accessing' }

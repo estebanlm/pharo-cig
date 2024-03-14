@@ -50,9 +50,9 @@ CigCTypedefTemplate >> lookupType: aString [
 ]
 
 { #category : 'private' }
-CigCTypedefTemplate >> resolveTypeName: aString [ 
-	
-	^ (self lookupType: aString)
+CigCTypedefTemplate >> resolveTypeName: aString [
+
+	^ (self lookupType: (self stripTypeNameForLookup: aString))
 		ifNotNil: [ :anElement | anElement cppDeclaration ]
 		ifNil: [ aString ]
 ]
@@ -74,6 +74,17 @@ CigCTypedefTemplate >> resolveTypeNameSpecialization: aString [
 		stream << '>' ]
 ]
 
+{ #category : 'private' }
+CigCTypedefTemplate >> stripTypeNameForLookup: aString [ 
+	"strips the name of things that wont match a lookup. 
+	 struct prefix and others may come here"
+	
+	(aString beginsWith: 'struct ')
+		ifTrue: [ ^ aString allButFirst: 7 ].
+		
+	^ aString
+]
+
 { #category : 'accessing' }
 CigCTypedefTemplate >> type [
 
@@ -89,9 +100,10 @@ CigCTypedefTemplate >> typeName [
 		ifTrue: [ ^ 'void*' ].
 	self element definesArray 
 		ifTrue: [  ^ (CigFunctionParser parse: typeName) name, '*'  ].
-	^ self element isTemplateSpecialization
-		ifTrue: [ self resolveTypeNameSpecialization: (typeName copyUpTo: $<) ]
-		ifFalse: [ self resolveTypeName: typeName ]
+	self element isTemplateSpecialization
+		ifTrue: [ ^ self resolveTypeNameSpecialization: (typeName copyUpTo: $<) ].
+		
+	^ self resolveTypeName: typeName
 ]
 
 { #category : 'accessing' }

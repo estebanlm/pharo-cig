@@ -11,6 +11,7 @@ Class {
 		'int32_t',
 		'int64_t',
 		'int8_t',
+		'time_t',
 		'uint16_t',
 		'uint32_t',
 		'uint64_t',
@@ -34,5 +35,6 @@ CigCPPTypedef class >> initialize [
   	uint32_t := #uint32.
 	uint64_t := #uint64.
 
-	bool := #Boolean
+	bool := #Boolean.
+	time_t := #int
 ]

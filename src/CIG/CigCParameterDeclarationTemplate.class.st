@@ -91,3 +91,15 @@ CigCParameterDeclarationTemplate >> generateCType [
 		(1 + startArity) to: parsed arity do: [ :each |
 			stream << '*' ] ]
 ]
+
+{ #category : 'generating' }
+CigCParameterDeclarationTemplate >> generateFFITypeForField [
+	| ffiType |
+	
+	ffiType := super generateFFITypeForField.
+	^ (ffiType beginsWith: 'const ')
+		ifTrue: [ ffiType allButFirst: 6 ]
+		ifFalse: [ ffiType ]
+	
+
+]

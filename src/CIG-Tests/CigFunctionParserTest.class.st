@@ -29,6 +29,17 @@ CigFunctionParserTest >> testParseClassTemplateType [
 ]
 
 { #category : 'tests' }
+CigFunctionParserTest >> testParseEnumType [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'enum random_name';
+		parseType.
+	
+	self assert: type first equals: 'enum random_name'
+]
+
+{ #category : 'tests' }
 CigFunctionParserTest >> testParsePointerPointerType [
 	| type |
 
@@ -67,4 +78,15 @@ CigFunctionParserTest >> testParseSpecializationType [
 
 	name := (CigFunctionParser parse: 'std::array<wchar_t, 2>') nameWithArity.
 	self assert: name equals: 'std::array<wchar_t, 2>'
+]
+
+{ #category : 'tests' }
+CigFunctionParserTest >> testParseStructType [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'struct random_name';
+		parseType.
+	
+	self assert: type first equals: 'struct random_name'
 ]
