@@ -397,7 +397,7 @@ CigElement >> phDeclaration [
 	^ String streamContents: [ :stream | 
 		stream 
 			<< self root prefix capitalized 
-			<< self name capitalized ]
+			<< (self sanitizeName: self name) ]
 ]
 
 { #category : 'printing' }
@@ -413,6 +413,18 @@ CigElement >> root [
 	^ self parent 
 		ifNotNil: [ self parent root ]
 		ifNil: [ self ]
+]
+
+{ #category : 'private' }
+CigElement >> sanitizeName: aString [
+	"used to avoid 'ugly' names (like prefix duplication)"
+	| prefix |
+	
+	prefix := self root prefix.
+	(self name beginsWith: prefix)
+		ifTrue: [ ^ self name allButFirst: prefix size ].
+
+	^ self name capitalized
 ]
 
 { #category : 'accessing' }

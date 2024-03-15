@@ -79,3 +79,16 @@ CigPharoStructureTemplateTest >> testGenerateStructWithUnsigned [
 	char ff_name
 	)'
 ]
+
+{ #category : 'tests' }
+CigPharoStructureTemplateTest >> testStructureNameDoesNotDuplicatesPrefix [
+	| element |
+
+	element := self translatedUnitOpenSSL 
+		prefix: 'ssl';
+		elementAtPath: { 'ssl_cipher_st' }.
+	
+	self 
+		assert: element phDeclaration
+		equals: 'Ssl_cipher_st'
+]
