@@ -129,7 +129,7 @@ CigFunction >> pathName [
 CigFunction >> phDeclaration [
 
 	^ (String streamContents: [ :stream | 
-			stream  << self spelling uncapitalized.
+			stream  << (self sanitizeName: self spelling).
 			self buildParameters: self parameters on: stream ])
 		trimmed
 ]

@@ -127,7 +127,7 @@ CigTestResource class >> rebuildAll [
 { #category : 'utilities' }
 CigTestResource class >> resourceFileName: aLibName [
 
-	^ (self resourcePath / (aLibName asLowercase, '.fuel.gz')) fullName
+	^ (self resourcePath / (aLibName asLowercase, '.fuel')) fullName
 ]
 
 { #category : 'utilities' }

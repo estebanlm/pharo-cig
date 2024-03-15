@@ -131,6 +131,19 @@ CigTFunction >> returnTypeName [
 	^ returnTypeName
 ]
 
+{ #category : 'private' }
+CigTFunction >> sanitizeName: aString [
+	| substrings firstPart |
+	
+	substrings := aString substrings: '_'.
+	firstPart := substrings first.
+	((firstPart size > 2 and: [ (firstPart first: 2) allSatisfy: [ :each | each isUppercase ] ])
+		or: [ firstPart allSatisfy: [ :each | each isUppercase ] ])
+		ifTrue: [ ^ aString ].
+
+	^ aString uncapitalized
+]
+
 { #category : 'accessing' }
 CigTFunction >> spelling [
 

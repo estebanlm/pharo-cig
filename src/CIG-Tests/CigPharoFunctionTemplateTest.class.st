@@ -35,6 +35,48 @@ CigPharoFunctionTemplateTest >> testGenerateFunctionForCLibraryDoesNotGeneratesP
 ]
 
 { #category : 'tests' }
+CigPharoFunctionTemplateTest >> testGenerateFunctionWithCapitalsPrefix [
+	"this will check that a function that is called with capitals does not gets 'camelized' 
+	 (no first letter on lowercase)"
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'SSL_new(SSL_CTX *)' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateHeader
+		equals: 'SSL_new: ctx'
+]
+
+{ #category : 'tests' }
+CigPharoFunctionTemplateTest >> testGenerateFunctionWithOneCapitalsPrefix [
+	"this will check that a function that is called with capitals does not gets 'camelized' 
+	 (no first letter on lowercase)"
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'MaximizeWindow()' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateHeader
+		equals: 'maximizeWindow'
+]
+
+{ #category : 'tests' }
+CigPharoFunctionTemplateTest >> testGenerateFunctionWithTwoCapitalsPrefix [
+	"this will check that a function that is called with capitals does not gets 'camelized' 
+	 (no first letter on lowercase)"
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'DTLSv1_method()' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateHeader
+		equals: 'DTLSv1_method'
+]
+
+{ #category : 'tests' }
 CigPharoFunctionTemplateTest >> testGenerateMethod [
 	| element template |
 

@@ -7,7 +7,20 @@ Class {
 }
 
 { #category : 'tests' }
-CigPharoFieldTemplateTest >> testGenerateConsField [
+CigPharoFieldTemplateTest >> testGenerateConstCharPtrField [
+	"const should be ignored"
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'srtp_protection_profile_st' }.
+	template := (element fieldNamed: 'name') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'char* name'
+]
+
+{ #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateConstField [
 	"const should be ignored"
 	| element template |
 
