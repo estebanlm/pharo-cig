@@ -110,19 +110,38 @@ CigType class >> replaceTypeTemplate: aClassTemplate types: aCollection in: aStr
 { #category : 'utilities' }
 CigType class >> resolveFFIType: aString [
 
-	^ [ FFICallout new 
-			requestor: self; 
-			resolveType: (CigFunctionParser parse: aString) nameWithArity.
-		 "it can be solved, just answer it"
-		 aString ]
-	on: Error 
-	do: [ :e | | type |
-		type := aString copyWithoutAll: #($* $&).
-		"it can't be solved, trying a conversion table"
-		self typeMap 
-			at: type
-			ifPresent: [ :aType | aString copyReplaceAll: type with: aType ]
-			ifAbsent: [ self error: 'C type can''t be mapped to a n FFIType' ] ]
+		^ [ 
+			FFICallout new 
+				requestor: self; 
+				resolveType: (CigFunctionParser parse: aString) nameWithArity.
+			"it can be solved, just answer it"
+			self resolveMappedType: aString ]
+		on: Error 
+		do: [ :e |
+			"it cannot be solved, still try to fix if mapped type" 
+			self 
+				resolveMappedType: aString 
+				ifAbsent: [ self error: '' ] ]
+	
+]
+
+{ #category : 'utilities' }
+CigType class >> resolveMappedType: aString [
+		
+	^ self 
+		resolveMappedType: aString 
+		ifAbsent: [ aString ]
+]
+
+{ #category : 'utilities' }
+CigType class >> resolveMappedType: aString ifAbsent: aBlock [
+	| type |
+	
+	type := type := aString copyWithoutAll: #($* $&).
+	^ self typeMap 
+		at: type
+		ifPresent: [ :aType | aString copyReplaceAll: type with: aType ]
+		ifAbsent: aBlock
 ]
 
 { #category : 'private' }
