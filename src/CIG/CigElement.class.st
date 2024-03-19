@@ -420,8 +420,8 @@ CigElement >> sanitizeName: aString [
 	"used to avoid 'ugly' names (like prefix duplication)"
 	| prefix |
 	
-	prefix := self root prefix.
-	(self name beginsWith: prefix)
+	prefix := self root prefix asLowercase.
+	(self name asLowercase beginsWith: prefix)
 		ifTrue: [ ^ self name allButFirst: prefix size ].
 
 	^ self name capitalized
