@@ -1,10 +1,15 @@
 Class {
 	#name : 'CigField',
 	#superclass : 'CigElement',
+	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'typeName',
 		'typeKind',
-		'isPublic'
+		'isPublic',
+		'definesFunction'
+	],
+	#pools : [
+		'CXTypeKind'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -40,6 +45,12 @@ CigField >> canBeFieldOfStructure [
 		and: [ (type isPointer not and: [ type isClass ]) not ]
 ]
 
+{ #category : 'testing' }
+CigField >> definesFunction [
+
+	^ definesFunction
+]
+
 { #category : 'initialization' }
 CigField >> fromCursor: aCursor [
 	| type |
@@ -48,7 +59,10 @@ CigField >> fromCursor: aCursor [
 	type := aCursor type.
 	typeName := type spelling.
 	typeKind := type kind.
-	isPublic := aCursor isPublic
+	isPublic := aCursor isPublic.
+	definesFunction := ({ CXType_Pointer. CXType_LValueReference } includes: typeKind)
+		and: [ { CXType_FunctionProto. CXType_FunctionNoProto } includes: type pointeeType kind ].		
+	
 ]
 
 { #category : 'testing' }
@@ -88,6 +102,7 @@ CigField >> resolveType [
 		parent: self;
 		name: self typeName;
 		typeReference: self typeReference;
+		definesFunction: self definesFunction;
 		yourself
 ]
 

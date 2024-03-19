@@ -7,6 +7,18 @@ Class {
 }
 
 { #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateCallbackFieldDesc [
+	| element template |
+
+	element := self translatedUnitIcal elementAtPath: { 'sspm_action_map' }.
+	template := (element fieldNamed: 'free_part') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'FFICallback free_part'
+]
+
+{ #category : 'tests' }
 CigPharoFieldTemplateTest >> testGenerateConstCharPtrField [
 	"const should be ignored"
 	| element template |

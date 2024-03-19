@@ -1,3 +1,6 @@
+"
+This is a parameter that defines a function. 
+"
 Class {
 	#name : 'CigCParameterFunctionTypeTemplate',
 	#superclass : 'CigCParameterTemplate',
@@ -30,4 +33,10 @@ CigCParameterFunctionTypeTemplate >> generateArgument [
 CigCParameterFunctionTypeTemplate >> generateCType [
 
 	^ 'void*'
+]
+
+{ #category : 'generating' }
+CigCParameterFunctionTypeTemplate >> generateFFITypeForField [
+
+	^ #FFICallback
 ]
