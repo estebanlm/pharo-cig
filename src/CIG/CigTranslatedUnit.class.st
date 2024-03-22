@@ -47,18 +47,18 @@ CigTranslatedUnit >> addElement: anElement [
 
 { #category : 'private' }
 CigTranslatedUnit >> addNode: currentNode parent: parentNode [
-	| parent current |
+	| parent element |
 
 	parent := self findParent: parentNode.
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
 		ifNotNil: [ ^ self ]. 
 
-	current := self newNode: currentNode.
-	(current isUnknown and: [ self isGeneratingWithUnknown not ])
+	element := self newNode: currentNode.
+	(element isUnknown and: [ self isGeneratingWithUnknown not ])
 		ifTrue: [ ^ self ].
 
-	(current canBeAddedTo: parent) ifFalse: [ ^ self ].
-	parent addElement: current
+	(element canBeAddedTo: parent) ifFalse: [ ^ self ].
+	parent addElement: element
 ]
 
 { #category : 'accessing' }
