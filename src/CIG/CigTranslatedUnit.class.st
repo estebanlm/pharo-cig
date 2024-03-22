@@ -81,7 +81,7 @@ CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 		and: [ currentNode parent displayName = 'std' ]
 ]
 
-{ #category : 'generating' }
+{ #category : 'private - generating' }
 CigTranslatedUnit >> currentIsPartOfLibrary: currentNode baseDirectory: baseDir [
 	| location result |
 
