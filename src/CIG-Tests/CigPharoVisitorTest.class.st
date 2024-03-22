@@ -18,7 +18,8 @@ CigPharoVisitorTest >> testAddFFILibrary [
 	| visitor class |
 	
 	visitor := CigPharoVisitor newForTest.
-	visitor addFFILibrary: self translatedUnitNoiseutils.
+	"base classes will call addFFILibrary: in the correct order"
+	visitor addBaseClasses: self translatedUnitNoiseutils.
 	
 	class := self class environment classNamed: 'LibGeneratedForTest'.
 	self assert: class notNil.
@@ -32,7 +33,7 @@ CigPharoVisitorTest >> testAddFFILibraryWhenCPPUsesBindings [
 	| visitor class |
 	
 	visitor := CigPharoVisitor newForTestAsCPP.
-	visitor addFFILibrary: self translatedUnitNoiseutils.
+	visitor addBaseClasses: self translatedUnitNoiseutils.
 	
 	class := self class environment classNamed: 'LibGeneratedForTest'.
 	self assert: class notNil.
@@ -45,7 +46,7 @@ CigPharoVisitorTest >> testAddFFILibraryWhenCUsesLibrary [
 	| visitor class |
 	
 	visitor := CigPharoVisitor newForTestAsC.
-	visitor addFFILibrary: self translatedUnitRaylib.
+	visitor addBaseClasses: self translatedUnitRaylib.
 	
 	class := self class environment classNamed: 'LibGeneratedForTest'.
 	self assert: class notNil.
@@ -347,7 +348,7 @@ CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 	
 	element := self translatedUnitTvision elementAtPath: { 'fexpand(char *)' }. 
 	visitor := CigPharoVisitor newForTest.
-	visitor addFFILibrary: self translatedUnitTvision.
+	visitor addBaseClasses: self translatedUnitTvision.
 	class := self class environment classNamed: 'LibGeneratedForTest'.
 	
 	visitor visitFunction: element.
@@ -379,7 +380,7 @@ CigPharoVisitorTest >> testVisitFunctionWithStructureGeneratesCallWithoutPrefix 
 	
 	element := self translatedUnitRaylib elementAtPath: { 'ClearBackground(Color)' }. 
 	visitor := CigPharoVisitor newForTestAsC.
-	visitor addFFILibrary: self translatedUnitRaylib.
+	visitor addBaseClasses: self translatedUnitRaylib.
 	class := self class environment classNamed: 'LibGeneratedForTest'.
 	
 	visitor visitFunction: element.
