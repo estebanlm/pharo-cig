@@ -203,6 +203,15 @@ CigTranslatedUnit >> findParent: aCursor [
 	^ current 
 ]
 
+{ #category : 'utilities' }
+CigTranslatedUnit >> flatSelect: aBlock [
+	
+	^ Array streamContents: [ :stream |
+		self traverseElementsDo: [ :each | 
+			(aBlock value: each)
+				ifTrue: [ stream << each ] ] ]
+]
+
 { #category : 'generating' }
 CigTranslatedUnit >> generateFrom: aHeader [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
