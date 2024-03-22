@@ -58,7 +58,7 @@ CigTypeDeclaration >> nameWithSpecialization [
 	"we produce a special element if we are specializating a class"
 
 	^ String streamContents: [ :stream |
-		stream << self name.
+		stream << self nameWithoutPrefix.
 		self templateName ifNotNil: [ 
 			stream << self templateName capitalized ] ]
 ]
@@ -67,6 +67,19 @@ CigTypeDeclaration >> nameWithSpecialization [
 CigTypeDeclaration >> nameWithoutNamespace [
 	
 	^ (self name substrings: '::') last
+]
+
+{ #category : 'accessing' }
+CigTypeDeclaration >> nameWithoutPrefix [
+	"if name have a struct/union/enum prefix, remove it"
+	| substrings |
+	
+	substrings := self name substrings.
+	substrings size > 1 ifTrue: [
+		(#('struct' 'union' 'enum') includes: substrings first)
+			ifTrue: [ ^ ' ' join: substrings allButFirst ] ].
+	
+	^ self name
 ]
 
 { #category : 'accessing' }
