@@ -46,7 +46,7 @@ CigNamespace >> acceptDataStructures [
 CigNamespace >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
-	originPath := aCursor withAllParents allButFirst collect: [ :each | each displayName ]
+	originPath := aCursor lexicalPath
 ]
 
 { #category : 'accessing' }

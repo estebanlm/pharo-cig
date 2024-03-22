@@ -20,10 +20,10 @@ CigImportTarget class >> newName: aString [
 
 { #category : 'private' }
 CigImportTarget >> belongsToImportedElement: aCursor [
+
 	| path |
-	
-	path := aCursor path allButLast.
-	^ self isPathImported: path	
+	path := aCursor lexicalPath allButLast.
+	^ self isPathImported: path
 ]
 
 { #category : 'accessing' }
@@ -62,12 +62,12 @@ CigImportTarget >> name [
 
 { #category : 'adding' }
 CigImportTarget >> processNode: aCursor ifAdd: addBlock ifInsert: insertBlock [
-	| cppName |
 
+	| cppName |
 	(imports isNil or: [ self belongsToImportedElement: aCursor ])
 		ifTrue: [ ^ addBlock value ].
-	
-	cppName := '::' join: aCursor path.
-	(imports includes: cppName)
+
+	cppName := '::' join: aCursor lexicalPath.
+	(imports includes: cppName) 
 		ifTrue: [ insertBlock value ]
 ]

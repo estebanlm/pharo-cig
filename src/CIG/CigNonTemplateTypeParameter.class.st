@@ -25,7 +25,7 @@ CigNonTemplateTypeParameter >> accept: aVisitor [
 CigNonTemplateTypeParameter >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
-	parentSpelling := aCursor parent spelling.
+	parentSpelling := aCursor lexicalParent spelling
 ]
 
 { #category : 'as yet unclassified' }

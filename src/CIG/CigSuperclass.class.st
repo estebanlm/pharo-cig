@@ -26,7 +26,7 @@ CigSuperclass >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
 	declaration := aCursor type typeDeclaration.
-	typePath := declaration withAllParents allButFirst collect: [ :each | each spelling ]
+	typePath := declaration lexicalPath
 ]
 
 { #category : 'testing' }

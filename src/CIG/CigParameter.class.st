@@ -42,12 +42,12 @@ CigParameter >> argumentIndex [
 { #category : 'private' }
 CigParameter >> argumentIndexOf: aCursor [
 	| cxParent |
-	
-	cxParent := aCursor parent.
-	0 to: (cxParent numArguments - 1) do: [ :index |
+
+	cxParent := aCursor lexicalParent.
+	0 to: cxParent numArguments - 1 do: [ :index |
 		| cxArg |
 		cxArg := cxParent argumentAt: index.
-		(aCursor equalTo: cxArg)
+		(aCursor equalTo: cxArg) 
 			ifTrue: [ ^ index + 1 ] ].
 
 	^ 0

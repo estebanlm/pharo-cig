@@ -69,16 +69,16 @@ CigTranslatedUnit >> allDefines [
 
 { #category : 'private - generating' }
 CigTranslatedUnit >> anyExclusionsMatches: currentNode [
-	
+
 	self flag: #TODO. "refactor this to be able to add exlusions in a non hardcoded way"
-	
+
 	"some headers redefine boolean. We do not want that"
-	(#(bool Bool Boolean) includes: currentNode displayName)
+	(#( bool Bool Boolean ) includes: currentNode displayName) 
 		ifTrue: [ ^ true ].
 	"this is coming in some cases and we don't know how to handle it"
 	self flag: #TODO. "See if this is still happening with latest changes"
-	^ (currentNode displayName beginsWith: 'hash<')
-		and: [ currentNode parent displayName = 'std' ]
+	^ (currentNode displayName beginsWith: 'hash<') 
+		and: [ currentNode lexicalParent displayName = 'std' ]
 ]
 
 { #category : 'private - generating' }
@@ -192,8 +192,7 @@ CigTranslatedUnit >> findNode: aCursor startingAt: aNode ifAbsent: aBlock [
 CigTranslatedUnit >> findParent: aCursor [
 	| current parents |
 	
-	parents := aCursor withAllParents.
-	
+	parents := aCursor withAllLexicalParents.
 	current := self.
 	parents allButFirst do: [ :each |
 		| next |

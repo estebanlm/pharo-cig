@@ -105,6 +105,12 @@ CXCursor >> clang_getCursorKindSpelling: kind [
 ]
 
 { #category : 'private' }
+CXCursor >> clang_getCursorLexicalParent [
+
+	self ffiCall: #(CXCursor clang_getCursorLexicalParent(CXCursor self))
+]
+
+{ #category : 'private' }
 CXCursor >> clang_getCursorLocation [
 
 	self ffiCall: #(CXSourceLocation clang_getCursorLocation(CXCursor self))
@@ -238,6 +244,12 @@ CXCursor >> isClass [
 ]
 
 { #category : 'testing' }
+CXCursor >> isCursorDefinition [
+
+	self ffiCall: #(Boolean clang_isCursorDefinition(CXCursor self))
+]
+
+{ #category : 'testing' }
 CXCursor >> isEnumConstantDeclaration [
 
 	^ self kind = CXCursor_EnumConstantDecl
@@ -283,7 +295,7 @@ CXCursor >> isParameterDeclaration [
 CXCursor >> isPublic [
 	| parent |
 	
-	parent := self parent.
+	parent := self semanticParent.
 	parent ifNil: [ ^ true ].
 	
 	^ parent isClass not or: [ self cxxAccessSpecifier = 1 ]
@@ -314,6 +326,29 @@ CXCursor >> kindSpelling [
 	string := self clang_getCursorKindSpelling: self kind.
 	^ [ string cString ]
 		ensure: [ string dispose ]
+]
+
+{ #category : 'accessing' }
+CXCursor >> lexicalParent [
+	| parent |
+	
+	parent := self clang_getCursorLexicalParent.
+	^ (parent clang_Cursor_isNull)
+		ifTrue: [ nil ]
+		ifFalse: [ parent ]
+]
+
+{ #category : 'accessing' }
+CXCursor >> lexicalPath [
+
+	^ self withAllLexicalParents allButFirst 
+		collect: [ :each | 
+			| elementName |
+			elementName := each displayName.
+			each kind = CXCursor_ClassTemplate
+				ifTrue: [ elementName := elementName copyUpTo: $< ].
+			elementName ]
+		as: Array
 ]
 
 { #category : 'accessing' }
@@ -350,23 +385,22 @@ CXCursor >> overloadedDeclarations [
 
 { #category : 'accessing' }
 CXCursor >> parent [
-	| parent |
-	
-	parent := self clang_getCursorSemanticParent.
-	^ (parent clang_Cursor_isNull)
-		ifTrue: [ nil ]
-		ifFalse: [ parent ]
+
+	self 
+		deprecated: 'It is a bad name as it is not precise' 
+		transformWith: '`@receiver parent' -> '`@receiver semanticParent'.
+		
+	^ self semanticParent
 ]
 
 { #category : 'accessing' }
 CXCursor >> path [
 
-	^ self withAllParents allButFirst collect: [ :each | 
-			| elementName |
-			elementName := each displayName.
-			each kind = CXCursor_ClassTemplate
-				ifTrue: [ elementName := elementName copyUpTo: $< ].
-			elementName ]
+	self 
+		deprecated: 'It is a bad name as it is not precise' 
+		transformWith: '`@receiver path' -> '`@receiver semanticPath'.
+		
+	^ self semanticPath
 ]
 
 { #category : 'accessing' }
@@ -388,6 +422,29 @@ CXCursor >> referenced [
 CXCursor >> resultType [
 
 	^ self ffiCall: #(CXType clang_getCursorResultType(CXCursor self))
+]
+
+{ #category : 'accessing' }
+CXCursor >> semanticParent [
+	| parent |
+	
+	parent := self clang_getCursorSemanticParent.
+	^ (parent clang_Cursor_isNull)
+		ifTrue: [ nil ]
+		ifFalse: [ parent ]
+]
+
+{ #category : 'accessing' }
+CXCursor >> semanticPath [
+
+	^ self withAllSemanticParents allButFirst 
+		collect: [ :each | 
+			| elementName |
+			elementName := each displayName.
+			each kind = CXCursor_ClassTemplate
+				ifTrue: [ elementName := elementName copyUpTo: $< ].
+			elementName ]
+		as: Array
 ]
 
 { #category : 'accessing' }
@@ -445,7 +502,7 @@ CXCursor >> visitChildren: aBlock [
 ]
 
 { #category : 'accessing' }
-CXCursor >> withAllParents [
+CXCursor >> withAllLexicalParents [
 	| parents current |
 	
 	parents := OrderedCollection new.
@@ -453,7 +510,21 @@ CXCursor >> withAllParents [
 	[ current notNil and: [ current clang_Cursor_isNull not ] ] 
 	whileTrue: [ 
 		parents add: current.
-		current := current parent ].
+		current := current lexicalParent ].
+	
+	^ parents reversed
+]
+
+{ #category : 'accessing' }
+CXCursor >> withAllSemanticParents [
+	| parents current |
+	
+	parents := OrderedCollection new.
+	current := self.
+	[ current notNil and: [ current clang_Cursor_isNull not ] ] 
+	whileTrue: [ 
+		parents add: current.
+		current := current semanticParent ].
 	
 	^ parents reversed
 ]
