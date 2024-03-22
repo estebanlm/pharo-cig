@@ -17,7 +17,13 @@ CigPharoBaseTest >> tearDown [
 
 	PackageOrganizer default 
 		packageNamed: 'LibGeneratedForTest'
-		ifPresent: [ :aPackage | aPackage removeFromSystem ].
+		ifPresent: [ :aPackage | 
+			"first remove classes (except the traits and sharedpools)"
+			aPackage definedClasses 
+				reject: [ :each | each isTrait or: [ each isKindOf: SharedPool ] ]
+				thenDo: [ :each | each removeFromSystem ].
+			"then the rest"
+			aPackage removeFromSystem ].
 		
 	super tearDown
 ]
