@@ -33,7 +33,7 @@ CigClass >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
-CigClass >> acceptNestedClasses [
+CigClass >> acceptDataStructures [
 
 	^ true
 ]
@@ -59,7 +59,7 @@ CigClass >> cTemplate [
 { #category : 'testing' }
 CigClass >> canBeAddedTo: anElement [
 
-	^ anElement acceptNestedClasses and: [ self isDeclaration not ]
+	^ anElement acceptDataStructures and: [ self isDeclaration not ]
 ]
 
 { #category : 'accessing' }

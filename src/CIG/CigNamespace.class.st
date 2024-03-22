@@ -37,7 +37,7 @@ CigNamespace >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
-CigNamespace >> acceptNestedClasses [
+CigNamespace >> acceptDataStructures [
 
 	^ true
 ]

@@ -73,7 +73,8 @@ CigElement >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
-CigElement >> acceptNestedClasses [
+CigElement >> acceptDataStructures [
+	"data structures (composite types) in C++ are: classes, structs and unions"
 
 	^ false
 ]

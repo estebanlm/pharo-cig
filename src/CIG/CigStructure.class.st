@@ -32,7 +32,7 @@ CigStructure >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
-CigStructure >> acceptNestedClasses [
+CigStructure >> acceptDataStructures [
 
 	^ true
 ]
@@ -59,6 +59,12 @@ CigStructure >> cDisposeTemplate [
 CigStructure >> cTemplate [
 	
 	^ CigCStructTemplate for: self
+]
+
+{ #category : 'testing' }
+CigStructure >> canBeAddedTo: anElement [
+
+	^ anElement acceptDataStructures
 ]
 
 { #category : 'testing' }

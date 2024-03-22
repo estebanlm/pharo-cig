@@ -32,7 +32,7 @@ CigTranslatedUnit >> accept: aVisitor [
 ]
 
 { #category : 'visiting' }
-CigTranslatedUnit >> acceptNestedClasses [
+CigTranslatedUnit >> acceptDataStructures [
 	
 	^ true
 ]
