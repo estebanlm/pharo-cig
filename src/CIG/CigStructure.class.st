@@ -175,12 +175,6 @@ CigStructure >> isPublic [
 ]
 
 { #category : 'testing' }
-CigStructure >> isStructMember [
-
-	^ true
-]
-
-{ #category : 'testing' }
 CigStructure >> isStructure [
 
 	^ true
