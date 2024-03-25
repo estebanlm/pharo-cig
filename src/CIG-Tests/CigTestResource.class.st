@@ -87,7 +87,9 @@ CigTestResource class >> openSSLSpec [
 		prefix: 'ssl';
 		bindingsName: 'ssl';
 		cLib: 'openssl';
+		import: 'openssl/bio.h';
 		import: 'openssl/ssl.h';
+		import: 'openssl/err.h';
 		yourself
 ]
 

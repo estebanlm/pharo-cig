@@ -60,6 +60,22 @@ CigPharoStructureTemplateTest >> testGenerateStructWithUnion [
 ]
 
 { #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithUnionDefinitionSkipsDefinition [
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'lhash_st_ERR_STRING_DATA' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateFieldsDesc
+		equals: 'fieldsDesc
+
+	^ #(
+	XxLh_ERR_STRING_DATA_dummy dummy
+	)'
+]
+
+{ #category : 'tests' }
 CigPharoStructureTemplateTest >> testGenerateStructWithUnsigned [
 	| element template |
 

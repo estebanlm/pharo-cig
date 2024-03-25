@@ -117,3 +117,19 @@ CigField >> typeName [
 
 	^ typeName
 ]
+
+{ #category : 'accessing' }
+CigField >> typeReference [
+	| reference |
+		
+	reference := super typeReference.
+	reference ifNotNil: [ ^ reference ].
+	
+	(#('struct' 'union' 'class') includes: self typeName substrings first) 
+		ifTrue: [ 
+			^ (CigTypeReference newName: self typeName)
+				parent: self;
+				yourself ].
+		
+	^ nil
+]

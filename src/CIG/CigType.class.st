@@ -121,8 +121,7 @@ CigType class >> resolveFFIType: aString [
 			"it cannot be solved, still try to fix if mapped type" 
 			self 
 				resolveMappedType: aString 
-				ifAbsent: [ self error: '' ] ]
-	
+				ifAbsent: [ self error: 'C type can''t be mapped to a n FFIType' ] ]
 ]
 
 { #category : 'utilities' }
@@ -275,6 +274,12 @@ CigType >> isTypedef [
 	
 	^ self element notNil
 		and: [ self element isTypedef ]
+]
+
+{ #category : 'testing' }
+CigType >> isUnion [
+
+	^ self element notNil and: [ self element isUnion ]
 ]
 
 { #category : 'private' }

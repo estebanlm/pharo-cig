@@ -57,13 +57,13 @@ CigTypeReference >> isUnknownReference [
 { #category : 'accessing' }
 CigTypeReference >> matchingElementInUnit [
 
-	(self root elementAtPath: self namePath) ifNotNil: [ :anElement | ^ anElement ].
+	(self scopeLookupPath: self namePath) ifNotNil: [ :anElement | ^ anElement ].
 	"sometimes, it happens that this reference is splitted into a namespace reference and a 
 	 type reference, in that case the namespace referece should be contained in the parent."
 	self parent elements 
 		detect: [ :each | each isNamespaceReference ]
 		ifFound: [ :aReference | 
-			^ self root elementAtPath: (aReference name substrings: '::'), self namePath ].
+			^ self scopeLookupPath: (aReference name substrings: '::'), self namePath ].
 	^ nil
 ]
 

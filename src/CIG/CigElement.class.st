@@ -305,6 +305,12 @@ CigElement >> isTypedef [
 ]
 
 { #category : 'testing' }
+CigElement >> isUnion [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CigElement >> isUnknown [
 
 	^ false

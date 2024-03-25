@@ -90,3 +90,14 @@ CigFunctionParserTest >> testParseStructType [
 	
 	self assert: type first equals: 'struct random_name'
 ]
+
+{ #category : 'tests' }
+CigFunctionParserTest >> testParseUnionType [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'union random_name';
+		parseType.
+	
+	self assert: type first equals: 'union random_name'
+]

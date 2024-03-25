@@ -24,6 +24,12 @@ CigUnion >> cTemplate [
 	^ CigCUnionTemplate for: self
 ]
 
+{ #category : 'testing' }
+CigUnion >> isUnion [
+
+	^ true
+]
+
 { #category : 'accessing' }
 CigUnion >> phTemplate [
 	

@@ -81,6 +81,20 @@ CigPharoFieldTemplateTest >> testGenerateUnionFieldDesc [
 ]
 
 { #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateUnionInsideFieldDesc [
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'lhash_st_ERR_STRING_DATA' }.
+	template := (element fieldNamed: 'dummy') phTemplate.
+	
+	"Yes, is ugly and long but is an union with ugly name inside 
+	 a struct with another ugly name"
+	self 
+		assert: template generateFieldDesc
+		equals: 'lhash_st_ERR_STRING_DATA_lh_ERR_STRING_DATA_dummy dummy'
+]
+
+{ #category : 'tests' }
 CigPharoFieldTemplateTest >> testGenerateUnsignedCharFieldDesc [
 	| element template |
 
