@@ -352,6 +352,12 @@ CigTranslatedUnit >> installedNamespaceFor: aNamespace [
 ]
 
 { #category : 'testing' }
+CigTranslatedUnit >> isCPP [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CigTranslatedUnit >> isExcludedFromExport: anElement [
 
 	^ excluding includes: anElement cppDeclaration

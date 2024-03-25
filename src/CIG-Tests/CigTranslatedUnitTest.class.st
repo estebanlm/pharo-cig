@@ -28,6 +28,7 @@ CigTranslatedUnitTest >> testFromImportImportsAlsoInnerElements [
 		withoutSpecialElements;
 		translateUnit.
 
+	self assert: (unit elementAtPath: { 'std'. 'array' }) isNotNil.
 	self assert: (unit elementAtPath: { 'std'. 'array' }) elements isNotEmpty
 ]
 

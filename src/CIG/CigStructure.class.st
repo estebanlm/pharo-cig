@@ -174,6 +174,13 @@ CigStructure >> isPublic [
 	^ self parent isPublic: self
 ]
 
+{ #category : 'visiting' }
+CigStructure >> isStructMember [
+
+	"anonymous structs/unions can be included inside a structure in C++"
+	^ self isAnonymous and: [ self root isCPP ]
+]
+
 { #category : 'testing' }
 CigStructure >> isStructure [
 

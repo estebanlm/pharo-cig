@@ -42,6 +42,12 @@ CigCppTranslatedUnit >> generateFrom: aHeader [
 		ifTrue: [ self addSpecialElements ]
 ]
 
+{ #category : 'testing' }
+CigCppTranslatedUnit >> isCPP [
+
+	^ true
+]
+
 { #category : 'private' }
 CigCppTranslatedUnit >> specialElements [
 	"a place to keep special elements with special templates (like std namespace)"
