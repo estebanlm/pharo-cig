@@ -1,7 +1,6 @@
 Class {
 	#name : 'CigField',
 	#superclass : 'CigElement',
-	#classTraits : '{} + TraitedClass',
 	#instVars : [
 		'typeName',
 		'typeKind',
