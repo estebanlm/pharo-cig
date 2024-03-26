@@ -237,7 +237,7 @@ CigCMethodTemplateTest >> testGenerateHeaderStatic [
 	
 	self 
 		assert: template generateHeader 
-		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, tv_Boolean includeIncomplete)'
+		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, Boolean includeIncomplete)'
 ]
 
 { #category : 'tests' }

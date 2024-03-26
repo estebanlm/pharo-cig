@@ -280,7 +280,7 @@ CigCVisitorTest >> testVisitMethodDeclaredWithoutArgumentNamesGeneratesDefaultNa
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'tv_Boolean tv_TEditor_insertBuffer(tv_TEditor* self, const char* arg1, tv_uint arg2, tv_uint arg3, tv_Boolean arg4, tv_Boolean arg5);'
+		equals: 'Boolean tv_TEditor_insertBuffer(tv_TEditor* self, const char* arg1, tv_uint arg2, tv_uint arg3, Boolean arg4, Boolean arg5);'
 ]
 
 { #category : 'tests - method' }
@@ -398,11 +398,11 @@ CigCVisitorTest >> testVisitMethodWithReferenceTypeCastsCorrectly [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, size_t* length, size_t* width);'.
+		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, Boolean includeIncomplete, size_t* length, size_t* width);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, tv_Boolean includeIncomplete, size_t* length, size_t* width) {
+		equals: 'void tv_TText_scroll_2(tv_TStringView* text, int count, Boolean includeIncomplete, size_t* length, size_t* width) {
 	TText::scroll(*(TStringView*)text, count, includeIncomplete, *length, *width);
 }'
 ]
@@ -473,11 +473,11 @@ CigCVisitorTest >> testVisitStaticMethodsGeneratesClassSideFunction [
 	
 	self 
 		assert: visitor hStream contents trimmed
-		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, tv_Boolean includeIncomplete);'.
+		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, Boolean includeIncomplete);'.
 	
 	self 
 		assert: visitor cStream contents trimmed
-		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, tv_Boolean includeIncomplete) {
+		equals: 'int tv_TText_scroll_1(tv_TStringView* text, int count, Boolean includeIncomplete) {
 	return TText::scroll(*(TStringView*)text, count, includeIncomplete);
 }'
 ]

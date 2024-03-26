@@ -71,7 +71,7 @@ CigPharoStructureTemplateTest >> testGenerateStructWithUnionDefinitionSkipsDefin
 		equals: 'fieldsDesc
 
 	^ #(
-	XxLh_ERR_STRING_DATA_dummy dummy
+	lhash_st_ERR_STRING_DATA_lh_ERR_STRING_DATA_dummy dummy
 	)'
 ]
 
