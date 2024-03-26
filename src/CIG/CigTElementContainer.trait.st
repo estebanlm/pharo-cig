@@ -40,9 +40,14 @@ CigTElementContainer >> findElementMatching: aBlock [
 
 	^ self elements 
 		detect: [ :eachElement | 
+			"no types we don't know"
 			eachElement isUnknown not
+				"no type references"
+				and: [ eachElement isTypeReference not
+				"no namespaces"
 				and: [ eachElement isNamespaceReference not 
-				and: [  aBlock value: eachElement ] ] ]
+				"now we can effectively search for them"
+				and: [ aBlock value: eachElement ] ] ] ]
 		ifNone: [ nil ]
 ]
 

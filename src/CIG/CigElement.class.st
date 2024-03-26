@@ -444,7 +444,7 @@ CigElement >> scopeLookup: aString [
 CigElement >> scopeLookupPath: aPath [
 
 	^ (self elementAtPath: aPath)
-		ifNil:[ self parent scopeLookupPath: aPath ]
+		ifNil: [ self parent scopeLookupPath: aPath ]
 ]
 
 { #category : 'private' }
