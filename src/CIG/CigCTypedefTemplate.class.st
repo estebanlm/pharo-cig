@@ -45,8 +45,11 @@ CigCTypedefTemplate >> generateFFIType [
 
 { #category : 'private' }
 CigCTypedefTemplate >> lookupType: aString [
+	"search starting in the parent because I do not care about this lavel 
+	 (I am a typedef, I know there is no other elements here).
+	 Sanitize because I can be typedefing a union/struct/enum"
 
-	^ self element parent scopeLookup: aString
+	^ self element parent scopeLookup: (CigType sanitizeTypeName: aString)
 ]
 
 { #category : 'private' }

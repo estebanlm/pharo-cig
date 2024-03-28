@@ -50,7 +50,7 @@ CigClassSpecialization >> cppDeclaration [
 
 	^ String streamContents: [ :stream |
 		(self path allButFirst allButLast, { templateName })
-			 asStringOn: stream 
+			asStringOn: stream 
 			delimiter: '::' ]
 ]
 
