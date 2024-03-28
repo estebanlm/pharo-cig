@@ -83,7 +83,7 @@ CigTElementContainer >> inspectionElements [
 { #category : 'accessing' }
 CigTElementContainer >> scopeLookup: aString [
 
-	^ self scopeLookupPath: (aString substrings: '::')
+	^ self scopeLookupPath: (CigType toTypePath: aString)
 ]
 
 { #category : 'accessing' }

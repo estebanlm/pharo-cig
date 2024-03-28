@@ -12,7 +12,7 @@ Class {
 { #category : 'private' }
 CigStdArrayParameterTemplate class >> handlesType: aType [
 
-	^ aType parseType name = #'std::array'
+	^ aType isType: 'std::array'
 ]
 
 { #category : 'generating' }

@@ -12,7 +12,7 @@ Class {
 { #category : 'private' }
 CigStdStringParameterTemplate class >> handlesType: aType [
 
-	^ aType parseType name = #'std::string'
+	^ aType isType: 'std::string'
 ]
 
 { #category : 'generating' }

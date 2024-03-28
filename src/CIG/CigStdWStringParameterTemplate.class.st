@@ -12,7 +12,7 @@ Class {
 { #category : 'private' }
 CigStdWStringParameterTemplate class >> handlesType: aType [
 
-	^ aType parseType name = #'std::wstring'
+	^ aType isType: 'std::wstring'
 ]
 
 { #category : 'generating' }

@@ -12,6 +12,13 @@ CigUnion class >> kind [
 	^ CXCursor_UnionDecl
 ]
 
+{ #category : 'accessing' }
+CigUnion class >> typeReferenceName [
+	"prefix included in IGTypeReference"
+	
+	^ 'union'
+]
+
 { #category : 'visiting' }
 CigUnion >> accept: aVisitor [
 

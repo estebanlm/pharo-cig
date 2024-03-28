@@ -15,7 +15,7 @@ CigTypeReference class >> kind [
 { #category : 'dependencies' }
 CigTypeReference class >> typeReferenceClasses [
 	
-	^ { CigClass. CigStructure. CigEnum }
+	^ { CigClass. CigStructure. CigUnion. CigEnum }
 ]
 
 { #category : 'visiting' }
@@ -37,6 +37,12 @@ CigTypeReference >> isEnum [
 ]
 
 { #category : 'testing' }
+CigTypeReference >> isReferenceAnonymous [
+
+	^ CigType isAnonymous: self typeName
+]
+
+{ #category : 'testing' }
 CigTypeReference >> isStructure [
 
 	^ self referenceType = CigStructure
@@ -49,6 +55,12 @@ CigTypeReference >> isTypeReference [
 ]
 
 { #category : 'testing' }
+CigTypeReference >> isUnion [
+
+	^ self referenceType = CigUnion
+]
+
+{ #category : 'testing' }
 CigTypeReference >> isUnknownReference [
 
 	^ self referenceType = CigUnknown
@@ -57,20 +69,21 @@ CigTypeReference >> isUnknownReference [
 { #category : 'accessing' }
 CigTypeReference >> matchingElementInUnit [
 
-	(self scopeLookupPath: self namePath) ifNotNil: [ :anElement | ^ anElement ].
+	(self parent scopeLookupPath: self namePath) ifNotNil: [ :anElement | ^ anElement ].
 	"sometimes, it happens that this reference is splitted into a namespace reference and a 
 	 type reference, in that case the namespace referece should be contained in the parent."
 	self parent elements 
 		detect: [ :each | each isNamespaceReference ]
 		ifFound: [ :aReference | 
-			^ self scopeLookupPath: (aReference name substrings: '::'), self namePath ].
+			^ self scopeLookupPath: (CigType toTypePath: aReference name), self namePath ].
+	
 	^ nil
 ]
 
 { #category : 'accessing' }
 CigTypeReference >> namePath [
 	
-	^ self typeName substrings: '::'
+	^ CigType toTypePath: self typeName
 ]
 
 { #category : 'private' }
@@ -84,8 +97,9 @@ CigTypeReference >> referenceNamePrefixFor: typeName [
 
 	self referenceName ifNotNil: [ :aName | ^ aName, ' ', typeName ].
 	
-	(self root elementAtPath: (typeName substrings: '::')) ifNotNil: [ :anElement | 
-		^ anElement class typeReferenceName, ' ', anElement cppDeclaration ].
+	(self root elementAtPath: (CigType toTypePath: typeName)) 
+		ifNotNil: [ :anElement | 
+			^ anElement class typeReferenceName, ' ', anElement cppDeclaration ].
 
 	^ typeName
 ]

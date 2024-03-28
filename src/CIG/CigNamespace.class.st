@@ -86,7 +86,7 @@ CigNamespace >> path [
 	self flag: 'This is a problem if there are classes installed in an already installed namespace (this would be 
 	annoying, but possible)'.
 	^ (self root installedNamespaceFor: self) 
-		ifNotNil: [ :aNamespace | { aNamespace cppPrefix }, (aNamespace cppName substrings: '::') ]
+		ifNotNil: [ :aNamespace | { aNamespace cppPrefix }, (CigType toTypePath: aNamespace cppName) ]
 		ifNil: [ { self root prefix asLowercase }, originPath ]
 ]
 

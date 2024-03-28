@@ -39,7 +39,7 @@ CigCParameterReturnAsParameterTemplate >> generateCType [
 	typeReference ifNil: [ ^ self type name ].
 	
 	typeName := typeReference typeName.
-	^ (self elementAtPath: (typeName substrings: '::'))
+	^ (self elementAtPath: (CigType toTypePath: typeName))
 		ifNotNil: [ :aNode | aNode cDeclaration ]
 		ifNil: [ typeName ]
 ]

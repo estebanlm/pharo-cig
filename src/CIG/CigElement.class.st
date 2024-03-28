@@ -437,7 +437,7 @@ CigElement >> sanitizeName: aString [
 { #category : 'accessing' }
 CigElement >> scopeLookup: aString [
 
-	^ self scopeLookupPath: (aString substrings: '::')
+	^ self scopeLookupPath: (CigType toTypePath: aString)
 ]
 
 { #category : 'accessing' }

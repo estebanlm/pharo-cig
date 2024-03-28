@@ -66,20 +66,14 @@ CigTypeDeclaration >> nameWithSpecialization [
 { #category : 'accessing' }
 CigTypeDeclaration >> nameWithoutNamespace [
 	
-	^ (self name substrings: '::') last
+	^ (CigType toTypePath: self name) last
 ]
 
 { #category : 'accessing' }
 CigTypeDeclaration >> nameWithoutPrefix [
 	"if name have a struct/union/enum prefix, remove it"
-	| substrings |
-	
-	substrings := self name substrings.
-	substrings size > 1 ifTrue: [
-		(#('struct' 'union' 'enum') includes: substrings first)
-			ifTrue: [ ^ ' ' join: substrings allButFirst ] ].
-	
-	^ self name
+
+	^ CigType sanitizeTypeName: self name
 ]
 
 { #category : 'accessing' }

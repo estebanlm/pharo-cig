@@ -43,7 +43,7 @@ CigCParameterStructTypeTemplate >> elementTypeName [
 { #category : 'private' }
 CigCParameterStructTypeTemplate >> elementWithFullName: aString [ 
 
-	^ self element scopeLookupPath: (aString substrings: '::')
+	^ self element scopeLookupPath: (CigType toTypePath: aString)
 ]
 
 { #category : 'generating' }

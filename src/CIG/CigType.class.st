@@ -37,10 +37,23 @@ CigType class >> createTypeMap [
 	}
 ]
 
+{ #category : 'utilities' }
+CigType class >> extractAnonymousLocation: aString [ 
+	
+	 ^ (aString substrings: ' ()') last
+]
+
 { #category : 'instance creation' }
 CigType class >> fromParameter: aParameter [
 
 	^ self new fromParameter: aParameter
+]
+
+{ #category : 'utilities' }
+CigType class >> isAnonymous: aString [
+
+	^ #('(anonymous' '(unnamed') 
+		anySatisfy: [ :each | aString includesSubstring: each ]
 ]
 
 { #category : 'utilities' }
@@ -120,7 +133,7 @@ CigType class >> resolveFFIType: aString [
 		do: [ :e |
 			"it cannot be solved, still try to fix if mapped type" 
 			self 
-				resolveMappedType: aString 
+				resolveMappedType: aString
 				ifAbsent: [ self error: 'C type can''t be mapped to a n FFIType' ] ]
 ]
 
@@ -141,6 +154,24 @@ CigType class >> resolveMappedType: aString ifAbsent: aBlock [
 		at: type
 		ifPresent: [ :aType | aString copyReplaceAll: type with: aType ]
 		ifAbsent: aBlock
+]
+
+{ #category : 'utilities' }
+CigType class >> sanitizeTypeName: aString [
+	| substrings |
+	
+	substrings := aString substrings.
+	substrings size > 1 ifTrue: [
+		(#('struct' 'union' 'enum') includes: substrings first)
+			ifTrue: [ ^ ' ' join: substrings allButFirst ] ].
+	
+	^ aString
+]
+
+{ #category : 'utilities' }
+CigType class >> toTypePath: aString [
+
+	^ aString substrings: #('::')
 ]
 
 { #category : 'private' }
@@ -239,6 +270,7 @@ CigType >> isFunction [
 { #category : 'testing' }
 CigType >> isPointer [
 
+	self isReferenceAnonymous ifTrue: [ ^ false ].
 	^ self parseType arity > 0
 ]
 
@@ -247,7 +279,17 @@ CigType >> isReference [
 	"answer is this type is a reference. It will came with a & at the end.
 	 e.g Module &m"
 	
+	"I can't parse an anonymous type, and also... it is not a reference :)"
+	self isReferenceAnonymous ifTrue: [ ^ false ].
+	
 	^ self parseType isReference
+]
+
+{ #category : 'testing' }
+CigType >> isReferenceAnonymous [ 
+	
+	^ self typeReference isNotNil 
+		and: [ self typeReference isReferenceAnonymous ]
 ]
 
 { #category : 'testing' }
@@ -259,7 +301,7 @@ CigType >> isSpecial [
 { #category : 'testing' }
 CigType >> isStructure [
 
-	^ self element notNil and: [ self element isStructure ]
+	^ self element isNotNil and: [ self element isStructure ]
 ]
 
 { #category : 'testing' }
@@ -267,6 +309,15 @@ CigType >> isTemplateSpecialization [
 	
 	^ self parent isParameter and: [ self parent isTemplateSpecialization ]
 
+]
+
+{ #category : 'testing' }
+CigType >> isType: aString [ 
+	
+	self isReferenceAnonymous 
+		ifTrue: [ ^ false ].
+	
+	^ self parseType name = aString
 ]
 
 { #category : 'testing' }
@@ -283,9 +334,26 @@ CigType >> isUnion [
 ]
 
 { #category : 'private' }
+CigType >> matchAnonymousName: aString [
+	| anonymousName |
+
+	"aString comes with the format 'union (unnamed... etc)' or similar"
+	anonymousName := '(', (aString substrings: '()') second, ')'.
+	^ anonymousName = self typeReference typeName
+]
+
+{ #category : 'private' }
+CigType >> matchTypeName: aName [
+	
+	self isReferenceAnonymous 
+		ifTrue: [ ^ self matchAnonymousName: aName ].
+	^ self matchTypeName: aName with: self parseType nameWithoutNamespace
+]
+
+{ #category : 'private' }
 CigType >> matchTypeName: aName with: otherName [
 
-	^ (aName substrings: '::') last = otherName
+	^ (CigType toTypePath: aName) last = otherName
 ]
 
 { #category : 'accessing' }
@@ -361,7 +429,7 @@ CigType >> typeReferenceForParsedType [
 	typeRef := self typeReference.
 	typeRef ifNil: [ ^ nil ].
 	
-	^ (self matchTypeName: typeRef name with: self parseType nameWithoutNamespace)
+	^ (self matchTypeName: typeRef name)
 		ifTrue: [ typeRef ]
 		ifFalse: [ nil ]
 ]

@@ -12,7 +12,7 @@ Class {
 { #category : 'private' }
 CigStdChronoNanosecondsParameterTemplate class >> handlesType: aType [
 
-	^ aType parseType name = #'std::chrono::nanoseconds'
+	^ aType isType: 'std::chrono::nanoseconds'
 ]
 
 { #category : 'generating' }

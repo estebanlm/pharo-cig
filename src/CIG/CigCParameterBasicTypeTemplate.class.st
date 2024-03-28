@@ -50,7 +50,7 @@ CigCParameterBasicTypeTemplate >> generateCType [
 		self type isConst 
 			ifTrue: [ stream << 'const ' ].
 		
-		path := typeName substrings: '::'.
+		path := CigType toTypePath: typeName.
 		stream << ((self elementAtPath: path) 
 			ifNotNil: [ :anElement | anElement cDeclaration ]
 			ifNil: [ typeName ]).

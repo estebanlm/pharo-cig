@@ -25,6 +25,23 @@ CigPharoStructureTemplateTest >> testGenerateSimpleStruct [
 ]
 
 { #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructSkipsAnonymousUnionInC [
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'bio_poll_descriptor_st' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateFieldsDesc
+		equals: 'fieldsDesc
+
+	^ #(
+	uint32_t type;
+	bio_poll_descriptor_st_union_1 value
+	)'
+]
+
+{ #category : 'tests' }
 CigPharoStructureTemplateTest >> testGenerateStructWithStructure [
 	| element template |
 

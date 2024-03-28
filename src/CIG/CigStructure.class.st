@@ -5,7 +5,8 @@ Class {
 	#classTraits : 'CigTClass classTrait',
 	#instVars : [
 		'comment',
-		'isPublic'
+		'isPublic',
+		'isAnonymous'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -127,7 +128,8 @@ CigStructure >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
 	comment := aCursor rawComment.
-	isPublic := aCursor isPublic
+	isPublic := aCursor isPublic.
+	isAnonymous := CigType isAnonymous: name
 ]
 
 { #category : 'testing' }
@@ -145,7 +147,14 @@ CigStructure >> isAbstract [
 { #category : 'testing' }
 CigStructure >> isAnonymous [
 	
-	^ self name includesSubstring: '(anonymous'
+	^ isAnonymous
+]
+
+{ #category : 'private' }
+CigStructure >> isAnonymousMatchingLocation: aString [
+
+	^ (CigType extractAnonymousLocation: self name) = (CigType extractAnonymousLocation: aString)
+
 ]
 
 { #category : 'testing' }
@@ -154,6 +163,14 @@ CigStructure >> isClass [
 	^ self classMembers notEmpty 
 		or: [ self isOpaque
 		or: [ self fields anySatisfy: [ :each | each canBeFieldOfStructure not ] ] ]
+]
+
+{ #category : 'testing' }
+CigStructure >> isEqualToPath: aString [
+
+	^ self isAnonymous 
+		ifTrue: [ self isAnonymousMatchingLocation: aString ]
+		ifFalse: [ super isEqualToPath: aString ]
 ]
 
 { #category : 'testing' }
@@ -191,6 +208,14 @@ CigStructure >> isStructure [
 CigStructure >> isTemplateSpecialization [
 
 	^ '.*<.*>.*' asRegex matches: self name
+]
+
+{ #category : 'accessing' }
+CigStructure >> pathName [
+
+	self isAnonymous 
+		ifTrue: [ ^ '__anonymous__', self class typeReferenceName, '__' ].
+	^ super pathName
 ]
 
 { #category : 'accessing' }

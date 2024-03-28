@@ -12,7 +12,7 @@ Class {
 { #category : 'private' }
 CigStdSharedPtrParameterTemplate class >> handlesType: aType [
 
-	^ aType parseType name = #'std::shared_ptr'
+	^ aType isType: 'std::shared_ptr'
 ]
 
 { #category : 'generating' }

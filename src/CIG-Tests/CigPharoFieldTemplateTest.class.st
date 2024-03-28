@@ -7,6 +7,18 @@ Class {
 }
 
 { #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateAnonymousUnionFieldDesc [
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'bio_poll_descriptor_st' }.
+	template := (element fieldNamed: 'value') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'bio_poll_descriptor_st_union_1 value'
+]
+
+{ #category : 'tests' }
 CigPharoFieldTemplateTest >> testGenerateCallbackFieldDesc [
 	| element template |
 
