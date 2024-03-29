@@ -49,21 +49,23 @@ CigBaseTypedef >> definesFunction [
 
 { #category : 'initialization' }
 CigBaseTypedef >> fromCursor: aCursor [
-	| type |
+	| underlyingType |
 
 	super fromCursor: aCursor.
-	type := aCursor typedefDeclUnderlyingType.
-	underlyingTypeName := type spelling.
-	underlyingTypeKind := type kind.
+	underlyingType := aCursor typedefDeclUnderlyingType.
+	underlyingTypeName := underlyingType spelling.
+	underlyingTypeKind := underlyingType kind.
 	definesFunction := (underlyingTypeName beginsWith: 'std::function') 
-		or: [ (
-			(underlyingTypeKind = CXType_Pointer or: [ underlyingTypeKind = CXType_MemberPointer ]) 
-			and: [ type pointeeType resultType ~= CXType_Invalid ]) ].
+		"or: [ 
+			((underlyingTypeKind = CXType_Pointer or: [ underlyingTypeKind = CXType_MemberPointer ]) 
+			and: [ underlyingType pointeeType resultType ~= CXType_Invalid ])"
+		or: [ 
+			underlyingTypeName matchesRegex: '.*\(.*\)' ].
 	definesArray := underlyingTypeKind = CXType_ConstantArray 
 			or: [ underlyingTypeKind = CXType_IncompleteArray
 			or: [ underlyingTypeKind = CXType_VariableArray ] ].
 		
-	self checkForTemplateSpecialization: type name: underlyingTypeName
+	self checkForTemplateSpecialization: underlyingType name: underlyingTypeName
 ]
 
 { #category : 'testing' }

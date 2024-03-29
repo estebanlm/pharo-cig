@@ -33,11 +33,16 @@ CigPharoTypesPoolGenerator >> addClassWithTypes: aDictionary [
 
 { #category : 'private' }
 CigPharoTypesPoolGenerator >> classInitializationTemplate: aDictionary [
-		
+
 	^ String streamContents: [ :stream |
 		stream << 'initialize'; cr; cr.
 		self cppTypes, aDictionary associations 
-			do: [ :assoc | stream <<  String tab <<  assoc key << ' := ' << assoc value ]
+			do: [ :assoc | 
+				stream tab.
+				stream 
+					<<  assoc key 
+					<< ' := ' 
+					<< assoc value ]
 			separatedBy: [ stream << '.'; cr ] ]
 ]
 
@@ -45,7 +50,7 @@ CigPharoTypesPoolGenerator >> classInitializationTemplate: aDictionary [
 CigPharoTypesPoolGenerator >> collectSharedVariables: aDictionary [
 		
 	^ (self cppKeys), (aDictionary keys) 
-		collect: #asSymbol 
+		collect: [ :each | each asSymbol ] 
 		as: Array
 ]
 
@@ -59,7 +64,7 @@ CigPharoTypesPoolGenerator >> cppKeys [
 CigPharoTypesPoolGenerator >> cppTypes [
 		
 	^ CigCPPTypedef classPool associations 
-		collect: [ :each | each key -> ('#', each value) ]
+		collect: [ :each | each key -> ('#', (self toPrintableSymbol: each value)) ]
 ]
 
 { #category : 'generating' }
@@ -73,4 +78,14 @@ CigPharoTypesPoolGenerator >> generateTypes: aDictionary [
 	
 	self addClassWithTypes: aDictionary.
 	self addClassInitializationMethodTypes: aDictionary
+]
+
+{ #category : 'private' }
+CigPharoTypesPoolGenerator >> toPrintableSymbol: aSymbol [
+
+	aSymbol isAllAlphaNumerics ifFalse: [ 
+		^ String streamContents: [ :stream |
+			stream << '''' << aSymbol asString << '''' ] ].
+	
+	^ aSymbol
 ]

@@ -15,7 +15,7 @@ CigPharoFieldTemplateTest >> testGenerateAnonymousUnionFieldDesc [
 	
 	self 
 		assert: template generateFieldDesc
-		equals: 'bio_poll_descriptor_st_union_1 value'
+		equals: 'bio_poll_descriptor_st_union1 value'
 ]
 
 { #category : 'tests' }

@@ -23,9 +23,15 @@ CigPharoStructureTemplate >> anonymousTypeName [
 	| index |
 	
 	index := self indexOfElement.
-	^ String streamContents: [ :stream |
-		stream <<  self element parent phDeclaration.
-		stream << self prefix capitalized << index asString ]
+	^ String streamContents: [ :stream | | decl |
+		decl := self element parent phDeclaration.
+		stream << decl.
+		"if parent is named with underscores, strategy will be add an underscore,
+		 otherwise capitalize it"
+		(decl includes: $_)
+			ifTrue: [ stream << '_' << self prefix ]
+			ifFalse: [ stream << self prefix capitalized ].
+		stream << index asString ]
 ]
 
 { #category : 'accessing' }
@@ -63,9 +69,7 @@ CigPharoStructureTemplate >> generateFieldsDesc [
 { #category : 'accessing' }
 CigPharoStructureTemplate >> indexOfElement [
 	
-	^ (self element parent elements 
-		select: [ :each | each kind = self element kind ]) 
-		indexOf: self element
+	^ self element parent indexOfElementOfSameKind: self element
 ]
 
 { #category : 'private' }

@@ -172,6 +172,16 @@ CigElement >> hash [
 	^ self species hash bitXor: self name hash
 ]
 
+{ #category : 'accessing' }
+CigElement >> indexOfElementOfSameKind: anElement [
+	"selects elements of same type of anElement and answer the index of 
+	 in in such collection (this is useful to name anonymous structs/unions/enums)" 
+
+	^ (self elements
+		select: [ :each | each kind = anElement kind ]) 
+		indexOf: anElement
+]
+
 { #category : 'testing' }
 CigElement >> isAccessSpecifier [
 

@@ -108,7 +108,7 @@ CigStructure >> fieldAnonymousReferences [
 	 declare them later (since uFFI does not allows nested structures, I need 
 	 to flatten them in Pharo)."
 	
-	^ self fields select: [ :each | each isStructure and: [ each isAnonymous ] ]
+	^ self elements select: [ :each | each isStructure and: [ each isAnonymous ] ]
 ]
 
 { #category : 'accessing' }
@@ -213,8 +213,11 @@ CigStructure >> isTemplateSpecialization [
 { #category : 'accessing' }
 CigStructure >> pathName [
 
-	self isAnonymous 
-		ifTrue: [ ^ '__anonymous__', self class typeReferenceName, '__' ].
+	self isAnonymous ifTrue: [ 
+		^ String streamContents: [ :stream |
+			stream << self class typeReferenceName.
+			stream print: (self parent indexOfElementOfSameKind: self) ] ].
+
 	^ super pathName
 ]
 

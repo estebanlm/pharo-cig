@@ -548,6 +548,21 @@ CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnion [
 ]
 
 { #category : 'tests - struct' }
+CigPharoVisitorTest >> testVisitStructureGenerateStructureAndUnionInC [
+	| element visitor class nestedClass |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'bio_poll_descriptor_st' }.
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: self translatedUnitOpenSSL.
+	
+	visitor visitStructure: element.
+	class := self class environment classNamed: 'XxBio_poll_descriptor_st'.
+	self assert: class notNil.	
+	nestedClass := self class environment classNamed: 'XxBio_poll_descriptor_st_union1'.
+	self assert: nestedClass notNil
+]
+
+{ #category : 'tests - struct' }
 CigPharoVisitorTest >> testVisitStructureInitializeStruct [
 	| element visitor class |
 
@@ -664,6 +679,25 @@ CigPharoVisitorTest >> testVisitTypedefWithCallback [
 	self 
 		assert: visitor types values first
 		equals: 'FFICallback'
+]
+
+{ #category : 'tests - typedef' }
+CigPharoVisitorTest >> testVisitTypedefWithStruct [
+	| element visitor |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'ssl_crock_st' }.	
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	visitor visitTypedef: element.
+
+	self 
+		assert: visitor types keys first
+		equals: 'ssl_crock_st'.
+		
+	self 
+		assert: visitor types values first
+		equals: 'ssl_st'
 ]
 
 { #category : 'tests - typedef' }

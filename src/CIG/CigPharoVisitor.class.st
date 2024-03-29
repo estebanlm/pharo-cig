@@ -220,7 +220,7 @@ CigPharoVisitor >> visitStructure: aStructure [
 		ifTrue: [ ^ self visitClass: aStructure ].
 	
 	self ensureBaseStructureClass: aStructure root.
-	aStructure fieldAnonymousReferences 
+	aStructure fieldAnonymousReferences
 		do: [ :each | each accept: self ].
 	(CigPharoStructureGenerator newFile: self file element: aStructure) generateOn: self.
 	self registerType: aStructure

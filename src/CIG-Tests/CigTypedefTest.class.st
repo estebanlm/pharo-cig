@@ -7,6 +7,20 @@ Class {
 }
 
 { #category : 'tests' }
+CigTypedefTest >> testDefinesFunction [
+	| element |
+	
+	self flag: #TODO. "Add more cases!"
+	"this will match with a regex"
+	element := self translatedUnitOpenSSL elementAtPath: { 'asn1_ps_func' }.
+	self assert: element definesFunction.
+	
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapCallback' }.
+	self assert: element definesFunction.
+
+]
+
+{ #category : 'tests' }
 CigTypedefTest >> testIsHomonym [
 	| element |
 	

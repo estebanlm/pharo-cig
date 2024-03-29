@@ -56,9 +56,7 @@ CigPharoEnumerationTemplate >> generateEnumDecl [
 { #category : 'accessing' }
 CigPharoEnumerationTemplate >> indexOfElement [
 	
-	^ (self element parent elements 
-		select: [ :each | each kind = self element kind ]) 
-		indexOf: self element
+	^ self element parent indexOfElementOfSameKind: element
 ]
 
 { #category : 'private' }

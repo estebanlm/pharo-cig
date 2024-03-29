@@ -15,7 +15,8 @@ Class {
 		'uint16_t',
 		'uint32_t',
 		'uint64_t',
-		'uint8_t'
+		'uint8_t',
+		'uintptr_t'
 	],
 	#category : 'CIG-Pharo',
 	#package : 'CIG',
@@ -36,5 +37,6 @@ CigCPPTypedef class >> initialize [
 	uint64_t := #uint64.
 
 	bool := #Boolean.
-	time_t := #int
+	time_t := #int.
+	uintptr_t := #'void *'
 ]

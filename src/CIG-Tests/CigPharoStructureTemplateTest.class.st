@@ -37,7 +37,7 @@ CigPharoStructureTemplateTest >> testGenerateStructSkipsAnonymousUnionInC [
 
 	^ #(
 	uint32_t type;
-	bio_poll_descriptor_st_union_1 value
+	bio_poll_descriptor_st_union1 value
 	)'
 ]
 

@@ -29,11 +29,11 @@ Class {
 CigType class >> createTypeMap [
 
 	^ Dictionary newFromPairs: {
-	'unsigned'. #uint.
-	'unsigned int'. #uint.
-	'unsigned long'. #ulong.
-	'unsigned short'. #ushort.
-	'unsigned char'. #uchar.
+	'unsigned'. 			#uint.
+	'unsigned int'. 	#uint.
+	'unsigned long'. 	#ulong.
+	'unsigned short'. 	#ushort.
+	'unsigned char'. 	#uchar.
 	}
 ]
 
