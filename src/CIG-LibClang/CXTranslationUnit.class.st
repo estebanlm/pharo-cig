@@ -26,6 +26,12 @@ CXTranslationUnit class >> clang_parseIndex: CIdx
 	))
 ]
 
+{ #category : 'private' }
+CXTranslationUnit class >> defaultRecordPreprocessor [
+
+	^ false
+]
+
 { #category : 'instance creaton' }
 CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename [ 
 
@@ -47,7 +53,7 @@ CXTranslationUnit class >> parseIndex: CIdx fileName: source_filename arguments:
 		parseIndex: CIdx 
 		fileName: source_filename 
 		arguments: aCollection
-		recordPreprocessor: false
+		recordPreprocessor: self defaultRecordPreprocessor
 ]
 
 { #category : 'instance creaton' }
