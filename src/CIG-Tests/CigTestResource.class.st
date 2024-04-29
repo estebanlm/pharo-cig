@@ -9,7 +9,8 @@ Class {
 		'translatedUnitStdArray',
 		'translatedUnitRaylib',
 		'translatedUnitIcal',
-		'translatedUnitOpenSSL'
+		'translatedUnitOpenSSL',
+		'translatedUnitLibXML'
 	],
 	#category : 'CIG-Tests-Base',
 	#package : 'CIG-Tests',
@@ -50,6 +51,26 @@ CigTestResource class >> icalSpec [
 		bindingsName: 'ical';
 		import: 'libical/ical.h';
 		yourself.
+]
+
+{ #category : 'private - specs' }
+CigTestResource class >> libXMLSpec [
+	
+	^ CigCLibraryGenerator new
+	prefix: 'Xml';
+	bindingsName: 'xml';
+	from: 'iconv.h' import: #('iconv_t');
+	from: 'libxml2/libxml/tree.h' import: #(
+		'_xmlNode' 
+		'_xmlDtd' 
+		'_xmlDoc');
+	import: 'libxml2/libxml/xmlreader.h';
+	import: 'libxml2/libxml/encoding.h';
+	import: 'libxml2/libxml/xmlwriter.h';
+	cIncludePath: '/usr/include/libxml2';
+	cTypedef: '_xmlCharEncodingHandler__uconv_t' as: #void;
+	yourself.	
+	
 ]
 
 { #category : 'private - specs' }
@@ -123,7 +144,8 @@ CigTestResource class >> rebuildAll [
 	self build: 'stdArray' with: self stdArraySpec.
 	self build: 'raylib' with: self raylibSpec.
 	self build: 'ical' with: self icalSpec.
-	self build: 'openssl' with: self openSSLSpec
+	self build: 'openssl' with: self openSSLSpec.
+	self build: 'libxml' with: self libXMLSpec
 ]
 
 { #category : 'utilities' }
@@ -187,6 +209,13 @@ CigTestResource >> translatedUnitIcal [
 
 	^ translatedUnitIcal ifNil: [ 
 		translatedUnitIcal := self class readResource: 'ical' ]
+]
+
+{ #category : 'accessing' }
+CigTestResource >> translatedUnitLibXML [
+
+	^ translatedUnitLibXML ifNil: [ 
+		translatedUnitLibXML := self class readResource: 'libxml' ]
 ]
 
 { #category : 'accessing' }

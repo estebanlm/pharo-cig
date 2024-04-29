@@ -33,6 +33,14 @@ CigBaseTest >> translatedUnitIcal [
 ]
 
 { #category : 'accessing' }
+CigBaseTest >> translatedUnitLibXML [
+
+	^ CigTestResource current translatedUnitLibXML
+		prefix: 'xml';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigBaseTest >> translatedUnitNoise [
 
 	^ CigTestResource current translatedUnitNoise

@@ -34,7 +34,8 @@ Class {
 		'defines',
 		'definesBeforeHeader',
 		'excluding',
-		'ffiRunner'
+		'ffiRunner',
+		'typedefs'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -188,6 +189,27 @@ CigLibraryGenerator >> cLibs: aCollection [
 CigLibraryGenerator >> cLibsAsArguments [
 
 	^ self cLibs collect: [ :each | '-l', each ]
+]
+
+{ #category : 'accessing - scripting' }
+CigLibraryGenerator >> cTypedef: aDeclaration as: aName [
+	"a typedef will be added to the library at the begining, making it easy to bypass certain types
+	 without adding the while library."
+
+	typedefs ifNil: [ typedefs := OrderedCollection new ].
+	typedefs add: aDeclaration -> aName
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> cTypedefs [
+
+	^ typedefs
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> cTypedefs: anOrderedDictionary [
+
+	typedefs := anOrderedDictionary
 ]
 
 { #category : 'private' }

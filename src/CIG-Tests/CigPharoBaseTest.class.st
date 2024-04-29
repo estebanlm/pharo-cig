@@ -47,6 +47,15 @@ CigPharoBaseTest >> translatedUnitIcal [
 ]
 
 { #category : 'accessing' }
+CigPharoBaseTest >> translatedUnitLibXML [
+
+	"change prefix to ensure it does not collides with existing classes"
+	^ super translatedUnitLibXML
+		prefix: 'xx';
+		yourself
+]
+
+{ #category : 'accessing' }
 CigPharoBaseTest >> translatedUnitNoise [
 
 	"change prefix to ensure it does not collides with existing classes"

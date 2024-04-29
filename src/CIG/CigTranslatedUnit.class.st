@@ -6,8 +6,8 @@ The method `CigTranslatedUnit>>#generateFrom:` takes a `CigLibraryGenerator` ins
 Class {
 	#name : 'CigTranslatedUnit',
 	#superclass : 'Object',
-	#traits : 'CigTElementContainer',
-	#classTraits : 'CigTElementContainer classTrait',
+	#traits : 'CigTLoggeable + CigTElementContainer',
+	#classTraits : 'CigTLoggeable classTrait + CigTElementContainer classTrait',
 	#instVars : [
 		'nodeClasses',
 		'registerUnknown',
@@ -224,6 +224,7 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	excluding := aHeader excluding.
 	elements := OrderedCollection new.
 	
+	self preprocess: aHeader.
 	aHeader imports valuesDo: [ :each |
 		self generateTarget: each from: aHeader ]
 ]
@@ -231,6 +232,8 @@ CigTranslatedUnit >> generateFrom: aHeader [
 { #category : 'generating' }
 CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 	| index unit cursor fileName baseDirectory |
+
+	self logInfo: 'Processing ', aTarget name, '...'.
 	
 	fileName := self resolveIncludeFileName: aTarget name.
 	baseDirectory := fileName asFileReference parent fullName.
@@ -249,19 +252,25 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 		[ 
 			(self currentIsPartOfLibrary: current baseDirectory: baseDirectory)
 				ifTrue: [
+					self logDebug: '- ', current displayName, ' included.'.
 					aTarget 
 						processNode: current
 						ifAdd: [ self addNode: current parent: parent ]
 						ifInsert: [ self insertNode: current ].
 					CXChildVisit recurse ]
 				ifFalse: [
+					self logDebug: '- ', current displayName, ' skipped.'.
 					CXChildVisit continue ] ]
 		on: Error 
 		fork: [ :e | e pass ] 
-		return: [ CXChildVisit break ] ].
+		return: [ 
+			self logDebug: 'BREAK'.
+			CXChildVisit break ] ].
 
 	unit dispose.
-	index dispose
+	index dispose.
+	
+	self logInfo: 'Finished.'
 ]
 
 { #category : 'testing' }
@@ -318,12 +327,10 @@ CigTranslatedUnit >> insertNode: aCursor [
 	"inserts an element. 
 	 oposite to #addElement: it inserts it in its path, by creating namespaces between the 
 	 root at the element if needed."
+
 	| element |
-	
 	element := self newNode: aCursor.
-	self 
-		insertElement: element 
-		at: aCursor parent path
+	self insertElement: element at: aCursor semanticParent semanticPath
 ]
 
 { #category : 'inspecting' }
@@ -461,6 +468,16 @@ CigTranslatedUnit >> prefix: aString [
 
 	"this is used for tests"
 	prefix := aString
+]
+
+{ #category : 'private - generating' }
+CigTranslatedUnit >> preprocess: aHeader [
+
+	"Add predefined typedefs if any"
+	(aHeader cTypedefs ifNil: [ #() ]) do: [ :each |
+		self addElement: (CigTypedef
+			newName: each key 
+			type: each value) ]
 ]
 
 { #category : 'utilities' }

@@ -134,7 +134,7 @@ CigType class >> resolveFFIType: aString [
 			"it cannot be solved, still try to fix if mapped type" 
 			self 
 				resolveMappedType: aString
-				ifAbsent: [ self error: 'C type can''t be mapped to a n FFIType' ] ]
+				ifAbsent: [ self error: aString, ' can''t be mapped to a n FFIType' ] ]
 ]
 
 { #category : 'utilities' }
@@ -162,7 +162,7 @@ CigType class >> sanitizeTypeName: aString [
 	
 	substrings := aString substrings.
 	substrings size > 1 ifTrue: [
-		(#('struct' 'union' 'enum') includes: substrings first)
+		(#('const' 'struct' 'union' 'enum') includes: substrings first)
 			ifTrue: [ ^ ' ' join: substrings allButFirst ] ].
 	
 	^ aString

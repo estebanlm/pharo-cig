@@ -94,12 +94,8 @@ CigCParameterTemplate >> generateFFIType [
 
 { #category : 'generating' }
 CigCParameterTemplate >> generateFFITypeForField [
-	| ffiType |
-	
-	ffiType := self generateFFIType.
-	^ (ffiType beginsWith: 'const ')
-		ifTrue: [ ffiType allButFirst: 6 ]
-		ifFalse: [ ffiType ]
+
+	^ CigType sanitizeTypeName: self generateFFIType
 ]
 
 { #category : 'generating' }

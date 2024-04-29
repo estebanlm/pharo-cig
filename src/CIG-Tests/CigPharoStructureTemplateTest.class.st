@@ -42,6 +42,30 @@ CigPharoStructureTemplateTest >> testGenerateStructSkipsAnonymousUnionInC [
 ]
 
 { #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithOpaqueObject [
+	| element template |
+
+	element := self translatedUnitLibXML elementAtPath: { '_xmlDoc' }.
+	template := (element fieldNamed: 'dict') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: '_xmlDict* dict'
+]
+
+{ #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithStructInDeclaration [
+	| element template |
+
+	element := self translatedUnitLibXML elementAtPath: { '_xmlNode' }.
+	template := (element fieldNamed: 'children') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: '_xmlNode* children'
+]
+
+{ #category : 'tests' }
 CigPharoStructureTemplateTest >> testGenerateStructWithStructure [
 	| element template |
 
@@ -57,6 +81,18 @@ CigPharoStructureTemplateTest >> testGenerateStructWithStructure [
 	xx_TStreamableClass* t;
 	xx_TStreamableClass* forceLink
 	)'
+]
+
+{ #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithTypedefWithPointerToStructure [
+	| element template |
+
+	element := self translatedUnitLibXML elementAtPath: { '_xmlParserInputBuffer' }.
+	template := (element fieldNamed: 'encoder') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc 
+		equals: 'xmlCharEncodingHandlerPtr encoder'
 ]
 
 { #category : 'tests' }

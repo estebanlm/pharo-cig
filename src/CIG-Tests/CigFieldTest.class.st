@@ -7,6 +7,18 @@ Class {
 }
 
 { #category : 'tests' }
+CigFieldTest >> testResolveTypeForStructureWithoutTypeReferenceCreatesCorrectReference [ 
+	| element type |
+	
+	element := self translatedUnitLibXML elementAtPath: #('_xmlDoc' 'dict').
+	type := element resolveType.
+	"It has to answer same element"
+	self 
+		assert: type element 
+		identicalTo: (self translatedUnitLibXML elementAtPath: { '_xmlDict' })
+]
+
+{ #category : 'tests' }
 CigFieldTest >> testSpecialField [
 	| element |
 

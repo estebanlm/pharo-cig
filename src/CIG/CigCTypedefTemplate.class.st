@@ -9,6 +9,18 @@ Class {
 	#tag : 'C-Template'
 }
 
+{ #category : 'private' }
+CigCTypedefTemplate >> encloseFFIType: aString [ 	
+	| shouldEnclose |
+	
+	shouldEnclose := aString includesAnyOf: '*&'. 
+	^ String streamContents: [ :stream |
+		stream << '#'.
+		shouldEnclose ifTrue: [ stream nextPut: $' ].
+		stream << aString.
+		shouldEnclose ifTrue: [ stream nextPut: $' ] ]
+]
+
 { #category : 'generating' }
 CigCTypedefTemplate >> generate [
 
@@ -30,17 +42,21 @@ CigCTypedefTemplate >> generateFFIType [
 	| ffiType typeName shouldEnclose |
 
 	typeName := self typeName.
+
 	"it may point to an element defined here"
 	(self lookupType: typeName) 
 		ifNotNil: [ :anElement | ^ anElement phDeclaration ].
+
+	"or it may point to a *pointer* to an element defined here"	
+	(typeName includesAnyOf: '*&') ifTrue: [
+		| stripName | 
+		stripName := (typeName reject: [ :each | '*&' includes: each ]) trimmed.
+		(self lookupType: stripName) ifNotNil: [ :anElement | 
+			^ self encloseFFIType: (typeName copyReplaceAll: stripName with: anElement cDeclaration) ] ].
+		
 	"otherwise resolve it as a C type"
 	ffiType := CigType resolveFFIType: typeName.
-	shouldEnclose := ffiType includesAnyOf: '*&'. 
-	^ String streamContents: [ :stream |
-		stream << '#'.
-		shouldEnclose ifTrue: [ stream nextPut: $' ].
-		stream << ffiType.
-		shouldEnclose ifTrue: [ stream nextPut: $' ] ]
+	^ self encloseFFIType: ffiType
 ]
 
 { #category : 'private' }

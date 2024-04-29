@@ -6,7 +6,6 @@ Class {
 	#instVars : [
 		'typeName',
 		'typeKind',
-		'templateTypes',
 		'definesFunction',
 		'argumentIndex',
 		'underlyingTypeName',

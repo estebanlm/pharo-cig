@@ -31,6 +31,30 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithStructPointer [
 ]
 
 { #category : 'tests' }
+CigPharoTypedefTemplateTest >> testVisitTypedefWithTypedefToStruct [
+	| element template |
+
+	element := self translatedUnitLibXML elementAtPath: { 'xmlBuffer' }.	
+	template := element phTemplate.
+
+	self 
+		assert: template generate
+		equals: 'Xx_xmlBuffer'
+]
+
+{ #category : 'tests' }
+CigPharoTypedefTemplateTest >> testVisitTypedefWithTypedefToTypedefOfExistingStruct [
+	| element template |
+
+	element := self translatedUnitLibXML elementAtPath: { 'xmlCharEncodingHandlerPtr' }.	
+	template := element phTemplate.
+
+	self 
+		assert: template generate
+		equals: '#''xmlCharEncodingHandler *'''
+]
+
+{ #category : 'tests' }
 CigPharoTypedefTemplateTest >> testVisitTypedefWithUnion [
 	| element template |
 

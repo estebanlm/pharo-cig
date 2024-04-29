@@ -35,7 +35,7 @@ CigCParameterStructTypeTemplate >> elementTypeName [
 		(self elementWithFullName: self type typeReference typeName)
 			ifNotNil: [ :aNode | ^ aNode cDeclaration ] ].
 		
-	^ (self elementWithFullName: self type parseType name)
+	^ (self elementWithFullName: (CigType sanitizeTypeName: self type parseType name))
 		ifNotNil: [ :aNode | ^ aNode cDeclaration ]
 		ifNil: [ self type name ]
 ]
