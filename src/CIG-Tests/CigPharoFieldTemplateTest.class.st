@@ -81,6 +81,32 @@ CigPharoFieldTemplateTest >> testGenerateSimpleFieldDesc [
 ]
 
 { #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateStructFieldReference [
+	"a field that references another structure from the library"
+	| element template |
+
+	element := self translatedUnitLibXML elementAtPath: { '_xmlDoc' }.
+	template := (element fieldNamed: 'dict') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: '_xmlDict* dict'
+]
+
+{ #category : 'tests' }
+CigPharoFieldTemplateTest >> testGenerateStructFieldReferenceWithTypeReference [
+	"a field that references another structure from the library"
+	| element template |
+
+	element := self translatedUnitLibXML elementAtPath: { '_xmlAttribute' }.
+	template := (element fieldNamed: 'children') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: '_xmlNode* children'
+]
+
+{ #category : 'tests' }
 CigPharoFieldTemplateTest >> testGenerateUnionFieldDesc [
 	| element template |
 

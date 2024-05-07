@@ -31,6 +31,9 @@ CigCParameterStructTypeTemplate >> castReturn: aString [
 { #category : 'private' }
 CigCParameterStructTypeTemplate >> elementTypeName [
 	
+	self type element 
+		ifNotNil: [ :anElement | ^ anElement cDeclaration ].
+	
 	self type hasTypeReference ifTrue: [  
 		(self elementWithFullName: self type typeReference typeName)
 			ifNotNil: [ :aNode | ^ aNode cDeclaration ] ].

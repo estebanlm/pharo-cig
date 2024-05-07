@@ -192,18 +192,46 @@ CigType >> definesFunction: aBoolean [
 	definesFunction := aBoolean
 ]
 
+{ #category : 'private' }
+CigType >> disambiguatePossibleReference: aNode [
+
+	aNode ifNil: [ ^ nil ].
+	
+	"struct and union can be contained in another struct or union but just be a reference 
+	 (since libclang will send a struct definition anyway).
+	 take this example: 
+	 struct B { ...something here... }
+	 struct A {
+	 	struct B *b;
+	 }
+	 libclang will visit all members of the structure inside struct A, and it will then 
+	 add a child to our struct node. This will be later NOT traversed (since is just a declaration) 
+	 and then it will be empty.
+	 So... this may happen because in new versions of C++ you can declare structs and unions without 
+	 name and there is a way to access their members directly (but if empty it does not has any sense)."
+	(aNode isStructure 
+		and: [ aNode hasElements not
+		and: [ aNode parent ~= self root
+		and: [ aNode parent isStructure ] ] ])
+		ifTrue: [ 
+			(self root elementAtPath: { aNode name })
+				ifNotNil: [ :realNode | ^ realNode ] ].
+			
+	^ aNode
+]
+
 { #category : 'accessing' }
 CigType >> element [
 	"if there is a typeReference, tries to answer it"
 
 	^ element ifNil: [ 
-		element := self typeReferenceForParsedType
+		element := self disambiguatePossibleReference: (self typeReferenceForParsedType
 			ifNotNil: [ :aTypeReference |
 				"it can be an element from the tree (class, etc.)"
 				aTypeReference matchingElementInUnit ]
 			ifNil: [ 
 				"it can be a typedef or an existing node without a type reference"
-				self parent scopeLookup: self parseType nameWithSpecialization ] ]
+				 self parent scopeLookup: self parseType nameWithSpecialization ]) ]
 ]
 
 { #category : 'initialization' }
