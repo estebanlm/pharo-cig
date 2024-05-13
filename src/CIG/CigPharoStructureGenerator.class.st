@@ -9,7 +9,7 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoStructureGenerator >> addStruct [
 	
 	generatedClass := (self baseClass << self structName)
@@ -18,7 +18,7 @@ CigPharoStructureGenerator >> addStruct [
 		install
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoStructureGenerator >> addStructFieldsDesc [
 	
 	generatedClass class 
@@ -26,7 +26,7 @@ CigPharoStructureGenerator >> addStructFieldsDesc [
 		classified: 'field definition'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoStructureGenerator >> baseClass [
 
 	^ self baseStructureClass
@@ -52,7 +52,7 @@ CigPharoStructureGenerator >> generateOn: aVisitor [
 	aVisitor registerForInitialization: self
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CigPharoStructureGenerator >> structName [
 
 	^ self element isAnonymous
