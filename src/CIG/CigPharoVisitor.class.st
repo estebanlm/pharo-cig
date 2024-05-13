@@ -133,6 +133,7 @@ CigPharoVisitor >> types [
 CigPharoVisitor >> visitClass: aClass [
 	
 	self ensureBaseObjectClass: aClass root.
+	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
 	(CigPharoClassGenerator newFile: self file element: aClass) generateOn: self.
 	super visitClass: aClass.
 	self registerType: aClass
@@ -214,16 +215,25 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 CigPharoVisitor >> visitStructure: aStructure [
 
 	aStructure canBeExported ifFalse: [ ^ self ].
-	"act as class if it behaves as a class"
-	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
 	aStructure isClass
 		ifTrue: [ ^ self visitClass: aStructure ].
-	
+
 	self ensureBaseStructureClass: aStructure root.
-	aStructure fieldAnonymousReferences
+	self 
+		visitStructure: aStructure 
+		generator: CigPharoStructureGenerator
+]
+
+{ #category : 'visiting' }
+CigPharoVisitor >> visitStructure: aStructure generator: generatorClass [
+	| generator |
+	
+	(aStructure fieldAnonymousReferences, aStructure fieldInnerStructures)
 		do: [ :each | each accept: self ].
-	(CigPharoStructureGenerator newFile: self file element: aStructure) generateOn: self.
-	self registerType: aStructure
+	(generator := generatorClass newFile: self file element: aStructure) generateOn: self.
+	self 
+		registerDeclaration: aStructure cDeclaration 
+		as: generator structName
 ]
 
 { #category : 'visiting' }
@@ -238,18 +248,15 @@ CigPharoVisitor >> visitTypedef: aTypedef [
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitUnion: aUnion [
-	| generator |
-	
+
 	aUnion canBeExported ifFalse: [ ^ self ].
-	"act as class if it behaves as a class"
-	self flag: #TODO. "Maybe add accessors for fields? (style properties)"
 	aUnion isClass
 		ifTrue: [ ^ self visitClass: aUnion ].
-
+	
 	self ensureBaseUnionClass: aUnion root.
-	aUnion fieldAnonymousReferences 
-		do: [ :each | each accept: self ].
-	(generator := CigPharoUnionGenerator newFile: self file element: aUnion) generateOn: self
+	self 
+		visitStructure: aUnion 
+		generator: CigPharoUnionGenerator
 ]
 
 { #category : 'visiting' }
