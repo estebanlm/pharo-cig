@@ -112,6 +112,13 @@ CigStructure >> fieldAnonymousReferences [
 ]
 
 { #category : 'accessing' }
+CigStructure >> fieldInnerStructures [
+	
+	^ self elements select: [ :each | 
+		each isStructure and: [ each hasFields ] ]
+]
+
+{ #category : 'accessing' }
 CigStructure >> fieldNamed: aString [ 
 	
 	^ self fields detect: [ :each | each name = aString ]
@@ -136,6 +143,12 @@ CigStructure >> fromCursor: aCursor [
 CigStructure >> hasComment [
 	
 	^ self comment isEmptyOrNil not
+]
+
+{ #category : 'testing' }
+CigStructure >> hasFields [
+	
+	^ self fields notEmpty
 ]
 
 { #category : 'testing' }

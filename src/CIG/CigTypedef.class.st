@@ -59,3 +59,10 @@ CigTypedef >> isHomonymStruct [
 	^ (self underlyingTypeName beginsWith: 'struct ')
 		and: [ (self underlyingTypeName allButFirst: 7) = self name ]
 ]
+
+{ #category : 'accessing' }
+CigTypedef >> phDeclaration [
+
+	"typedef will be generated as itself (no prefix, since is not a class)"
+	^ self sanitizeName: self name
+]
