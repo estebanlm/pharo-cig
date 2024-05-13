@@ -594,6 +594,42 @@ CigPharoVisitorTest >> testVisitStructureRegisterType [
 	self assert: (typedefClass bindingOf: #xx_TResourceItem) value equals: class
 ]
 
+{ #category : 'tests - struct' }
+CigPharoVisitorTest >> testVisitStructureWithAnonymousUnionRegisterType [
+	| element visitor class typedefClass |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'bio_poll_descriptor_st' }.
+	visitor := CigPharoVisitor newForTest.	
+	visitor addBaseClasses: element root.
+	visitor visitStructure: element.
+	visitor endUnit: element root.
+	
+	typedefClass := self class environment classNamed: 'XxGeneratedForTestTypedef'.
+	class := self class environment classNamed: 'XxBio_poll_descriptor_st'.
+	self assert: typedefClass notNil.
+	self assert: (typedefClass includesKey: #bio_poll_descriptor_st).
+	self assert: (typedefClass bindingOf: #bio_poll_descriptor_st) value equals: class
+]
+
+{ #category : 'tests - struct' }
+CigPharoVisitorTest >> testVisitStructureWithNamedUnionRegisterType [
+	| element visitor class typedefClass |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'lhash_st_ERR_STRING_DATA' }.
+	visitor := CigPharoVisitor newForTest.	
+	visitor addBaseClasses: element root.
+	visitor visitStructure: element.
+	visitor endUnit: element root.
+	
+	typedefClass := self class environment classNamed: 'XxGeneratedForTestTypedef'.
+	class := self class environment classNamed: 'XxLh_ERR_STRING_DATA_dummy'.
+	self assert: typedefClass notNil.
+	self assert: (typedefClass includesKey: #lhash_st_ERR_STRING_DATA_lh_ERR_STRING_DATA_dummy).
+	self 
+		assert: (typedefClass bindingOf: #lhash_st_ERR_STRING_DATA_lh_ERR_STRING_DATA_dummy) value 
+		equals: class
+]
+
 { #category : 'tests - typedef' }
 CigPharoVisitorTest >> testVisitTypedefIsAddedToTypes [
 	| element visitor class |
@@ -697,7 +733,7 @@ CigPharoVisitorTest >> testVisitTypedefWithStruct [
 		
 	self 
 		assert: visitor types values first
-		equals: 'ssl_st'
+		equals: '#''ssl_st *'''
 ]
 
 { #category : 'tests - typedef' }

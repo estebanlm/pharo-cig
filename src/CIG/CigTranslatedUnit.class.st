@@ -389,6 +389,12 @@ CigTranslatedUnit >> isPublic: anElement [
 	^ true
 ]
 
+{ #category : 'testing' }
+CigTranslatedUnit >> isStructure [
+	
+	^ false
+]
+
 { #category : 'utilities' }
 CigTranslatedUnit >> listElementsFrom: aHeader [
 	"makes a tree of elements I can use to generate the wrapper file and classes."

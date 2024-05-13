@@ -111,6 +111,9 @@ CigTestResource class >> openSSLSpec [
 		import: 'openssl/bio.h';
 		import: 'openssl/ssl.h';
 		import: 'openssl/err.h';
+		"openssl hides this structure (headers are not included in public, 
+		 so it will be an opaque object)"
+		cTypedef: 'ssl_st' as: #void;
 		yourself
 ]
 

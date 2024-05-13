@@ -7,6 +7,16 @@ Class {
 }
 
 { #category : 'tests' }
+CigPharoTypedefTemplateTest >> testVisitTypedefWithFunction [
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'BIO_info_cb' }.	
+	template := element phTemplate.
+
+	self assert: template generate equals: 'FFICallback'
+]
+
+{ #category : 'tests' }
 CigPharoTypedefTemplateTest >> testVisitTypedefWithStruct [
 	| element template |
 
@@ -27,7 +37,17 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithStructPointer [
 
 	self 
 		assert: template generate
-		equals: 'XxSsl_st*'
+		equals: '#''ssl_st *'''
+]
+
+{ #category : 'tests' }
+CigPharoTypedefTemplateTest >> testVisitTypedefWithTypedefToFunction [
+	| element template |
+
+	element := self translatedUnitOpenSSL elementAtPath: { 'bio_info_cb' }.	
+	template := element phTemplate.
+
+	self assert: template generate equals: 'BIO_info_cb'
 ]
 
 { #category : 'tests' }
