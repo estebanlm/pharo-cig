@@ -382,7 +382,7 @@ CigLibraryGenerator >> translateUnit [
 ]
 
 { #category : 'generating' }
-CigLibraryGenerator >> translateUnitWithoutUnkown [
+CigLibraryGenerator >> translateUnitWithoutUnknown [
 	
 	^ self newTranslatedUnit
 		withoutUnknown;
