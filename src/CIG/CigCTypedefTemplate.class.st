@@ -39,7 +39,7 @@ CigCTypedefTemplate >> generateCType [
 
 { #category : 'generating' }
 CigCTypedefTemplate >> generateFFIType [
-	| ffiType typeName shouldEnclose |
+	| ffiType typeName |
 
 	typeName := self typeName.
 
