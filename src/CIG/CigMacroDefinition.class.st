@@ -1,0 +1,56 @@
+Class {
+	#name : 'CigMacroDefinition',
+	#superclass : 'CigElement',
+	#instVars : [
+		'isBuiltin',
+		'isFunctionLike',
+		'source'
+	],
+	#category : 'CIG-Node',
+	#package : 'CIG',
+	#tag : 'Node'
+}
+
+{ #category : 'accessing' }
+CigMacroDefinition class >> kind [
+	
+	^ CXCursor_MacroDefinition
+]
+
+{ #category : 'visiting' }
+CigMacroDefinition >> accept: aVisitor [
+
+]
+
+{ #category : 'initialization' }
+CigMacroDefinition >> fromCursor: aCursor [
+
+	super fromCursor: aCursor.
+	isBuiltin := aCursor isMacroBuiltin.
+	isFunctionLike := aCursor isMacroFunctionLike.
+
+	self flag: #TODO. "I think this is better done with tokens (see sourceTokens and around). 
+	But for some reason it is crashing. Since I can achieve more or less the same and faster 
+	tokenising myself the source, I'll go that way for now."	
+	source := aCursor source 
+		ifNotNil: [ :aString | ' ' join: aString substrings allButFirst ]
+]
+
+{ #category : 'testing' }
+CigMacroDefinition >> isMacroDefinition [
+
+	^ true
+]
+
+{ #category : 'accessing' }
+CigMacroDefinition >> phDeclaration [
+
+	^ self source 
+		ifNotNil: [ :aString | self cToPharo: aString substrings allButFirst ]
+]
+
+{ #category : 'accessing' }
+CigMacroDefinition >> source [
+
+	^ source
+]

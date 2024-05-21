@@ -103,6 +103,15 @@ CXTranslationUnit class >> parseIndex: CIdx unsavedFile: anUnsavedFile arguments
 ]
 
 { #category : 'private' }
+CXTranslationUnit >> clang_disposeTokens: tokens numTokens: numTokens [
+
+	^ self ffiCall: #(void clang_disposeTokens(
+		CXTranslationUnit self,
+		"CXToken *"void *tokens,
+		uint numTokens))
+]
+
+{ #category : 'private' }
 CXTranslationUnit >> clang_getDiagnostic: index [
 
 	^ self ffiCall: #(CXDiagnostic clang_getDiagnostic(self, uint index))
@@ -112,6 +121,14 @@ CXTranslationUnit >> clang_getDiagnostic: index [
 CXTranslationUnit >> clang_getNumDiagnostics [
 
 	^ self ffiCall: #(uint clang_getNumDiagnostics(self)) 	
+]
+
+{ #category : 'private' }
+CXTranslationUnit >> clang_getTokenSpelling: token [
+
+	self ffiCall: #(CXString clang_getTokenSpelling(
+		CXTranslationUnit self,
+		CXToken token))
 ]
 
 { #category : 'accessing - cursor' }
@@ -135,4 +152,62 @@ CXTranslationUnit >> diagnostics [
 CXTranslationUnit >> dispose [
 
 	self ffiCall: #(void clang_disposeTranslationUnit(self))
+]
+
+{ #category : 'accessing - tokens' }
+CXTranslationUnit >> disposeTokens: aCollection [
+	| array |
+	
+	aCollection isEmptyOrNil ifTrue: [ ^ self ].
+	
+	array := FFITypeArray newType: #'void*' size: aCollection size.
+	aCollection withIndexDo: [ :each :index |
+		array at: index put: each getHandle ].
+	
+	self clang_disposeTokens: array getHandle numTokens: aCollection size
+]
+
+{ #category : 'accessing - tokens' }
+CXTranslationUnit >> tokenSpelling: token [
+	| string |
+	
+	string := self clang_getTokenSpelling: token.
+	^ [ string cString ]
+		ensure: [ string dispose ]
+]
+
+{ #category : 'private' }
+CXTranslationUnit >> tokenize: range tokens: tokens numTokens: numTokens [
+
+	^ self ffiCall: #(void clang_tokenize (
+		CXTranslationUnit self,
+		CXSourceRange range,
+		"CXToken **"void **tokens,
+		"unsigned *"void *numTokens))
+]
+
+{ #category : 'accessing - tokens' }
+CXTranslationUnit >> tokensOfRange: range [
+	| tokensBuffer numTokensBuffer count |
+	
+	tokensBuffer := ExternalAddress new.
+	numTokensBuffer := FFIUInt32 newBuffer.
+
+	self tokenize: range tokens: tokensBuffer numTokens: numTokensBuffer.
+	count := numTokensBuffer unsignedLongAt: 1.
+	count = 0 ifTrue: [ ^ #() ].
+
+	^ Array streamContents: [ :stream |
+		0 to: (count - 1) do: [ :index |
+			stream nextPut: (CXToken fromHandle: (tokensBuffer pointerAtOffset: index * FFIExternalType pointerSize)) ] ]
+]
+
+{ #category : 'accessing - tokens' }
+CXTranslationUnit >> withTokensOfRange: range do: aBlock [
+	| tokens |
+	
+	tokens := self tokensOfRange: range.
+	[ aBlock value: tokens ]
+	ensure: [ 
+		self disposeTokens: tokens ]
 ]

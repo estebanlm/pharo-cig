@@ -64,5 +64,5 @@ CigTypedef >> isHomonymStruct [
 CigTypedef >> phDeclaration [
 
 	"typedef will be generated as itself (no prefix, since is not a class)"
-	^ self sanitizeName: self name
+	^ self name
 ]

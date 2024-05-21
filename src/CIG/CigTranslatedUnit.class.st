@@ -245,7 +245,8 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 			self defaultClangArguments, 
 			aHeader cIncludePathsAsArguments,
 			aHeader cDefinesBeforeHeaderAsArguments,
-			aHeader cDefinesAsArguments.
+			aHeader cDefinesAsArguments
+		recordPreprocessor: aHeader hasPreprocessor.
 
 	cursor := unit cursor.
 	cursor visitChildren: [ :current :parent :data |
@@ -393,6 +394,12 @@ CigTranslatedUnit >> isPublic: anElement [
 CigTranslatedUnit >> isStructure [
 	
 	^ false
+]
+
+{ #category : 'testing' }
+CigTranslatedUnit >> isUnit [
+
+	^ true
 ]
 
 { #category : 'utilities' }

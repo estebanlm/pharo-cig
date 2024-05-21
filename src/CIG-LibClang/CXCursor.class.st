@@ -280,6 +280,18 @@ CXCursor >> isGlobal [
 ]
 
 { #category : 'testing' }
+CXCursor >> isMacroBuiltin [
+
+	^ self ffiCall: #(Boolean clang_Cursor_isMacroBuiltin(CXCursor self))
+]
+
+{ #category : 'testing' }
+CXCursor >> isMacroFunctionLike [
+
+	^ self ffiCall: #(Boolean clang_Cursor_isMacroFunctionLike(CXCursor self))
+]
+
+{ #category : 'testing' }
 CXCursor >> isNamespace [
 
 	^ self kind = CXCursor_Namespace
@@ -463,6 +475,14 @@ CXCursor >> source [
 	^ source trimmed
 ]
 
+{ #category : 'accessing - tokens' }
+CXCursor >> sourceTokens [
+	| range |
+	
+	range := self clang_getCursorExtent.	
+	^ self translationUnit tokensOfRange: range
+]
+
 { #category : 'accessing' }
 CXCursor >> spelling [
 	| string |
@@ -476,6 +496,12 @@ CXCursor >> spelling [
 CXCursor >> templateKind [
 
 	self ffiCall: #(int clang_getTemplateCursorKind(CXCursor self))
+]
+
+{ #category : 'accessing' }
+CXCursor >> translationUnit [
+
+	^ self ffiCall: #(CXTranslationUnit clang_Cursor_getTranslationUnit(CXCursor self))
 ]
 
 { #category : 'accessing' }
@@ -527,6 +553,16 @@ CXCursor >> withAllSemanticParents [
 		current := current semanticParent ].
 	
 	^ parents reversed
+]
+
+{ #category : 'accessing - tokens' }
+CXCursor >> wthSourceTokensDo: aBlock [
+	| range |
+	
+	range := self clang_getCursorExtent.	
+	^ self translationUnit 
+		withTokensOfRange: range 
+		do: aBlock
 ]
 
 { #category : 'accessing - structure variables' }

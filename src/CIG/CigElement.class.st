@@ -231,6 +231,12 @@ CigElement >> isFunction [
 ]
 
 { #category : 'testing' }
+CigElement >> isMacroDefinition [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CigElement >> isMethod [
 
 	^ false
@@ -316,6 +322,12 @@ CigElement >> isTypedef [
 
 { #category : 'testing' }
 CigElement >> isUnion [
+
+	^ false
+]
+
+{ #category : 'testing' }
+CigElement >> isUnit [
 
 	^ false
 ]

@@ -25,6 +25,12 @@ CigTypeReference >> accept: aVisitor [
 ]
 
 { #category : 'testing' }
+CigTypeReference >> canBeAddedTo: aParent [
+
+	^ aParent isUnit not
+]
+
+{ #category : 'testing' }
 CigTypeReference >> isClass [
 
 	^ self referenceType = CigClass
