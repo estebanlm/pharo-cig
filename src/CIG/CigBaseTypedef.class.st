@@ -47,6 +47,12 @@ CigBaseTypedef >> definesFunction [
 	^ definesFunction
 ]
 
+{ #category : 'testing' }
+CigBaseTypedef >> definesFunctionPointer [
+
+	^ self definesFunction and: [ self underlyingTypeName includesSubstring: '(*)' ]
+]
+
 { #category : 'initialization' }
 CigBaseTypedef >> fromCursor: aCursor [
 	| underlyingType |

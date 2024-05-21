@@ -9,7 +9,7 @@ Class {
 { #category : 'private' }
 CigPharoTypedefCallbackTemplate class >> handlesElement: anElement [
 
-	^ anElement definesFunction
+	^ anElement definesFunctionPointer
 ]
 
 { #category : 'generating' }
