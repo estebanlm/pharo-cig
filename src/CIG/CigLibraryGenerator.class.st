@@ -35,7 +35,8 @@ Class {
 		'definesBeforeHeader',
 		'excluding',
 		'ffiRunner',
-		'typedefs'
+		'typedefs',
+		'withPreprocessor'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -286,6 +287,12 @@ CigLibraryGenerator >> hasClasses [
 	^ withClasses
 ]
 
+{ #category : 'testing' }
+CigLibraryGenerator >> hasPreprocessor [
+
+	^ withPreprocessor
+]
+
 { #category : 'accessing - configuration' }
 CigLibraryGenerator >> import: aString [
 
@@ -313,6 +320,7 @@ CigLibraryGenerator >> initialize [
 	super initialize.
 	imports := Dictionary new.
 	self withClasses.
+	self withoutPreprocessor.
 	self useSameThread
 ]
 
@@ -409,7 +417,19 @@ CigLibraryGenerator >> withClasses [
 ]
 
 { #category : 'accessing - configuration' }
+CigLibraryGenerator >> withPreprocessor [
+
+	withPreprocessor := true
+]
+
+{ #category : 'accessing - configuration' }
 CigLibraryGenerator >> withoutClasses [
 
 	withClasses := false
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> withoutPreprocessor [
+
+	withPreprocessor := false
 ]
