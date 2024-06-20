@@ -24,13 +24,14 @@ CigTypeSpecializationCollector >> checkForDefinedTemplateSpecialization: aClassT
 ]
 
 { #category : 'private' }
-CigTypeSpecializationCollector >> checkForTemplateSpecialization: aFunction [
+CigTypeSpecializationCollector >> checkForTemplateSpecialization: anElement [
 		
-	aFunction isTemplateSpecialization ifFalse: [ ^ self ].
-	aFunction specializationTypes ifNil: [ ^ self ].
-	(aFunction underlyingTypeName beginsWith: (self typeName, '<')) ifFalse: [ ^ self ].
+	anElement isTemplateSpecialization ifFalse: [ ^ self ].
+	anElement specializationTypes ifNil: [ ^ self ].
+	anElement underlyingTypeName crTrace.
+	(anElement underlyingTypeName beginsWith: (self typeName, '<')) ifFalse: [ ^ self ].
 
-	collected addAll: aFunction specializationTypes
+	collected addAll: anElement specializationTypes
 ]
 
 { #category : 'accessing' }
