@@ -601,6 +601,8 @@ CigPharoVisitorTest >> testVisitStructureWithAnonymousUnionRegisterType [
 	element := self translatedUnitOpenSSL elementAtPath: { 'bio_poll_descriptor_st' }.
 	visitor := CigPharoVisitor newForTest.	
 	visitor addBaseClasses: element root.
+	"I need this to make the union pass :)"
+	visitor registerDeclaration: #SSL as: '#void'.
 	visitor visitStructure: element.
 	visitor endUnit: element root.
 	

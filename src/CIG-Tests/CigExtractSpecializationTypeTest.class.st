@@ -7,6 +7,14 @@ Class {
 }
 
 { #category : 'tests' }
+CigExtractSpecializationTypeTest >> testExtractSimpleSpecializationType [ 
+
+	self 
+		assert: (CigFunctionParser parse: 'TSpan<TScreenCell>') templates
+		equals: #('TScreenCell')
+]
+
+{ #category : 'tests' }
 CigExtractSpecializationTypeTest >> testExtractSpecializationTypesWithComplexDeclaration [
 	| types |
 

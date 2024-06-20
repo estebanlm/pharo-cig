@@ -105,15 +105,21 @@ CigTestResource class >> noiseutilsSpec [
 CigTestResource class >> openSSLSpec [
 	
 	^ CigCLibraryGenerator new
-		prefix: 'ssl';
+		prefix: 'SSL';
 		bindingsName: 'ssl';
-		cLib: 'openssl';
+		import: 'openssl/types.h';
 		import: 'openssl/bio.h';
 		import: 'openssl/ssl.h';
+		import: 'openssl/evp.h';
+		import: 'openssl/crypto.h';
+		import: 'openssl/decoder.h';
+		import: 'openssl/core_names.h';
+		import: 'openssl/pem.h';
 		import: 'openssl/err.h';
-		"openssl hides this structure (headers are not included in public, 
-		 so it will be an opaque object)"
-		cTypedef: 'ssl_st' as: #void;
+		cTypedef: 'pthread_once_t' as: #void;
+		cTypedef: 'pthread_key_t' as: #void;
+		cTypedef: 'pthread_t' as: #void;
+		cTypedef: 'crypto_ex_data_st_stack_st_void' as: #void; 
 		yourself
 ]
 

@@ -132,7 +132,7 @@ CigPharoStructureTemplateTest >> testGenerateStructWithUnionDefinitionSkipsDefin
 CigPharoStructureTemplateTest >> testGenerateStructWithUnsigned [
 	| element template |
 
-	element := self translatedUnitTvision elementAtPath: { 'ffblk' }.
+	element := self translatedUnitRaylib elementAtPath: { 'Texture' }.
 	template := element phTemplate.
 	
 	self 
@@ -140,12 +140,60 @@ CigPharoStructureTemplateTest >> testGenerateStructWithUnsigned [
 		equals: 'fieldsDesc
 
 	^ #(
-	int32_t ff_reserved;
-	int32_t ff_fsize;
-	uint32_t ff_attrib;
-	uint ff_ftime;
-	uint ff_fdate;
-	char ff_name
+	uint id;
+	int width;
+	int height;
+	int mipmaps;
+	int format
+	)'
+]
+
+{ #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithUnsignedChar [
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'Color' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateFieldsDesc
+		equals: 'fieldsDesc
+
+	^ #(
+	uchar r;
+	uchar g;
+	uchar b;
+	uchar a
+	)'
+]
+
+{ #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithUnsignedShort [
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'Mesh' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateFieldsDesc
+		equals: 'fieldsDesc
+
+	^ #(
+	int vertexCount;
+	int triangleCount;
+	float* vertices;
+	float* texcoords;
+	float* texcoords2;
+	float* normals;
+	float* tangents;
+	uchar* colors;
+	ushort* indices;
+	float* animVertices;
+	float* animNormals;
+	uchar* boneIds;
+	float* boneWeights;
+	uint vaoId;
+	uint* vboId
 	)'
 ]
 
