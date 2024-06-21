@@ -170,8 +170,16 @@ CigType class >> sanitizeTypeName: aString [
 
 { #category : 'utilities' }
 CigType class >> toTypePath: aString [
-
-	^ aString substrings: #('::')
+	|  remaining |
+	
+	remaining := aString.
+	^ Array streamContents: [ :stream |	
+		[ remaining includesSubstring: '::' ] whileTrue: [ 
+			| pos |
+			pos := remaining findString: '::'.
+			stream nextPut: (remaining first: pos - 1).
+			remaining := remaining allButFirst: pos + 1 ].
+		stream nextPut: remaining ]
 ]
 
 { #category : 'private' }

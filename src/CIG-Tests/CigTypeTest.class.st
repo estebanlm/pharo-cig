@@ -145,3 +145,11 @@ CigTypeTest >> testResolveTypeForClassCanAnswerElementClass [
 		assert: type element
 		equals: (self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'Color' })
 ]
+
+{ #category : 'tests' }
+CigTypeTest >> testResolveTypeInNamespace [ 
+	| path |
+
+	path := CigType toTypePath: 'FColorPalette::FSetPalette'.
+	self assert: path equals: #('FColorPalette' 'FSetPalette')
+]
