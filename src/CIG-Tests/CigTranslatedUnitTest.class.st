@@ -34,15 +34,17 @@ CigTranslatedUnitTest >> testFromImportImportsAlsoInnerElements [
 
 { #category : 'tests' }
 CigTranslatedUnitTest >> testResolveIncludeFileName [
+	"this is in fact a very weak test (since subdir will change as soon as I change the 
+	 gcc version :("
 	| unit |
 
 	unit := CigCppTranslatedUnit new.
 	self  
-		assert: (unit resolveIncludeFileName: '/usr/include/c++/13.2.1/array')
-		equals: '/usr/include/c++/13.2.1/array'.
+		assert: (unit resolveIncludeFileName: '/usr/include/c++/14.1.1/array')
+		equals: '/usr/include/c++/14.1.1/array'.
 		
 	"this test is super fragile because it depends on where I have *now* the file"
 	self  
 		assert: (unit resolveIncludeFileName: 'array')
-		equals: '/usr/include/c++/13.2.1/array'
+		equals: '/usr/include/c++/14.1.1/array'
 ]
