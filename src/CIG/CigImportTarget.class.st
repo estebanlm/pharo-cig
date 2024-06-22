@@ -28,6 +28,12 @@ CigImportTarget >> belongsToImportedElement: aCursor [
 ]
 
 { #category : 'accessing' }
+CigImportTarget >> headerName [
+
+	^ self name asFileReference basename
+]
+
+{ #category : 'accessing' }
 CigImportTarget >> import: aCollection [
 
 	imports ifNil: [ imports := Set new ].

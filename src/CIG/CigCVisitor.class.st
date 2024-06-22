@@ -258,12 +258,16 @@ CigCVisitor >> visitUnit: aUnit [
 		self addHHeaders.		
 		headerVisitor visitDefinesBeforeHeader: aUnit.
 		hStream cr.
-		hStream << '#include <' << self file fileReference basename << '>'.
-		hStream cr; cr.
+		self file imports do: [ :each | 
+			hStream << '#include <' << each headerName << '>'.
+			hStream cr ].
+		hStream cr.
 		self addHPreamble.
+		
 		hStream << '/* BEGIN SECTION: DECLARATIONS */' << String cr.
 		headerVisitor visit: aUnit.
 		hStream << '/* END SECTION: DECLARATIONS */' << String cr << String cr.
+		
 		self addCHeaders.
 		self addCPreamble.
 		self visitAll: aUnit elements.

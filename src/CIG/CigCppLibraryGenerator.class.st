@@ -77,7 +77,7 @@ CigCppLibraryGenerator >> cSpecialize: aTemplateName [
 CigCppLibraryGenerator >> generate [
 	| unit |
 
-	('Initiate generation of {1}' format: { self bindingsName basename }) asBeaconSignal emit.
+	('Initiate generation of {1}' format: { self bindingsName }) asBeaconSignal emit.
 	'Collecting nodes' asBeaconSignal emit.
 	
 	unit := self translateUnit.
