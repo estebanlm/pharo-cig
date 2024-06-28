@@ -28,7 +28,8 @@ Class {
 		'withMakefile',
 		'withCBindings',
 		'cClassSpecializations',
-		'withSpecialElements'
+		'withSpecialElements',
+		'shouldBuildBindingsLibrary'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -44,10 +45,10 @@ CigCppLibraryGenerator class >> translateUnitWithoutSpecial: aFileName [
 		translateUnit
 ]
 
-{ #category : 'building' }
+{ #category : 'accessing - configuration' }
 CigCppLibraryGenerator >> buildBindingsLibrary [
-	
-	LibC system: 'make'
+
+	shouldBuildBindingsLibrary := true
 ]
 
 { #category : 'accessing - configuration' }
@@ -73,6 +74,12 @@ CigCppLibraryGenerator >> cSpecialize: aTemplateName [
 	cClassSpecializations add: aTemplateName
 ]
 
+{ #category : 'accessing - configuration' }
+CigCppLibraryGenerator >> doNotBuildBindingsLibrary [
+
+	shouldBuildBindingsLibrary := false
+]
+
 { #category : 'generating' }
 CigCppLibraryGenerator >> generate [
 	| unit |
@@ -84,13 +91,21 @@ CigCppLibraryGenerator >> generate [
 
 	self hasCBindings ifTrue: [ self generateCBindingsWith: unit ].
 	self hasMakefile ifTrue: [ self generateMakefile ].
-	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ]
+	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ].
+	self shouldBuildBindingsLibrary ifTrue: [ self generateBindingsLibrary ]
+]
+
+{ #category : 'generating' }
+CigCppLibraryGenerator >> generateBindingsLibrary [
+	
+	'Compiling bindings library.' asBeaconSignal emit.
+	CigMakefile executeFor: self
 ]
 
 { #category : 'generating' }
 CigCppLibraryGenerator >> generateCBindingsWith: unit [
 
-	('Generating C file: {1}.' format: { self cFileReference basename }) asBeaconSignal emit.
+	('Generating C bindings file: {1}.' format: { self cFileReference basename }) asBeaconSignal emit.
 	CigCVisitor new
 		file: self;
 		visit: unit
@@ -106,8 +121,8 @@ CigCppLibraryGenerator >> generateMakefile [
 INCLUDE_DIRS={include}
 LIBS={libs}
 
-{libName}.so: {libName}.cpp
-	clang -xc++ -fPIC --shared $(INCLUDE_DIRS) $(LIBS) {libName}.cpp -o {libName}.so
+../lib/{libName}.so: {libName}.cpp
+	clang -xc++ -fPIC --shared $(INCLUDE_DIRS) $(LIBS) {libName}.cpp -o ../lib/{libName}.so
 ' format: { 
 		#libName->self libraryName.
 		#include->(String streamContents: [ :s | 
@@ -146,7 +161,8 @@ CigCppLibraryGenerator >> initialize [
 	super initialize.
 	self withSpecialElements.
 	self withCBindings.
-	self withMakefile
+	self withMakefile.
+	self buildBindingsLibrary
 ]
 
 { #category : 'accessing' }
@@ -158,13 +174,19 @@ CigCppLibraryGenerator >> libraryName [
 { #category : 'accessing' }
 CigCppLibraryGenerator >> makefileReference [
 	
-	^ FileLocator imageDirectory / 'Makefile'
+	^ self cFileReference parent / 'Makefile'
 ]
 
 { #category : 'private' }
 CigCppLibraryGenerator >> newTranslatedUnit [
 
 	^ CigCppTranslatedUnit new
+]
+
+{ #category : 'testing' }
+CigCppLibraryGenerator >> shouldBuildBindingsLibrary [
+
+	^ shouldBuildBindingsLibrary
 ]
 
 { #category : 'accessing - configuration' }

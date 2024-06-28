@@ -26,7 +26,7 @@ CigMethod >> accept: aVisitor [
 { #category : 'accessing' }
 CigMethod >> cDeclaration [
 
-	^ self disambiguate: super cDeclaration
+	^ self disambiguateName: super cDeclaration
 ]
 
 { #category : 'accessing' }
@@ -100,7 +100,7 @@ CigMethod >> parametersAsList [
 CigMethod >> phDeclaration [
 
 	^ (String streamContents: [ :stream | 
-			stream  << (self disambiguate: self spelling arguments: self parameters) uncapitalized.
+			stream  << (self disambiguateName: self spelling arguments: self parameters) uncapitalized.
 			self buildParameters: self parameters on: stream ])
 		trimmed
 ]

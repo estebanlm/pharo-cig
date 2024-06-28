@@ -9,6 +9,25 @@ Trait {
 }
 
 { #category : 'private' }
+CigTTemplateSpecialization >> checkForTemplateSpecialization: aTypeName [
+	| templateArgs parsed |
+	
+	(aTypeName includes: $<) ifFalse: [ ^ self ].
+
+	parsed := CigFunctionParser parse: aTypeName. 
+
+	"check for arguments"
+	templateArgs := parsed numTemplateArguments.
+	templateArgs > 0 ifFalse: [ ^ self ].
+	
+	specializationTypes := OrderedCollection new.
+	0 to: (templateArgs - 1) do: [ :index |
+		specializationTypes add: (self 
+			extractSpecializationValueIndex: index + 1 
+			of: aTypeName) ]
+]
+
+{ #category : 'private' }
 CigTTemplateSpecialization >> checkForTemplateSpecialization: aType name: aTypeName [
 	| templateArgs |
 	

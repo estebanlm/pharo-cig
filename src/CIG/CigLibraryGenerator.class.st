@@ -137,14 +137,18 @@ CigLibraryGenerator >> cDefinesBeforeHeaderAsArguments [
 CigLibraryGenerator >> cFileReference [
 	"where the wrapper functions will be placed"
 	
-	^ (FileLocator imageDirectory / (self bindingsName, '_bindings')) withExtension: 'cpp'
+	^ (FileLocator imageDirectory 
+		/ 'CIG' 
+		/ self bindingsName 
+		/ (self bindingsName, '_bindings')) 
+		withExtension: 'cpp'
 ]
 
 { #category : 'accessing - scripting' }
 CigLibraryGenerator >> cIncludePath: aStringOrReference [
 
 	includePaths ifNil: [ includePaths := #() ].
-	includePaths := includePaths copyWith: aStringOrReference asFileReference fullName
+	includePaths := includePaths copyWith: (self normalizeIncludePath: aStringOrReference)
 ]
 
 { #category : 'accessing' }
@@ -367,6 +371,14 @@ CigLibraryGenerator >> namespaces: aCollection [
 CigLibraryGenerator >> newTranslatedUnit [
 
 	^ self subclassResponsibility
+]
+
+{ #category : 'private' }
+CigLibraryGenerator >> normalizeIncludePath: aStringOrReference [
+	
+	(aStringOrReference isString and: [ aStringOrReference beginsWith: '.' ])
+		ifTrue: [ ^ aStringOrReference ].
+	^ aStringOrReference asFileReference fullName
 ]
 
 { #category : 'accessing' }

@@ -81,18 +81,21 @@ CigParameter >> definesFunction [
 { #category : 'initialization' }
 CigParameter >> disambiguateIntTypeName: aCursor [
 	
-	self flag: #TODO. "This can have other cases?"
-	(typeName beginsWith: 'int') ifTrue: [ self disambiguatePossibleIntSizeT: aCursor ]		
+	(typeName beginsWith: 'int') ifFalse: [ ^ self].	
+	
+	typeName := CigTypeDisambiguator uniqueInstance 
+		disambiguateIntIn: typeName 
+		with: aCursor source
 ]
 
 { #category : 'initialization' }
-CigParameter >> disambiguatePossibleIntSizeT: aCursor [
-	| source |
+CigParameter >> disambiguatePossibleIntSizeT: source [
 	
-	source := aCursor source.
-	(source beginsWith: 'size_t') ifFalse: [ ^ self ].
+	(source beginsWith: 'size_t') 
+		ifFalse: [ ^ false ].
 	
-	typeName :=  typeName copyReplaceAll: 'int' with: 'size_t'
+	typeName :=  typeName copyReplaceAll: 'int' with: 'size_t'.
+	^ true
 ]
 
 { #category : 'initialization' }
@@ -108,6 +111,15 @@ CigParameter >> extractElaborated: aType [
 ]
 
 { #category : 'initialization' }
+CigParameter >> extractElaboratedFromSpecializationTypes [
+
+	specializationTypes isEmptyOrNil ifTrue: [ ^ self ].
+	
+	underlyingTypeName := typeName.
+	underlyingTypeKind := CXType_Unexposed
+]
+
+{ #category : 'initialization' }
 CigParameter >> fromCursor: aCursor [
 	| type |
 
@@ -117,14 +129,15 @@ CigParameter >> fromCursor: aCursor [
 	typeKind := type kind.
 	argumentIndex := self argumentIndexOf: aCursor.
 
-	"I need to disambiguate a kind int that is in fact declared as a size_t"
 	self disambiguateIntTypeName: aCursor.
+	self checkForTemplateSpecialization: typeName.
 	
 	name ifEmpty: [ 
 		name := 'arg{1}' format: { argumentIndex } ].
 		
-	typeKind = CXType_Elaborated ifTrue: [ 
-		self extractElaborated: type namedType ].
+	typeKind = CXType_Elaborated 
+		ifTrue: [ self extractElaborated: type namedType ]
+		ifFalse: [ self extractElaboratedFromSpecializationTypes ].
 		
 	definesFunction := ({ CXType_Pointer. CXType_LValueReference } includes: typeKind)
 		and: [ { CXType_FunctionProto. CXType_FunctionNoProto } includes: type pointeeType kind ].		
@@ -261,6 +274,12 @@ CigParameter >> typeKind: aNumber [
 CigParameter >> typeName [
 
 	^ typeName
+]
+
+{ #category : 'private' }
+CigParameter >> typeNameForType [
+
+	^ underlyingTypeName ifNil: [ typeName ]
 ]
 
 { #category : 'accessing' }

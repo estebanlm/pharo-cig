@@ -1,8 +1,8 @@
 Class {
 	#name : 'CigFunction',
 	#superclass : 'CigElement',
-	#traits : 'CigTFunction + CigTTemplateSpecialization',
-	#classTraits : 'CigTFunction classTrait + CigTTemplateSpecialization classTrait',
+	#traits : 'CigTFunction',
+	#classTraits : 'CigTFunction classTrait',
 	#instVars : [
 		'elaboratedSpec',
 		'underlyingTypeName',
@@ -31,7 +31,7 @@ CigFunction >> accept: aVisitor [
 { #category : 'accessing' }
 CigFunction >> cDeclaration [
 
-	^ self disambiguate: super cDeclaration
+	^ self disambiguateName: super cDeclaration
 ]
 
 { #category : 'accessing' }
@@ -66,13 +66,22 @@ CigFunction >> exposesReturnValueAsParameter [
 
 { #category : 'initialization' }
 CigFunction >> extractElaborated: aType [
-	
+
 	underlyingTypeName := aType spelling.
 	underlyingTypeKind := aType kind.
 	(underlyingTypeName indexOf: $<) > 0 ifTrue: [ 
 		self 
 			checkForTemplateSpecialization: aType 
 			name: underlyingTypeName ]
+]
+
+{ #category : 'initialization' }
+CigFunction >> extractElaboratedFromSpecializationTypes [
+
+	specializationTypes isEmptyOrNil ifTrue: [ ^ self ].
+	
+	underlyingTypeName := returnTypeName.
+	underlyingTypeKind := CXType_Unexposed
 ]
 
 { #category : 'initialization' }
@@ -84,6 +93,7 @@ CigFunction >> fromCursor: aCursor [
 	type := aCursor type.
 	type kind  = CXType_Elaborated 
 		ifTrue: [ self extractElaborated: type namedType ]
+		ifFalse: [ self extractElaboratedFromSpecializationTypes ]
 ]
 
 { #category : 'testing' }

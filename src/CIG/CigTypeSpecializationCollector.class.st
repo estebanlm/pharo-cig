@@ -28,7 +28,6 @@ CigTypeSpecializationCollector >> checkForTemplateSpecialization: anElement [
 		
 	anElement isTemplateSpecialization ifFalse: [ ^ self ].
 	anElement specializationTypes ifNil: [ ^ self ].
-	anElement underlyingTypeName crTrace.
 	(anElement underlyingTypeName beginsWith: (self typeName, '<')) ifFalse: [ ^ self ].
 
 	collected addAll: anElement specializationTypes

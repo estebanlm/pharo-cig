@@ -82,12 +82,19 @@ CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 ]
 
 { #category : 'private - generating' }
-CigTranslatedUnit >> currentIsPartOfLibrary: currentNode baseDirectory: baseDir [
-	| location result |
+CigTranslatedUnit >> currentIsPartOfLibrary: currentNode baseHeaderFile: headeFileName [
+	| location locationName locationPath basePath result |
 
 	location := currentNode location.
-	result := location isInSystemHeader not
-		and: [ (self anyExclusionsMatches: currentNode) not  ].  
+	locationName := location fileName.
+	locationPath := locationName asFileReference parent asPath.
+	basePath := headeFileName asFileReference parent asPath.
+
+	result := ((headeFileName = locationName) 
+			or: [ locationPath = basePath 
+			or: [ locationPath containsPath: basePath ] ])
+		and: [  (locationName beginsWith: '/usr/lib') not
+		and: [ (self anyExclusionsMatches: currentNode) not  ] ].
 
 	^ result
 ]
@@ -231,12 +238,11 @@ CigTranslatedUnit >> generateFrom: aHeader [
 
 { #category : 'generating' }
 CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
-	| index unit cursor fileName baseDirectory |
+	| index unit cursor fileName |
 
 	self logInfo: 'Processing ', aTarget name, '...'.
 	
 	fileName := self resolveIncludeFileName: aTarget name.
-	baseDirectory := fileName asFileReference parent fullName.
 	index := CXIndex createIndex: 0 diagnostics: 0. 
 	unit := CXTranslationUnit 
 		parseIndex: index 
@@ -251,20 +257,20 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 	cursor := unit cursor.
 	cursor visitChildren: [ :current :parent :data |
 		[ 
-			(self currentIsPartOfLibrary: current baseDirectory: baseDirectory)
+			(self currentIsPartOfLibrary: current baseHeaderFile: fileName)
 				ifTrue: [
-					self logDebug: '- ', current displayName, ' included.'.
+					self logDebug: [ '- ', current displayName, ' included.' ].
 					aTarget 
 						processNode: current
 						ifAdd: [ self addNode: current parent: parent ]
 						ifInsert: [ self insertNode: current ].
 					CXChildVisit recurse ]
 				ifFalse: [
-					self logDebug: '- ', current displayName, ' skipped.'.
+					self logDebug: [ '- ', current displayName, ' skipped.' ].
 					CXChildVisit continue ] ]
 		on: Error 
 		fork: [ :e | e pass ] 
-		return: [ 
+		return: [
 			self logDebug: 'BREAK'.
 			CXChildVisit break ] ].
 

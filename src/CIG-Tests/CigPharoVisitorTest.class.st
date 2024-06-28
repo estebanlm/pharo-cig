@@ -486,6 +486,24 @@ CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
 	self assert: class packageTag name equals: #Utils
 ]
 
+{ #category : 'tests - namespace' }
+CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceWithPrefic [
+	| visitor class element |
+	
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: element root.
+	
+	"using the generator because the visit will (should) visit all namespace 
+	 elements and that's not what I want to test :)
+	 but this may suppose a problem if the behavior of visitNamespace: is 
+	 changed"
+	(CigPharoNamespaceGenerator newFile: visitor file element: element) generate.
+	
+	class := self class environment classNamed: 'XxNoiseNamespace'.
+	self assert: class notNil
+]
+
 { #category : 'tests - struct' }
 CigPharoVisitorTest >> testVisitStructureGenerateSimpleStructure [
 	| element visitor class |

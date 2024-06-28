@@ -17,6 +17,9 @@ libgit2 generate
 Class {
 	#name : 'CigCLibraryGenerator',
 	#superclass : 'CigLibraryGenerator',
+	#instVars : [
+		'libraryName'
+	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
 	#tag : 'Base'
@@ -37,7 +40,13 @@ CigCLibraryGenerator >> generate [
 { #category : 'accessing' }
 CigCLibraryGenerator >> libraryName [
 
-	^ 'lib', self bindingsName
+	^ libraryName ifNil: [ 'lib', self bindingsName ]
+]
+
+{ #category : 'accessing' }
+CigCLibraryGenerator >> libraryName: aName [
+
+	libraryName := aName
 ]
 
 { #category : 'private' }

@@ -87,5 +87,5 @@ CigFunctionParser >> setOn: aString [
 
 	^ super setOn: (aString 
 		copyReplaceAll: '>' 
-		with: '> ')
+		with: ' > ')
 ]

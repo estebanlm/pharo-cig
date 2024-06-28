@@ -36,6 +36,18 @@ CigCClassTemplateTemplateTest >> testGenerateClassTemplateHeader [
 ]
 
 { #category : 'tests' }
+CigCClassTemplateTemplateTest >> testMethodParameterStdVectorHasCorrectType [
+	| element |
+
+	"in fact, this is created while parsing the header (hence, here I just validate that my node 
+	 was generated correctly)"
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'getFirstFocusableWidget(const int &)' }.
+	self 
+		assert: element parameters first typeName 
+		equals: 'std::vector<FObject*>'
+]
+
+{ #category : 'tests' }
 CigCClassTemplateTemplateTest >> testMethodReturningClassTemplateArgumentHasCorrectType [
 	| element subclass method |
 
@@ -60,6 +72,16 @@ CigCClassTemplateTemplateTest >> testMethodReturningConstTemplate [
 	self 
 		assert: template generateBody 
 		equals: 'return (const char*)(((TSpan<char>*)self)->cbegin());'
+]
+
+{ #category : 'tests' }
+CigCClassTemplateTemplateTest >> testMethodReturningStdVectorHasCorrectType [
+	| element |
+
+	"in fact, this is created while parsing the header (hence, here I just validate that my node 
+	 was generated correctly)"
+	element := self translatedUnitFinalcut elementAtPath: { 'finalcut'. 'getFirstFocusableWidget(const int &)' }.
+	self assert: element returnTypeName equals: 'std::vector'
 ]
 
 { #category : 'tests' }

@@ -70,7 +70,9 @@ CigPharoLibraryGenerator >> linuxPlatformTemplate [
 	^ String streamContents: [ :stream | 
 		stream << 'unix64LibraryName'; cr.
 		stream cr; tab.
-		stream << '^ FFIUnix64LibraryFinder findLibrary: ''' << self file libraryName << '.so''' ]
+		stream << '^ FFIUnix64LibraryFinder new'; cr.
+		stream tab; tab. stream << 'userPaths: #(''./CIG/lib'');'; cr.
+		stream tab; tab. stream << 'findLibrary: ''' << self file libraryName << '.so''' ]
 ]
 
 { #category : 'private - templates' }
@@ -79,7 +81,9 @@ CigPharoLibraryGenerator >> macPlatformTemplate [
 	^ String streamContents: [ :stream | 
 		stream << 'macLibraryName'; cr.
 		stream cr; tab.
-		stream << '^ FFIMacLibraryFinder findLibrary: ''' << self file libraryName << '.dylib''' ]
+		stream << '^ FFIMacLibraryFinder new'; cr.
+		stream tab; tab. stream << 'userPaths: #(''./CIG/lib'');'; cr.
+		stream tab; tab. stream << 'findLibrary: ''' << self file libraryName << '.dylib''' ]
 ]
 
 { #category : 'private - templates' }
@@ -99,5 +103,7 @@ CigPharoLibraryGenerator >> winPlatformTemplate [
 	^ String streamContents: [ :stream | 
 		stream << 'win32LibraryName'; cr.
 		stream cr; tab.
-		stream << '^ FFIWindowsLibraryFinder findLibrary: ''' << self file libraryName << '.dll''' ]
+		stream << '^ FFIWindowsLibraryFinder new'; cr.
+		stream tab; tab. stream << 'userPaths: #(''./CIG/lib'');'; cr.
+		stream tab; tab. stream << 'findLibrary: ''' << self file libraryName << '.dll''' ]
 ]

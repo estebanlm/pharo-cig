@@ -1,13 +1,13 @@
 Class {
 	#name : 'CigClassMember',
 	#superclass : 'CigElement',
-	#traits : 'CigTFunction + CigTTemplateSpecialization',
-	#classTraits : 'CigTFunction classTrait + CigTTemplateSpecialization classTrait',
+	#traits : 'CigTFunction',
+	#classTraits : 'CigTFunction classTrait',
 	#instVars : [
 		'isPublic',
+		'isDeleted',
 		'underlyingTypeName',
-		'underlyingTypeKind',
-		'isDeleted'
+		'underlyingTypeKind'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -61,6 +61,15 @@ CigClassMember >> extractElaborated: aType [
 ]
 
 { #category : 'initialization' }
+CigClassMember >> extractElaboratedFromSpecializationTypes [
+
+	specializationTypes isEmptyOrNil ifTrue: [ ^ self ].
+	
+	underlyingTypeName := returnTypeName.
+	underlyingTypeKind := CXType_Unexposed
+]
+
+{ #category : 'initialization' }
 CigClassMember >> fromCursor: aCursor [
 	| type |
 
@@ -72,6 +81,7 @@ CigClassMember >> fromCursor: aCursor [
 	type := aCursor type.
 	type kind  = CXType_Elaborated 
 		ifTrue: [ self extractElaborated: type namedType ]
+		ifFalse: [ self extractElaboratedFromSpecializationTypes  ]
 ]
 
 { #category : 'testing' }

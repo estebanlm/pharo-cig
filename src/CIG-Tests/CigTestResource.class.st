@@ -10,7 +10,8 @@ Class {
 		'translatedUnitRaylib',
 		'translatedUnitIcal',
 		'translatedUnitOpenSSL',
-		'translatedUnitLibXML'
+		'translatedUnitLibXML',
+		'translatedUnitLibvips'
 	],
 	#category : 'CIG-Tests-Base',
 	#package : 'CIG-Tests',
@@ -71,6 +72,22 @@ CigTestResource class >> libXMLSpec [
 	cTypedef: '_xmlCharEncodingHandler__uconv_t' as: #void;
 	yourself.	
 	
+]
+
+{ #category : 'private - specs' }
+CigTestResource class >> libvipsSpec [
+	
+	^ CigCppLibraryGenerator new
+	prefix: 'Vp';
+	bindingsName: 'vips';
+	import: '/usr/include/vips/vips8';
+	cIncludePath: '/usr/include/c++/14.1.1';
+	cIncludePath: '/usr/include/vips';
+	cIncludePath: '/usr/include/glib-2.0';
+	cIncludePath: '/usr/lib/glib-2.0/include';
+	cTypedef: '_pid_t' as: 'pid_t';
+	cTypedef: '__pid_t' as: 'pid_t';
+	yourself
 ]
 
 { #category : 'private - specs' }
@@ -154,7 +171,9 @@ CigTestResource class >> rebuildAll [
 	self build: 'raylib' with: self raylibSpec.
 	self build: 'ical' with: self icalSpec.
 	self build: 'openssl' with: self openSSLSpec.
-	self build: 'libxml' with: self libXMLSpec
+	self build: 'libxml' with: self libXMLSpec.
+	self build: 'libvips' with: self libvipsSpec
+
 ]
 
 { #category : 'utilities' }
@@ -225,6 +244,13 @@ CigTestResource >> translatedUnitLibXML [
 
 	^ translatedUnitLibXML ifNil: [ 
 		translatedUnitLibXML := self class readResource: 'libxml' ]
+]
+
+{ #category : 'accessing' }
+CigTestResource >> translatedUnitLibvips [
+
+	^ translatedUnitLibvips ifNil: [ 
+		translatedUnitLibvips := self class readResource: 'libvips' ]
 ]
 
 { #category : 'accessing' }

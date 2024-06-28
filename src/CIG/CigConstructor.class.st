@@ -27,7 +27,7 @@ CigConstructor >> accept: aVisitor [
 { #category : 'accessing' }
 CigConstructor >> cDeclaration [
 
-	^ self disambiguate: (String streamContents: [ :stream | 
+	^ self disambiguateName: (String streamContents: [ :stream | 
 		stream 
 			<<  (self parent fullNameWith: '_')
 			<< '_new' ])
@@ -79,7 +79,7 @@ CigConstructor >> phDeclaration [
 
 	^ (String streamContents: [ :stream | 
 			stream 
-				<< (self disambiguate: self spelling arguments: self parameters) uncapitalized 
+				<< (self disambiguateName: self spelling arguments: self parameters) uncapitalized 
 				<< '_new'.
 			(params := self parameters) size = 1
 				ifTrue: [ 

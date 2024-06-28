@@ -247,7 +247,7 @@ CigType >> fromParameter: aParameter [
 
 	self
 		parent: aParameter;
-		name: aParameter typeName;
+		name: aParameter typeNameForType;
 		definesFunction: aParameter definesFunction;
 		typeReference: (self typeReferenceFrom: aParameter)
 ]

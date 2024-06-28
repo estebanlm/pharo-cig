@@ -7,6 +7,8 @@ Trait {
 		'parameters',
 		'isVariadic'
 	],
+	#traits : 'CigTTemplateSpecialization',
+	#classTraits : 'CigTTemplateSpecialization classTrait',
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -36,7 +38,17 @@ CigTFunction >> comment [
 ]
 
 { #category : 'private' }
-CigTFunction >> disambiguate: aString [
+CigTFunction >> disambiguateIntTypeName: aCursor [
+	
+	(returnTypeName beginsWith: 'int') ifFalse: [ ^ self].	
+	
+	returnTypeName := CigTypeDisambiguator uniqueInstance 
+		disambiguateIntIn: returnTypeName
+		with: aCursor source
+]
+
+{ #category : 'private' }
+CigTFunction >> disambiguateName: aString [
 	| nodes |
 	
 	nodes := self parent elements 
@@ -52,7 +64,7 @@ CigTFunction >> disambiguate: aString [
 ]
 
 { #category : 'private' }
-CigTFunction >> disambiguate: aString arguments: aCollection [ 
+CigTFunction >> disambiguateName: aString arguments: aCollection [ 
 	| nodes |
 	
 	nodes := self parent elements 
@@ -80,7 +92,10 @@ CigTFunction >> fillFunctionWith: aCursor [
 	parameters := aCursor arguments collect: [ :each | 
 		(CigParameter fromCursor: each)
 			parent: self;
-			yourself ]
+			yourself ].
+		
+	self disambiguateIntTypeName: aCursor.
+	self checkForTemplateSpecialization: returnTypeName
 ]
 
 { #category : 'testing' }

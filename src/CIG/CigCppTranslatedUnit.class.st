@@ -30,7 +30,7 @@ CigCppTranslatedUnit >> classSpecializations [
 { #category : 'private' }
 CigCppTranslatedUnit >> defaultClangArguments [
 	
-	^ { '-E'. '-xc++' }
+	^ { '-E'. '-xc++'. '-isystem /usr/include/c++/14.1.1' }
 ]
 
 { #category : 'generating' }

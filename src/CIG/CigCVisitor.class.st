@@ -124,6 +124,7 @@ CigCVisitor >> newHeaderVisitor [
 { #category : 'private - factory' }
 CigCVisitor >> newStreamFor: aFileReference [
 
+	aFileReference parent ensureCreateDirectory.
 	^ ZnNewLineWriterStream on: aFileReference writeStream
 ]
 

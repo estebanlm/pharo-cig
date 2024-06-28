@@ -18,6 +18,32 @@ CigFunctionParserTest >> testParseClassTemplateNestedType [
 ]
 
 { #category : 'tests' }
+CigFunctionParserTest >> testParseClassTemplatePointer [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'std::vector<FObject>**';
+		parseType.
+	
+	self assert: type first equals: 'std::vector'.	
+	self assert: type second equals: 2.	
+	self assert: type fourth equals: #('FObject')
+]
+
+{ #category : 'tests' }
+CigFunctionParserTest >> testParseClassTemplatePointerWithPointer [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'std::vector<FObject*>**';
+		parseType.
+	
+	self assert: type first equals: 'std::vector'.	
+	self assert: type second equals: 2.	
+	self assert: type fourth equals: #('FObject*')
+]
+
+{ #category : 'tests' }
 CigFunctionParserTest >> testParseClassTemplateType [
 	| type |
 

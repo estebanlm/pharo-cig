@@ -77,6 +77,12 @@ CigTypeDeclaration >> nameWithoutPrefix [
 ]
 
 { #category : 'accessing' }
+CigTypeDeclaration >> numTemplateArguments [
+
+	^ self templates size
+]
+
+{ #category : 'accessing' }
 CigTypeDeclaration >> reference: aBoolean [
 
 	reference := aBoolean
