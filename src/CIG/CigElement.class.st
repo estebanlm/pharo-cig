@@ -446,14 +446,21 @@ CigElement >> root [
 
 { #category : 'private' }
 CigElement >> sanitizeName: aString [
-	"used to avoid 'ugly' names (like prefix duplication)"
+	"used to avoid 'ugly' names (like prefix duplication).
+	 but, in the case of prefix duplication that is not the case... example 
+	 NoNoise... how to realise?"
 	| prefix |
 	
 	prefix := self root prefix asLowercase.
-	(self name asLowercase beginsWith: prefix)
-		ifTrue: [ ^ self name allButFirst: prefix size ].
+	"same prefix"
+	((aString asLowercase beginsWith: prefix)
+		"name bigger than prefix"
+		and: [ aString size > prefix size
+		"change of case"
+		and: [ prefix last isLowercase and: [ (aString at: prefix size + 1) isUppercase ] ] ])
+		ifTrue: [ ^ aString allButFirst: prefix size ].
 
-	^ self name capitalized
+	^ aString capitalized
 ]
 
 { #category : 'accessing' }

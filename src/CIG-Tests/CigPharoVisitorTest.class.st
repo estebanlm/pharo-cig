@@ -487,7 +487,7 @@ CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceClass [
 ]
 
 { #category : 'tests - namespace' }
-CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceWithPrefic [
+CigPharoVisitorTest >> testVisitNamespaceAddsNamespaceWithPrefix [
 	| visitor class element |
 	
 	element := self translatedUnitNoiseutils elementAtPath: { 'noise' }. 

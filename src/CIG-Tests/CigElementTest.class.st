@@ -54,6 +54,24 @@ CigElementTest >> testFullNameWithAnswerCorrectName [
 ]
 
 { #category : 'tests' }
+CigElementTest >> testSanitizeName [
+	| element |
+
+	element := CigElement basicNew.
+	element parent: self translatedUnitNoise.
+	
+	"Whatever"
+	self assert: (element sanitizeName: 'ab') equals: 'Ab'.
+	"same prefix"
+	self assert: (element sanitizeName: 'NoNoOther') equals: 'NoOther'.
+	"same prefix, but one lowercase (so, no match)"
+	self assert: (element sanitizeName: 'Nonoother') equals: 'Nonoother'.
+	"let's see if NoNoiseNamespace is generated correctly"
+	element := self translatedUnitNoise elementAtPath: { 'noise' }.
+	self assert: element phDeclaration equals: 'NoNoiseNamespace'
+]
+
+{ #category : 'tests' }
 CigElementTest >> testStructureCDeclaration [
 	| element |
 
