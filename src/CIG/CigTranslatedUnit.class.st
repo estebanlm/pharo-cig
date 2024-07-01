@@ -15,7 +15,9 @@ Class {
 		'namespaces',
 		'defines',
 		'definesBeforeHeader',
-		'excluding'
+		'excluding',
+		'headersIncluded',
+		'headersSkipped'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -67,7 +69,7 @@ CigTranslatedUnit >> allDefines [
 	^ self definesBeforeHeader, self defines
 ]
 
-{ #category : 'private - generating' }
+{ #category : 'private - testing' }
 CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 
 	self flag: #TODO. "refactor this to be able to add exlusions in a non hardcoded way"
@@ -79,24 +81,6 @@ CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 	self flag: #TODO. "See if this is still happening with latest changes"
 	^ (currentNode displayName beginsWith: 'hash<') 
 		and: [ currentNode lexicalParent displayName = 'std' ]
-]
-
-{ #category : 'private - generating' }
-CigTranslatedUnit >> currentIsPartOfLibrary: currentNode baseHeaderFile: headeFileName [
-	| location locationName locationPath basePath result |
-
-	location := currentNode location.
-	locationName := location fileName.
-	locationPath := locationName asFileReference parent asPath.
-	basePath := headeFileName asFileReference parent asPath.
-
-	result := ((headeFileName = locationName) 
-			or: [ locationPath = basePath 
-			or: [ locationPath containsPath: basePath ] ])
-		and: [  (locationName beginsWith: '/usr/lib') not
-		and: [ (self anyExclusionsMatches: currentNode) not  ] ].
-
-	^ result
 ]
 
 { #category : 'private' }
@@ -229,7 +213,8 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	definesBeforeHeader := aHeader cDefinesBeforeHeader.
 	defines := aHeader cDefines.
 	excluding := aHeader excluding.
-	elements := OrderedCollection new.
+	
+	self reset.
 	
 	self preprocess: aHeader.
 	aHeader imports valuesDo: [ :each |
@@ -257,7 +242,7 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 	cursor := unit cursor.
 	cursor visitChildren: [ :current :parent :data |
 		[ 
-			(self currentIsPartOfLibrary: current baseHeaderFile: fileName)
+			(self isCurrentNodePartOfLibrary: current baseHeaderFile: fileName)
 				ifTrue: [
 					self logDebug: [ '- ', current displayName, ' included.' ].
 					aTarget 
@@ -276,6 +261,9 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 
 	unit dispose.
 	index dispose.
+	
+	self logDebug: 'Headers included: ', headersIncluded sorted asString.
+	self logDebug: 'Headers skipped: ', headersSkipped sorted asString.
 	
 	self logInfo: 'Finished.'
 ]
@@ -371,6 +359,15 @@ CigTranslatedUnit >> isCPP [
 	^ false
 ]
 
+{ #category : 'private - testing' }
+CigTranslatedUnit >> isCurrentNodePartOfLibrary: currentNode baseHeaderFile: headeFileName [
+
+	^ (self 
+			isLocationPartOfLibrary: currentNode location fileName 
+			baseHeaderFile: headeFileName)
+		and: [ (self anyExclusionsMatches: currentNode) not ]
+]
+
 { #category : 'testing' }
 CigTranslatedUnit >> isExcludedFromExport: anElement [
 
@@ -381,6 +378,25 @@ CigTranslatedUnit >> isExcludedFromExport: anElement [
 CigTranslatedUnit >> isGeneratingWithUnknown [
 
 	^ registerUnknown
+]
+
+{ #category : 'private - testing' }
+CigTranslatedUnit >> isLocationPartOfLibrary: locationName baseHeaderFile: headeFileName [
+	| result locationPath basePath |
+
+	locationPath := locationName asFileReference parent asPath.
+	basePath := headeFileName asFileReference parent asPath.
+	result := ((headeFileName = locationName) 
+			or: [ locationPath = basePath 
+			or: [ basePath containsPath: locationPath  ] ])
+		and: [ (locationName beginsWith: '/usr/lib') not ].
+
+	"report result"
+	result
+		ifTrue: [ headersIncluded add: locationName ] 
+		ifFalse: [ headersSkipped add: locationName ]. 
+
+	^ result
 ]
 
 { #category : 'testing' }
@@ -504,6 +520,14 @@ CigTranslatedUnit >> removeAllUnknowns [
 
 	self traverseElementsDo: [ :eachElement | 
 		eachElement elements removeAll: (eachElement elements select: [ :each | each isUnknown ]) ]
+]
+
+{ #category : 'private' }
+CigTranslatedUnit >> reset [
+
+	elements := OrderedCollection new.
+	headersIncluded := Set new.
+	headersSkipped := Set new.
 ]
 
 { #category : 'private' }

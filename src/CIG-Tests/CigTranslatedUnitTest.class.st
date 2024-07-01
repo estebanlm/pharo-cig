@@ -33,6 +33,18 @@ CigTranslatedUnitTest >> testFromImportImportsAlsoInnerElements [
 ]
 
 { #category : 'tests' }
+CigTranslatedUnitTest >> testIsLocationPartOfLibraryBaseHeaderFile [
+	| unit |
+
+	unit := CigTranslatedUnit basicNew.
+	unit reset.
+	
+	self assert: (unit
+		isLocationPartOfLibrary: '/home/esteban/dev/vm/libnoise/include/noise/model/line.h' 
+		baseHeaderFile: '/home/esteban/dev/vm/libnoise/include/noise/noise.h').
+]
+
+{ #category : 'tests' }
 CigTranslatedUnitTest >> testResolveIncludeFileName [
 	"this is in fact a very weak test (since subdir will change as soon as I change the 
 	 gcc version :("
