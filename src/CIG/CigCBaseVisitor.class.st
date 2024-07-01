@@ -1,3 +1,6 @@
+"
+A base visitor to produce C files.
+"
 Class {
 	#name : 'CigCBaseVisitor',
 	#superclass : 'CigVisitor',

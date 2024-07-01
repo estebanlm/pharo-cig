@@ -1,3 +1,6 @@
+"
+Visitor to produce a C bindings firle.
+"
 Class {
 	#name : 'CigCVisitor',
 	#superclass : 'CigCBaseVisitor',
@@ -16,6 +19,7 @@ Class {
 CigCVisitor >> addCHeaders [
 		
 	cStream << '#include "' << (self fileReference withExtension: 'h') basename << '"' << String cr.
+	cStream << '#include <memory>' << String cr.
 	cStream cr
 ]
 

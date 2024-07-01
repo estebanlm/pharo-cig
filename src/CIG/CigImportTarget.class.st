@@ -1,3 +1,6 @@
+"
+A target import: a header (e.g. ""array""), that may have a list of imports or may import all contents.
+"
 Class {
 	#name : 'CigImportTarget',
 	#superclass : 'Object',

@@ -1,3 +1,8 @@
+"
+Resolve an import file.
+E.g. if you use `import: 'array'`, it will try to look at the real place where it is placed. 
+This helps to avoid users to type the full path of files, allowing the look of files as if we do a real C import.
+"
 Class {
 	#name : 'CigImportResolver',
 	#superclass : 'Object',

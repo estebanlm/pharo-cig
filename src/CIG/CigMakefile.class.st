@@ -1,3 +1,6 @@
+"
+Executes the makefile created while generating the C bindings of a C++ library.
+"
 Class {
 	#name : 'CigMakefile',
 	#superclass : 'OSPlatformVisitor',
