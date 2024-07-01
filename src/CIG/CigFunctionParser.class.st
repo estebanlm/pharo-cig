@@ -66,11 +66,14 @@ CigFunctionParser >> parseType [
 	ptrArity := 0.
 	[ stream atEnd not 
 		and: [ stream peek isString 
-		and: [ (stream peek beginsWith: '*') or: [ stream peek beginsWith: '&' ] ] ] ] 
+		and: [ 
+			(stream peek beginsWith: '*') 
+			or: [ (stream peek beginsWith: '&')
+			or: [ stream peek beginsWith: '[' ] ] ] ] ] 
 	whileTrue: [ | pointerMarker |
 		pointerMarker := stream next.
 		self assert: ((pointerMarker allButLast allSatisfy: [ :e | e = $* ]) 
-			and: [ #($* $&) includes: pointerMarker last ]).
+			and: [ #($* $& $[) includes: pointerMarker last ]).
 		referenceMarker := referenceMarker or: [ pointerMarker last = $& ].
 		ptrArity := ptrArity + pointerMarker size ].
 		
