@@ -31,6 +31,18 @@ CigElementTest >> testClassCPPDeclaration [
 ]
 
 { #category : 'tests' }
+CigElementTest >> testElementAtPathFindElementOnOtherNamespace [
+	| template element namespaceElement |
+
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder'. 'SetSourceModule(const module::Module &)' }.
+	template := element parameters first.
+	namespaceElement := self translatedUnitNoiseutils elementAtPath:  template resolveType typeReferenceForParsedType namePath.
+	
+	self assert: namespaceElement notNil.
+	self assert: namespaceElement cDeclaration equals: 'no_noise_module_Module*'
+]
+
+{ #category : 'tests' }
 CigElementTest >> testFullNameWithAnswerCorrectName [
 	| element |
 		

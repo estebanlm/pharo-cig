@@ -231,6 +231,12 @@ CigElement >> isFunction [
 ]
 
 { #category : 'testing' }
+CigElement >> isImportedNamespaceElement [
+	
+	^ false
+]
+
+{ #category : 'testing' }
 CigElement >> isMacroDefinition [
 
 	^ false

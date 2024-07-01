@@ -143,6 +143,18 @@ CigCParameterTemplateTest >> testCastsCorrectReturnEvenWhenTypeReferenceNotAssoc
 ]
 
 { #category : 'tests - class' }
+CigCParameterTemplateTest >> testGenerateArgumentClassDifferentNamespace [
+	| template element |
+
+	element := self translatedUnitNoiseutils elementAtPath: { 'noise'. 'utils'. 'NoiseMapBuilder'. 'SetSourceModule(const module::Module &)' }.
+	template := element parameters first cTemplate.
+	
+	self 
+		assert: template generate
+		equals: 'no_noise_module_Module* sourceModule'
+]
+
+{ #category : 'tests - class' }
 CigCParameterTemplateTest >> testGenerateArgumentClassSpecialization [
 	| template element |
 

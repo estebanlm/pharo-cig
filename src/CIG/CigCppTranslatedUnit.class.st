@@ -33,6 +33,39 @@ CigCppTranslatedUnit >> defaultClangArguments [
 	^ { '-E'. '-xc++'. '-isystem /usr/include/c++/14.1.1' }
 ]
 
+{ #category : 'accessing' }
+CigCppTranslatedUnit >> elementAtPath: aPath [
+
+	(super elementAtPath: aPath) 
+		ifNotNil: [ :anElement | ^ anElement ].
+	
+	self namespaces do: [ :each |
+		(self elementAtPath: aPath inNamespace: each)
+			ifNotNil: [ :anElement | ^ anElement ] ].
+		
+	^ nil
+	
+]
+
+{ #category : 'accessing' }
+CigCppTranslatedUnit >> elementAtPath: aPath inNamespace: aNamespace [
+	| elementName |
+	
+	elementName := String streamContents: [ :stream |
+		stream << aNamespace cppPrefix << '_'.
+		aPath asStringOn: stream delimiter: '_' ].
+	
+	^ aNamespace typedef classPool
+		at: elementName asSymbol
+		ifPresent: [ :anObject | 
+			CigImportedNamespaceElement new
+				path: aPath;
+				cType: elementName;
+				reference: anObject;
+				yourself ]
+		ifAbsent: [ nil ]
+]
+
 { #category : 'generating' }
 CigCppTranslatedUnit >> generateFrom: aHeader [
 
