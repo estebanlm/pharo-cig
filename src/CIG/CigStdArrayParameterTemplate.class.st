@@ -27,7 +27,7 @@ CigStdArrayParameterTemplate >> castReturn: aString [
 { #category : 'generating' }
 CigStdArrayParameterTemplate >> generateArgument [
 	
-	^ '*(std::array<{type}, {size}>*)std::memcpy((new std::array<{type}, {size}>).data(), {name}, {size})' 
+	^ '*(std::array<{type}, {size}>*)std::memcpy((new std::array<{type}, {size}>)->data(), {name}, {size})' 
 		format: {
 			#type -> self templateTypeName.
 			#name -> self element name.

@@ -1,5 +1,5 @@
 "
-A special template to handle std::string type translation.
+A special template to handle `std::vector` type translation.
 "
 Class {
 	#name : 'CigStdVectorParameterTemplate',
@@ -27,7 +27,7 @@ CigStdVectorParameterTemplate >> castReturn: aString [
 { #category : 'generating' }
 CigStdVectorParameterTemplate >> generateArgument [
 	
-	^ '*(std::vector<{type}>*)std::memcpy((new std::vector<{type}>).data(), {name}, {name}.size)' 
+	^ '*(std::vector<{type}>*)std::memcpy((new std::vector<{type}>())->data(), {name}, ((std::vector<{type}>*){name})->size())' 
 		format: {
 			#type -> self templateTypeName.
 			#name -> self element name.
