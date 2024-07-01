@@ -68,8 +68,7 @@ CigParameter >> cTemplate [
 { #category : 'testing' }
 CigParameter >> canBeExported [
 
-	"I can't export parameters with && (moving references)"
-	^ (self typeName endsWith: '&&') not
+	^ CigType canBeExported: self typeName
 ]
 
 { #category : 'testing' }

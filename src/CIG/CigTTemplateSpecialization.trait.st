@@ -12,8 +12,11 @@ Trait {
 CigTTemplateSpecialization >> checkForTemplateSpecialization: aTypeName [
 	| templateArgs parsed |
 	
-	(aTypeName includes: $<) ifFalse: [ ^ self ].
-
+	(aTypeName includes: $<) ifFalse: [ ^ self ]. 
+	
+	"skip check for types that can't be exported (because it may generate an error while parsing)"
+	(CigType canBeExported: aTypeName) ifFalse: [ ^ self ].
+	
 	parsed := CigFunctionParser parse: aTypeName. 
 
 	"check for arguments"

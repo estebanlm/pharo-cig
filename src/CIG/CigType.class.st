@@ -25,6 +25,14 @@ Class {
 	#tag : 'Base'
 }
 
+{ #category : 'utilities' }
+CigType class >> canBeExported: aString [
+	"Some types cannot be exported. 
+		- I can't export parameters with && (moving references)"
+
+	^ (aString endsWith: '&&') not
+]
+
 { #category : 'private' }
 CigType class >> createTypeMap [
 
