@@ -312,6 +312,13 @@ CigType >> isFunction [
 ]
 
 { #category : 'testing' }
+CigType >> isImportedNamespaceElement [
+	
+	^ self element notNil 
+		and: [ self element isImportedNamespaceElement ]
+]
+
+{ #category : 'testing' }
 CigType >> isPointer [
 
 	self isReferenceAnonymous ifTrue: [ ^ false ].
