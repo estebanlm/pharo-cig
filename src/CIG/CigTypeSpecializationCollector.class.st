@@ -1,3 +1,8 @@
+"
+A collector of specialisations declared on a translation unit.
+Basically, it traverses all elements looking for specialisations (template specialisations, e.g. aType<Int>) to be used to declare a hierarcht with them (this is added to the specialisations declared manually on the header spec).
+
+"
 Class {
 	#name : 'CigTypeSpecializationCollector',
 	#superclass : 'CigVisitor',

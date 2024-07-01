@@ -1,3 +1,6 @@
+"
+Base visitor for Cig nodes (elements of a translated unit)
+"
 Class {
 	#name : 'CigVisitor',
 	#superclass : 'Object',
