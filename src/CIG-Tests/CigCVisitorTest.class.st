@@ -207,9 +207,9 @@ CigCVisitorTest >> testVisitFunctionReturningClassGenerateCorrectMethodTemplate 
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'tv_TColorBIOS* tv_RGBtoBIOS(tv_TColorRGB* arg1) {
-	auto _result = new TColorBIOS();
-	*_result = RGBtoBIOS(*(TColorRGB*)arg1);
-	return (tv_TColorBIOS*)_result;
+	auto _tmp = RGBtoBIOS(*(TColorRGB*)arg1);
+	auto _result = std::make_unique<TColorBIOS>(_tmp);
+	return (tv_TColorBIOS*)_result.release();
 }'
 ]
 
@@ -319,9 +319,9 @@ CigCVisitorTest >> testVisitMethodReturningClassGenerateCorrectMethodTemplate [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'nu_noise_utils_Color* nu_noise_utils_Image_GetBorderValue(nu_noise_utils_Image* self) {
-	auto _result = new noise::utils::Color();
-	*_result = ((noise::utils::Image*)self)->GetBorderValue();
-	return (nu_noise_utils_Color*)_result;
+	auto _tmp = ((noise::utils::Image*)self)->GetBorderValue();
+	auto _result = std::make_unique<noise::utils::Color>(_tmp);
+	return (nu_noise_utils_Color*)_result.release();
 }'
 ]
 
@@ -422,9 +422,9 @@ CigCVisitorTest >> testVisitMethodWithReturnClassInstance [
 	self 
 		assert: visitor cStream contents trimmed
 		equals: 'fc_finalcut_FPoint* fc_finalcut_FWidget_termToWidgetPos(fc_finalcut_FWidget* self, fc_finalcut_FPoint* arg1) {
-	auto _result = new finalcut::FPoint();
-	*_result = ((finalcut::FWidget*)self)->termToWidgetPos(*(finalcut::FPoint*)arg1);
-	return (fc_finalcut_FPoint*)_result;
+	auto _tmp = ((finalcut::FWidget*)self)->termToWidgetPos(*(finalcut::FPoint*)arg1);
+	auto _result = std::make_unique<finalcut::FPoint>(_tmp);
+	return (fc_finalcut_FPoint*)_result.release();
 }'
 ]
 

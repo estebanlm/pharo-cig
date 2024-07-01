@@ -19,9 +19,9 @@ CigCParameterClassTemplate class >> handlesType: type [
 CigCParameterClassTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream |
-		stream << 'auto _result = new ' << self type element cppDeclaration << '();'; cr.
-		stream << '*_result = ' << aString << ';'; cr.
-		stream << 'return (' << self generateCType << ')_result' ]
+		stream << 'auto _tmp = ' << aString << ';'; cr.
+		stream << 'auto _result = std::make_unique<' << self type element cppDeclaration << '>(_tmp);'; cr.
+		stream << 'return (' << self generateCType << ')_result.release()' ]
 ]
 
 { #category : 'generating' }

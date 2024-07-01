@@ -25,9 +25,9 @@ CigCParameterTemplateTest >> testCastReturnClassReference [
 	
 	self 
 		assert: (template castReturn: 'x')  
-		equals: 'auto _result = new TColorBIOS();
-*_result = x;
-return (tv_TColorBIOS*)_result'
+		equals: 'auto _tmp = x;
+auto _result = std::make_unique<TColorBIOS>(_tmp);
+return (tv_TColorBIOS*)_result.release()'
 ]
 
 { #category : 'tests - class' }
@@ -52,9 +52,9 @@ CigCParameterTemplateTest >> testCastReturnClassReferenceWithNamespace [
 	
 	self 
 		assert: (template castReturn: 'x')  
-		equals: 'auto _result = new noise::utils::Color();
-*_result = x;
-return (nu_noise_utils_Color*)_result'
+		equals: 'auto _tmp = x;
+auto _result = std::make_unique<noise::utils::Color>(_tmp);
+return (nu_noise_utils_Color*)_result.release()'
 ]
 
 { #category : 'tests' }
@@ -187,7 +187,7 @@ CigCParameterTemplateTest >> testGenerateArgumentStdArrayAndConstant [
 	
 	self 
 		assert: template generateArgument
-		equals: '*(std::array<finalcut::FChar, 4>*)std::memcpy((new std::array<finalcut::FChar, 4>).data(), arg2, 4)'
+		equals: '*(std::array<finalcut::FChar, 4>*)std::memcpy((new std::array<finalcut::FChar, 4>)->data(), arg2, 4)'
 ]
 
 { #category : 'tests - stdsharedptr' }
