@@ -113,6 +113,9 @@ CigTestResource class >> noiseutilsSpec [
 		cIncludePath: '/home/esteban/dev/vm/noiseutils';
 		cIncludePath: '/home/esteban/dev/vm/libnoise/include';
 		cIncludePath: '/home/esteban/dev/vm/libnoise/include/noise';
+		namespace: CigNoiseNamespace;
+		namespace: CigModelNamespace;
+		namespace: CigModuleNamespace;
 		cLib: 'noise';
 		cLib: 'noiseutils';
 		yourself
@@ -194,7 +197,9 @@ CigTestResource class >> stdArraySpec [
 	^ CigCppLibraryGenerator new
 		prefix: 'Std';
 		bindingsName: 'std';
-		import: '/usr/include/c++/13.2.1/array'
+		import: 'array';
+		withoutSpecialElements;
+		yourself
 ]
 
 { #category : 'private - specs' }
