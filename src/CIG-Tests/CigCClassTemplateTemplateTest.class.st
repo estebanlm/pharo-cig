@@ -96,9 +96,9 @@ CigCClassTemplateTemplateTest >> testMethodReturningTemplateArgument [
 	
 	self 
 		assert: template generateBody 
-		equals: 'auto _result = new TSpan<TScreenCell>();
-*_result = ((TSpan<TScreenCell>*)self)->subspan(pos);
-return (tv_TSpanTScreenCell*)_result;'
+		equals: 'auto _tmp = ((TSpan<TScreenCell>*)self)->subspan(pos);
+auto _result = std::make_unique<TSpan<TScreenCell>>(_tmp);
+return (tv_TSpanTScreenCell*)_result.release();'
 ]
 
 { #category : 'tests' }

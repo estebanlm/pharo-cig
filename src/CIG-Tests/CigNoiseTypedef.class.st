@@ -12,5 +12,5 @@ Class {
 { #category : 'class initialization' }
 CigNoiseTypedef class >> initialize [
 
-	no_noise_module_Module := Object
+	no_noise_module_Module := CigNoiseObjectForTest
 ]

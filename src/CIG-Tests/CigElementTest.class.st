@@ -80,7 +80,10 @@ CigElementTest >> testSanitizeName [
 	self assert: (element sanitizeName: 'Nonoother') equals: 'Nonoother'.
 	"let's see if NoNoiseNamespace is generated correctly"
 	element := self translatedUnitNoise elementAtPath: { 'noise' }.
-	self assert: element phDeclaration equals: 'NoNoiseNamespace'
+	self assert: element phDeclaration equals: 'NoNoiseNamespace'.
+	"same prefix and underscore"
+	self assert: (element sanitizeName: 'no_cypher_st') equals: 'No_cypher_st'.
+	
 ]
 
 { #category : 'tests' }
