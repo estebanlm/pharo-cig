@@ -49,7 +49,13 @@ CigPharoStructureGenerator >> generate [
 CigPharoStructureGenerator >> generateOn: aVisitor [
 	
 	super generateOn: aVisitor.
-	aVisitor registerForInitialization: self
+	aVisitor registerForInitialization: self.
+	self element fields 
+		select: [ :each | each isArray ]
+		thenDo: [ :each |
+			aVisitor 
+				registerDeclaration: each cTemplate generateFFIType
+				as: each resolveType name ]
 ]
 
 { #category : 'accessing' }

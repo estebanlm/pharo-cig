@@ -1,8 +1,8 @@
 "
-This template handles pointer to structure parameters (e.g. struct mystruct *arg).
+This template handles arrays of structure parameters (e.g. struct mystruct *arg).
 "
 Class {
-	#name : 'CigCParameterPointerToStructTypeTemplate',
+	#name : 'CigCParameterArrayOfStructTypeTemplate',
 	#superclass : 'CigCParameterStructTypeTemplate',
 	#category : 'CIG-C-Template',
 	#package : 'CIG',
@@ -10,23 +10,23 @@ Class {
 }
 
 { #category : 'private' }
-CigCParameterPointerToStructTypeTemplate class >> handlesType: type [
+CigCParameterArrayOfStructTypeTemplate class >> handlesType: type [
 
 	^ type isStructure 
 		and: [ type isClass not
-		and: [ type isPointer
-		and: [ type isArray not ] ] ]
+		and: [ type isPointer not
+		and: [ type isArray ] ] ]
 ]
 
 { #category : 'generating' }
-CigCParameterPointerToStructTypeTemplate >> castReturn: aString [ 
+CigCParameterArrayOfStructTypeTemplate >> castReturn: aString [ 
 	
 	^ String streamContents: [ :stream | 
 		stream << 'return (' << self generateCType << ')(' << aString << ')' ]
 ]
 
 { #category : 'generating' }
-CigCParameterPointerToStructTypeTemplate >> generateFFIType [
+CigCParameterArrayOfStructTypeTemplate >> generateFFIType [
 	| startArity parsed |
 
 	startArity := 0.
@@ -34,5 +34,6 @@ CigCParameterPointerToStructTypeTemplate >> generateFFIType [
 	^ String streamContents: [ :stream |
 		stream << super generateFFIType.
 		(1 + startArity) to: parsed arity do: [ :each |
-			stream << '*' ] ]
+			stream << '_pointer' ].
+		stream << '_' << parsed arrayNumber asString ]
 ]

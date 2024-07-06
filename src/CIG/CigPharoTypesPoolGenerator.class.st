@@ -42,7 +42,7 @@ CigPharoTypesPoolGenerator >> classInitializationTemplate: aDictionary [
 				stream 
 					<<  assoc key 
 					<< ' := ' 
-					<< assoc value ]
+					<< (self valueFor: assoc value in: aDictionary) ]
 			separatedBy: [ stream << '.'; cr ] ]
 ]
 
@@ -88,4 +88,20 @@ CigPharoTypesPoolGenerator >> toPrintableSymbol: aSymbol [
 			stream << '''' << aSymbol asString << '''' ] ].
 	
 	^ aSymbol
+]
+
+{ #category : 'private' }
+CigPharoTypesPoolGenerator >> valueFor: aValue in: aDictionary [ 
+	| parsed type |
+
+	aValue isString ifFalse: [ ^ aValue ].
+
+	parsed := aValue substrings: '[]'.
+	parsed size ~= 2 ifTrue: [ ^ aValue ].
+
+	type := parsed first.	
+	^ 'FFIArray ofType: {3}{1}{3} size: {2}' format: { 
+		type. 
+		parsed second.
+		(aDictionary includesKey: type) ifTrue: [ '' ] ifFalse: [ $' ] }
 ]

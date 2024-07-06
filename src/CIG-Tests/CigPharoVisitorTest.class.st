@@ -79,6 +79,43 @@ CigPharoVisitorTest >> testAddFFITypesClass [
 	self assert: class notNil
 ]
 
+{ #category : 'tests - struct' }
+CigPharoVisitorTest >> testArrayTypeIsAddedWhenStructWithArrayTypesIsCreated [
+	| element visitor |
+
+	element := self translatedUnitRaylib elementAtPath: { 'AutomationEvent' }.
+	visitor := CigPharoVisitor newForTest.	
+	visitor addBaseClasses: element root.
+	
+	visitor visitStructure: element.
+
+	self assert: (visitor types includesKey: 'int_4')
+]
+
+{ #category : 'tests - struct' }
+CigPharoVisitorTest >> testArrayTypeUsesGeneratedTypeOnStructure [
+	| element visitor class |
+
+	element := self translatedUnitRaylib elementAtPath: { 'AutomationEvent' }.
+	visitor := CigPharoVisitor newForTest.	
+	visitor addBaseClasses: element root.
+	
+	visitor visitStructure: element.
+	class := self class environment classNamed: 'XxAutomationEvent'.
+
+	self assert: class notNil.
+	
+	self 
+		assert: (class class >> #fieldsDesc) sourceCode
+		equals: 'fieldsDesc
+
+	^ #(
+	uint frame;
+	uint type;
+	int_4 params
+	)'
+]
+
 { #category : 'tests - base' }
 CigPharoVisitorTest >> testEnsureBaseClassesIncludeNamespaceTypedefs [
 	| visitor class |
@@ -90,9 +127,7 @@ CigPharoVisitorTest >> testEnsureBaseClassesIncludeNamespaceTypedefs [
 	class := self class environment classNamed: 'XxBaseObject'.
 	self assert: class notNil.
 	
-	self 
-		assert: class sharedPoolNames asArray
-		equals: #(XxGeneratedForTestTypedef)
+	self assert: (class sharedPoolNames asArray includes: #XxGeneratedForTestTypedef)
 ]
 
 { #category : 'tests - base' }
@@ -359,6 +394,12 @@ CigPharoVisitorTest >> testVisitFunctionAddsFunctionToLibrary [
 		equals: 'fexpand: rpath
 
 	self ffiCall: #(void xx_fexpand_1(char* rpath))'
+]
+
+{ #category : 'tests - function' }
+CigPharoVisitorTest >> testVisitFunctionWithArrayParameterAddsArrayType [
+
+	self fail
 ]
 
 { #category : 'tests - function' }

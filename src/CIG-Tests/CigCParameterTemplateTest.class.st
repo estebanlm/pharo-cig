@@ -6,6 +6,12 @@ Class {
 	#tag : 'C'
 }
 
+{ #category : 'tests - array' }
+CigCParameterTemplateTest >> testCastReturnArrayType [
+
+	self fail
+]
+
 { #category : 'tests' }
 CigCParameterTemplateTest >> testCastReturnBasicType [
 	| template element |
@@ -142,6 +148,12 @@ CigCParameterTemplateTest >> testCastsCorrectReturnEvenWhenTypeReferenceNotAssoc
 	self assert: (template castReturn: 'x') equals: 'return x'
 ]
 
+{ #category : 'tests - array' }
+CigCParameterTemplateTest >> testGenerateArgumentArray [
+
+	self fail
+]
+
 { #category : 'tests - class' }
 CigCParameterTemplateTest >> testGenerateArgumentClassDifferentNamespace [
 	| template element |
@@ -252,6 +264,12 @@ CigCParameterTemplateTest >> testGenerateArgumentWhenTypedefOfComplexElementAndP
 	self 
 		assert: template generateArgument
 		equals: '*arg1'
+]
+
+{ #category : 'tests - array' }
+CigCParameterTemplateTest >> testGenerateArrayType [
+
+	self fail
 ]
 
 { #category : 'tests' }
@@ -485,6 +503,16 @@ CigCParameterTemplateTest >> testGenerateStructReferenceArgument [
 	self 
 		assert: template generateArgument
 		equals: '*(struct finalcut::FCharAttribute*)fchar_attr'
+]
+
+{ #category : 'tests - array' }
+CigCParameterTemplateTest >> testResolveArrayType [
+	| template element |
+
+	element := self translatedUnitRaylib elementAtPath: { 'AutomationEvent' }.
+	template := (element fieldNamed: 'params') cTemplate.
+		
+	self assert: template class equals: CigCParameterArrayTypeTemplate
 ]
 
 { #category : 'tests' }

@@ -7,6 +7,18 @@ Class {
 }
 
 { #category : 'tests' }
+CigPharoFieldTemplateTest >> testArrayTypeGeneratedAsSpecialType [
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'AutomationEvent' }.
+	template := (element fieldNamed: 'params') phTemplate.
+	
+	self 
+		assert: template generateFieldDesc
+		equals: 'int_4 params'
+]
+
+{ #category : 'tests' }
 CigPharoFieldTemplateTest >> testGenerateAnonymousUnionFieldDesc [
 	| element template |
 

@@ -17,7 +17,7 @@ CigFunctionParser class >> parse: aString [
 { #category : 'accessing' }
 CigFunctionParser >> parseType [
 	" parse type name and optional number of asterisks, following it"
-	| templates templateTypeName referenceMarker typeName ptrArity |
+	| templates templateTypeName referenceMarker typeName pointerArity arrayNumber |
 
 	typeName := stream next.
 	typeName ifNil: [ ^ self error: 'type name expected' ].
@@ -62,26 +62,38 @@ CigFunctionParser >> parseType [
 		templates := templates copyWith: templateTypeName.
 		stream next ].
 	
+	"check for pointer (and reference)"
 	referenceMarker := false.
-	ptrArity := 0.
+	pointerArity := 0.
 	[ stream atEnd not 
 		and: [ stream peek isString 
 		and: [ 
 			(stream peek beginsWith: '*') 
-			or: [ (stream peek beginsWith: '&')
-			or: [ stream peek beginsWith: '[' ] ] ] ] ] 
+			or: [ stream peek beginsWith: '&' ] ] ] ] 
 	whileTrue: [ | pointerMarker |
 		pointerMarker := stream next.
-		self assert: ((pointerMarker allButLast allSatisfy: [ :e | e = $* ]) 
-			and: [ #($* $& $[) includes: pointerMarker last ]).
+		self assert: ((pointerMarker allButLast allSatisfy: [ :ch | ch = $* ]) 
+			and: [ #($* $&) includes: pointerMarker last ]).
 		referenceMarker := referenceMarker or: [ pointerMarker last = $& ].
-		ptrArity := ptrArity + pointerMarker size ].
-		
+		pointerArity := pointerArity + pointerMarker size ].
+
+	"check for array"
+	(stream atEnd not 
+		and: [ stream peek isString 
+		and: [ stream peek beginsWith: '[' ] ]) 
+	ifTrue: [ 
+		stream next. "array start"
+		arrayNumber := (stream peek isString and: [ stream peek beginsWith: ']' ])
+			ifTrue: [ 0 ]
+			ifFalse: [ stream next ].
+		self assert: (stream next beginsWith: ']') ].
+
 	^ {
 		typeName. 
-		ptrArity.			
+		pointerArity.		
 		referenceMarker.
-		templates }
+		templates.
+		arrayNumber }
 ]
 
 { #category : 'accessing' }

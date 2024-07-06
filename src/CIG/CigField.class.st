@@ -65,6 +65,12 @@ CigField >> fromCursor: aCursor [
 ]
 
 { #category : 'testing' }
+CigField >> isArray [
+
+	^ self resolveType isArray
+]
+
+{ #category : 'testing' }
 CigField >> isField [
 
 	^ true

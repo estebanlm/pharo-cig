@@ -282,6 +282,12 @@ CigType >> isAnyDeclaration [
 ]
 
 { #category : 'testing' }
+CigType >> isArray [
+
+	^ self parseType isArray
+]
+
+{ #category : 'testing' }
 CigType >> isClass [
 
 	^ self hasElement and: [ self element isClass ]

@@ -7,6 +7,19 @@ Class {
 }
 
 { #category : 'tests' }
+CigFunctionParserTest >> testParseArrayType [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'int[42]';
+		parseType.
+	
+	self assert: type first equals: 'int'.
+	self assert: type second equals: 0. "no pointer arity"
+	self assert: type fifth equals: 42
+]
+
+{ #category : 'tests' }
 CigFunctionParserTest >> testParseClassTemplateNestedType [
 	| type |
 

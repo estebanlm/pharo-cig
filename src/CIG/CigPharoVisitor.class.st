@@ -1,3 +1,7 @@
+"
+Visitor to generate Pharo side of bindings.
+It starts in a unit, and it generates all needed to execute the library. 
+"
 Class {
 	#name : 'CigPharoVisitor',
 	#superclass : 'CigVisitor',
@@ -40,6 +44,16 @@ CigPharoVisitor >> addFFITrait: aUnit [
 CigPharoVisitor >> addFFITypesClass: aUnit [
 	
 	(CigPharoTypesPoolGenerator newFile: self file unit: aUnit) generate
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> disableRegisterChangesDuring: aBlock [
+	| monitor |
+
+	monitor := self class environment classNamed: #EpMonitor.
+	monitor ifNil: [ ^ aBlock value ].
+	
+	^ monitor disableDuring: [ aBlock value ]
 ]
 
 { #category : 'private' }
@@ -94,6 +108,10 @@ CigPharoVisitor >> executeInitializations [
 
 { #category : 'private' }
 CigPharoVisitor >> registerDeclaration: aDeclaration as: aString [
+
+	"with apply of naming conventions, etc. It may happen that declaration now is 
+	 equal to the type... we skip this."	
+	aDeclaration = aString ifTrue: [ ^ self ].
 
 	types 
 		at: ((aDeclaration endsWith: '*')
@@ -263,7 +281,8 @@ CigPharoVisitor >> visitUnion: aUnion [
 CigPharoVisitor >> visitUnit: aUnit [
 
 	self reset.
-	self addBaseClasses: aUnit.
-	self visitAll: aUnit elements.
-	self endUnit: aUnit
+	self disableRegisterChangesDuring: [ 
+		self addBaseClasses: aUnit.
+		self visitAll: aUnit elements.
+		self endUnit: aUnit ]
 ]

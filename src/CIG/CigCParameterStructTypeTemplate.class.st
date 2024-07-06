@@ -15,7 +15,8 @@ CigCParameterStructTypeTemplate class >> handlesType: type [
 
 	^ type isStructure 
 		and: [ type isClass not
-		and: [ type isPointer not ] ]
+		and: [ type isPointer not
+		and: [ type isArray not ] ] ]
 ]
 
 { #category : 'generating' }

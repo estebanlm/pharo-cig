@@ -3,7 +3,8 @@ Class {
 	#superclass : 'FFITypeDeclaration',
 	#instVars : [
 		'reference',
-		'templates'
+		'templates',
+		'arrayNumber'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -13,12 +14,30 @@ Class {
 { #category : 'instance creation' }
 CigTypeDeclaration class >> fromArray: anArray [
 
-	^ self new
+	^ self new fromArray: anArray
+]
+
+{ #category : 'accessing' }
+CigTypeDeclaration >> arrayNumber [
+
+	^ arrayNumber
+]
+
+{ #category : 'private' }
+CigTypeDeclaration >> arrayNumber: aNumber [
+
+	arrayNumber := aNumber
+]
+
+{ #category : 'initialization' }
+CigTypeDeclaration >> fromArray: anArray [
+
+	self
 		name: anArray first;
 		arity: anArray second;
 		reference: anArray third;
 		templates: anArray fourth;
-		yourself
+		arrayNumber: anArray fifth
 ]
 
 { #category : 'accessing' }
@@ -28,6 +47,12 @@ CigTypeDeclaration >> fullName [
 		stream << self name.
 		self templateName ifNotNil: [ 
 			stream << '<' << self templateName << '>' ] ]
+]
+
+{ #category : 'testing' }
+CigTypeDeclaration >> isArray [
+
+	^ arrayNumber isNotNil
 ]
 
 { #category : 'testing' }
@@ -82,7 +107,7 @@ CigTypeDeclaration >> numTemplateArguments [
 	^ self templates size
 ]
 
-{ #category : 'accessing' }
+{ #category : 'private' }
 CigTypeDeclaration >> reference: aBoolean [
 
 	reference := aBoolean
@@ -100,7 +125,7 @@ CigTypeDeclaration >> templates [
 	^ templates
 ]
 
-{ #category : 'accessing' }
+{ #category : 'private' }
 CigTypeDeclaration >> templates: anArray [
 
 	templates := anArray
