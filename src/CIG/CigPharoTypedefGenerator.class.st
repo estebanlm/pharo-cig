@@ -18,5 +18,7 @@ CigPharoTypedefGenerator >> generateOn: aVisitor [
 	super generateOn: aVisitor.
 	aVisitor 
 		registerDeclaration: self element cDeclaration 
-		as: self element phTemplate generate
+		as: self element phTemplate generate.
+		
+	self logInfo: [ 'Typedef {1} added.' format: { self element cDeclaration } ]
 ]

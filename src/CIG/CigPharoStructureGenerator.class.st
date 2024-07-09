@@ -9,13 +9,23 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
+{ #category : 'accessing' }
+CigPharoStructureGenerator class >> structType [
+
+	^ 'Struct'
+]
+
 { #category : 'private' }
 CigPharoStructureGenerator >> addStruct [
 	
 	generatedClass := (self baseClass << self structName)
 		tag: self namespaceName;
 		package: self packageName;
-		install
+		install.
+	
+	self logInfo: [ '{1} {2} added' format: { 
+		self class structType.
+		self structName } ]
 ]
 
 { #category : 'private' }

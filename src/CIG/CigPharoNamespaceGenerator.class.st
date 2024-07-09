@@ -40,7 +40,9 @@ CigPharoNamespaceGenerator >> addNamespace [
 		traits: self libraryTrait;
 		tag: self element basename capitalized;
 		package: self packageName;
-		install
+		install.
+	
+	self logInfo: [ 'Namespace {1} added' format: { self nameForClass } ]
 ]
 
 { #category : 'private' }

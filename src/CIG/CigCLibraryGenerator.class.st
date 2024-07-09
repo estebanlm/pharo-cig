@@ -17,9 +17,6 @@ libgit2 generate
 Class {
 	#name : 'CigCLibraryGenerator',
 	#superclass : 'CigLibraryGenerator',
-	#instVars : [
-		'libraryName'
-	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
 	#tag : 'Base'
@@ -29,24 +26,12 @@ Class {
 CigCLibraryGenerator >> generate [
 	| unit |
 
-	('Initiate generation of {1}' format: { self bindingsName }) asBeaconSignal emit.
+	('Initiate generation of {1}' format: { self libraryName }) asBeaconSignal emit.
 	'Collecting nodes' asBeaconSignal emit.
 
 	unit := self translateUnit.
 
 	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ]
-]
-
-{ #category : 'accessing' }
-CigCLibraryGenerator >> libraryName [
-
-	^ libraryName ifNil: [ 'lib', self bindingsName ]
-]
-
-{ #category : 'accessing' }
-CigCLibraryGenerator >> libraryName: aName [
-
-	libraryName := aName
 ]
 
 { #category : 'private' }

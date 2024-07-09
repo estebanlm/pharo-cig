@@ -1,18 +1,18 @@
 Trait {
 	#name : 'CigTLoggeable',
-	#category : 'CIG-Base',
+	#category : 'CIG-Logging',
 	#package : 'CIG',
-	#tag : 'Base'
+	#tag : 'Logging'
 }
 
 { #category : 'accessing - logging' }
 CigTLoggeable >> logDebug: aStringOrBlock [
 
-	aStringOrBlock value asBeaconSignal emit
+	(CigLogDebug on: aStringOrBlock) emit
 ]
 
 { #category : 'accessing - logging' }
 CigTLoggeable >> logInfo: aStringOrBlock [
 
-	aStringOrBlock value asBeaconSignal emit
+	(CigLogInfo on: aStringOrBlock) emit
 ]

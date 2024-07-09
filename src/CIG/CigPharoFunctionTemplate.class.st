@@ -30,7 +30,7 @@ CigPharoFunctionTemplate >> buildParameters: aCollection on: stream [
 	aCollection ifEmpty: [ ^ self ].
 	
 	aCollection first in: [ :each | 
-		aCollection size > self parameterSizeForNameThreashold
+		aCollection size > self parameterSizeForNameThreshold
 			ifTrue: [ stream << each name capitalized ].
 		stream << ': ' << each name << ' ' ].
 	aCollection allButFirst do: [ :each | 
@@ -68,7 +68,7 @@ CigPharoFunctionTemplate >> generateHeader [
 ]
 
 { #category : 'private' }
-CigPharoFunctionTemplate >> parameterSizeForNameThreashold [
+CigPharoFunctionTemplate >> parameterSizeForNameThreshold [
 
 	^ 1
 ]

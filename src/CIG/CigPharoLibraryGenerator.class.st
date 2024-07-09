@@ -72,7 +72,7 @@ CigPharoLibraryGenerator >> linuxPlatformTemplate [
 		stream cr; tab.
 		stream << '^ FFIUnix64LibraryFinder new'; cr.
 		stream tab; tab. stream << 'userPaths: #(''./CIG/lib'');'; cr.
-		stream tab; tab. stream << 'findLibrary: ''' << self file libraryName << '.so''' ]
+		stream tab; tab. stream << 'findLibrary: ''' << self file unixLibraryName << '''' ]
 ]
 
 { #category : 'private - templates' }
@@ -83,7 +83,7 @@ CigPharoLibraryGenerator >> macPlatformTemplate [
 		stream cr; tab.
 		stream << '^ FFIMacLibraryFinder new'; cr.
 		stream tab; tab. stream << 'userPaths: #(''./CIG/lib'');'; cr.
-		stream tab; tab. stream << 'findLibrary: ''' << self file libraryName << '.dylib''' ]
+		stream tab; tab. stream << 'findLibrary: ''' << self file macLibraryName << '''' ]
 ]
 
 { #category : 'private - templates' }
@@ -105,5 +105,5 @@ CigPharoLibraryGenerator >> winPlatformTemplate [
 		stream cr; tab.
 		stream << '^ FFIWindowsLibraryFinder new'; cr.
 		stream tab; tab. stream << 'userPaths: #(''./CIG/lib'');'; cr.
-		stream tab; tab. stream << 'findLibrary: ''' << self file libraryName << '.dll''' ]
+		stream tab; tab. stream << 'findLibrary: ''' << self file winLibraryName << '''' ]
 ]

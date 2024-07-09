@@ -1,6 +1,8 @@
 Class {
 	#name : 'CigPharoGenerator',
 	#superclass : 'Object',
+	#traits : 'CigTLoggeable',
+	#classTraits : 'CigTLoggeable classTrait',
 	#instVars : [
 		'file',
 		'unit',
@@ -147,7 +149,7 @@ CigPharoGenerator >> libraryClass [
 { #category : 'private' }
 CigPharoGenerator >> libraryName [
 
-	^ 'Lib', self file bindingsName capitalized
+	^ 'Lib', self file libraryName capitalized
 ]
 
 { #category : 'private' }
@@ -159,7 +161,7 @@ CigPharoGenerator >> libraryTrait [
 { #category : 'private' }
 CigPharoGenerator >> libraryTraitName [
 
-	^ 'LibT', self file bindingsName capitalized
+	^ 'LibT', self file libraryName capitalized
 ]
 
 { #category : 'private' }
@@ -174,7 +176,7 @@ CigPharoGenerator >> libraryTypedefName [
 	^ String streamContents: [ :stream |
 		stream 
 			<< self prefix capitalized
-			<< self file bindingsName capitalized 
+			<< self file libraryName capitalized 
 			<< 'Typedef' ]
 ]
 

@@ -84,7 +84,7 @@ CigCppLibraryGenerator >> doNotBuildBindingsLibrary [
 CigCppLibraryGenerator >> generate [
 	| unit |
 
-	('Initiate generation of {1}' format: { self bindingsName }) asBeaconSignal emit.
+	('Initiate generation of {1}' format: { self libraryName }) asBeaconSignal emit.
 	'Collecting nodes' asBeaconSignal emit.
 	
 	unit := self translateUnit.
@@ -163,12 +163,6 @@ CigCppLibraryGenerator >> initialize [
 	self withCBindings.
 	self withMakefile.
 	self buildBindingsLibrary
-]
-
-{ #category : 'accessing' }
-CigCppLibraryGenerator >> libraryName [
-
-	^ self cFileReference basenameWithoutExtension
 ]
 
 { #category : 'accessing' }

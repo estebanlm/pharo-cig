@@ -6,6 +6,12 @@ Class {
 	#tag : 'Pharo-Generator'
 }
 
+{ #category : 'accessing' }
+CigPharoUnionGenerator class >> structType [
+
+	^ 'Union'
+]
+
 { #category : 'private' }
 CigPharoUnionGenerator >> baseClass [
 

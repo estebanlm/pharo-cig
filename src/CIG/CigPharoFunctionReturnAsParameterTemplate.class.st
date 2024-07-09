@@ -27,7 +27,7 @@ CigPharoFunctionReturnAsParameterTemplate >> generateHeader [
 ]
 
 { #category : 'private' }
-CigPharoFunctionReturnAsParameterTemplate >> parameterSizeForNameThreashold [
+CigPharoFunctionReturnAsParameterTemplate >> parameterSizeForNameThreshold [
 
 	^ 2
 ]

@@ -29,14 +29,17 @@ Class {
 		'withClasses',
 		'libs',
 		'prefix',
-		'bindingsName',
 		'namespaces',
 		'defines',
 		'definesBeforeHeader',
 		'excluding',
 		'ffiRunner',
 		'typedefs',
-		'withPreprocessor'
+		'withPreprocessor',
+		'libraryName',
+		'unixLibraryName',
+		'macLibraryName',
+		'winLibraryName'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -49,18 +52,6 @@ CigLibraryGenerator class >> translateUnit: aFileName [
 	^ self new 
 		file: aFileName;
 		translateUnit
-]
-
-{ #category : 'accessing' }
-CigLibraryGenerator >> bindingsName [
-
-	^ bindingsName
-]
-
-{ #category : 'accessing - configuration' }
-CigLibraryGenerator >> bindingsName: aString [
-
-	bindingsName := aString
 ]
 
 { #category : 'accessing - scripting' }
@@ -139,8 +130,8 @@ CigLibraryGenerator >> cFileReference [
 	
 	^ (FileLocator imageDirectory 
 		/ 'CIG' 
-		/ self bindingsName 
-		/ (self bindingsName, '_bindings')) 
+		/ self libraryName 
+		/ (self libraryName, '_bindings')) 
 		withExtension: 'cpp'
 ]
 
@@ -220,7 +211,7 @@ CigLibraryGenerator >> cTypedefs: anOrderedDictionary [
 { #category : 'private' }
 CigLibraryGenerator >> defaultPrefix [
 
-	^ self bindingsName 
+	^ self libraryName 
 		ifNotNil: [ :aName | (aName first: 2) capitalized ]
 		ifNil: [ '' ]
 ]
@@ -332,13 +323,19 @@ CigLibraryGenerator >> initialize [
 CigLibraryGenerator >> libraryClassName [
 	"Pharo class name to store the wrapped functions"
 	
-	^ self bindingsName basenameWithoutExtension capitalized
+	^ self libraryName basenameWithoutExtension capitalized
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - configuration' }
 CigLibraryGenerator >> libraryName [
 
-	^ self subclassResponsibility
+	^ libraryName
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> libraryName: aName [
+
+	libraryName := aName
 ]
 
 { #category : 'utilies' }
@@ -346,6 +343,18 @@ CigLibraryGenerator >> listElements [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
 
 	^ self newTranslatedUnit listElementsFrom: self
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> macLibraryName [
+
+	^ macLibraryName ifNil: [ 'lib', self libraryName, '.dylib' ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> macLibraryName: aString [
+
+	macLibraryName := aString
 ]
 
 { #category : 'accessing - scripting' }
@@ -411,6 +420,18 @@ CigLibraryGenerator >> translateUnitWithoutUnknown [
 ]
 
 { #category : 'accessing - configuration' }
+CigLibraryGenerator >> unixLibraryName [
+
+	^ unixLibraryName ifNil: [ 'lib', self libraryName, '.so' ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> unixLibraryName: aString [
+
+	unixLibraryName := aString
+]
+
+{ #category : 'accessing - configuration' }
 CigLibraryGenerator >> useMainThread [
 
 	ffiRunner := CigFFIRunnerMainThread new 
@@ -420,6 +441,18 @@ CigLibraryGenerator >> useMainThread [
 CigLibraryGenerator >> useSameThread [
 
 	ffiRunner := CigFFIRunnerSameThread new 
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> winLibraryName [
+
+	^ winLibraryName ifNil: [ self libraryName, '.dll' ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> winLibraryName: aString [
+
+	winLibraryName := aString
 ]
 
 { #category : 'accessing - configuration' }

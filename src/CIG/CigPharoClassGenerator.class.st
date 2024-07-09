@@ -15,7 +15,8 @@ CigPharoClassGenerator >> addClass [
 	generatedClass := self baseClass << self nameForClass
 		tag: self namespaceName;
 		package: self packageName;
-		install
+		install.
+	self logInfo: [ 'Class {1} added.' format: { self nameForClass } ]
 ]
 
 { #category : 'private' }
@@ -25,7 +26,7 @@ CigPharoClassGenerator >> addClassComment [
 	generatedClass comment: self element comment
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoClassGenerator >> addDisposeMethod [
 
 	generatedClass 
@@ -51,7 +52,7 @@ CigPharoClassGenerator >> classFor: aName [
 	^ self class environment classNamed: (aName copyUpTo: $<)
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CigPharoClassGenerator >> disposeTemplate [
 		
 	^ String streamContents: [ :stream |
