@@ -36,7 +36,7 @@ CigPharoVisitor >> prepareForTestAsC [
 	types := Dictionary new.
 	file := CigCLibraryGenerator new
 		prefix: 'Gft';
-		bindingsName: 'GeneratedForTest';
+		libraryName: 'GeneratedForTest';
 		yourself.
 		
 	initializationRegistry := OrderedCollection new
@@ -48,7 +48,7 @@ CigPharoVisitor >> prepareForTestAsCPP [
 	types := Dictionary new.
 	file := CigCppLibraryGenerator new
 		prefix: 'Gft';
-		bindingsName: 'GeneratedForTest';
+		libraryName: 'GeneratedForTest';
 		yourself.
 		
 	initializationRegistry := OrderedCollection new

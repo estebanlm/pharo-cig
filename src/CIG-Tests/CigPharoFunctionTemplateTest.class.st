@@ -63,6 +63,21 @@ CigPharoFunctionTemplateTest >> testGenerateFunctionWithOneCapitalsPrefix [
 ]
 
 { #category : 'tests' }
+CigPharoFunctionTemplateTest >> testGenerateFunctionWithReturnString [
+	"test that a function that return a struct returns correct value (without adding 'struct' prefix, for example)"
+	| element template |
+
+	element := self translatedUnitRaylib elementAtPath: { 'Fade(Color, float)' }.
+	template := element phTemplate.
+	
+	self 
+		assert: template generate
+		equals: 'fadeColor: color alpha: alpha
+
+	self ffiCall: #(Color Fade(Color color, float alpha))'
+]
+
+{ #category : 'tests' }
 CigPharoFunctionTemplateTest >> testGenerateFunctionWithTwoCapitalsPrefix [
 	"this will check that a function that is called with capitals does not gets 'camelized' 
 	 (no first letter on lowercase)"

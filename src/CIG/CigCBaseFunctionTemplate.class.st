@@ -67,7 +67,7 @@ CigCBaseFunctionTemplate >> generateHeaderForFFI [
 
 	^ '{type} {func}({parameters})'
 		format: {
-			#type -> self generateReturnType.
+			#type -> self generateReturnTypeForFFI.
 			#func -> self element cDeclaration.
 			#parameters -> self generateParametersForFFI 
 		} asDictionary
@@ -95,6 +95,12 @@ CigCBaseFunctionTemplate >> generateParametersForFFI [
 CigCBaseFunctionTemplate >> generateReturnType [
 
 	^ self return generateCType
+]
+
+{ #category : 'generating' }
+CigCBaseFunctionTemplate >> generateReturnTypeForFFI [
+
+	^ self return generateFFIType
 ]
 
 { #category : 'accessing' }

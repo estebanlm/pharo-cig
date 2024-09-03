@@ -33,7 +33,7 @@ CigTestResource class >> finalcutSpec [
 
 	^ CigCppLibraryGenerator new
 		prefix: 'Fc';
-		bindingsName: 'finalcut'; 
+		libraryName: 'finalcut'; 
 		cDefine: 'HAVE_CONFIG_H';
 		cDefine: 'COMPILE_FINAL_CUT';
 		import: '/home/esteban/dev/vm/finalcut/final/final.h';
