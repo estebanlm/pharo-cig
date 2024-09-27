@@ -64,6 +64,8 @@ CXCursor >> basicDisplayName [
 	| string |
 	
 	string := self clang_getCursorDisplayName.
+	string isNull ifTrue: [ ^ nil ].
+	
 	^ [ string cString ]
 		ensure: [ string dispose ]
 ]
