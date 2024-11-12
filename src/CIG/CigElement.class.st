@@ -459,12 +459,14 @@ CigElement >> sanitizeName: aString [
 	
 	prefix := self root prefix asLowercase.
 	"same prefix"
-	((aString asLowercase beginsWith: prefix)
-		"name bigger than prefix"
-		and: [ aString size > prefix size
-		"change of case"
-		and: [ prefix last isLowercase and: [ (aString at: prefix size + 1) isUppercase ] ] ])
-		ifTrue: [ ^ aString allButFirst: prefix size ].
+
+	prefix isEmpty ifFalse: [
+		((aString asLowercase beginsWith: prefix)
+			"name bigger than prefix"
+			and: [ aString size > prefix size
+			"change of case"
+			and: [ prefix last isLowercase and: [ (aString at: prefix size + 1) isUppercase ] ] ])
+			ifTrue: [ ^ aString allButFirst: prefix size ]].
 
 	^ aString capitalized
 ]
