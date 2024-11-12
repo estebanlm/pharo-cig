@@ -2,7 +2,7 @@
 
 ```st
 Metacello new
-	repository: 'github://estebanlm/pharo-cig:master/src';
+	repository: 'github://estebanlm/pharo-cig:main/src';
 	baseline: 'CIG';
 	load
 ```
