@@ -61,13 +61,16 @@ CXCursor >> arguments [
 
 { #category : 'private' }
 CXCursor >> basicDisplayName [
-	| string |
+	| string readString |
 	
 	string := self clang_getCursorDisplayName.
 	string isNull ifTrue: [ ^ nil ].
 	
-	^ [ string cString ]
-		ensure: [ string dispose ]
+	readString := string cString.
+	readString isEmptyOrNil 
+		ifFalse: [ string dispose ].
+	
+	^ readString
 ]
 
 { #category : 'private' }
