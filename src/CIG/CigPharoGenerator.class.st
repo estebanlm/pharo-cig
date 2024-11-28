@@ -191,7 +191,7 @@ CigPharoGenerator >> namespaceName [
 { #category : 'private' }
 CigPharoGenerator >> packageName [
 
-	^ self libraryName
+	^ self file packageName
 ]
 
 { #category : 'private' }

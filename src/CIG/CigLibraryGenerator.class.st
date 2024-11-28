@@ -39,7 +39,8 @@ Class {
 		'libraryName',
 		'unixLibraryName',
 		'macLibraryName',
-		'winLibraryName'
+		'winLibraryName',
+		'packageName'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -388,6 +389,21 @@ CigLibraryGenerator >> normalizeIncludePath: aStringOrReference [
 	(aStringOrReference isString and: [ aStringOrReference beginsWith: '.' ])
 		ifTrue: [ ^ aStringOrReference ].
 	^ aStringOrReference asFileReference fullName
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> packageName [
+	"answer name of the package where the generated classes will be placed"
+
+	^ packageName ifNil: [ 
+		packageName :='Lib', self libraryName capitalized ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> packageName: aName [
+	"name of the package where the generated classes will be placed"
+	
+	packageName := aName
 ]
 
 { #category : 'accessing' }
