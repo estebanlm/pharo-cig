@@ -16,7 +16,9 @@ in LibClang>>unix64LibraryName, e.g.
 ```st
 LibClang>>unix64LibraryName
 
-	^ FFIUnix64LibraryFinder findLibrary: '/usr/lib/llvm-18/lib/libclang.so.1'
+	^ FFIUnix64LibraryFinder new 
+		userPaths: #('/usr/lib/llvm-18/lib');
+		findAnyLibrary: #('libclang.so' 'libclang.so.1')
 ```
 
 ## Example
