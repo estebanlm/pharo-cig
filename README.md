@@ -41,7 +41,7 @@ LibClang>>unix64LibraryName
   cIncludePath: '/home/esteban/dev/vm/raylib/src';
   "Since this is a graphical library, instruct the library to run in mainthread
    (otherwise, default is 'same thread' which is the same thread the pharo is
-   running"  
+   running)"  
   useMainThread.
 
 "generate the library"
