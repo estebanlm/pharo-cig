@@ -466,17 +466,24 @@ CXCursor >> semanticPath [
 
 { #category : 'accessing' }
 CXCursor >> source [
-	| fileName pos range size source |
+	| location fileName posStart posEnd range size source |
 	
-	fileName := self location fileName.
-	fileName ifEmpty: [ ^ nil ].
-	 
+	location := self location.
+	fileName := location fileName.
+	fileName ifEmpty: [ ^ nil ].	
+	
 	range := self clang_getCursorExtent.	
-	pos := range start offset.
-	size := range end offset - pos.
+	posStart := range start offset.
+	posEnd := range end offset.
+	size := posEnd - posStart.
+	size < 1 ifTrue: [
+		('I can''t get the source of "{1}" in {2}' format: { self spelling. fileName }) crTrace.
+		^ '' ].
+	
 	fileName asFileReference readStreamDo: [ :stream |
-		stream position: pos.
+		stream position: posStart.
 		source := stream next: size ].
+
 	^ source trimmed
 ]
 
