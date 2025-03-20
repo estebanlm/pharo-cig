@@ -11,6 +11,16 @@ LibClang class >> options [
 	^ #( -optStrict )
 ]
 
+{ #category : 'accessing - platform' }
+LibClang >> macLibraryName [
+
+	^ FFIMacLibraryFinder new
+		  userPaths:
+			  #( '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib'
+			     '/Library/Developer/CommandLineTools/usr/lib' );
+		  findLibrary: 'libclang.dylib'
+]
+
 { #category : 'accessing' }
 LibClang >> runner [
 
