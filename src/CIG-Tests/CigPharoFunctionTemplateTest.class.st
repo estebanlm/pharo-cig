@@ -74,7 +74,7 @@ CigPharoFunctionTemplateTest >> testGenerateFunctionWithReturnString [
 		assert: template generate
 		equals: 'fadeColor: color alpha: alpha
 
-	self ffiCall: #(Color Fade(Color color, float alpha))'
+	^ self ffiCall: #(Color Fade(Color color, float alpha))'
 ]
 
 { #category : 'tests' }
@@ -102,7 +102,7 @@ CigPharoFunctionTemplateTest >> testGenerateMethod [
 		assert: template generate
 		equals: 'getBounds
 
-	self ffiCall: #(xx_TRect* xx_TView_getBounds(xx_TView* self))'
+	^ self ffiCall: #(xx_TRect* xx_TView_getBounds(xx_TView* self))'
 ]
 
 { #category : 'tests' }
@@ -116,5 +116,5 @@ CigPharoFunctionTemplateTest >> testGenerateMethodWithResultAsArgument [
 		assert: template generate
 		equals: 'getColor: color result: result
 
-	self ffiCall: #(void xx_TView_getColor(xx_TView* self, xx_ushort color, xx_TAttrPair* result))'
+	^ self ffiCall: #(void xx_TView_getColor(xx_TView* self, xx_ushort color, xx_TAttrPair* result))'
 ]
