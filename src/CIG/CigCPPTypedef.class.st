@@ -6,6 +6,7 @@ Class {
 	#name : 'CigCPPTypedef',
 	#superclass : 'SharedPool',
 	#classVars : [
+		'__float128',
 		'bool',
 		'int16_t',
 		'int32_t',
@@ -41,5 +42,7 @@ CigCPPTypedef class >> initialize [
 	time_t := #int.
 	uintptr_t := #'void *'.
 	
-	pid_t := #int
+	pid_t := #int.
+	
+ 	__float128 := #float128
 ]

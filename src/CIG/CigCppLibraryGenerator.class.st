@@ -84,8 +84,7 @@ CigCppLibraryGenerator >> doNotBuildBindingsLibrary [
 CigCppLibraryGenerator >> generate [
 	| unit |
 
-	('Initiate generation of {1}' format: { self libraryName }) asBeaconSignal emit.
-	'Collecting nodes' asBeaconSignal emit.
+	logger trace: self libraryName.
 	
 	unit := self translateUnit.
 
@@ -98,14 +97,16 @@ CigCppLibraryGenerator >> generate [
 { #category : 'generating' }
 CigCppLibraryGenerator >> generateBindingsLibrary [
 	
-	'Compiling bindings library.' asBeaconSignal emit.
+	logger trace.
 	CigMakefile executeFor: self
 ]
 
 { #category : 'generating' }
 CigCppLibraryGenerator >> generateCBindingsWith: unit [
+	| bindingsFileName |
 
-	('Generating C bindings file: {1}.' format: { self cFileReference basename }) asBeaconSignal emit.
+	bindingsFileName := self cFileReference basename.
+	logger trace: bindingsFileName.
 	CigCVisitor new
 		file: self;
 		visit: unit
@@ -115,7 +116,7 @@ CigCppLibraryGenerator >> generateCBindingsWith: unit [
 CigCppLibraryGenerator >> generateMakefile [
 	| template |
 
-	'Generating Makefile.' asBeaconSignal emit.
+	logger trace.
 
 	template := '
 INCLUDE_DIRS={include}

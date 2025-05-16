@@ -207,12 +207,20 @@ CigTranslatedUnit >> flatSelect: aBlock [
 CigTranslatedUnit >> generateFrom: aHeader [
 	"makes a tree of elements I can use to generate the wrapper file and classes."
 
+	logger trace.
+
 	"initialize variables"
 	prefix := aHeader prefix.
 	namespaces := aHeader namespaces.
 	definesBeforeHeader := aHeader cDefinesBeforeHeader.
 	defines := aHeader cDefines.
 	excluding := aHeader excluding.
+	
+	logger trace: prefix.
+	logger trace: namespaces.
+	logger trace: definesBeforeHeader.
+	logger trace: defines.
+	logger trace: excluding.
 	
 	self reset.
 	
@@ -225,7 +233,7 @@ CigTranslatedUnit >> generateFrom: aHeader [
 CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 	| index unit cursor fileName |
 
-	self logInfo: 'Processing ', aTarget name, '...'.
+	logger info: 'Processing ', aTarget name, '...'.
 	
 	fileName := self resolveIncludeFileName: aTarget name.
 	index := CXIndex createIndex: 0 diagnostics: 0. 
@@ -244,28 +252,28 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 		[ 
 			(self isCurrentNodePartOfLibrary: current baseHeaderFile: fileName)
 				ifTrue: [
-					self logDebug: [ '- ', current displayName, ' included.' ].
+					self trace: current displayName.
 					aTarget 
 						processNode: current
 						ifAdd: [ self addNode: current parent: parent ]
 						ifInsert: [ self insertNode: current ].
 					CXChildVisit recurse ]
 				ifFalse: [
-					self logDebug: [ '- ', current displayName, ' skipped.' ].
+					logger trace: current displayName message: 'skipped'.
 					CXChildVisit continue ] ]
 		on: Error 
 		fork: [ :e | e pass ] 
 		return: [
-			self logDebug: 'BREAK'.
+			logger trace: 'BREAK'.
 			CXChildVisit break ] ].
 
 	unit dispose.
 	index dispose.
 	
-	self logDebug: 'Headers included: ', headersIncluded sorted asString.
-	self logDebug: 'Headers skipped: ', headersSkipped sorted asString.
+	logger trace: headersIncluded. 
+	logger trace: headersSkipped. 
 	
-	self logInfo: 'Finished.'
+	logger info: 'Finished'
 ]
 
 { #category : 'testing' }

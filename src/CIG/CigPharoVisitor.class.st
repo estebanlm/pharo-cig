@@ -137,7 +137,7 @@ CigPharoVisitor >> registerType: anElement [
 { #category : 'private' }
 CigPharoVisitor >> reset [
 
-	types := Dictionary new.
+	types := OrderedDictionary new.
 	initializationRegistry := OrderedCollection new
 ]
 

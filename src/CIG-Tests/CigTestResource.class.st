@@ -95,7 +95,7 @@ CigTestResource class >> noiseSpec [
 	
 	^ CigCppLibraryGenerator new
 		prefix: 'No';
-		bindingsName: 'noise';
+		libraryName: 'noise';
 		import: '/home/esteban/dev/vm/libnoise/include/noise/noise.h';
 		cIncludePath: '/home/esteban/dev/vm/libnoise/include';
 		cIncludePath: '/home/esteban/dev/vm/libnoise/include/noise';
@@ -108,7 +108,7 @@ CigTestResource class >> noiseutilsSpec [
 	
 	^ CigCppLibraryGenerator new
 		prefix: 'Nu';
-		bindingsName: 'noiseutils'; 
+		libraryName: 'noiseutils'; 
 		import: '/home/esteban/dev/vm/noiseutils/noiseutils.h';
 		cIncludePath: '/home/esteban/dev/vm/noiseutils';
 		cIncludePath: '/home/esteban/dev/vm/libnoise/include';

@@ -42,6 +42,10 @@ CigType class >> createTypeMap [
 	'unsigned long'. 	#ulong.
 	'unsigned short'. 	#ushort.
 	'unsigned char'. 	#uchar.
+	'signed char'. 	   #char.
+	'signed'.	  	      #int.
+	'signed int'.     #int.
+	'long double'.    #float128.
 	}
 ]
 
@@ -284,6 +288,9 @@ CigType >> isAnyDeclaration [
 { #category : 'testing' }
 CigType >> isArray [
 
+	(self name includesSubstring: '(unnamed')
+		ifTrue: [ ^ false ].
+	
 	^ self parseType isArray
 ]
 

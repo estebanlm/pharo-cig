@@ -26,11 +26,10 @@ Class {
 CigCLibraryGenerator >> generate [
 	| unit |
 
-	('Initiate generation of {1}' format: { self libraryName }) asBeaconSignal emit.
-	'Collecting nodes' asBeaconSignal emit.
-
+	logger info: 'Generate'.
+	logger trace: self libraryName.
 	unit := self translateUnit.
-
+	logger trace: unit.
 	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ]
 ]
 

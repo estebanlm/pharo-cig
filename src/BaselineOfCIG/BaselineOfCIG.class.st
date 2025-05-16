@@ -5,13 +5,25 @@ Class {
 	#package : 'BaselineOfCIG'
 }
 
-{ #category : 'baselines' }
+{ #category : 'baseline' }
 BaselineOfCIG >> baseline: spec [
 	<baseline>
 	
-	spec for: #common do: [ 
+	spec for: #common do: [
+	
+		self lightLogger: spec.
+	
 		spec 
 			package: 'CIG-LibClang';
-			package: 'CIG' with: [ spec requires: 'CIG-LibClang' ];
-			package: 'CIG-Tests' with: [ spec requires: 'CIG' ] ]
+			package: 'CIG' with: [ spec requires: #('CIG-LibClang' 'LightLoader') ];
+			package: 'CIG-Tests' with: [ spec requires: #('CIG') ] ]
+]
+
+{ #category : 'external projects' }
+BaselineOfCIG >> lightLogger: spec [
+
+	spec baseline: 'LightLogger' with: [ 
+		spec 
+			repository: 'github://pharo-project/beacon';
+			loads: #('default') ]
 ]

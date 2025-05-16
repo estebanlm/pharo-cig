@@ -271,7 +271,7 @@ CigLibraryGenerator >> generate [
 { #category : 'private - generating' }
 CigLibraryGenerator >> generatePharoClassesWith: aUnit [
 	
-	'Generating Pharo classes.' asBeaconSignal emit.
+	logger trace.
 	CigPharoVisitor new
 		file: self;
 		visit: aUnit

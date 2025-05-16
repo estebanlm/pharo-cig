@@ -24,7 +24,7 @@ CigMakefile class >> executeFor: aString [
 CigMakefile >> executeFor: aFile [
 
 	file := aFile.
-	self logInfo: ('Executing Makefile for {1}' format: { self file libraryName }).
+	logger trace: self file libraryName message: 'make'.
 	^ self visit
 ]
 

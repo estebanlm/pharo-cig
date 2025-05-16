@@ -23,7 +23,7 @@ CigFunctionParser >> parseType [
 	typeName ifNil: [ ^ self error: 'type name expected' ].
 
 	"skip 'const' , which is often used but has no any use for us "
-	[ #('const' 'class' 'volatile') includes: typeName ]
+	[ #('const' 'class' 'volatile' '_Complex') includes: typeName ]
 	whileTrue: [
 		typeName := stream next.
 		typeName ifNil: [ ^ self error: 'type name expected' ] ].
