@@ -46,6 +46,7 @@ CigPharoFunctionTemplate >> generate [
 			ifTrue: [ stream << self generateComment; cr ].
 		stream cr.
 		stream tab.
+		self element isReturnTypeVoid ifFalse: [ stream nextPutAll: '^ ' ].
 		stream << 'self ffiCall: #(' << self element cTemplate generateHeaderForFFI << ')' ]
 ]
 
