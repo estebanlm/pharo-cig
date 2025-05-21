@@ -66,10 +66,11 @@ CigTElementContainer >> hasElements [
 ]
 
 { #category : 'inspecting' }
-CigTElementContainer >> inspectionElements [
+CigTElementContainer >> inspectionElements: aBuilder [
 	<inspectorPresentationOrder: 910 title: 'Elements'>
 	
-	^ SpTablePresenter new 
+	^ aBuilder newTable
+		addStyle: 'stList';
 		beResizable;
 		items: self elements;
 		addColumn: ((SpStringTableColumn title: 'Type' evaluated: #className) 
