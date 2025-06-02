@@ -15,7 +15,7 @@ BaselineOfCIG >> baseline: spec [
 	
 		spec 
 			package: 'CIG-LibClang';
-			package: 'CIG' with: [ spec requires: #('CIG-LibClang' 'LightLoader') ];
+			package: 'CIG' with: [ spec requires: #('CIG-LibClang' 'LightLogger') ];
 			package: 'CIG-Tests' with: [ spec requires: #('CIG') ] ]
 ]
 
