@@ -53,7 +53,9 @@ CigCppTranslatedUnit >> elementAtPath: aPath inNamespace: aNamespace [
 	
 	elementName := String streamContents: [ :stream |
 		stream << aNamespace cppPrefix << '_'.
-		aPath asStringOn: stream delimiter: '_' ].
+		aPath 
+			do: [ :each | stream nextPutAll: each asString ] 
+			separatedBy: [ stream nextPut: $_ ] ].
 	
 	^ aNamespace typedef classPool
 		at: elementName asSymbol

@@ -26,7 +26,7 @@ CigBaseTypedef class >> kind [
 { #category : 'visiting' }
 CigBaseTypedef >> accept: aVisitor [
 	
-	aVisitor visitTypedef: self
+	^ aVisitor visitTypedef: self
 ]
 
 { #category : 'accessing' }

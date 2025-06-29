@@ -22,6 +22,14 @@ CigMacroDefinition >> accept: aVisitor [
 
 ]
 
+{ #category : 'visiting' }
+CigMacroDefinition >> acceptNameGenerator: aVisitor [
+	self halt. "This is not implemented yet. It should be something like: 
+	self source 
+		ifNotNil: [ :aString | self cToPharo: aString substrings allButFirst ]"
+	^ aVisitor visitMacro: self
+]
+
 { #category : 'initialization' }
 CigMacroDefinition >> fromCursor: aCursor [
 
@@ -40,13 +48,6 @@ CigMacroDefinition >> fromCursor: aCursor [
 CigMacroDefinition >> isMacroDefinition [
 
 	^ true
-]
-
-{ #category : 'accessing' }
-CigMacroDefinition >> phDeclaration [
-
-	^ self source 
-		ifNotNil: [ :aString | self cToPharo: aString substrings allButFirst ]
 ]
 
 { #category : 'accessing' }

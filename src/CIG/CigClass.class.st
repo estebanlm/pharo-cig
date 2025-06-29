@@ -29,7 +29,7 @@ CigClass class >> typeReferenceName [
 { #category : 'visiting' }
 CigClass >> accept: aVisitor [
 
-	aVisitor visitClass: self
+	^ aVisitor visitClass: self
 ]
 
 { #category : 'testing' }

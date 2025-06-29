@@ -30,6 +30,7 @@ CigCLibraryGenerator >> generate [
 	logger trace: self libraryName.
 	unit := self translateUnit.
 	logger trace: unit.
+	self hasBaseline ifTrue: [ self generatePharoBaselineWith: unit ].
 	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ]
 ]
 

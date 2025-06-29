@@ -78,7 +78,9 @@ CigImportedNamespaceElement >> isUsingDeclaration [
 CigImportedNamespaceElement >> name [
 
 	^ String streamContents: [ :stream |
-		self path asStringOn: stream delimiter: '::' ]
+		self path 
+			do: [ :each | stream nextPutAll: each asString ] 
+			separatedBy: [ stream nextPutAll: '::' ] ]
 ]
 
 { #category : 'accessing' }

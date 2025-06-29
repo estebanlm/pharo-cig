@@ -6,7 +6,7 @@ It takes the declaring header (plus some configuration files) and is capable of 
 
 ```
 
-(noise := CigLibraryGenerator new)
+(noise := CigCppLibraryGenerator new)
 	prefix: 'No';
 	bindingsName: 'noise'; 
 	file: '/home/esteban/dev/vm/libnoise/include/noise/noise.h';
@@ -26,6 +26,7 @@ Class {
 	#instVars : [
 		'imports',
 		'includePaths',
+		'excludePaths',
 		'withClasses',
 		'libs',
 		'prefix',
@@ -40,7 +41,9 @@ Class {
 		'unixLibraryName',
 		'macLibraryName',
 		'winLibraryName',
-		'packageName'
+		'packageName',
+		'nameGenerator',
+		'withBaseline'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -125,6 +128,31 @@ CigLibraryGenerator >> cDefinesBeforeHeaderAsArguments [
 				assoc value ifNotNil: [ stream << '=' << assoc value asString ] ] ]
 ]
 
+{ #category : 'accessing - scripting' }
+CigLibraryGenerator >> cExcludePath: aStringOrReference [
+	"exclude headers within a specific path. 
+	 This is usually /usr/include (because is too much), but not always"
+
+	excludePaths ifNil: [ excludePaths := #() ].
+	excludePaths := excludePaths copyWith: (self normalizeIncludePath: aStringOrReference)
+]
+
+{ #category : 'accessing' }
+CigLibraryGenerator >> cExcludePaths [
+	"exclude paths to discard in the unit generation."
+
+	^ excludePaths ifNil: [ #() ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> cExcludePaths: aCollection [
+	"List of paths to be exluded from parsing. 
+	 This is to be excluded on the unit generation. 
+	 E.g. I can exclude /usr/include but include /usr/include/something.h"
+
+	excludePaths := aCollection
+]
+
 { #category : 'accessing' }
 CigLibraryGenerator >> cFileReference [
 	"where the wrapper functions will be placed"
@@ -138,6 +166,8 @@ CigLibraryGenerator >> cFileReference [
 
 { #category : 'accessing - scripting' }
 CigLibraryGenerator >> cIncludePath: aStringOrReference [
+	"include this path in the clang parser. 
+	 This is the equivallent to the -I parameter"
 
 	includePaths ifNil: [ includePaths := #() ].
 	includePaths := includePaths copyWith: (self normalizeIncludePath: aStringOrReference)
@@ -153,6 +183,8 @@ CigLibraryGenerator >> cIncludePaths [
 
 { #category : 'accessing - configuration' }
 CigLibraryGenerator >> cIncludePaths: aCollection [
+	"include this collection of paths in the clang parser. 
+	 This is the equivallent to the -I parameter"
 
 	includePaths := aCollection
 ]
@@ -173,7 +205,7 @@ CigLibraryGenerator >> cLib: aStringOrReference [
 { #category : 'accessing' }
 CigLibraryGenerator >> cLibs [
 
-	^ libs
+	^ libs ifNil: [ #() ]
 ]
 
 { #category : 'accessing - configuration' }
@@ -269,12 +301,26 @@ CigLibraryGenerator >> generate [
 ]
 
 { #category : 'private - generating' }
+CigLibraryGenerator >> generatePharoBaselineWith: aUnit [
+	
+	logger trace.
+	self halt
+
+]
+
+{ #category : 'private - generating' }
 CigLibraryGenerator >> generatePharoClassesWith: aUnit [
 	
 	logger trace.
 	CigPharoVisitor new
 		file: self;
 		visit: aUnit
+]
+
+{ #category : 'generating' }
+CigLibraryGenerator >> hasBaseline [
+	
+	^ withBaseline
 ]
 
 { #category : 'testing' }
@@ -315,6 +361,7 @@ CigLibraryGenerator >> initialize [
 
 	super initialize.
 	imports := Dictionary new.
+	self withBaseline.
 	self withClasses.
 	self withoutPreprocessor.
 	self useSameThread
@@ -356,6 +403,21 @@ CigLibraryGenerator >> macLibraryName [
 CigLibraryGenerator >> macLibraryName: aString [
 
 	macLibraryName := aString
+]
+
+{ #category : 'accessing' }
+CigLibraryGenerator >> nameGenerator [
+
+	^ nameGenerator
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> nameGenerator: aNameGenerator [
+	"Set the visitor that will be used to resolve the name the elements have.
+	 The default will be a `CigNameGenerator` instance, but users can provide their 
+	 own resolvers (Or configure the provided default)."
+
+	nameGenerator := aNameGenerator
 ]
 
 { #category : 'accessing - scripting' }
@@ -472,6 +534,12 @@ CigLibraryGenerator >> winLibraryName: aString [
 ]
 
 { #category : 'accessing - configuration' }
+CigLibraryGenerator >> withBaseline [
+
+	withBaseline := true
+]
+
+{ #category : 'accessing - configuration' }
 CigLibraryGenerator >> withClasses [
 
 	withClasses := true
@@ -481,6 +549,12 @@ CigLibraryGenerator >> withClasses [
 CigLibraryGenerator >> withPreprocessor [
 
 	withPreprocessor := true
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> withoutBaseline [
+
+	withBaseline := false
 ]
 
 { #category : 'accessing - configuration' }

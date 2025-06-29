@@ -17,15 +17,15 @@ CigPharoStructureGenerator class >> structType [
 
 { #category : 'private' }
 CigPharoStructureGenerator >> addStruct [
+	| name |
 	
-	generatedClass := (self baseClass << self structName)
+	name := self structName.
+	logger trace: name.
+	
+	generatedClass := (self baseClass << name)
 		tag: self namespaceName;
 		package: self packageName;
-		install.
-	
-	self logInfo: [ '{1} {2} added' format: { 
-		self class structType.
-		self structName } ]
+		install
 ]
 
 { #category : 'private' }

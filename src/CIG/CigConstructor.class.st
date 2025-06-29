@@ -24,6 +24,12 @@ CigConstructor >> accept: aVisitor [
 	aVisitor visitConstructor: self
 ]
 
+{ #category : 'visiting' }
+CigConstructor >> acceptNameGenerator: aVisitor [
+
+	^ aVisitor visitConstructor: self
+]
+
 { #category : 'accessing' }
 CigConstructor >> cDeclaration [
 
@@ -54,6 +60,12 @@ CigConstructor >> cppDeclaration [
 	^ self parent cppDeclaration
 ]
 
+{ #category : 'as yet unclassified' }
+CigConstructor >> disambiguatedName [
+
+	^ self disambiguateName: self spelling arguments: self parameters
+]
+
 { #category : 'initialization' }
 CigConstructor >> forClass: aClass [
 	
@@ -71,27 +83,6 @@ CigConstructor >> forClass: aClass [
 CigConstructor >> isConstructor [
 
 	^ true
-]
-
-{ #category : 'accessing' }
-CigConstructor >> phDeclaration [
-	| params |
-
-	^ (String streamContents: [ :stream | 
-			stream 
-				<< (self disambiguateName: self spelling arguments: self parameters) uncapitalized 
-				<< '_new'.
-			(params := self parameters) size = 1
-				ifTrue: [ 
-					stream << ': ' << params first name  ]
-				ifFalse: [  
-					self parameters do: [ :each | 
-						stream 
-							<< each name  
-							<< ': ' 
-							<< each name 
-							<< ' ' ] ] ])
-		trimmed
 ]
 
 { #category : 'handling' }

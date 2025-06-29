@@ -91,6 +91,7 @@ CigCppLibraryGenerator >> generate [
 	self hasCBindings ifTrue: [ self generateCBindingsWith: unit ].
 	self hasMakefile ifTrue: [ self generateMakefile ].
 	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ].
+	self hasBaseline ifTrue: [ self generatePharoBaselineWith: unit ].
 	self shouldBuildBindingsLibrary ifTrue: [ self generateBindingsLibrary ]
 ]
 
@@ -126,16 +127,20 @@ LIBS={libs}
 	clang -xc++ -fPIC --shared $(INCLUDE_DIRS) $(LIBS) {libName}.cpp -o ../lib/{libName}.so
 ' format: { 
 		#libName->self libraryName.
-		#include->(String streamContents: [ :s | 
-			self cIncludePathsAsArguments asStringOn: s delimiter: ' ' ]).
-		#libs->(String streamContents: [ :s | 
-			self cLibsAsArguments asStringOn: s delimiter: ' ' ]) }
+		#include->(String streamContents: [ :stream | 
+			self cIncludePathsAsArguments 
+				do: [ :each | stream nextPutAll: each asString ] 
+				separatedBy: [ stream nextPut: Character space ] ]).
+		#libs->(String streamContents: [ :stream | 
+			self cLibsAsArguments 
+				do: [ :each | stream nextPutAll: each asString ] 
+				separatedBy: [ stream nextPut: Character space ] ]) }
 	asDictionary.
 
 	self makefileReference 
 		ensureDelete;
 		writeStreamDo: [ :stream |
-			(ZnNewLineWriterStream on: stream) << template ]	
+			(ZnNewLineWriterStream on: stream) << template ]
 ]
 
 { #category : 'testing' }

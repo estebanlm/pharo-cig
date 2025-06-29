@@ -38,7 +38,7 @@ CigSpecialElement class >> newParent: anElement [
 
 { #category : 'visiting' }
 CigSpecialElement >> accept: aVisitor [
-
+	^ nil
 ]
 
 { #category : 'initialization' }

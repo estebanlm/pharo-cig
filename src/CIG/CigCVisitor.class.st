@@ -141,9 +141,10 @@ CigCVisitor >> pop [
 { #category : 'private' }
 CigCVisitor >> prefix [
 
-	^ String streamContents: [ :s |
+	^ String streamContents: [ :stream |
 		(stack reversed collect: #name as: Array) 
-			asStringOn: s delimiter: '_' ]
+			do: [ :each | stream nextPutAll: each asString ] 
+			separatedBy: [ stream nextPut: $_ ] ]
 ]
 
 { #category : 'private' }

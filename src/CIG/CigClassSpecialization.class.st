@@ -50,8 +50,8 @@ CigClassSpecialization >> cppDeclaration [
 
 	^ String streamContents: [ :stream |
 		(self path allButFirst allButLast, { templateName })
-			asStringOn: stream 
-			delimiter: '::' ]
+			do: [ :each | stream nextPutAll: each asString ] 
+			separatedBy: [ stream nextPutAll: '::' ] ]
 ]
 
 { #category : 'initialization' }

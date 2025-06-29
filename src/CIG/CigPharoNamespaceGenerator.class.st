@@ -35,14 +35,16 @@ CigPharoNamespaceGenerator >> addCPPPrefix [
 
 { #category : 'private' }
 CigPharoNamespaceGenerator >> addNamespace [
+	| name |
 	
-	generatedClass := Object << self nameForClass
+	name := self nameForClass.
+	logger trace: name.
+	
+	generatedClass := Object << name
 		traits: self libraryTrait;
 		tag: self element basename capitalized;
 		package: self packageName;
-		install.
-	
-	self logInfo: [ 'Namespace {1} added' format: { self nameForClass } ]
+		install
 ]
 
 { #category : 'private' }

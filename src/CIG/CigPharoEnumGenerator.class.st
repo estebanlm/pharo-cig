@@ -12,12 +12,13 @@ Class {
 { #category : 'private' }
 CigPharoEnumGenerator >> addEnum [
 	| name |
+	
 	name := self element phDeclaration.
+	logger trace: name.
 	generatedClass := (self baseEnumClass << name)
 		tag: self namespaceName;
 		package: self packageName;
 		install.
-	self logInfo: [ 'Enum {1} added.' format: { name } ]
 ]
 
 { #category : 'private' }

@@ -14,15 +14,14 @@ CigPharoFunctionGenerator >> classForElement [
 
 { #category : 'generating' }
 CigPharoFunctionGenerator >> generate [
+	| name |
+
+	name := self classForElement name asString, '>>', self element phDeclaration.
+	logger trace: name.
 
 	self classForElement
 		compile: self element phTemplate generate
-		classified: self protocol.
-	self logInfo: [ '{1}>>{2} added.' format: { 
-		self classForElement name.
-		self element phDeclaration } ]
-		
-	
+		classified: self protocol
 ]
 
 { #category : 'generating' }

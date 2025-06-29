@@ -92,16 +92,26 @@ CigPharoTypesPoolGenerator >> toPrintableSymbol: aSymbol [
 
 { #category : 'private' }
 CigPharoTypesPoolGenerator >> valueFor: aValue in: aDictionary [ 
-	| parsed type |
+	| parsed type parsedType value |
+	logger trace: aValue.
 
 	aValue isString ifFalse: [ ^ aValue ].
 
 	parsed := aValue substrings: '[]'.
 	parsed size ~= 2 ifTrue: [ ^ aValue ].
-
-	type := parsed first.	
-	^ 'FFIArray ofType: {3}{1}{3} size: {2}' format: { 
-		type. 
+	type := parsed first.
+	parsedType := 
+		[ CigType resolveFFIType: type ] 
+		on: Error 
+do: [ :e | 
+			logger error: e.
+			type ].
+	value := 'FFIArray ofType: {3}{1}{3} size: {2}' format: { 
+		parsedType. 
 		parsed second.
-		(aDictionary includesKey: type) ifTrue: [ '' ] ifFalse: [ $' ] }
+		(aDictionary includesKey: type) ifTrue: [ '' ] ifFalse: [ $' ] }.
+	
+	logger trace: value.
+	
+	^ value
 ]

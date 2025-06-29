@@ -34,7 +34,7 @@ CigVisitor >> includesNamespace: aNamespace [
 { #category : 'visiting' }
 CigVisitor >> visit: anObject [
 
-	anObject accept: self
+	^ anObject accept: self
 ]
 
 { #category : 'visiting' }
@@ -47,7 +47,7 @@ CigVisitor >> visitAlias: anAlias [
 CigVisitor >> visitAll: aCollection [
 
 	aCollection do: [ :each | 
-		each accept: self ]
+		self visit: each ]
 ]
 
 { #category : 'visiting' }

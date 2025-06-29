@@ -11,7 +11,7 @@ Class {
 
 { #category : 'private' }
 CigPharoBaseStructureClassGenerator >> addStructure [
-	
+
 	generatedClass := FFIStructure << self baseStructureClassName asSymbol
 		traits: self libraryTrait;
 		sharedPools: self sharedPoolNames;

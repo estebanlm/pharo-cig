@@ -14,11 +14,16 @@ CigPharoTypedefGenerator >> generate [
 { #category : 'generating' }
 CigPharoTypedefGenerator >> generateOn: aVisitor [
 	"in fact, typedef just has to register to be added after"
+	| declaration template |
+	
+	declaration := self element cDeclaration.
+	template := self element phTemplate generate.
+	
+	logger trace: declaration. 
+	logger trace: template.
 	
 	super generateOn: aVisitor.
 	aVisitor 
-		registerDeclaration: self element cDeclaration 
-		as: self element phTemplate generate.
-		
-	self logInfo: [ 'Typedef {1} added.' format: { self element cDeclaration } ]
+		registerDeclaration: declaration 
+		as: template
 ]

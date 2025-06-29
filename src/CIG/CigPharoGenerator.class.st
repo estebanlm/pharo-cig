@@ -172,12 +172,15 @@ CigPharoGenerator >> libraryTypedefClass [
 
 { #category : 'private' }
 CigPharoGenerator >> libraryTypedefName [
-		
+	| prefix name |
+
+	prefix := self prefix.
+	name := self file libraryName capitalized.
 	^ String streamContents: [ :stream |
-		stream 
-			<< self prefix capitalized
-			<< self file libraryName capitalized 
-			<< 'Typedef' ]
+		(name asLowercase beginsWith: prefix asLowercase)
+			ifFalse: [ stream << prefix capitalized ].
+		stream << name.
+		stream << 'Typedef' ]
 ]
 
 { #category : 'private' }

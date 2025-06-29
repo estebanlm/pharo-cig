@@ -42,6 +42,12 @@ CigNamespace >> acceptDataStructures [
 	^ true
 ]
 
+{ #category : 'visiting' }
+CigNamespace >> acceptNameGenerator: aVisitor [
+
+	^ aVisitor visitNamespace: self
+]
+
 { #category : 'initialization' }
 CigNamespace >> fromCursor: aCursor [
 
@@ -71,7 +77,9 @@ CigNamespace >> isNamespace [
 CigNamespace >> originNamespaceName [
 	
 	^ String streamContents: [ :stream |
-		originPath asStringOn: stream delimiter: '::' ]
+		originPath 
+			do: [ :each | stream nextPutAll: each asString ] 
+			separatedBy: [ stream nextPutAll: '::' ] ]
 ]
 
 { #category : 'initialization' }
@@ -88,10 +96,4 @@ CigNamespace >> path [
 	^ (self root installedNamespaceFor: self) 
 		ifNotNil: [ :aNamespace | { aNamespace cppPrefix }, (CigType toTypePath: aNamespace cppName) ]
 		ifNil: [ { self root prefix asLowercase }, originPath ]
-]
-
-{ #category : 'accessing' }
-CigNamespace >> phDeclaration [
-
-	^ super phDeclaration, 'Namespace'
 ]

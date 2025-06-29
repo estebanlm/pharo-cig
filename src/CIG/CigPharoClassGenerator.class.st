@@ -11,12 +11,14 @@ Class {
 
 { #category : 'private' }
 CigPharoClassGenerator >> addClass [
+	| name |
 
-	generatedClass := self baseClass << self nameForClass
+	name := self nameForClass.
+	logger trace: name.
+	generatedClass := self baseClass << name
 		tag: self namespaceName;
 		package: self packageName;
-		install.
-	self logInfo: [ 'Class {1} added.' format: { self nameForClass } ]
+		install
 ]
 
 { #category : 'private' }

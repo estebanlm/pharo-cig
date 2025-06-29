@@ -79,6 +79,12 @@ CigElement >> acceptDataStructures [
 	^ false
 ]
 
+{ #category : 'visiting' }
+CigElement >> acceptNameGenerator: aVisitor [
+
+	^ aVisitor visitElement: self
+]
+
 { #category : 'accessing' }
 CigElement >> basename [
 	"remove the basic name"
@@ -163,7 +169,9 @@ CigElement >> fullNameWith: delim [
 		path := self path.
 		self root shouldIncludeUnitPrefixOnFullName 
 			ifFalse: [ path := path allButFirst ].
-		path asStringOn: stream delimiter: delim ]
+		path 
+			do: [ :each | stream nextPutAll: each asString ] 
+			separatedBy: [ stream nextPutAll: delim asString ] ]
 ]
 
 { #category : 'comparing' }
@@ -398,7 +406,9 @@ CigElement >> nameWith: delim [
 
 	^ String streamContents: [ :stream |
 		"first element is the unit and we do not want that" 
-		self path allButFirst asStringOn: stream delimiter: delim ]
+		self path allButFirst 
+			do: [ :each | stream nextPutAll: each asString ] 
+			separatedBy: [ stream nextPutAll: delim asString ] ]
 ]
 
 { #category : 'accessing' }
@@ -429,10 +439,7 @@ CigElement >> pathName [
 { #category : 'accessing' }
 CigElement >> phDeclaration [
 
-	^ String streamContents: [ :stream | 
-		stream 
-			<< self root prefix capitalized 
-			<< (self sanitizeName: self name) ]
+	^ self root nameFor: self
 ]
 
 { #category : 'printing' }
@@ -467,6 +474,12 @@ CigElement >> sanitizeName: aString [
 		ifTrue: [ ^ aString allButFirst: prefix size ].
 
 	^ aString capitalized
+]
+
+{ #category : 'accessing' }
+CigElement >> sanitizedName [
+
+	^ self sanitizeName: self name
 ]
 
 { #category : 'accessing' }

@@ -28,6 +28,12 @@ CigFunction >> accept: aVisitor [
 	aVisitor visitFunction: self
 ]
 
+{ #category : 'visiting' }
+CigFunction >> acceptNameGenerator: aVisitor [
+ 
+	^ aVisitor visitFunction: self
+]
+
 { #category : 'accessing' }
 CigFunction >> cDeclaration [
 
@@ -136,15 +142,6 @@ CigFunction >> pathName [
 ]
 
 { #category : 'accessing' }
-CigFunction >> phDeclaration [
-
-	^ (String streamContents: [ :stream | 
-			stream  << (self sanitizeName: self spelling).
-			self buildParameters: self parameters on: stream ])
-		trimmed
-]
-
-{ #category : 'accessing' }
 CigFunction >> phTemplate [
 	
 	^ CigPharoFunctionTemplate for: self
@@ -154,6 +151,12 @@ CigFunction >> phTemplate [
 CigFunction >> returnTypeName [
 
 	^ returnTypeName
+]
+
+{ #category : 'accessing' }
+CigFunction >> sanitizedName [
+
+	^ self sanitizeName: self spelling
 ]
 
 { #category : 'accessing' }

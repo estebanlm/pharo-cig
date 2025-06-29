@@ -23,6 +23,12 @@ CigMethod >> accept: aVisitor [
 	aVisitor visitMethod: self
 ]
 
+{ #category : 'visiting' }
+CigMethod >> acceptNameGenerator: aVisitor [
+
+	^ aVisitor visitMethod: self
+]
+
 { #category : 'accessing' }
 CigMethod >> cDeclaration [
 
@@ -33,6 +39,14 @@ CigMethod >> cDeclaration [
 CigMethod >> cTemplate [
 	
 	^ CigCMethodTemplate for: self
+]
+
+{ #category : 'accessing' }
+CigMethod >> disambiguatedName [
+
+	^ self 
+		disambiguateName: self spelling 
+		arguments: self parameters
 ]
 
 { #category : 'testing' }
@@ -94,15 +108,6 @@ CigMethod >> parametersAsList [
 				<< ' *self'.
 			super parametersAsList ifNotEmpty: [ :aString | 
 				stream << ', ' << aString ] ]
-]
-
-{ #category : 'accessing' }
-CigMethod >> phDeclaration [
-
-	^ (String streamContents: [ :stream | 
-			stream  << (self disambiguateName: self spelling arguments: self parameters) uncapitalized.
-			self buildParameters: self parameters on: stream ])
-		trimmed
 ]
 
 { #category : 'handling' }

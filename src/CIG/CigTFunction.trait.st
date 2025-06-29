@@ -31,6 +31,14 @@ CigTFunction >> buildParameters: aCollection on: stream [
 		stream << each name << ': ' << each name << ' ' ]
 ]
 
+{ #category : 'as yet unclassified' }
+CigTFunction >> buildParametersOn: stream [
+
+	^ self 
+		buildParameters: self parameters 
+		on: stream
+]
+
 { #category : 'accessing' }
 CigTFunction >> comment [
 

@@ -17,7 +17,9 @@ Class {
 		'definesBeforeHeader',
 		'excluding',
 		'headersIncluded',
-		'headersSkipped'
+		'headersSkipped',
+		'excludingPaths',
+		'nameGenerator'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -50,6 +52,8 @@ CigTranslatedUnit >> addElement: anElement [
 { #category : 'private' }
 CigTranslatedUnit >> addNode: currentNode parent: parentNode [
 	| parent element |
+
+	logger trace: currentNode displayName.
 
 	parent := self findParent: parentNode.
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
@@ -210,10 +214,12 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	logger trace.
 
 	"initialize variables"
+	nameGenerator := aHeader nameGenerator.
 	prefix := aHeader prefix.
 	namespaces := aHeader namespaces.
 	definesBeforeHeader := aHeader cDefinesBeforeHeader.
 	defines := aHeader cDefines.
+	excludingPaths := aHeader cExcludePaths copyWith: '/usr/lib'.
 	excluding := aHeader excluding.
 	
 	logger trace: prefix.
@@ -252,7 +258,7 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 		[ 
 			(self isCurrentNodePartOfLibrary: current baseHeaderFile: fileName)
 				ifTrue: [
-					self trace: current displayName.
+					logger trace: current displayName.
 					aTarget 
 						processNode: current
 						ifAdd: [ self addNode: current parent: parent ]
@@ -390,15 +396,15 @@ CigTranslatedUnit >> isGeneratingWithUnknown [
 ]
 
 { #category : 'private - testing' }
-CigTranslatedUnit >> isLocationPartOfLibrary: locationName baseHeaderFile: headeFileName [
+CigTranslatedUnit >> isLocationPartOfLibrary: locationName baseHeaderFile: headerFileName [
 	| result locationPath basePath |
 
 	locationPath := locationName asFileReference parent asPath.
-	basePath := headeFileName asFileReference parent asPath.
-	result := ((headeFileName = locationName) 
-			or: [ locationPath = basePath 
-			or: [ basePath containsPath: locationPath  ] ])
-		and: [ (locationName beginsWith: '/usr/lib') not ].
+	basePath := headerFileName asFileReference parent asPath.
+	result := headerFileName = locationName. 
+	result ifFalse: [  
+		result := ((locationPath = basePath) or: [ basePath containsPath: locationPath  ])
+			and: [ excludingPaths noneSatisfy: [ :each | locationPath fullName beginsWith: each ] ] ].
 
 	"report result"
 	result
@@ -463,6 +469,18 @@ CigTranslatedUnit >> listElementsFrom: aHeader [
 CigTranslatedUnit >> name [
 
 	^ '__Unit__'
+]
+
+{ #category : 'general' }
+CigTranslatedUnit >> nameFor: anElement [
+
+	^ self nameGenerator visit: anElement
+]
+
+{ #category : 'accessing' }
+CigTranslatedUnit >> nameGenerator [
+
+	^ nameGenerator ifNil: [ nameGenerator := CigNameGenerator new ]
 ]
 
 { #category : 'accessing' }
