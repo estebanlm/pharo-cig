@@ -24,6 +24,5 @@ BaselineOfCIG >> lightLogger: spec [
 
 	spec baseline: 'LightLogger' with: [ 
 		spec 
-			repository: 'github://pharo-project/beacon';
-			loads: #('default') ]
+			repository: 'github://pharo-project/pharo-beacon/repository' ]
 ]
