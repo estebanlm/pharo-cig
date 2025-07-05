@@ -3,7 +3,8 @@ Class {
 	#superclass : 'CigVisitor',
 	#instVars : [
 		'withCamelCase',
-		'withPrefixInFunctionName'
+		'withPrefixInFunctionName',
+		'renaming'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -34,6 +35,14 @@ CigNameGenerator >> applyFunctionModifiersTo: aString in: anElement [
 ]
 
 { #category : 'private' }
+CigNameGenerator >> applyPossibleRanameTo: aString [
+
+	^ renaming
+		at: aString
+		ifAbsent: [ aString ]
+]
+
+{ #category : 'private' }
 CigNameGenerator >> applyPrefixInFunctionName: aString in: anElement [
 	| prefix result |
 	
@@ -51,6 +60,7 @@ CigNameGenerator >> applyPrefixInFunctionName: aString in: anElement [
 CigNameGenerator >> initialize [
 
 	super initialize.
+	renaming := Dictionary new.
 	self withCamelCase.
 	self withPrefixInFunctionName
 ]
@@ -65,6 +75,16 @@ CigNameGenerator >> isCamelCase [
 CigNameGenerator >> isPrefixInFunctionName [
 
 	^ withPrefixInFunctionName
+]
+
+{ #category : 'accessing' }
+CigNameGenerator >> rename: aName as: aRenamedName [
+	"Sometimes the generated name will conflict with an existing one (or it will 
+	 be ugly, or not good for our purpose in any way). 
+	 We can apply a rename to our convenience by declaring it here.
+	 e.g. `nameGenerator rename: 'Archive' as: 'ArchiveFile'`"
+
+	renaming at: aName put: aRenamedName
 ]
 
 { #category : 'visiting' }
@@ -100,10 +120,10 @@ CigNameGenerator >> visitElement: anElement [
 
 	prefix := anElement root prefix.
 	name := self applyCamelCaseTo: anElement sanitizedName.
-	^ String streamContents: [ :stream |
+	^ self applyPossibleRanameTo: (String streamContents: [ :stream |
 		(name asLowercase beginsWith: prefix asLowercase)
 			ifFalse: [ stream << prefix capitalized ].
-		stream << name ]
+		stream << name ])
 ]
 
 { #category : 'visiting' }

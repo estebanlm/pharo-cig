@@ -35,6 +35,20 @@ CigNameGeneratorTest >> testFunctionNameWithPrefixDoesNotAddsIt [
 ]
 
 { #category : 'tests' }
+CigNameGeneratorTest >> testRenameStructure [
+	| element unit name |
+
+	unit := self translatedUnitIcal.
+	unit prefix: 'ical'.
+	element := unit elementAtPath: { 'icaltime_span' }.
+	
+	name := self nameGenerator 
+		rename: 'IcaltimeSpan' as: 'IcalTimeSpan';
+		visit: element.
+	self assert: name equals: 'IcalTimeSpan'
+]
+
+{ #category : 'tests' }
 CigNameGeneratorTest >> testStructureDoesNotDuplicatePrefix [
 	| element unit name |
 
