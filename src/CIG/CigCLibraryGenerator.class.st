@@ -5,7 +5,6 @@ The C libraries are directly accessible to Pharo through uFFI, but its mapping c
 ## Example
 
 ```smalltalk
-
 (libgit2 := CigCLibraryGenerator new)
 	prefix: 'lg';
 	file: '/home/esteban/dev/vm/libgit2/include/git2.h';
