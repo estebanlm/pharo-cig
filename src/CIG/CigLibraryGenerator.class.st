@@ -225,8 +225,8 @@ CigLibraryGenerator >> cTypedef: aDeclaration as: aName [
 	"a typedef will be added to the library at the begining, making it easy to bypass certain types
 	 without adding the while library."
 
-	typedefs ifNil: [ typedefs := OrderedCollection new ].
-	typedefs add: aDeclaration -> aName
+	typedefs ifNil: [ typedefs := #() ].
+	typedefs := typedefs copyWith: aDeclaration -> aName
 ]
 
 { #category : 'accessing - configuration' }
@@ -236,9 +236,11 @@ CigLibraryGenerator >> cTypedefs [
 ]
 
 { #category : 'accessing - configuration' }
-CigLibraryGenerator >> cTypedefs: anOrderedDictionary [
+CigLibraryGenerator >> cTypedefs: aCollectionOfAssociations [
+	"receives a collection of asociation typeToDefine->definition. 
+	 e.g. { #myInt -> #int } "
 
-	typedefs := anOrderedDictionary
+	typedefs := aCollectionOfAssociations
 ]
 
 { #category : 'private' }
