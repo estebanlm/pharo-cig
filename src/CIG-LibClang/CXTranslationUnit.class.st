@@ -7,6 +7,28 @@ Class {
 }
 
 { #category : 'private' }
+CXTranslationUnit class >> clang_parseIndex2: CIdx 
+	fileName: source_filename 
+	commandLineArguments: command_line_args 
+	numCommandLineArguments: num_command_line_args
+	unsavedFiles: unsaved_files
+	numUnsavedFiles: num_unsaved_files
+	options: options
+	out: out_TU [
+	
+ 	^ self ffiCall: #(int clang_parseTranslationUnit2 (
+		CXIndex CIdx,
+		char *source_filename,
+		void *"const char **"command_line_args,
+		int num_command_line_args,
+		"struct CXUnsavedFile *"void *unsaved_files,
+		uint num_unsaved_files,
+		uint options,
+		void *out_TU 
+	))
+]
+
+{ #category : 'private' }
 CXTranslationUnit class >> clang_parseIndex: CIdx 
 	fileName: source_filename 
 	commandLineArguments: command_line_args 
