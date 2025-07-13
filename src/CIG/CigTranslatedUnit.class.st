@@ -19,7 +19,8 @@ Class {
 		'headersIncluded',
 		'headersSkipped',
 		'excludingPaths',
-		'nameGenerator'
+		'nameGenerator',
+		'includingPaths'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -85,6 +86,15 @@ CigTranslatedUnit >> anyExclusionsMatches: currentNode [
 	self flag: #TODO. "See if this is still happening with latest changes"
 	^ (currentNode displayName beginsWith: 'hash<') 
 		and: [ currentNode lexicalParent displayName = 'std' ]
+]
+
+{ #category : 'generating' }
+CigTranslatedUnit >> collectArgumentsFrom: aHeader [
+
+	^ self defaultClangArguments, 
+	aHeader cIncludePathsAsArguments,
+	aHeader cDefinesBeforeHeaderAsArguments,
+	aHeader cDefinesAsArguments
 ]
 
 { #category : 'private' }
@@ -219,6 +229,7 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	namespaces := aHeader namespaces.
 	definesBeforeHeader := aHeader cDefinesBeforeHeader.
 	defines := aHeader cDefines.
+	includingPaths := aHeader cIncludePaths.
 	excludingPaths := aHeader cExcludePaths copyWith: '/usr/lib'.
 	excluding := aHeader excluding.
 	
@@ -237,21 +248,14 @@ CigTranslatedUnit >> generateFrom: aHeader [
 
 { #category : 'generating' }
 CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
-	| index unit cursor fileName |
+	| unit cursor tuple fileName index unit |
 
 	logger info: 'Processing ', aTarget name, '...'.
 	
-	fileName := self resolveIncludeFileName: aTarget name.
-	index := CXIndex createIndex: 0 diagnostics: 0. 
-	unit := CXTranslationUnit 
-		parseIndex: index 
-		fileName: fileName
-		arguments: 
-			self defaultClangArguments, 
-			aHeader cIncludePathsAsArguments,
-			aHeader cDefinesBeforeHeaderAsArguments,
-			aHeader cDefinesAsArguments
-		recordPreprocessor: aHeader hasPreprocessor.
+	tuple := aTarget newTranslateUnitOn: self header: aHeader. 
+	fileName := tuple first. 
+	index := tuple second.
+	unit := tuple third.
 
 	cursor := unit cursor.
 	cursor visitChildren: [ :current :parent :data |
@@ -270,7 +274,7 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 		on: Error 
 		fork: [ :e | e pass ] 
 		return: [
-			logger trace: 'BREAK'.
+			logger warning: 'BREAK'.
 			CXChildVisit break ] ].
 
 	unit dispose.
@@ -401,7 +405,8 @@ CigTranslatedUnit >> isLocationPartOfLibrary: locationName baseHeaderFile: heade
 
 	locationPath := locationName asFileReference parent asPath.
 	basePath := headerFileName asFileReference parent asPath.
-	result := headerFileName = locationName. 
+	result := headerFileName = locationName or: [ 
+		includingPaths anySatisfy: [ :each | locationPath fullName beginsWith: each ] ]. 
 	result ifFalse: [  
 		result := ((locationPath = basePath) or: [ basePath containsPath: locationPath  ])
 			and: [ excludingPaths noneSatisfy: [ :each | locationPath fullName beginsWith: each ] ] ].
@@ -494,6 +499,43 @@ CigTranslatedUnit >> newNode: currentNode [
 	
 	^ (self nodeClassAt: currentNode kind) fromCursor: currentNode
 		
+]
+
+{ #category : 'generating' }
+CigTranslatedUnit >> newTranslateUnitFromFile: aTarget header: aHeader [
+	| fileName index unit |
+
+	fileName := self resolveIncludeFileName: aTarget name.
+	index := CXIndex createIndex: 0 diagnostics: 0. 
+	unit := CXTranslationUnit 
+		parseIndex: index 
+		fileName: fileName
+		arguments: (self collectArgumentsFrom: aHeader)
+		recordPreprocessor: aHeader hasPreprocessor.
+		
+	self flag: #TODO. "Make an abstraction for this" 
+	^ { fileName. index. unit }
+	
+]
+
+{ #category : 'generating' }
+CigTranslatedUnit >> newTranslateUnitFromUnit: aTarget header: aHeader [
+	| file index unit |
+
+	file := CXUnsavedFile 
+			newFileName: aTarget name
+			contents: aTarget unit.
+
+	index := CXIndex createIndex: 0 diagnostics: 0. 
+	unit := CXTranslationUnit 
+		parseIndex: index 
+		unsavedFile: file
+		arguments: (self collectArgumentsFrom: aHeader)
+		recordPreprocessor: true.
+		
+	file dispose.
+		
+	^ { aTarget name. index. unit }
 ]
 
 { #category : 'private' }

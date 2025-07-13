@@ -133,23 +133,27 @@ CigType class >> replaceTypeTemplate: aClassTemplate types: aCollection in: aStr
 ]
 
 { #category : 'utilities' }
-CigType class >> resolveFFIType: aString [
-
-		^ [ 
-			FFICallout new 
-				requestor: self; 
-				resolveType: (CigFunctionParser parse: aString) nameWithArity.
-			"it can be solved, just answer it"
-			self resolveMappedType: aString ]
-		on: Error 
-		do: [ :e |
-			"it cannot be solved, still try to fix if mapped type" 
-			self 
-				resolveMappedType: aString
-				ifAbsent: [ self error: aString, ' can''t be mapped to a n FFIType' ] ]
+CigType class >> resolveFFIType: aType [
+	logger trace: aType.
+	
+	^ [ 
+		FFICallout new 
+			requestor: self; 
+			resolveType: (CigFunctionParser parse: aType) nameWithArity.
+		"it can be solved, just answer it"
+		self resolveMappedType: aType ]
+	on: Error 
+	do: [ :e |
+		"it cannot be solved, still try to fix if mapped type" 
+		self 
+			resolveMappedType: aType
+			ifAbsent: [ 
+				"logger warning: aType, ': type not found.'.
+				('UNKNOWN', aType) asSymbol"
+				CigTypeNotFound signal: aType ] ]
 ]
 
-{ #category : 'utilities' }
+{ #category : 'private - utilities' }
 CigType class >> resolveMappedType: aString [
 		
 	^ self 
@@ -157,7 +161,7 @@ CigType class >> resolveMappedType: aString [
 		ifAbsent: [ aString ]
 ]
 
-{ #category : 'utilities' }
+{ #category : 'private - utilities' }
 CigType class >> resolveMappedType: aString ifAbsent: aBlock [
 	| type |
 	

@@ -292,7 +292,7 @@ CigLibraryGenerator >> from: aString import: aCollection [
 
 	(imports 
 		at: aString
-		ifAbsentPut: [ CigImportTarget newName: aString ])
+		ifAbsentPut: [ CigImportTargetFile newName: aString ])
 		import: aCollection
 ]
 
@@ -342,8 +342,20 @@ CigLibraryGenerator >> import: aString [
 
 	(imports 
 		at: aString
-		ifAbsentPut: [ CigImportTarget newName: aString ])
+		ifAbsentPut: [ CigImportTargetFile newName: aString ])
 		importAll
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> importUnit: aString [
+	| unitName count |
+
+	count := (self imports select: [ :each | each isUnit ]) size.
+	unitName := '{1}_{2}.h' format: { self prefix asLowercase. count }.
+	(imports 
+		at: UUID new asString
+		ifAbsentPut: [ CigImportTargetUnit newName: unitName ])
+		import: aString
 ]
 
 { #category : 'accessing' }

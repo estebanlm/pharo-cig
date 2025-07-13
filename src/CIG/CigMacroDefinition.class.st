@@ -45,6 +45,12 @@ CigMacroDefinition >> fromCursor: aCursor [
 ]
 
 { #category : 'testing' }
+CigMacroDefinition >> isFunctionLike [
+
+	^ isFunctionLike
+]
+
+{ #category : 'testing' }
 CigMacroDefinition >> isMacroDefinition [
 
 	^ true
