@@ -46,6 +46,14 @@ CigPharoVisitor >> addFFITypesClass: aUnit [
 	(CigPharoTypesPoolGenerator newFile: self file unit: aUnit) generate
 ]
 
+{ #category : 'visiting' }
+CigPharoVisitor >> addVariadicDeclarations: aUnit [
+
+	aUnit variadics ifNil: [ ^ self ].
+	
+	
+]
+
 { #category : 'private' }
 CigPharoVisitor >> disableRegisterChangesDuring: aBlock [
 	| monitor |
@@ -101,7 +109,7 @@ CigPharoVisitor >> ensureBaseUnionClass: aUnit [
 
 { #category : 'private' }
 CigPharoVisitor >> executeInitializations [
-
+	
 	initializationRegistry do: [ :each | 
 		each doInitialize ]
 ]
@@ -194,7 +202,7 @@ CigPharoVisitor >> visitEnum: anEnum [
 { #category : 'visiting' }
 CigPharoVisitor >> visitFunction: aFunction [
 	
-	"skip operators because they are not really used in pharo. 
+	"skip operators because they are not used in pharo. 
 	 skip function with va_list because we don't know what to do with them.
 	 skip functions with variadics (...) because we also can't forward them easily 
 	 to its C++ counterpart (doable in gcc, but feels too much work for lose gain)"
@@ -284,5 +292,6 @@ CigPharoVisitor >> visitUnit: aUnit [
 	self disableRegisterChangesDuring: [ 
 		self addBaseClasses: aUnit.
 		self visitAll: aUnit elements.
+		self addVariadicDeclarations: aUnit.
 		self endUnit: aUnit ]
 ]

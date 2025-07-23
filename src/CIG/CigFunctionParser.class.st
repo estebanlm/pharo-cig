@@ -14,6 +14,12 @@ CigFunctionParser class >> parse: aString [
 		parseType)
 ]
 
+{ #category : 'parsing' }
+CigFunctionParser class >> parseNamedFunction: anArray [
+
+	^ self new parseNamedFunction: anArray
+]
+
 { #category : 'accessing' }
 CigFunctionParser >> parseType [
 	" parse type name and optional number of asterisks, following it"

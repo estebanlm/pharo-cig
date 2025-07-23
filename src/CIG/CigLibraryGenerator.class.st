@@ -43,7 +43,8 @@ Class {
 		'winLibraryName',
 		'packageName',
 		'nameGenerator',
-		'withBaseline'
+		'withBaseline',
+		'variadics'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -241,6 +242,16 @@ CigLibraryGenerator >> cTypedefs: aCollectionOfAssociations [
 	 e.g. { #myInt -> #int } "
 
 	typedefs := aCollectionOfAssociations
+]
+
+{ #category : 'accessing - scripting' }
+CigLibraryGenerator >> declareVariadic: functionDeclaration as: aSelector [
+	"declare a variadic to be added to the function declaration.
+	 e.g. 
+	 lib declareVariadic: 'int printf(char *fmt, long value)' as: #printf:long: "
+
+	variadics ifNil: [ variadics := OrderedDictionary new ].
+	variadics at: aSelector put: functionDeclaration
 ]
 
 { #category : 'private' }
@@ -533,6 +544,29 @@ CigLibraryGenerator >> useMainThread [
 CigLibraryGenerator >> useSameThread [
 
 	ffiRunner := CigFFIRunnerSameThread new 
+]
+
+{ #category : 'accessing' }
+CigLibraryGenerator >> variadics [
+	"Since Pharo do not have variadic functions, we cannot parse them from sources. 
+	 The variarics list can be used to add variadic declarations that will be added 
+	 as regular function calls.
+	 The variadics arguments is an array of associations of the form 
+	 	C Function declaration -> Selector. 
+	 e.g.  'int printf(char *fmt, long number)' -> #printf:long:"
+
+	^ variadics ifNil: [ OrderedDictionary new ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> variadics: aDictionary [
+	"Since Pharo do not have variadic functions, we cannot parse them from sources. 
+	 The variarics list can be used to add variadic declarations that will be added 
+	 as regular function calls.
+	 The variadics arguments is dictionary of the form C Function -> Selector. 
+	 e.g.  'int printf(char *fmt, long number)' -> #printf:long:"
+
+	variadics := aDictionary
 ]
 
 { #category : 'accessing - configuration' }

@@ -56,6 +56,15 @@ CigNameGenerator >> applyPrefixInFunctionName: aString in: anElement [
 	^ result
 ]
 
+{ #category : 'private' }
+CigNameGenerator >> applyPrefixTo: name prefix: prefix [
+
+	^ String streamContents: [ :stream |
+		(name asLowercase beginsWith: prefix asLowercase)
+			ifFalse: [ stream << prefix capitalized ].
+		stream << name ]
+]
+
 { #category : 'initialization' }
 CigNameGenerator >> initialize [
 
@@ -116,14 +125,26 @@ CigNameGenerator >> visitConstructor: anElement [
 
 { #category : 'visiting' }
 CigNameGenerator >> visitElement: anElement [
-	| prefix name |
-
-	prefix := anElement root prefix.
+	| unit prefix name fullName |
+	unit := anElement root.
+	prefix := unit prefix asLowercase.
 	name := self applyCamelCaseTo: anElement sanitizedName.
-	^ self applyPossibleRanameTo: (String streamContents: [ :stream |
-		(name asLowercase beginsWith: prefix asLowercase)
-			ifFalse: [ stream << prefix capitalized ].
-		stream << name ])
+	fullName := self applyPrefixTo: name prefix: prefix.
+	(anElement name beginsWith: prefix) ifFalse: [
+		"it may happen that the name unprefixed clashes with a name prefixed
+		 (e.g. in the case of CurlSockaddr and sockaddr, which are both present 
+		 in the translated unit of libcurl). 
+		 This can happen just ONE time (otherwise there will be an error) 
+		 but it can happen. For now I am just letting the original name in this 
+		 cases (it may create clashes with other projects, but we can use the 
+		 rename for it)"
+		unit elements
+			detect: [ :each | 
+				(each name = fullName) 
+				or: [ each name asLowercase = (prefix, '_', anElement name) asLowercase ] ]
+			ifFound: [ :each | fullName := name ] ].
+	
+	^ self applyPossibleRanameTo: fullName
 ]
 
 { #category : 'visiting' }

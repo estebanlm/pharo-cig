@@ -20,7 +20,8 @@ Class {
 		'headersSkipped',
 		'excludingPaths',
 		'nameGenerator',
-		'includingPaths'
+		'includingPaths',
+		'variadics'
 	],
 	#pools : [
 		'CXCursorKind'
@@ -232,6 +233,7 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	includingPaths := aHeader cIncludePaths.
 	excludingPaths := aHeader cExcludePaths copyWith: '/usr/lib'.
 	excluding := aHeader excluding.
+	variadics := aHeader variadics.
 	
 	logger trace: prefix.
 	logger trace: namespaces.
@@ -243,7 +245,9 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	
 	self preprocess: aHeader.
 	aHeader imports valuesDo: [ :each |
-		self generateTarget: each from: aHeader ]
+		self generateTarget: each from: aHeader ].
+	variadics keysAndValuesDo: [ :aSelector :aDeclaration |
+		elements add: (CigVariadic newDeclaration: aDeclaration selector: aSelector) ]
 ]
 
 { #category : 'generating' }
@@ -681,6 +685,12 @@ CigTranslatedUnit >> typeSpecializationsOf: aName [
 		typeName: aName;
 		visit: self;
 		collected
+]
+
+{ #category : 'accessing' }
+CigTranslatedUnit >> variadics [
+
+	^ variadics
 ]
 
 { #category : 'accessing' }
