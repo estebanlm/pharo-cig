@@ -125,3 +125,7 @@ CigVisitor >> visitUsingDeclaration: anElement [
 { #category : 'visiting' }
 CigVisitor >> visitVariable: aVariable [
 ]
+
+{ #category : 'visiting' }
+CigVisitor >> visitVariadic: aVariadic [
+]

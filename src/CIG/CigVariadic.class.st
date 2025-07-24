@@ -26,6 +26,12 @@ CigVariadic class >> newDeclaration: aString selector: aSelector [
 		yourself
 ]
 
+{ #category : 'visiting' }
+CigVariadic >> accept: aVisitor [
+
+	aVisitor visitVariadic: self
+]
+
 { #category : 'accessing' }
 CigVariadic >> cDeclaration [
 

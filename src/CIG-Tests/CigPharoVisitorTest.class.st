@@ -815,3 +815,29 @@ CigPharoVisitorTest >> testVisitTypedefWithUint [
 		assert: visitor types values first
 		equals: '#uint'
 ]
+
+{ #category : 'tests - function' }
+CigPharoVisitorTest >> testVisitVariadic [
+	| unit element visitor class |
+	
+	unit := CigCLibraryGenerator new 
+		packageName: 'Unit';
+		prefix: 'Unit';
+		importUnit: '/* Nothing, I just want the variadics */';
+		declareVariadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
+		declareVariadic: 'int printf(char *fmt, long value)' as: #printf:long:;
+		translateUnit.
+	element := unit elementAtPath: { 'printf(char *fmt, char *value)' }. 
+	visitor := CigPharoVisitor newForTest.
+	visitor addBaseClasses: self translatedUnitTvision.
+	class := self class environment classNamed: 'LibGeneratedForTest'.
+	
+	visitor visitVariadic: element.
+	
+	self assert: (class canUnderstand: #printf:string:).
+	self 
+		assert: (class >> #printf:string:) sourceCode 
+		equals: 'printf: fmt string: value
+
+	self ffiCall: #(void printf(char* fmt, char* value))'
+]
