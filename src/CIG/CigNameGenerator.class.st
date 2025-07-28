@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'withCamelCase',
 		'withPrefixInFunctionName',
+		'withFunctionProtocolGroupByHeader',
 		'renaming'
 	],
 	#category : 'CIG-Base',
@@ -71,13 +72,20 @@ CigNameGenerator >> initialize [
 	super initialize.
 	renaming := Dictionary new.
 	self withCamelCase.
-	self withPrefixInFunctionName
+	self withPrefixInFunctionName.
+	self withFunctionProtocolGroupByHeader
 ]
 
 { #category : 'testing' }
 CigNameGenerator >> isCamelCase [
 
 	^ withCamelCase
+]
+
+{ #category : 'testing' }
+CigNameGenerator >> isFunctionProtocolGroupByHeader [
+
+	^ withFunctionProtocolGroupByHeader
 ]
 
 { #category : 'testing' }
@@ -159,6 +167,17 @@ CigNameGenerator >> visitFunction: anElement [
 ]
 
 { #category : 'visiting' }
+CigNameGenerator >> visitFunctionProtocol: anElement [
+	"This is a stub to change the protocol where a function will be stored.
+	 In general, we are storing them in 'public' but as a library can have a lot of 
+	 functions we may be willing to change this for better understanding."
+
+	^ (self isFunctionProtocolGroupByHeader and: [ anElement location isEmptyOrNil not ]) 
+		ifTrue: [ 'public - ', anElement location asFileReference base ]
+		ifFalse: [ 'public' ]
+]
+
+{ #category : 'visiting' }
 CigNameGenerator >> visitMethod: anElement [
 
 	^ (String streamContents: [ :stream | 
@@ -180,6 +199,12 @@ CigNameGenerator >> visitTypedef: anElement [
 	^ anElement name
 ]
 
+{ #category : 'visiting' }
+CigNameGenerator >> visitVariadic: anElement [
+	
+	self error: 'Variadics do not require names (they are taken from its declaration)'
+]
+
 { #category : 'accessing' }
 CigNameGenerator >> withCamelCase [
 	"Indicates the structures generated (struct, unions, enum, classes) will be translated to a 
@@ -187,6 +212,15 @@ CigNameGenerator >> withCamelCase [
 	 DEFAULT: true (as it looks more according to our own conventions)"
 
 	withCamelCase := true
+]
+
+{ #category : 'accessing' }
+CigNameGenerator >> withFunctionProtocolGroupByHeader [
+	"Indicate when the function protocol will be grouped by header, generating a list of 
+	 'public - headername' protocols.
+	 DEFAULT: true."
+
+	withFunctionProtocolGroupByHeader := true
 ]
 
 { #category : 'accessing' }
@@ -203,6 +237,14 @@ CigNameGenerator >> withPrefixInFunctionName [
 CigNameGenerator >> withoutCamelCase [
 
 	withCamelCase := false
+]
+
+{ #category : 'accessing' }
+CigNameGenerator >> withoutFunctionProtocolGroupByHeader [
+	"Indicate when the function protocol will NOT be grouped by header, generating a single 
+	 'public' protocol to contain all generated functions."
+
+	withFunctionProtocolGroupByHeader := false
 ]
 
 { #category : 'accessing' }

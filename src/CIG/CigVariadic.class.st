@@ -26,6 +26,12 @@ CigVariadic class >> newDeclaration: aString selector: aSelector [
 		yourself
 ]
 
+{ #category : 'visiting' }
+CigVariadic >> accept: aVisitor [
+
+	aVisitor visitVariadic: self
+]
+
 { #category : 'accessing' }
 CigVariadic >> cDeclaration [
 
@@ -54,6 +60,12 @@ CigVariadic >> isReturnTypeVoid [
 		and: [ returnType arity = 0 ]
 ]
 
+{ #category : 'accessing' }
+CigVariadic >> location [
+
+	^ 'generated'
+]
+
 { #category : 'private' }
 CigVariadic >> parseDeclaration [
 
@@ -62,9 +74,11 @@ CigVariadic >> parseDeclaration [
 		stream << parsedFunction functionName. 
 		stream << '('.
 		parsedFunction arguments 
-			do: [ :each | 
+			do: [ :each |
 				stream << each type name.
-				each type arity timesRepeat: [ stream << '*' ] ]
+				stream space.
+				each type arity timesRepeat: [ stream << '*' ].
+				stream << each name ]
 			separatedBy: [ stream << ', ' ].
 		stream << ')' ]
 ]

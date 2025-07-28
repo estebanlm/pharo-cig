@@ -16,7 +16,7 @@ CigVariadicTest >> testCreateVariadic [
 		
 	self
 		assert: element name 
-		equals: 'somefunction(long, char*, SomeObject**)'.
+		equals: 'somefunction(long arg0, char *arg1, SomeObject **arg2)'.
 		
 	self 
 		assert: element cDeclaration 

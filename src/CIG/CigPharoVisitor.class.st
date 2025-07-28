@@ -295,3 +295,9 @@ CigPharoVisitor >> visitUnit: aUnit [
 		self addVariadicDeclarations: aUnit.
 		self endUnit: aUnit ]
 ]
+
+{ #category : 'visiting' }
+CigPharoVisitor >> visitVariadic: aVariadic [
+	
+	(CigPharoFunctionGenerator newFile: self file element: aVariadic) generateOn: self
+]

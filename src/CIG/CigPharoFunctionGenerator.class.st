@@ -38,5 +38,5 @@ CigPharoFunctionGenerator >> generateOn: aVisitor [
 { #category : 'private' }
 CigPharoFunctionGenerator >> protocol [
 
-	^ 'public'
+	^ self element root nameGenerator visitFunctionProtocol: self element
 ]
