@@ -839,5 +839,5 @@ CigPharoVisitorTest >> testVisitVariadic [
 		assert: (class >> #printf:string:) sourceCode 
 		equals: 'printf: fmt string: value
 
-	self ffiCall: #(void printf(char* fmt, char* value))'
+	^ self ffiCall: #(int printf(char *fmt, char *value))'
 ]

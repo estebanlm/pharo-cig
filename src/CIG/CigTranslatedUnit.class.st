@@ -247,7 +247,7 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	aHeader imports valuesDo: [ :each |
 		self generateTarget: each from: aHeader ].
 	variadics keysAndValuesDo: [ :aSelector :aDeclaration |
-		elements add: (CigVariadic newDeclaration: aDeclaration selector: aSelector) ]
+		self addElement: (CigVariadic newDeclaration: aDeclaration selector: aSelector) ]
 ]
 
 { #category : 'generating' }
