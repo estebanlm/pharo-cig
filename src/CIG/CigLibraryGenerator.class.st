@@ -557,6 +557,20 @@ CigLibraryGenerator >> useSameThread [
 	ffiRunner := CigFFIRunnerSameThread new 
 ]
 
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> useWorkerThread [
+
+	self useWorkerThreadNamed: self packageName
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> useWorkerThreadNamed: aString [
+
+	ffiRunner := CigFFIRunnerWorkerThread new 
+		workerName: aString;
+		yourself
+]
+
 { #category : 'accessing' }
 CigLibraryGenerator >> variadics [
 	"Since Pharo do not have variadic functions, we cannot parse them from sources. 

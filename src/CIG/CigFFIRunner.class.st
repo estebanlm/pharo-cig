@@ -14,3 +14,9 @@ CigFFIRunner >> phTemplate [
 
 	^ self subclassResponsibility
 ]
+
+{ #category : 'accessing' }
+CigFFIRunner >> variablesAddedToFFILibrary [
+
+	^ #()
+]
