@@ -15,6 +15,7 @@ CigPharoLibraryGenerator >> addClass [
 
 	ffiLibraryName := self libraryName.
 	generatedClass := FFILibrary << ffiLibraryName asSymbol
+		slots: self runnerVariables;
 		sharedPools: self sharedPoolNames;
 		tag: 'Library';
 		package: self packageName;
@@ -39,7 +40,6 @@ CigPharoLibraryGenerator >> addMacPlatformAccessor [
 
 { #category : 'private - adding' }
 CigPharoLibraryGenerator >> addRunner [
-	
 
 	generatedClass
 		compile: self runnerTemplate
@@ -95,6 +95,12 @@ CigPharoLibraryGenerator >> runnerTemplate [
 		defaultWorker: {1};
 		yourself')
 		format: { self file ffiRunner phTemplate }
+]
+
+{ #category : 'private - templates' }
+CigPharoLibraryGenerator >> runnerVariables [
+
+	^ self file ffiRunner variablesAddedToFFILibrary
 ]
 
 { #category : 'private - templates' }
