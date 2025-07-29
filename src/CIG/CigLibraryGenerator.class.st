@@ -315,10 +315,21 @@ CigLibraryGenerator >> generate [
 
 { #category : 'private - generating' }
 CigLibraryGenerator >> generatePharoBaselineWith: aUnit [
+	| baselineName baselineClass |
+		
+	baselineName := 'BaselineOf', self packageName.
+	logger trace: baselineName.
+	baselineClass := BaselineOf << baselineName asSymbol
+		package: baselineName;
+		install.
+		
+	baselineClass compile: 'baseline: spec
+	<baseline>
 	
-	logger trace.
-	self halt
-
+	spec for: #common do: [
+		spec package: ''', self packageName, ''' 
+	]'
+	classified: 'baselines'
 ]
 
 { #category : 'private - generating' }
@@ -330,7 +341,7 @@ CigLibraryGenerator >> generatePharoClassesWith: aUnit [
 		visit: aUnit
 ]
 
-{ #category : 'generating' }
+{ #category : 'testing' }
 CigLibraryGenerator >> hasBaseline [
 	
 	^ withBaseline
