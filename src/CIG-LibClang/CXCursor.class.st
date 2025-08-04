@@ -487,14 +487,6 @@ CXCursor >> source [
 	^ source trimmed
 ]
 
-{ #category : 'accessing - tokens' }
-CXCursor >> sourceTokens [
-	| range |
-	
-	range := self clang_getCursorExtent.	
-	^ self translationUnit tokensOfRange: range
-]
-
 { #category : 'accessing' }
 CXCursor >> spelling [
 	| string |
@@ -568,10 +560,10 @@ CXCursor >> withAllSemanticParents [
 ]
 
 { #category : 'accessing - tokens' }
-CXCursor >> wthSourceTokensDo: aBlock [
+CXCursor >> withSourceTokensDo: aBlock [
 	| range |
 	
-	range := self clang_getCursorExtent.	
+	range := self clang_getCursorExtent.
 	^ self translationUnit 
 		withTokensOfRange: range 
 		do: aBlock

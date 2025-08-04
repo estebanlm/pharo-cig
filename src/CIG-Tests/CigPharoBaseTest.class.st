@@ -12,6 +12,16 @@ CigPharoBaseTest class >> isAbstract [
 	^ super isAbstract or: [ self = CigPharoBaseTest ]
 ]
 
+{ #category : 'instance creation' }
+CigPharoBaseTest >> newUnit: aString [
+
+	^ CigCLibraryGenerator new 
+		packageName: 'Unit';
+		prefix: 'Unit';
+		importUnit: aString;
+		translateUnit
+]
+
 { #category : 'running' }
 CigPharoBaseTest >> tearDown [
 

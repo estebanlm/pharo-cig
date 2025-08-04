@@ -31,7 +31,6 @@ CigCLibraryGenerator >> generate [
 	logger trace: unit.
 	self hasClasses ifTrue: [ self generatePharoClassesWith: unit ].
 	self hasBaseline ifTrue: [ self generatePharoBaselineWith: unit ]
-	
 ]
 
 { #category : 'private' }

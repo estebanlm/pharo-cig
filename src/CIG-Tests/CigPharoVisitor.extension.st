@@ -33,6 +33,7 @@ CigPharoVisitor >> prepareForTest [
 { #category : '*CIG-Tests' }
 CigPharoVisitor >> prepareForTestAsC [
 	
+	constants := OrderedCollection new.
 	types := Dictionary new.
 	file := CigCLibraryGenerator new
 		prefix: 'Gft';
@@ -45,6 +46,7 @@ CigPharoVisitor >> prepareForTestAsC [
 { #category : '*CIG-Tests' }
 CigPharoVisitor >> prepareForTestAsCPP [
 	
+	constants := OrderedCollection new.
 	types := Dictionary new.
 	file := CigCppLibraryGenerator new
 		prefix: 'Gft';

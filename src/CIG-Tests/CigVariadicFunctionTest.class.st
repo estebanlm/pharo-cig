@@ -14,8 +14,8 @@ CigVariadicFunctionTest >> testGenerateVariadicFunction [
 		packageName: 'Unit';
 		prefix: 'Unit';
 		importUnit: '/* Nothing, I just want the variadics */';
-		declareVariadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
-		declareVariadic: 'int printf(char *fmt, long value)' as: #printf:long:;
+		variadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
+		variadic: 'int printf(char *fmt, long value)' as: #printf:long:;
 		translateUnit.
 
 	element := unit elements first.
@@ -44,8 +44,8 @@ CigVariadicFunctionTest >> testVariadicFunctionIsAddedToElementList [
 		packageName: 'Unit';
 		prefix: 'Unit';
 		importUnit: '/* Nothing, I just want the variadics */';
-		declareVariadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
-		declareVariadic: 'int printf(char *fmt, long value)' as: #printf:long:;
+		variadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
+		variadic: 'int printf(char *fmt, long value)' as: #printf:long:;
 		translateUnit.
 
 	self assert: unit elements size equals: 2
