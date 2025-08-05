@@ -28,32 +28,13 @@ CigPharoConstantsPoolGenerator class >> constantsTemplate [
     float: "%f", \
     double: "%f", \
     long double: "%Lf", \
-    char *: "%s", \
-    const char *: "%s", \
+    char *: "\"%s\"", \
+    const char *: "\"%s\"", \
     default: "<unknown type>")
-#define type_name(x) _Generic((x), \
-    int: "int", \
-    unsigned int: "unsigned int", \
-    long: "long", \
-    unsigned long: "unsigned long", \
-    long long: "long long", \
-    unsigned long long: "unsigned long long", \
-    short: "short", \
-    unsigned short: "unsigned short", \
-    signed char: "Character", \
-    unsigned char: "Character", \
-    char: "Character", \
-    float: "float", \
-    double: "double", \
-    long double: "long double", \
-    char *: "String", \
-    const char *: "String", \
-    default: "unknown")
 #define print_macro(x) \
     do { \
-        printf("%s:", #x); \
+        printf("%s=", #x); \
         printf(fmt_spec((x)+0), (x)+0); \
-        printf(":%s\n", type_name((x)+0)); \
     } while (0)
 '
 ]
@@ -126,17 +107,14 @@ CigPharoConstantsPoolGenerator >> collectConstantValues: aCollection [
 	result := self executeCommand: binaryReference.
 
 	result trimmed linesDo: [ :each | 
-		| tuple macroName |
-		tuple := each substrings: ':'.
-		macroName := tuple first.
-		tuple third ~= 'unknown'
-			ifTrue: [
-				logger trace: macroName message: 'ADD'.
-				macros 
-					at: macroName 
-					put: (self convert: tuple second to: tuple third) ] 
-			ifFalse: [
-				logger trace: macroName message: 'SKIP' ] ].
+		| macroName macroValue |
+		
+		macroName := each copyUpTo: $=.
+		macroValue := each allButFirst: macroName size + 1.
+		logger trace: macroName.
+		macros 
+			at: macroName 
+			put: (self convert: macroValue) ].
 	
 	^ macros
 ]
@@ -170,10 +148,11 @@ CigPharoConstantsPoolGenerator >> compileCFile: fileReference [
 ]
 
 { #category : 'private' }
-CigPharoConstantsPoolGenerator >> convert: aString to: typeString [
+CigPharoConstantsPoolGenerator >> convert: aString [
 
-	typeString = 'String' ifTrue: [ ^ aString ].
-	
+	aString first = $" ifTrue: [
+		^ aString copyFrom: 2 to: (aString size - 1) ].
+
 	^ aString asNumber
 ]
 
