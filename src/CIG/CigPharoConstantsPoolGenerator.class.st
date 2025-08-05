@@ -58,7 +58,7 @@ CigPharoConstantsPoolGenerator class >> constantsTemplate [
 '
 ]
 
-{ #category : 'generating' }
+{ #category : 'private' }
 CigPharoConstantsPoolGenerator >> addClassAccessors: aCollection [
 
 	aCollection do: [ :each | 
@@ -117,7 +117,7 @@ CigPharoConstantsPoolGenerator >> collectConstantValues: aCollection [
 	macros := OrderedDictionary new.
 	fileReference := self generateCFileWith: aCollection.
 	binaryReference := self compileCFile: fileReference.
-	result := LibC resultOfCommand: binaryReference fullName.
+	result := self executeCommand: binaryReference.
 
 	result trimmed linesDo: [ :each | 
 		| tuple macroName |
@@ -157,11 +157,8 @@ CigPharoConstantsPoolGenerator >> compileCFile: fileReference [
 			self file cIncludePathsAsArguments
 				do: [ :each | stream << each ] 
 				separatedBy: [ stream space ] ] }.
-	logger trace: command.
-	result := LibC resultOfCommand: ('cd {1} && {2}' format: { 
-		fileReference parent fullName. 
-		command }).
-	logger trace: result.
+	
+	CigCommandExecutor execute: command. 
 
 	^ binaryReference
 ]
@@ -174,6 +171,14 @@ CigPharoConstantsPoolGenerator >> convert: aString to: typeString [
 	^ aString asNumber
 ]
 
+{ #category : 'private' }
+CigPharoConstantsPoolGenerator >> executeCommand: binaryReference [
+
+	logger trace: binaryReference.
+	^ CigCommandExecutor execute: binaryReference fullName.	
+
+]
+
 { #category : 'generating' }
 CigPharoConstantsPoolGenerator >> generate [
 
@@ -184,9 +189,8 @@ CigPharoConstantsPoolGenerator >> generate [
 CigPharoConstantsPoolGenerator >> generateCFileWith: aCollection [
 	| fileReference |
 
-	fileReference := (FileLocator imageDirectory 
+	fileReference := (FileLocator temp 
 		/ 'CIG' 
-		/ self file libraryName 
 		/ (self file libraryName, '_constants')) 
 		withExtension: 'c'.
 	fileReference parent ensureCreateDirectory.
