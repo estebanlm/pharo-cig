@@ -7,7 +7,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'headers',
-		'excludeMacros'
+		'excludeMacros',
+		'printHex'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -21,8 +22,8 @@ CigConstantGenerator >> addHeader: aString [
 	headers := headers copyWith: aString
 ]
 
-{ #category : 'accessing' }
-CigConstantGenerator >> excludeMacro: aString [
+{ #category : 'accessing - scripting' }
+CigConstantGenerator >> exclude: aString [
 
 	excludeMacros := excludeMacros copyWith: aString
 ]
@@ -45,10 +46,17 @@ CigConstantGenerator >> headers: aCollection [
 	headers := aCollection
 ]
 
+{ #category : 'accessing - scripting' }
+CigConstantGenerator >> include: aString [ 
+
+	self addHeader: aString
+]
+
 { #category : 'initialization' }
 CigConstantGenerator >> initialize [
 
 	super initialize.
+	printHex := true.
 	excludeMacros := #()
 ]
 
@@ -56,4 +64,22 @@ CigConstantGenerator >> initialize [
 CigConstantGenerator >> isPrintable: aMacroDefinition [
 
 	^ (excludeMacros includes: aMacroDefinition name) not
+]
+
+{ #category : 'accessing' }
+CigConstantGenerator >> printDecimal [
+
+	printHex := false
+]
+
+{ #category : 'accessing' }
+CigConstantGenerator >> printHex [
+
+	printHex := true
+]
+
+{ #category : 'testing' }
+CigConstantGenerator >> shouldPrintNumbersAsHex [
+
+	^ printHex
 ]

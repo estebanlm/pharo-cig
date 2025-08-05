@@ -100,8 +100,14 @@ CigPharoConstantsPoolGenerator >> classInitializationTemplate: aDictionary [
 			do: [ :assoc | 
 				stream tab.
 				stream <<  assoc key << ' := '.
-				stream print: assoc value ]
-			separatedBy: [ stream << '.'; cr ] ]
+				"no point on print hex values of 0-9 values"
+				(assoc value isNumber 
+					and: [ self shouldPrintNumbersAsHex 
+					and: [ assoc value abs > 9 ] ])
+					ifTrue: [ stream << assoc value hex ]
+					ifFalse: [ stream print: assoc value ] ]
+			separatedBy: [ 
+				stream << '.'; cr ] ]
 ]
 
 { #category : 'private' }
@@ -243,4 +249,10 @@ CigPharoConstantsPoolGenerator >> generateConstants: aCollection [
 CigPharoConstantsPoolGenerator >> generatedClass [
 
 	^ generatedClass
+]
+
+{ #category : 'private' }
+CigPharoConstantsPoolGenerator >> shouldPrintNumbersAsHex [
+
+	^ self file constantGenerator shouldPrintNumbersAsHex
 ]
