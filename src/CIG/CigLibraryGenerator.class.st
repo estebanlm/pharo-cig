@@ -36,7 +36,6 @@ Class {
 		'excluding',
 		'ffiRunner',
 		'typedefs',
-		'withPreprocessor',
 		'libraryName',
 		'unixLibraryName',
 		'macLibraryName',
@@ -44,7 +43,9 @@ Class {
 		'packageName',
 		'nameGenerator',
 		'withBaseline',
-		'variadics'
+		'variadics',
+		'withConstants',
+		'constantGenerator'
 	],
 	#category : 'CIG-Base',
 	#package : 'CIG',
@@ -245,13 +246,29 @@ CigLibraryGenerator >> cTypedefs: aCollectionOfAssociations [
 ]
 
 { #category : 'accessing - scripting' }
-CigLibraryGenerator >> declareVariadic: functionDeclaration as: aSelector [
+CigLibraryGenerator >> cVariadic: functionDeclaration as: aSelector [
 	"declare a variadic to be added to the function declaration.
 	 e.g. 
-	 lib declareVariadic: 'int printf(char *fmt, long value)' as: #printf:long: "
+	 lib cVariadic: 'int printf(char *fmt, long value)' as: #printf:long: "
 
 	variadics ifNil: [ variadics := OrderedDictionary new ].
 	variadics at: aSelector put: functionDeclaration
+]
+
+{ #category : 'accessing' }
+CigLibraryGenerator >> constantGenerator [
+
+	^ constantGenerator ifNil: [ constantGenerator := CigConstantGenerator new ]
+]
+
+{ #category : 'accessing - configuration' }
+CigLibraryGenerator >> constantGenerator: aConstantGenerator [
+	"Set the object that will be used to generate constants.
+	 The default will be a `CigConstantGenerator` instance, but users can provide their 
+	 own resolvers (Or configure the provided default)."
+	 
+	self withConstants.
+	constantGenerator := aConstantGenerator
 ]
 
 { #category : 'private' }
@@ -327,8 +344,7 @@ CigLibraryGenerator >> generatePharoBaselineWith: aUnit [
 	<baseline>
 	
 	spec for: #common do: [
-		spec package: ''', self packageName, ''' 
-	]'
+		spec package: ''', self packageName, ''' ]'
 	classified: 'baselines'
 ]
 
@@ -354,9 +370,9 @@ CigLibraryGenerator >> hasClasses [
 ]
 
 { #category : 'testing' }
-CigLibraryGenerator >> hasPreprocessor [
+CigLibraryGenerator >> hasConstants [
 
-	^ withPreprocessor
+	^ withConstants
 ]
 
 { #category : 'accessing - configuration' }
@@ -397,9 +413,10 @@ CigLibraryGenerator >> initialize [
 
 	super initialize.
 	imports := Dictionary new.
+
 	self withBaseline.
 	self withClasses.
-	self withoutPreprocessor.
+	self withConstants.
 	self useSameThread
 ]
 
@@ -591,7 +608,7 @@ CigLibraryGenerator >> variadics: aDictionary [
 	 The variadics arguments is dictionary of the form C Function -> Selector. 
 	 e.g.  'int printf(char *fmt, long number)' -> #printf:long:"
 
-	variadics := aDictionary
+	variadics := aDictionary asDictionary
 ]
 
 { #category : 'accessing - configuration' }
@@ -619,9 +636,14 @@ CigLibraryGenerator >> withClasses [
 ]
 
 { #category : 'accessing - configuration' }
-CigLibraryGenerator >> withPreprocessor [
+CigLibraryGenerator >> withConstants [
+	"Indicate the generator you want to generate a SharedPool named `LibraryNameConstants` 
+	 containing all the macro definitions we are able to parse (which is not ALL of them, 
+	 but it should be most of them).
+	 This does not includes function-like macros.
+	 DEFAULT: true"
 
-	withPreprocessor := true
+	withConstants := true
 ]
 
 { #category : 'accessing - configuration' }
@@ -637,7 +659,7 @@ CigLibraryGenerator >> withoutClasses [
 ]
 
 { #category : 'accessing - configuration' }
-CigLibraryGenerator >> withoutPreprocessor [
+CigLibraryGenerator >> withoutConstants [
 
-	withPreprocessor := false
+	withConstants := false
 ]

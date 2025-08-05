@@ -59,14 +59,17 @@ CigTranslatedUnit >> addNode: currentNode parent: parentNode [
 
 	parent := self findParent: parentNode.
 	(self findNode: currentNode startingAt: parent ifAbsent: [ nil ]) 
-		ifNotNil: [ ^ self ]. 
+		ifNotNil: [ ^ nil ]. 
 
 	element := self newNode: currentNode.
 	(element isUnknown and: [ self isGeneratingWithUnknown not ])
-		ifTrue: [ ^ self ].
+		ifTrue: [ ^ nil ].
 
-	(element canBeAddedTo: parent) ifFalse: [ ^ self ].
-	parent addElement: element
+	(element canBeAddedTo: parent) ifFalse: [ ^ nil ].
+	
+	parent addElement: element.
+	
+	^ element
 ]
 
 { #category : 'accessing' }
@@ -273,7 +276,7 @@ CigTranslatedUnit >> generateTarget: aTarget from: aHeader [
 						ifInsert: [ self insertNode: current ].
 					CXChildVisit recurse ]
 				ifFalse: [
-					logger trace: current displayName message: 'skipped'.
+					logger trace: current displayName message: 'SKIP'.
 					CXChildVisit continue ] ]
 		on: Error 
 		fork: [ :e | e pass ] 
@@ -344,10 +347,11 @@ CigTranslatedUnit >> insertNode: aCursor [
 	"inserts an element. 
 	 oposite to #addElement: it inserts it in its path, by creating namespaces between the 
 	 root at the element if needed."
-
 	| element |
+	
 	element := self newNode: aCursor.
-	self insertElement: element at: aCursor semanticParent semanticPath
+	self insertElement: element at: aCursor semanticParent semanticPath.
+	^ element
 ]
 
 { #category : 'inspecting' }
@@ -480,7 +484,7 @@ CigTranslatedUnit >> name [
 	^ '__Unit__'
 ]
 
-{ #category : 'general' }
+{ #category : 'accessing' }
 CigTranslatedUnit >> nameFor: anElement [
 
 	^ self nameGenerator visit: anElement
@@ -502,7 +506,6 @@ CigTranslatedUnit >> namespaces [
 CigTranslatedUnit >> newNode: currentNode [
 	
 	^ (self nodeClassAt: currentNode kind) fromCursor: currentNode
-		
 ]
 
 { #category : 'generating' }
@@ -515,11 +518,10 @@ CigTranslatedUnit >> newTranslateUnitFromFile: aTarget header: aHeader [
 		parseIndex: index 
 		fileName: fileName
 		arguments: (self collectArgumentsFrom: aHeader)
-		recordPreprocessor: aHeader hasPreprocessor.
+		recordPreprocessor: aHeader hasConstants.
 		
 	self flag: #TODO. "Make an abstraction for this" 
 	^ { fileName. index. unit }
-	
 ]
 
 { #category : 'generating' }

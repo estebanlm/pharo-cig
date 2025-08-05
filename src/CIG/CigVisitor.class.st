@@ -79,6 +79,10 @@ CigVisitor >> visitFunction: aFunction [
 ]
 
 { #category : 'visiting' }
+CigVisitor >> visitMacroDefinition: aMacroDefinition [
+]
+
+{ #category : 'visiting' }
 CigVisitor >> visitMethod: aMethod [
 ]
 

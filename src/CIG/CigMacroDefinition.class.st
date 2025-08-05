@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'isBuiltin',
 		'isFunctionLike',
-		'source'
+		'source',
+		'isPrintable'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -19,7 +20,7 @@ CigMacroDefinition class >> kind [
 
 { #category : 'visiting' }
 CigMacroDefinition >> accept: aVisitor [
-
+	aVisitor visitMacroDefinition: self
 ]
 
 { #category : 'visiting' }
@@ -34,14 +35,17 @@ CigMacroDefinition >> acceptNameGenerator: aVisitor [
 CigMacroDefinition >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
+	name ifNil: [ name := aCursor displayName ].
 	isBuiltin := aCursor isMacroBuiltin.
 	isFunctionLike := aCursor isMacroFunctionLike.
 
-	self flag: #TODO. "I think this is better done with tokens (see sourceTokens and around). 
-	But for some reason it is crashing. Since I can achieve more or less the same and faster 
-	tokenising myself the source, I'll go that way for now."	
-	source := aCursor source 
-		ifNotNil: [ :aString | ' ' join: aString substrings allButFirst ]
+	"fast exit to not calculate the tokens of everything"
+	isFunctionLike ifTrue: [
+		isPrintable := false.
+		^ self ].
+
+	aCursor withSourceTokensDo: [ :tokens :numTokens |
+		isPrintable := numTokens > 1 and: [ tokens second isIdentifier not ] ]
 ]
 
 { #category : 'testing' }
@@ -54,6 +58,12 @@ CigMacroDefinition >> isFunctionLike [
 CigMacroDefinition >> isMacroDefinition [
 
 	^ true
+]
+
+{ #category : 'testing' }
+CigMacroDefinition >> isPrintable [
+
+	^ isPrintable
 ]
 
 { #category : 'accessing' }

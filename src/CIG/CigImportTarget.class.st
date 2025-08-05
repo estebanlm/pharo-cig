@@ -54,5 +54,5 @@ CigImportTarget >> newTranslateUnitOn: aTranslateUnit header: aHeader [
 { #category : 'accessing' }
 CigImportTarget >> processNode: aCursor ifAdd: addBlock ifInsert: insertBlock [
 	
-	addBlock value
+	^ addBlock value
 ]

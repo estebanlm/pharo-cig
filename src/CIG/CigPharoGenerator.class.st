@@ -147,6 +147,25 @@ CigPharoGenerator >> libraryClass [
 ]
 
 { #category : 'private' }
+CigPharoGenerator >> libraryConstantsClass [
+
+	^ self class environment classNamed: self libraryConstantsName
+]
+
+{ #category : 'private' }
+CigPharoGenerator >> libraryConstantsName [
+	| prefix name |
+
+	prefix := self prefix.
+	name := self file libraryName capitalized.
+	^ String streamContents: [ :stream |
+		(name asLowercase beginsWith: prefix asLowercase)
+			ifFalse: [ stream << prefix capitalized ].
+		stream << name.
+		stream << 'Constants' ]
+]
+
+{ #category : 'private' }
 CigPharoGenerator >> libraryName [
 
 	^ 'Lib', self file libraryName capitalized
@@ -210,7 +229,9 @@ CigPharoGenerator >> sharedPoolNames [
 		((self unit namespaces collect: #typedef as: Set)
 			sorted: #name ascending)
 			do: [ :each | stream nextPut: each name ].
-		stream nextPut: self libraryTypedefName asSymbol ]
+		stream nextPut: self libraryTypedefName asSymbol.
+		self file hasConstants 
+			ifTrue: [ stream nextPut: self libraryConstantsName asSymbol ] ]
 ]
 
 { #category : 'accessing' }

@@ -6,6 +6,7 @@ Class {
 	#name : 'CigPharoVisitor',
 	#superclass : 'CigVisitor',
 	#instVars : [
+		'constants',
 		'types',
 		'initializationRegistry'
 	],
@@ -18,14 +19,28 @@ Class {
 CigPharoVisitor >> addBaseClasses: aUnit [
 
 	self addFFITypesClass: aUnit.
+	self file hasConstants 
+		ifTrue:[ self addFFIConstantsClass: aUnit ].
 	self addFFILibrary: aUnit.
 	self addFFITrait: aUnit
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> addDeclaredConstants: aUnit [
+
+	(CigPharoConstantsPoolGenerator newFile: self file unit: aUnit) generateConstants: self constants
 ]
 
 { #category : 'private' }
 CigPharoVisitor >> addDeclaredTypesToTypedef: aUnit [
 
 	(CigPharoTypesPoolGenerator newFile: self file unit: aUnit) generateTypes: self types
+]
+
+{ #category : 'private' }
+CigPharoVisitor >> addFFIConstantsClass: aUnit [
+	
+	(CigPharoConstantsPoolGenerator newFile: self file unit: aUnit) generate
 ]
 
 { #category : 'private' }
@@ -55,6 +70,12 @@ CigPharoVisitor >> addVariadicDeclarations: aUnit [
 ]
 
 { #category : 'private' }
+CigPharoVisitor >> constants [
+
+	^ constants
+]
+
+{ #category : 'private' }
 CigPharoVisitor >> disableRegisterChangesDuring: aBlock [
 	| monitor |
 
@@ -68,6 +89,7 @@ CigPharoVisitor >> disableRegisterChangesDuring: aBlock [
 CigPharoVisitor >> endUnit: aUnit [
 
 	self addDeclaredTypesToTypedef: aUnit.
+	self addDeclaredConstants: aUnit.
 	self executeInitializations
 ]
 
@@ -146,6 +168,7 @@ CigPharoVisitor >> registerType: anElement [
 CigPharoVisitor >> reset [
 
 	types := OrderedDictionary new.
+	constants := OrderedCollection new.
 	initializationRegistry := OrderedCollection new
 ]
 
@@ -212,6 +235,15 @@ CigPharoVisitor >> visitFunction: aFunction [
 		ifTrue: [ ^ self ].
 
 	(CigPharoFunctionGenerator newFile: self file element: aFunction) generateOn: self
+]
+
+{ #category : 'visiting' }
+CigPharoVisitor >> visitMacroDefinition: aMacroDefinition [
+
+	aMacroDefinition isPrintable ifFalse: [ ^ self ].
+	(self file constantGenerator isPrintable: aMacroDefinition) ifFalse: [ ^ self ].
+	
+	constants add: aMacroDefinition name
 ]
 
 { #category : 'visiting' }

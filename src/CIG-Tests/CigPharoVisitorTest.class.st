@@ -434,6 +434,32 @@ CigPharoVisitorTest >> testVisitFunctionWithStructureGeneratesCallWithoutPrefix 
 	self ffiCall: #(void ClearBackground(Color color))'
 ]
 
+{ #category : 'tests - macro' }
+CigPharoVisitorTest >> testVisitMacroDefinition [
+	| unit element visitor |
+
+	unit := self newUnit: '#define MACRO 42'.
+	element := unit elements first.
+	
+	visitor := CigPharoVisitor newForTestAsC.	
+	visitor visitMacroDefinition: element.
+	
+	self assert: visitor constants asArray equals: #('MACRO')
+]
+
+{ #category : 'tests - macro' }
+CigPharoVisitorTest >> testVisitMacroDefinitionSkipsFunctionLike [
+	| unit element visitor |
+
+	unit := self newUnit: '#define MACRO(x) somefunction(x)'.
+	element := unit elements first.
+	
+	visitor := CigPharoVisitor newForTestAsC.	
+	visitor visitMacroDefinition: element.
+	
+	self assertEmpty: visitor constants
+]
+
 { #category : 'tests - method' }
 CigPharoVisitorTest >> testVisitMethodAddsClassMethodToClassSide [
 	| visitor class element |
@@ -824,8 +850,8 @@ CigPharoVisitorTest >> testVisitVariadic [
 		packageName: 'Unit';
 		prefix: 'Unit';
 		importUnit: '/* Nothing, I just want the variadics */';
-		declareVariadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
-		declareVariadic: 'int printf(char *fmt, long value)' as: #printf:long:;
+		variadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
+		variadic: 'int printf(char *fmt, long value)' as: #printf:long:;
 		translateUnit.
 	element := unit elementAtPath: { 'printf(char *fmt, char *value)' }. 
 	visitor := CigPharoVisitor newForTest.

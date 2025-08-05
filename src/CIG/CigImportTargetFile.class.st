@@ -56,5 +56,7 @@ CigImportTargetFile >> processNode: aCursor ifAdd: addBlock ifInsert: insertBloc
 
 	cppName := '::' join: aCursor lexicalPath.
 	(imports includes: cppName) 
-		ifTrue: [ insertBlock value ]
+		ifTrue: [ ^ insertBlock value ].
+		
+	^ nil
 ]
