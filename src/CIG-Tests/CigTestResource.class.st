@@ -187,8 +187,13 @@ CigTestResource class >> resourceFileName: aLibName [
 
 { #category : 'utilities' }
 CigTestResource class >> resourcePath [
+	| location |
 
-	^ (IceRepository repositoryNamed: 'pharo-cig') location / 'test-resources'
+	location := Smalltalk os environment 
+		at: 'GITHUB_WORKSPACE'
+		ifAbsent: [ (IceRepository repositoryNamed: 'pharo-cig') location ] .
+
+	^ location / 'test-resources'
 ]
 
 { #category : 'private - specs' }
