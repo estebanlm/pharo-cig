@@ -193,7 +193,7 @@ CigTestResource class >> resourcePath [
 		at: 'GITHUB_WORKSPACE'
 		ifAbsent: [ (IceRepository repositoryNamed: 'pharo-cig') location ] .
 
-	^ location / 'test-resources'
+	^ location asFileReference / 'test-resources'
 ]
 
 { #category : 'private - specs' }
