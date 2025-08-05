@@ -344,8 +344,7 @@ CigLibraryGenerator >> generatePharoBaselineWith: aUnit [
 	<baseline>
 	
 	spec for: #common do: [
-		spec package: ''', self packageName, ''' 
-	]'
+		spec package: ''', self packageName, ''' ]'
 	classified: 'baselines'
 ]
 
