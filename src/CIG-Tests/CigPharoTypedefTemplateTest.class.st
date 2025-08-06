@@ -52,14 +52,19 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithStruct [
 
 { #category : 'tests' }
 CigPharoTypedefTemplateTest >> testVisitTypedefWithStructPointer [
-	| element template |
+	| element template unit |
 
-	element := self translatedUnitOpenSSL elementAtPath: { 'ssl_crock_st' }.	
+	unit := self newUnit: '
+struct st { int a; };
+typedef struct st *stp;
+'.	
+
+	element := unit elements second.	
 	template := element phTemplate.
 
 	self 
 		assert: template generate
-		equals: '#''ssl_st *'''
+		equals: '#''st *'''
 ]
 
 { #category : 'tests' }

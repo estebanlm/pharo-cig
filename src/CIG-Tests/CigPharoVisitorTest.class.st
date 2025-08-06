@@ -823,21 +823,26 @@ CigPharoVisitorTest >> testVisitTypedefWithCallback [
 
 { #category : 'tests - typedef' }
 CigPharoVisitorTest >> testVisitTypedefWithStruct [
-	| element visitor |
+	| unit element visitor |
 
-	element := self translatedUnitOpenSSL elementAtPath: { 'ssl_crock_st' }.	
+	unit := self newUnit: '
+struct st { int a; };
+typedef struct st *stp;
+'.	
+
+	element := unit elements second.	
 	visitor := CigPharoVisitor newForTest.
-	visitor addBaseClasses: element root.
+	visitor addBaseClasses: unit.
 	
 	visitor visitTypedef: element.
 
 	self 
 		assert: visitor types keys first
-		equals: 'ssl_crock_st'.
+		equals: 'stp'.
 		
 	self 
 		assert: visitor types values first
-		equals: '#''ssl_st *'''
+		equals: '#''st *'''
 ]
 
 { #category : 'tests - typedef' }
