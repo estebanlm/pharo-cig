@@ -19,9 +19,9 @@ CigCStructTemplateTest >> testGenerateSimpleStruct [
 	int32_t ff_reserved;
 	int32_t ff_fsize;
 	uint32_t ff_attrib;
-	unsigned ff_ftime;
-	unsigned ff_fdate;
-	char ff_name;
+	tv_ushort ff_ftime;
+	tv_ushort ff_fdate;
+	char_256 ff_name;
 };'
 ]
 

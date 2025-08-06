@@ -47,19 +47,24 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithStruct [
 
 	self 
 		assert: template generate
-		equals: 'XxSsl_session_st'
+		equals: 'XxSslSessionSt'
 ]
 
 { #category : 'tests' }
 CigPharoTypedefTemplateTest >> testVisitTypedefWithStructPointer [
-	| element template |
+	| element template unit |
 
-	element := self translatedUnitOpenSSL elementAtPath: { 'ssl_crock_st' }.	
+	unit := self newUnit: '
+struct st { int a; };
+typedef struct st *stp;
+'.	
+
+	element := unit elements second.	
 	template := element phTemplate.
 
 	self 
 		assert: template generate
-		equals: '#''ssl_st *'''
+		equals: '#''st *'''
 ]
 
 { #category : 'tests' }
@@ -81,7 +86,7 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithTypedefToStruct [
 
 	self 
 		assert: template generate
-		equals: 'Xx_xmlBuffer'
+		equals: 'XxXmlBuffer'
 ]
 
 { #category : 'tests' }
@@ -117,5 +122,5 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithUnion [
 
 	self 
 		assert: template generate
-		equals: 'XxBio_addr_st'
+		equals: 'XxBioAddrSt'
 ]

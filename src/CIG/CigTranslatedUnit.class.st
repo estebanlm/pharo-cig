@@ -603,6 +603,8 @@ CigTranslatedUnit >> reset [
 	elements := OrderedCollection new.
 	headersIncluded := Set new.
 	headersSkipped := Set new.
+	includingPaths := #().
+	excludingPaths := #()
 ]
 
 { #category : 'private' }

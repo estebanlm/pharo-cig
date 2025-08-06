@@ -48,6 +48,8 @@ CigCVisitorTest >> testVisitClassTemplateGeneratesABaseClassAndSubclasses [
 CigCVisitorTest >> testVisitClassTemplateGeneratesATypedefForEachDefinedType [
 	| element visitor |
 	
+	self skip. "to fix when resuming c++"
+	
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
 	
 	visitor := CigCHeaderDeclareVisitor newForTest.

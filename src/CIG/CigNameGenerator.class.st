@@ -118,11 +118,11 @@ CigNameGenerator >> visitConstructor: anElement [
 			stream 
 				<< anElement disambiguatedName uncapitalized 
 				<< '_new'.
-			(params := self parameters) size = 1
+			(params := anElement parameters) size = 1
 				ifTrue: [ 
 					stream << ': ' << params first name  ]
 				ifFalse: [  
-					self parameters do: [ :each | 
+					anElement parameters do: [ :each | 
 						stream 
 							<< each name  
 							<< ': ' 
@@ -138,7 +138,7 @@ CigNameGenerator >> visitElement: anElement [
 	prefix := unit prefix asLowercase.
 	name := self applyCamelCaseTo: anElement sanitizedName.
 	fullName := self applyPrefixTo: name prefix: prefix.
-	(anElement name beginsWith: prefix) ifFalse: [
+	(anElement name asLowercase beginsWith: prefix) ifFalse: [
 		"it may happen that the name unprefixed clashes with a name prefixed
 		 (e.g. in the case of CurlSockaddr and sockaddr, which are both present 
 		 in the translated unit of libcurl). 

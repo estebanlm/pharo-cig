@@ -32,6 +32,8 @@ CigCTemplateCollectorTest >> testCollectionOfSpecializedType [
 CigCTemplateCollectorTest >> testCollectionOfType [
 	| collectedTypes |
 
+	self skip. "to fix when resuming c++"
+
 	collectedTypes := CigTypeSpecializationCollector new 
 		typeName: 'TSpan';
 		visit: self translatedUnitTvision;

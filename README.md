@@ -1,3 +1,5 @@
+[![CIG Tests](https://github.com/pharo-cig/pharo-cig/actions/workflows/test.yml/badge.svg)](https://github.com/pharo-cig/pharo-cig/actions/workflows/test.yml)
+
 ## Installation
 
 ```st

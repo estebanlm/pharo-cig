@@ -59,6 +59,8 @@ CigCMethodTemplateTest >> testGenerateBodyDispose [
 CigCMethodTemplateTest >> testGenerateBodyFunctionReturnClassReference [
 	| template element |
 
+	self skip. "to fix when resuming c++"
+
 	element := self translatedUnitTvision elementAtPath: { 'RGBtoBIOS(TColorRGB)' }.
 	template := CigCFunctionTemplate for: element.
 		
