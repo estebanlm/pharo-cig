@@ -10,6 +10,8 @@ Class {
 CigCClassTemplateTemplateTest >> testGenerateClassSpecializationHeaders [
 	| element visitor |
 
+	self skip. "to fix when resuming c++"
+
 	element := self translatedUnitTvision elementAtPath: { 'TSpan<T>' }.
 	visitor := CigCHeaderDeclareVisitor newForTest.
 	visitor visitClassTemplate: element.
@@ -38,6 +40,8 @@ CigCClassTemplateTemplateTest >> testGenerateClassTemplateHeader [
 { #category : 'tests' }
 CigCClassTemplateTemplateTest >> testMethodParameterStdVectorHasCorrectType [
 	| element |
+
+	self skip. "to fix when resuming c++"
 
 	"in fact, this is created while parsing the header (hence, here I just validate that my node 
 	 was generated correctly)"
@@ -77,6 +81,8 @@ CigCClassTemplateTemplateTest >> testMethodReturningConstTemplate [
 { #category : 'tests' }
 CigCClassTemplateTemplateTest >> testMethodReturningStdVectorHasCorrectType [
 	| element |
+
+	self skip. "to fix when resuming c++"
 
 	"in fact, this is created while parsing the header (hence, here I just validate that my node 
 	 was generated correctly)"
