@@ -850,8 +850,8 @@ CigPharoVisitorTest >> testVisitVariadic [
 		packageName: 'Unit';
 		prefix: 'Unit';
 		importUnit: '/* Nothing, I just want the variadics */';
-		variadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
-		variadic: 'int printf(char *fmt, long value)' as: #printf:long:;
+		cVariadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
+		cVariadic: 'int printf(char *fmt, long value)' as: #printf:long:;
 		translateUnit.
 	element := unit elementAtPath: { 'printf(char *fmt, char *value)' }. 
 	visitor := CigPharoVisitor newForTest.
