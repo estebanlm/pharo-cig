@@ -138,7 +138,7 @@ CigNameGenerator >> visitElement: anElement [
 	prefix := unit prefix asLowercase.
 	name := self applyCamelCaseTo: anElement sanitizedName.
 	fullName := self applyPrefixTo: name prefix: prefix.
-	(anElement name beginsWith: prefix) ifFalse: [
+	(anElement name asLowercase beginsWith: prefix) ifFalse: [
 		"it may happen that the name unprefixed clashes with a name prefixed
 		 (e.g. in the case of CurlSockaddr and sockaddr, which are both present 
 		 in the translated unit of libcurl). 
