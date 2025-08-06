@@ -29,11 +29,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libclang-dev clang
-          find /usr/lib -name "libclang*"
       - name: Setup smalltalkCI
         uses: hpi-swa/setup-smalltalkCI@v1
         with:
           smalltalk-image: ${{ matrix.smalltalk }}
       - name: Load Image and Run Tests
-        run: smalltalkci -s ${{ matrix.smalltalk }}
+        run: |
+          export LD_LIBRARY_PATH=/usr/lib/llvm-18/lib:$LD_LIBRARY_PATH
+          smalltalkci -s ${{ matrix.smalltalk }}
         timeout-minutes: 15
