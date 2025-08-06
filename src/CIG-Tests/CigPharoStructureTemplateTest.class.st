@@ -207,5 +207,5 @@ CigPharoStructureTemplateTest >> testStructureNameDoesNotDuplicatesPrefix [
 	
 	self 
 		assert: element phDeclaration
-		equals: 'Ssl_cipher_st'
+		equals: 'SslCipherSt'
 ]

@@ -47,7 +47,7 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithStruct [
 
 	self 
 		assert: template generate
-		equals: 'XxSsl_session_st'
+		equals: 'XxSslSessionSt'
 ]
 
 { #category : 'tests' }
@@ -81,7 +81,7 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithTypedefToStruct [
 
 	self 
 		assert: template generate
-		equals: 'Xx_xmlBuffer'
+		equals: 'XxXmlBuffer'
 ]
 
 { #category : 'tests' }
@@ -117,5 +117,5 @@ CigPharoTypedefTemplateTest >> testVisitTypedefWithUnion [
 
 	self 
 		assert: template generate
-		equals: 'XxBio_addr_st'
+		equals: 'XxBioAddrSt'
 ]

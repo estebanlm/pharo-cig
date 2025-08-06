@@ -118,11 +118,11 @@ CigNameGenerator >> visitConstructor: anElement [
 			stream 
 				<< anElement disambiguatedName uncapitalized 
 				<< '_new'.
-			(params := self parameters) size = 1
+			(params := anElement parameters) size = 1
 				ifTrue: [ 
 					stream << ': ' << params first name  ]
 				ifFalse: [  
-					self parameters do: [ :each | 
+					anElement parameters do: [ :each | 
 						stream 
 							<< each name  
 							<< ': ' 
