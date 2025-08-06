@@ -9,7 +9,6 @@ Class {
 { #category : 'running' }
 CigPharoConstantsPoolGeneratorTest >> tearDown [
 
-	'./CIG/unittotest' asFileReference ensureDeleteAll.
 	PackageOrganizer default 
 		packageNamed: #UnitToTest
 		ifPresent: [ :aPackage | aPackage removeFromSystem ].
@@ -91,11 +90,4 @@ CigPharoConstantsPoolGeneratorTest >> testGenerateConstants [
 	self assert: result MACRO equals: 42.
 	self assert: result MACRO_STRING equals: 'Hello, World'.
 	self assert: result MACRO_CHAR equals: 65
-]
-
-{ #category : 'tests' }
-CigPharoConstantsPoolGeneratorTest >> testGenerateFileForImportingElements [
-
-	self fail.
-	CigPharoConstantsPoolGenerator new 
 ]

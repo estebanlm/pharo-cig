@@ -35,6 +35,7 @@ CigPharoConstantsPoolGenerator class >> constantsTemplate [
     do { \
         printf("%s=", #x); \
         printf(fmt_spec((x)+0), (x)+0); \
+        printf("\n"); \
     } while (0)
 '
 ]

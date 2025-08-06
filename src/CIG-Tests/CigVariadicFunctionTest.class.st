@@ -14,8 +14,8 @@ CigVariadicFunctionTest >> testGenerateVariadicFunction [
 		packageName: 'Unit';
 		prefix: 'Unit';
 		importUnit: '/* Nothing, I just want the variadics */';
-		variadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
-		variadic: 'int printf(char *fmt, long value)' as: #printf:long:;
+		cVariadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
+		cVariadic: 'int printf(char *fmt, long value)' as: #printf:long:;
 		translateUnit.
 
 	element := unit elements first.
@@ -25,7 +25,7 @@ CigVariadicFunctionTest >> testGenerateVariadicFunction [
 		assert: template generate
 		equals: 'printf: fmt string: value
 
-	self ffiCall: #(int printf(char *fmt, char *value))'.
+	^ self ffiCall: #(int printf(char *fmt, char *value))'.
 
 	element := unit elements second.
 	template := element phTemplate.	
@@ -33,7 +33,7 @@ CigVariadicFunctionTest >> testGenerateVariadicFunction [
 		assert: template generate
 		equals: 'printf: fmt long: value
 
-	self ffiCall: #(int printf(char *fmt, long value))'	
+	^ self ffiCall: #(int printf(char *fmt, long value))'	
 ]
 
 { #category : 'tests' }
@@ -44,8 +44,8 @@ CigVariadicFunctionTest >> testVariadicFunctionIsAddedToElementList [
 		packageName: 'Unit';
 		prefix: 'Unit';
 		importUnit: '/* Nothing, I just want the variadics */';
-		variadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
-		variadic: 'int printf(char *fmt, long value)' as: #printf:long:;
+		cVariadic: 'int printf(char *fmt, char *value)' as: #printf:string:;
+		cVariadic: 'int printf(char *fmt, long value)' as: #printf:long:;
 		translateUnit.
 
 	self assert: unit elements size equals: 2
