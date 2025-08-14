@@ -588,6 +588,15 @@ CigLibraryGenerator >> useWorkerThreadNamed: aString [
 		yourself
 ]
 
+{ #category : 'private - generating' }
+CigLibraryGenerator >> validateMinimalRequirements [
+	"just to have an early alarm if we miss something in the definition"
+	
+	self 
+		assert: self prefix isNotNil description: 'No prefix defined.';
+		assert: self libraryName isNotNil description: 'No library defined.'
+]
+
 { #category : 'accessing' }
 CigLibraryGenerator >> variadics [
 	"Since Pharo do not have variadic functions, we cannot parse them from sources. 
