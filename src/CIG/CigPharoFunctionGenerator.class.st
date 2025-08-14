@@ -19,9 +19,15 @@ CigPharoFunctionGenerator >> generate [
 	name := self classForElement name asString, '>>', self element phDeclaration.
 	logger trace: name.
 
-	self classForElement
-		compile: self element phTemplate generate
-		classified: self protocol
+	[ 
+		self classForElement
+			compile: self element phTemplate generate
+			classified: self protocol ]
+	on: OCCodeError
+	do: [ :e | 
+		logger error: ('I can''t install function {1}: {2}' format: {
+			self element name. 
+			e messageText }) ]
 ]
 
 { #category : 'generating' }

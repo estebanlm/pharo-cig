@@ -32,13 +32,9 @@ CigCParameterDeclarationTemplate >> addFunctionCastTo: stream [
 
 { #category : 'private' }
 CigCParameterDeclarationTemplate >> anonymousName [
-	| index |
 	
-	index := (self element parent elements 
-		select: [ :each | each kind = self element kind and: [ each name isEmpty ] ])
-		indexOf: self element.
-		
-	^ 'noname_{1}' format: { index }
+	^ self element anonymousName
+	
 ]
 
 { #category : 'generating' }

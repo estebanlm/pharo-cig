@@ -39,6 +39,17 @@ CigStructure >> acceptDataStructures [
 ]
 
 { #category : 'accessing' }
+CigStructure >> anonymousName [
+	| index |
+	
+	index := (self parent elements 
+		select: [ :each | each kind = self kind and: [ CigType isAnonymous: each basicName ] ])
+		indexOf: self.
+		
+	^ 'noname_{1}' format: { index }
+]
+
+{ #category : 'accessing' }
 CigStructure >> cDeclaration [
 	"since a struct in c++ can act as a class, we need to answer its kind as a structure 
 	 of as a class, depending the case"
@@ -73,7 +84,7 @@ CigStructure >> canBeExported [
 
 	"skip if not public (it can be nested in a class)"
 	self isPublic ifFalse: [ ^ false ].
-	"skip if is annonymous (for now at least)"
+	"skip if is annonymous and top level (root, not nested) for now at least"
 	(self isAnonymous and: [ self isNested not]) ifTrue: [ ^ false ].
 	"skip if is template specialization"
 	self isTemplateSpecialization ifTrue: [ ^ false ].
@@ -221,6 +232,14 @@ CigStructure >> isStructure [
 CigStructure >> isTemplateSpecialization [
 
 	^ '.*<.*>.*' asRegex matches: self name
+]
+
+{ #category : 'accessing' }
+CigStructure >> name [
+
+	^ (self isAnonymous and: [ self isNested ])
+		ifTrue: [ self anonymousName ]
+		ifFalse: [ super name ]
 ]
 
 { #category : 'accessing' }

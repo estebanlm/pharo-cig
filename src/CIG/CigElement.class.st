@@ -92,6 +92,12 @@ CigElement >> basename [
 	^ self pathName
 ]
 
+{ #category : 'private' }
+CigElement >> basicName [
+
+	^ name
+]
+
 { #category : 'accessing' }
 CigElement >> cDeclaration [
 
@@ -392,7 +398,7 @@ CigElement >> matchesCursor: aCursor [
 { #category : 'accessing' }
 CigElement >> name [
 
-	^ name
+	^ self basicName
 ]
 
 { #category : 'private - utils' }

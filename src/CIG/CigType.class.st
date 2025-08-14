@@ -148,9 +148,9 @@ CigType class >> resolveFFIType: aType [
 		self 
 			resolveMappedType: aType
 			ifAbsent: [ 
-				"logger warning: aType, ': type not found.'.
-				('UNKNOWN', aType) asSymbol"
-				CigTypeNotFound signal: aType ] ]
+				logger debug: aType, ': type not found.'.
+				('UNKNOWN', aType) asSymbol
+				"CigTypeNotFound signal: aType" ] ]
 ]
 
 { #category : 'private - utilities' }

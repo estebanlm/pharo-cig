@@ -24,6 +24,33 @@ CigStructureTest >> testFieldsAnswerAlsoVariables [
 ]
 
 { #category : 'tests' }
+CigStructureTest >> testStructureWithAnonymousUnionArrayAndTypedef [
+	"this struct will have an array of some anonynous union inside a struct which at 
+	 time, will be put inside a typedef. "
+	| unit element |
+	
+	"en esencia, parece que no estoy declarando el tipo 
+		porque es anónimo
+		y porque es un array :P
+	 Y entonces no lo encuentra en el lookup, claramente. 
+	 
+	 TODO: esto pasa, pero eso no significa que se genere algo correcto TESTEAR"
+	
+	unit := self newUnit: '
+typedef long DES_LONG;
+typedef unsigned char DES_cblock[8];
+typedef struct DES_ks {
+    union {
+        DES_cblock cblock;
+        DES_LONG deslong[2];
+    } ks[16];
+} DES_key_schedule;'.
+
+	element := unit elements third.
+	self assert: element canBeExported
+]
+
+{ #category : 'tests' }
 CigStructureTest >> testStructureWithClassInstanceTypeExportsAsClass [
 	| element |
 
