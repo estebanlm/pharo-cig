@@ -227,6 +227,8 @@ CigTranslatedUnit >> generateFrom: aHeader [
 
 	logger trace.
 
+	self reset.
+
 	"initialize variables"
 	nameGenerator := aHeader nameGenerator.
 	prefix := aHeader prefix.
@@ -243,9 +245,9 @@ CigTranslatedUnit >> generateFrom: aHeader [
 	logger trace: definesBeforeHeader.
 	logger trace: defines.
 	logger trace: excluding.
-	
-	self reset.
-	
+	logger trace: includingPaths.
+	logger trace: excludingPaths.
+		
 	self preprocess: aHeader.
 	aHeader imports valuesDo: [ :each |
 		self generateTarget: each from: aHeader ].
@@ -413,12 +415,16 @@ CigTranslatedUnit >> isLocationPartOfLibrary: locationName baseHeaderFile: heade
 
 	locationPath := locationName asFileReference parent asPath.
 	basePath := headerFileName asFileReference parent asPath.
+	"Easiest comparisson, same name or part of inclusions"
 	result := headerFileName = locationName or: [ 
 		includingPaths anySatisfy: [ :each | locationPath fullName beginsWith: each ] ]. 
+	"ok, is not the same and not included, now I need to see if base path (in the same directory/tree 
+	 as the base header, and not explicitely excluded)"
 	result ifFalse: [  
-		result := ((locationPath = basePath) or: [ basePath containsPath: locationPath  ])
+		result := (
+			(locationPath = basePath) 
+				or: [ basePath isEmpty not and: [ basePath containsPath: locationPath ] ])
 			and: [ excludingPaths noneSatisfy: [ :each | locationPath fullName beginsWith: each ] ] ].
-
 	"report result"
 	result
 		ifTrue: [ headersIncluded add: locationName ] 
@@ -599,6 +605,8 @@ CigTranslatedUnit >> removeAllUnknowns [
 
 { #category : 'private' }
 CigTranslatedUnit >> reset [
+
+	logger trace.
 
 	elements := OrderedCollection new.
 	headersIncluded := Set new.
