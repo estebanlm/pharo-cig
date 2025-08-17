@@ -45,6 +45,68 @@ CigTranslatedUnitTest >> testIsLocationPartOfLibraryBaseHeaderFile [
 ]
 
 { #category : 'tests' }
+CigTranslatedUnitTest >> testIsLocationPartOfLibraryBaseHeaderFileWithExlusion [
+	| unit |
+
+	unit := CigCLibraryGenerator new 
+		packageName: 'Unit';
+		prefix: 'Unit';
+		importUnit: '/* nothing */';
+		cExcludePath: '/usr/include';
+		cIncludePath: '/usr/include/openssl';
+		translateUnit.
+	
+	self assert: (unit
+		isLocationPartOfLibrary: '/usr/include/openssl/other.h' 
+		baseHeaderFile: '/usr/include/openssl/ssl.h').
+		
+	self assert: (unit
+		isLocationPartOfLibrary: '/usr/include/openssl/internal/other.h' 
+		baseHeaderFile: '/usr/include/openssl/ssl.h').
+
+	self deny: (unit
+		isLocationPartOfLibrary: '/usr/include/other.h' 
+		baseHeaderFile: '/usr/include/openssl/ssl.h').
+		
+	self deny: (unit
+		isLocationPartOfLibrary: '/usr/include/types/other.h' 
+		baseHeaderFile: '/usr/include/openssl/ssl.h').
+	
+]
+
+{ #category : 'tests' }
+CigTranslatedUnitTest >> testIsLocationPartOfLibraryBaseHeaderFileWithExlusionAndRoot [
+	| unit |
+	
+	unit := CigCLibraryGenerator new 
+		packageName: 'Unit';
+		prefix: 'Unit';
+		importUnit: '/* nothing */';
+		cExcludePath: '/usr/include';
+		translateUnit.
+	self deny: (unit
+		isLocationPartOfLibrary: '/usr/include/openssl/ssl.h' 
+		baseHeaderFile: 'unit_0.h')
+]
+
+{ #category : 'tests' }
+CigTranslatedUnitTest >> testIsLocationPartOfLibraryBaseHeaderFileWithExlusionInclusionAndRoot [
+	| unit |
+
+	unit := CigCLibraryGenerator new 
+		packageName: 'Unit';
+		prefix: 'Unit';
+		importUnit: '/* nothing */';
+		cExcludePath: '/usr/include';
+		cIncludePath: '/usr/include/openssl';
+		translateUnit.
+		
+	self assert: (unit
+		isLocationPartOfLibrary: '/usr/include/openssl/ssl.h' 
+		baseHeaderFile: 'unit_0.h')
+]
+
+{ #category : 'tests' }
 CigTranslatedUnitTest >> testResolveIncludeFileName [
 	"this is in fact a very weak test (since subdir will change as soon as I change the 
 	 gcc version :("
