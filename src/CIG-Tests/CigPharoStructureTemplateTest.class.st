@@ -113,6 +113,58 @@ CigPharoStructureTemplateTest >> testGenerateStructWithUnion [
 ]
 
 { #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithUnionAnonymous [
+	| unit element template |
+
+	unit := self newUnit: '
+typedef long DES_LONG;
+typedef unsigned char DES_cblock[8];
+typedef struct DES_ks {
+    union {
+        DES_cblock cblock;
+        DES_LONG deslong[2];
+    } ks;
+} DES_key_schedule;'.
+
+
+	element := unit elements third.
+	template := element phTemplate.
+	self 
+		assert: template generateFieldsDesc
+		equals: 'fieldsDesc
+
+	^ #(
+	DES_ks_union1 ks
+	)'
+]
+
+{ #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructWithUnionAnonymousAndArray [
+	| unit element template |
+
+	unit := self newUnit: '
+typedef long DES_LONG;
+typedef unsigned char DES_cblock[8];
+typedef struct DES_ks {
+    union {
+        DES_cblock cblock;
+        DES_LONG deslong[2];
+    } ks[16];
+} DES_key_schedule;'.
+
+	element := unit elements third.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateFieldsDesc
+		equals: 'fieldsDesc
+
+	^ #(
+	DES_ks_union1_16 ks
+	)'
+]
+
+{ #category : 'tests' }
 CigPharoStructureTemplateTest >> testGenerateStructWithUnionDefinitionSkipsDefinition [
 	| element template |
 

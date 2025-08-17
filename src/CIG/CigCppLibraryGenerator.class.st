@@ -86,6 +86,8 @@ CigCppLibraryGenerator >> generate [
 
 	logger trace: self libraryName.
 	
+	self validateMinimalRequirements.
+	
 	unit := self translateUnit.
 
 	self hasCBindings ifTrue: [ self generateCBindingsWith: unit ].

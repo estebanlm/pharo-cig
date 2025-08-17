@@ -9,7 +9,8 @@ Class {
 { #category : 'private' }
 CigCParameterArrayTypeTemplate class >> handlesType: aType [
 
-	^ aType isArray
+	^ aType isStructure not 
+		and: [ aType isArray ]
 ]
 
 { #category : 'generating' }

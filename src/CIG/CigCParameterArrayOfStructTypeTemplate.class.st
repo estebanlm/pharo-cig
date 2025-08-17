@@ -30,7 +30,7 @@ CigCParameterArrayOfStructTypeTemplate >> generateFFIType [
 	| startArity parsed |
 
 	startArity := 0.
-	parsed := self type parseType.
+	parsed := self type parseTypeTolerant.
 	^ String streamContents: [ :stream |
 		stream << super generateFFIType.
 		(1 + startArity) to: parsed arity do: [ :each |

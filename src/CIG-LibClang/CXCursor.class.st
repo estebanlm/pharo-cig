@@ -477,7 +477,7 @@ CXCursor >> source [
 	posEnd := range end offset.
 	size := posEnd - posStart.
 	size < 1 ifTrue: [
-		('I can''t get the source of "{1}" in {2}' format: { self spelling. fileName }) crTrace.
+		logger debug: ('I can''t get the source of "{1}" in {2}' format: { self spelling. fileName }).
 		^ '' ].
 	
 	fileName asFileReference readStreamDo: [ :stream |

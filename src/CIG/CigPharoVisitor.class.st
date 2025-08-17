@@ -271,10 +271,13 @@ CigPharoVisitor >> visitNamespace: aNamespace [
 
 { #category : 'visiting' }
 CigPharoVisitor >> visitStructure: aStructure [
+	logger trace: aStructure.
 
-	aStructure canBeExported ifFalse: [ ^ self ].
-	aStructure isClass
-		ifTrue: [ ^ self visitClass: aStructure ].
+	aStructure canBeExported ifFalse: [ 
+		logger debug: aStructure name, ' struct cannot be exported.'.
+		^ self ].
+	aStructure isClass ifTrue: [ 
+		^ self visitClass: aStructure ].
 
 	self ensureBaseStructureClass: aStructure root.
 	self 

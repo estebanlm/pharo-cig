@@ -39,6 +39,14 @@ CigStructure >> acceptDataStructures [
 ]
 
 { #category : 'accessing' }
+CigStructure >> anonymousName [
+	
+	^ String streamContents: [ :stream |
+		stream << self class typeReferenceName.
+		stream print: (self parent indexOfElementOfSameKind: self) ]
+]
+
+{ #category : 'accessing' }
 CigStructure >> cDeclaration [
 	"since a struct in c++ can act as a class, we need to answer its kind as a structure 
 	 of as a class, depending the case"
@@ -73,7 +81,7 @@ CigStructure >> canBeExported [
 
 	"skip if not public (it can be nested in a class)"
 	self isPublic ifFalse: [ ^ false ].
-	"skip if is annonymous (for now at least)"
+	"skip if is annonymous and top level (root, not nested) for now at least"
 	(self isAnonymous and: [ self isNested not]) ifTrue: [ ^ false ].
 	"skip if is template specialization"
 	self isTemplateSpecialization ifTrue: [ ^ false ].
@@ -226,12 +234,9 @@ CigStructure >> isTemplateSpecialization [
 { #category : 'accessing' }
 CigStructure >> pathName [
 
-	self isAnonymous ifTrue: [ 
-		^ String streamContents: [ :stream |
-			stream << self class typeReferenceName.
-			stream print: (self parent indexOfElementOfSameKind: self) ] ].
-
-	^ super pathName
+	^ self isAnonymous 
+		ifTrue: [ self anonymousName ]
+		ifFalse: [ super pathName ]
 ]
 
 { #category : 'accessing' }

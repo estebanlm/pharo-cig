@@ -48,7 +48,7 @@ CigTranslatedUnitTest >> testIsLocationPartOfLibraryBaseHeaderFile [
 CigTranslatedUnitTest >> testResolveIncludeFileName [
 	"this is in fact a very weak test (since subdir will change as soon as I change the 
 	 gcc version :("
-	| unit version |
+	| unit version allVersions resolved |
 
 	"this test is very weak as it depends on the actual version of c++ installed. 
 	 I am trying to make it a bit more solid by searching the real path"
@@ -62,7 +62,10 @@ CigTranslatedUnitTest >> testResolveIncludeFileName [
 		equals: version, '/array'.
 		
 	"this test is super fragile because it depends on where I have *now* the file"
-	self  
-		assert: (unit resolveIncludeFileName: 'array')
-		equals: version, '/array'
+	allVersions := '/usr/include/c++/' asFileReference directories 
+		collect: [ :each | each fullName, '/array' ].
+	resolved := unit resolveIncludeFileName: 'array'.
+	self assert: (allVersions anySatisfy: [ :each | each = resolved ])
+	
+	
 ]

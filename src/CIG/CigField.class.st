@@ -5,7 +5,8 @@ Class {
 		'typeName',
 		'typeKind',
 		'isPublic',
-		'definesFunction'
+		'definesFunction',
+		'isAnonymous'
 	],
 	#pools : [
 		'CXTypeKind'
@@ -59,9 +60,17 @@ CigField >> fromCursor: aCursor [
 	typeName := type spelling.
 	typeKind := type kind.
 	isPublic := aCursor isPublic.
+	isAnonymous := CigType isAnonymous: typeName.
 	definesFunction := ({ CXType_Pointer. CXType_LValueReference } includes: typeKind)
 		and: [ { CXType_FunctionProto. CXType_FunctionNoProto } includes: type pointeeType kind ].		
 	
+]
+
+{ #category : 'testing' }
+CigField >> isAnonymous [
+	"a field can be anonymous if it contains a struct/union with no name (just field name)"
+
+	^ isAnonymous
 ]
 
 { #category : 'testing' }

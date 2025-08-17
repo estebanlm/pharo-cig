@@ -16,6 +16,16 @@ CigBaseTest class >> isAbstract [
 	^ self = CigBaseTest
 ]
 
+{ #category : 'instance creation' }
+CigBaseTest >> newUnit: aString [
+
+	^ CigCLibraryGenerator new 
+		packageName: 'Unit';
+		prefix: 'Unit';
+		importUnit: aString;
+		translateUnit
+]
+
 { #category : 'accessing' }
 CigBaseTest >> translatedUnitFinalcut [
 

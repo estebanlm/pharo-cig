@@ -63,7 +63,7 @@ CigElement class >> nodesDictionary [
 CigElement >> = other [
 
 	^ self species = other species 
-		and: [ self name = other name ]
+		and: [ self basicName = other basicName ]
 ]
 
 { #category : 'visiting' }
@@ -90,6 +90,12 @@ CigElement >> basename [
 	"remove the basic name"
 	
 	^ self pathName
+]
+
+{ #category : 'private' }
+CigElement >> basicName [
+
+	^ name
 ]
 
 { #category : 'accessing' }
@@ -177,7 +183,7 @@ CigElement >> fullNameWith: delim [
 { #category : 'comparing' }
 CigElement >> hash [
 
-	^ self species hash bitXor: self name hash
+	^ self species hash bitXor: self  hash
 ]
 
 { #category : 'accessing' }
@@ -392,7 +398,7 @@ CigElement >> matchesCursor: aCursor [
 { #category : 'accessing' }
 CigElement >> name [
 
-	^ name
+	^ self basicName
 ]
 
 { #category : 'private - utils' }

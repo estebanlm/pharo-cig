@@ -7,6 +7,19 @@ Class {
 }
 
 { #category : 'tests' }
+CigTypeTest >> testExtractAnonymousLocation [
+
+	"test normal anonymous"
+	self 
+		assert: (CigType extractAnonymousLocation: 'union (unnamed at unit_0.h:5:5)')
+		equals: 'unit_0.h:5:5'.
+	"test array anonymous"
+	self 
+		assert: (CigType extractAnonymousLocation: 'union (unnamed at unit_0.h:5:5)[16]')
+		equals: 'unit_0.h:5:5'.	
+]
+
+{ #category : 'tests' }
 CigTypeTest >> testReplaceTypeClassTemplateTypeIn [
 	| element result |
 

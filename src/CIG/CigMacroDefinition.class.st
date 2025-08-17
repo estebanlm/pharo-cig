@@ -28,7 +28,7 @@ CigMacroDefinition >> acceptNameGenerator: aVisitor [
 	self halt. "This is not implemented yet. It should be something like: 
 	self source 
 		ifNotNil: [ :aString | self cToPharo: aString substrings allButFirst ]"
-	^ aVisitor visitMacro: self
+	^ aVisitor visitMacroDefinition: self
 ]
 
 { #category : 'initialization' }
