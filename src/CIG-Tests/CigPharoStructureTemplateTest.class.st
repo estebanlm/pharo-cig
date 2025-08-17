@@ -129,19 +129,19 @@ typedef struct DES_ks {
 
 	element := unit elements third.
 	template := element phTemplate.
-	
 	self 
 		assert: template generateFieldsDesc
 		equals: 'fieldsDesc
 
 	^ #(
-	UnitDesKsUnion1 ks
+	DES_ks_union1 ks
 	)'
 ]
 
 { #category : 'tests' }
 CigPharoStructureTemplateTest >> testGenerateStructWithUnionAnonymousAndArray [
 	| unit element template |
+
 	unit := self newUnit: '
 typedef long DES_LONG;
 typedef unsigned char DES_cblock[8];
@@ -153,7 +153,6 @@ typedef struct DES_ks {
 } DES_key_schedule;'.
 
 	element := unit elements third.
-	self halt.
 	template := element phTemplate.
 	
 	self 
@@ -161,7 +160,7 @@ typedef struct DES_ks {
 		equals: 'fieldsDesc
 
 	^ #(
-	UnitDesKsUnion1_16 ks
+	DES_ks_union1_16 ks
 	)'
 ]
 

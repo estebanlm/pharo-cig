@@ -30,13 +30,6 @@ CigCParameterDeclarationTemplate >> addFunctionCastTo: stream [
 	stream << '(' << self type name << ')'
 ]
 
-{ #category : 'private' }
-CigCParameterDeclarationTemplate >> anonymousName [
-	
-	^ self element anonymousName
-	
-]
-
 { #category : 'generating' }
 CigCParameterDeclarationTemplate >> castReturn: aString [ 
 	| cast |

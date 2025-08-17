@@ -63,7 +63,7 @@ CigElement class >> nodesDictionary [
 CigElement >> = other [
 
 	^ self species = other species 
-		and: [ self name = other name ]
+		and: [ self basicName = other basicName ]
 ]
 
 { #category : 'visiting' }
@@ -183,7 +183,7 @@ CigElement >> fullNameWith: delim [
 { #category : 'comparing' }
 CigElement >> hash [
 
-	^ self species hash bitXor: self name hash
+	^ self species hash bitXor: self  hash
 ]
 
 { #category : 'accessing' }

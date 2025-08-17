@@ -1,6 +1,9 @@
 Class {
 	#name : 'CigFunctionParser',
 	#superclass : 'FFIFunctionParser',
+	#instVars : [
+		'tolerant'
+	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
 	#tag : 'Node'
@@ -18,6 +21,40 @@ CigFunctionParser class >> parse: aString [
 CigFunctionParser class >> parseNamedFunction: anArray [
 
 	^ self new parseNamedFunction: anArray
+]
+
+{ #category : 'parsing' }
+CigFunctionParser class >> parseTolerant: aString [
+
+	^ CigTypeDeclaration fromArray: (self new 
+		beTolerant;
+		setOn: aString;
+		parseType)
+]
+
+{ #category : 'accessing' }
+CigFunctionParser >> beNotTolerant [
+
+	tolerant := false
+]
+
+{ #category : 'accessing' }
+CigFunctionParser >> beTolerant [
+
+	tolerant := true
+]
+
+{ #category : 'initialization' }
+CigFunctionParser >> initialize [
+
+	super initialize.
+	self beNotTolerant
+]
+
+{ #category : 'testing' }
+CigFunctionParser >> isTolerant [
+
+	^ tolerant
 ]
 
 { #category : 'accessing' }
@@ -41,6 +78,8 @@ CigFunctionParser >> parseType [
 			prefix := typeName.
 			typeName := stream next.
 			typeName ifNil: [ ^ self error: 'type name expected' ].
+			(typeName isArray and: [ self isTolerant ])
+				ifTrue: [ typeName := 'ANONYMOUS' ].
 			typeName := prefix, ' ', typeName ].
 		
 	(typeName = 'unsigned') ifTrue: [ 

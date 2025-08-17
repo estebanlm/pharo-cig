@@ -40,13 +40,10 @@ CigStructure >> acceptDataStructures [
 
 { #category : 'accessing' }
 CigStructure >> anonymousName [
-	| index |
 	
-	index := (self parent elements 
-		select: [ :each | each kind = self kind and: [ CigType isAnonymous: each basicName ] ])
-		indexOf: self.
-		
-	^ 'noname_{1}' format: { index }
+	^ String streamContents: [ :stream |
+		stream << self class typeReferenceName.
+		stream print: (self parent indexOfElementOfSameKind: self) ]
 ]
 
 { #category : 'accessing' }
@@ -235,22 +232,11 @@ CigStructure >> isTemplateSpecialization [
 ]
 
 { #category : 'accessing' }
-CigStructure >> name [
-
-	^ (self isAnonymous and: [ self isNested ])
-		ifTrue: [ self anonymousName ]
-		ifFalse: [ super name ]
-]
-
-{ #category : 'accessing' }
 CigStructure >> pathName [
 
-	self isAnonymous ifTrue: [ 
-		^ String streamContents: [ :stream |
-			stream << self class typeReferenceName.
-			stream print: (self parent indexOfElementOfSameKind: self) ] ].
-
-	^ super pathName
+	^ self isAnonymous 
+		ifTrue: [ self anonymousName ]
+		ifFalse: [ super pathName ]
 ]
 
 { #category : 'accessing' }

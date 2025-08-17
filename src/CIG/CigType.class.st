@@ -51,8 +51,17 @@ CigType class >> createTypeMap [
 
 { #category : 'utilities' }
 CigType class >> extractAnonymousLocation: aString [ 
+	"anonypes types come in the form of: 
+		union/struct (unnamed at unit_0.h:ROW:COL) 
+		but it can also be an array (ending on [NUM])"
+	| segments position |
 	
-	 ^ (aString substrings: ' ()') last
+	segments := (aString substrings: ' ()').
+	"this can be an anonymous array"
+	position := segments last last = $] 
+		ifTrue: [ segments size - 1 ]
+		ifFalse: [ segments size ].
+	 ^ segments at: position
 ]
 
 { #category : 'instance creation' }
@@ -63,6 +72,8 @@ CigType class >> fromParameter: aParameter [
 
 { #category : 'utilities' }
 CigType class >> isAnonymous: aString [
+
+	aString ifEmpty: [ ^ true ]. 
 
 	^ #('(anonymous' '(unnamed') 
 		anySatisfy: [ :each | aString includesSubstring: each ]
@@ -291,9 +302,10 @@ CigType >> isAnyDeclaration [
 
 { #category : 'testing' }
 CigType >> isArray [
-
-	(self name includesSubstring: '(unnamed')
-		ifTrue: [ ^ false ].
+	self flag: #TODO. "this is too hacky, but if we have an anonymous, 
+	the parser will (correctly) fail :("
+	(CigType isAnonymous: self name) 
+		ifTrue: [ ^ self name last = $] ].
 	
 	^ self parseType isArray
 ]
@@ -404,10 +416,11 @@ CigType >> isUnion [
 { #category : 'private' }
 CigType >> matchAnonymousName: aString [
 	| anonymousName |
-
 	"aString comes with the format 'union (unnamed... etc)' or similar"
 	anonymousName := '(', (aString substrings: '()') second, ')'.
-	^ anonymousName = self typeReference typeName
+	"beginsWith: because we may be in anonymous type *and* array, in which case it will end with  
+	 array brackets []"
+	^ self typeReference typeName beginsWith: anonymousName
 ]
 
 { #category : 'private' }
@@ -453,6 +466,15 @@ CigType >> parseType [
 	
 	^ parsedType ifNil: [ 
 		parsedType := CigFunctionParser parse: self name ]
+]
+
+{ #category : 'private' }
+CigType >> parseTypeTolerant [
+	"parses the type in 'tolerant' way (meaning, it will parse unknown types as UNKNOWN and 
+	 anonymous as ANONYMOUS). "
+	
+	^ parsedType ifNil: [ 
+		parsedType := CigFunctionParser parseTolerant: self name ]
 ]
 
 { #category : 'accessing' }
