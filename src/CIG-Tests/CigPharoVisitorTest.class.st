@@ -697,6 +697,30 @@ CigPharoVisitorTest >> testVisitStructureRegisterType [
 ]
 
 { #category : 'tests - struct' }
+CigPharoVisitorTest >> testVisitStructureWithAnonymousUnionArrayRegisterType [
+	| unit element visitor class typedefClass |
+	
+	unit := self newUnit: '
+typedef struct _StructToRemove {
+    union {
+    	char deschar;
+        long deslong[2];
+    } array[16];
+} StructToRemove;'.
+
+	element := unit elements first.
+	
+	visitor := CigPharoVisitor newForTestAsC.	
+	visitor addBaseClasses: unit.
+	visitor visitStructure: element.
+	visitor endUnit: unit.
+	typedefClass := self class environment classNamed: 'UnitGeneratedForTestTypedef'.
+	self assert: typedefClass notNil.
+	self assert: (typedefClass includesKey: #_StructToRemove_union1).
+	self assert: (typedefClass includesKey: #_StructToRemove_union1_16)
+]
+
+{ #category : 'tests - struct' }
 CigPharoVisitorTest >> testVisitStructureWithAnonymousUnionRegisterType [
 	| element visitor class typedefClass |
 

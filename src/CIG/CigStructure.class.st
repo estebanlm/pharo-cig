@@ -250,7 +250,9 @@ CigStructure >> resolveType [
 
 	^ CigType new 
 		parent: self;
-		name: self name;
+		name: (self isAnonymous 
+			ifTrue: [ self anonymousName ]
+			ifFalse: [ self name ]);
 		typeReference: ((CigTypeReference newName: 'class ', self cppDeclaration)
 			parent: self;
 			yourself);

@@ -142,6 +142,7 @@ CigPharoVisitor >> registerDeclaration: aDeclaration as: aString [
 	"with apply of naming conventions, etc. It may happen that declaration now is 
 	 equal to the type... we skip this."	
 	aDeclaration = aString ifTrue: [ ^ self ].
+	self haltIf: (CigType isAnonymous: aString).
 
 	types 
 		at: ((aDeclaration endsWith: '*')

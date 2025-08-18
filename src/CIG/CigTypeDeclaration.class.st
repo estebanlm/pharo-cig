@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'reference',
 		'templates',
-		'arrayNumber'
+		'arrayNumber',
+		'arraySizes'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',
@@ -18,15 +19,21 @@ CigTypeDeclaration class >> fromArray: anArray [
 ]
 
 { #category : 'accessing' }
-CigTypeDeclaration >> arrayNumber [
+CigTypeDeclaration >> arrayDimensions [
 
-	^ arrayNumber
+	^ arraySizes size
+]
+
+{ #category : 'accessing' }
+CigTypeDeclaration >> arraySizes [
+
+	^ arraySizes
 ]
 
 { #category : 'private' }
-CigTypeDeclaration >> arrayNumber: aNumber [
+CigTypeDeclaration >> arraySizes: anArray [
 
-	arrayNumber := aNumber
+	arraySizes := anArray
 ]
 
 { #category : 'initialization' }
@@ -36,8 +43,9 @@ CigTypeDeclaration >> fromArray: anArray [
 		name: anArray first;
 		arity: anArray second;
 		reference: anArray third;
-		templates: anArray fourth;
-		arrayNumber: anArray fifth
+		templates: anArray fourth.
+		
+	self arraySizes: (anArray allButFirst: 4)
 ]
 
 { #category : 'accessing' }
@@ -52,7 +60,7 @@ CigTypeDeclaration >> fullName [
 { #category : 'testing' }
 CigTypeDeclaration >> isArray [
 
-	^ arrayNumber isNotNil
+	^ arraySizes isNotEmpty
 ]
 
 { #category : 'testing' }

@@ -63,9 +63,25 @@ CigPharoStructureGenerator >> generateOn: aVisitor [
 	self element fields 
 		select: [ :each | each isArray ]
 		thenDo: [ :each |
-			aVisitor 
+			aVisitor
 				registerDeclaration: each cTemplate generateFFIType
-				as: each resolveType name ]
+				as: (self nameForArrayType: each resolveType) ]
+]
+
+{ #category : 'generating' }
+CigPharoStructureGenerator >> nameForArrayType: aType [
+	"The problem is anonymous types that cannot be solved just like that in arrays.
+	 To be able to map them, I need to solve first the name that will adopt in system, 
+	 then add the array part"
+	| typeName |
+
+	typeName := aType name.
+
+	aType hasElement ifFalse: [ ^ typeName ].
+	aType element isStructure ifFalse: [ ^ typeName ].
+	aType element isAnonymous ifFalse: [ ^ typeName ].
+
+	^ aType element phTemplate anonymousTypeName, (typeName copyFrom: (typeName indexOf: $[) to: typeName size)
 ]
 
 { #category : 'accessing' }

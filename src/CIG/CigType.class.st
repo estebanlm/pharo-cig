@@ -145,6 +145,14 @@ CigType class >> replaceTypeTemplate: aClassTemplate types: aCollection in: aStr
 
 { #category : 'utilities' }
 CigType class >> resolveFFIType: aType [
+	
+	^ self 
+		resolveFFIType: aType 
+		strict: false
+]
+
+{ #category : 'utilities' }
+CigType class >> resolveFFIType: aType strict: strictBoolean [ 
 	logger trace: aType.
 	
 	^ [ 
@@ -160,8 +168,9 @@ CigType class >> resolveFFIType: aType [
 			resolveMappedType: aType
 			ifAbsent: [ 
 				logger debug: aType, ': type not found.'.
-				('UNKNOWN', aType) asSymbol
-				"CigTypeNotFound signal: aType" ] ]
+				strictBoolean 
+					ifTrue: [ CigTypeNotFound signal: aType ]
+					ifFalse: [ ('UNKNOWN_', aType) asSymbol ] ] ]
 ]
 
 { #category : 'private - utilities' }
