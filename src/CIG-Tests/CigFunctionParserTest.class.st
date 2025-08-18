@@ -79,6 +79,17 @@ CigFunctionParserTest >> testParseEnumType [
 ]
 
 { #category : 'tests' }
+CigFunctionParserTest >> testParseMultidimensionalArrayType [
+	| type |
+
+	type := CigFunctionParser new
+		setOn: 'int[4][2]';
+		parseType.
+
+	self assert: (type last: 2) equals: #(4 2)
+]
+
+{ #category : 'tests' }
 CigFunctionParserTest >> testParsePointerPointerType [
 	| type |
 

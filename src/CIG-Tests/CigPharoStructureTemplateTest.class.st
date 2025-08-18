@@ -25,6 +25,28 @@ CigPharoStructureTemplateTest >> testGenerateSimpleStruct [
 ]
 
 { #category : 'tests' }
+CigPharoStructureTemplateTest >> testGenerateStructMultidimensionalArray [
+	| unit element template |
+
+	unit := self newUnit: '
+typedef unsigned int IDEA_INT;
+typedef struct idea_key_st {
+    IDEA_INT data[9][6];
+} IDEA_KEY_SCHEDULE;'.
+
+	element := unit elements second.
+	template := element phTemplate.
+	
+	self 
+		assert: template generateFieldsDesc
+		equals: 'fieldsDesc
+
+	^ #(
+	IDEA_INT_9_6 data
+	)'
+]
+
+{ #category : 'tests' }
 CigPharoStructureTemplateTest >> testGenerateStructSkipsAnonymousUnionInC [
 	| element template |
 

@@ -63,7 +63,10 @@ CigCParameterArrayTypeTemplate >> generateCType [
 			ifNil: [ typeName ]).
 		(1 + startArity) to: parsed arity do: [ :each |
 			stream << '_pointer' ].
-		stream << '_' << parsed arrayNumber asString ]
+		stream << '_'. 
+		parsed arraySizes 
+			do: [ :each | stream print: each ]
+			separatedBy: [ stream << '_'] ]
 ]
 
 { #category : 'generating' }

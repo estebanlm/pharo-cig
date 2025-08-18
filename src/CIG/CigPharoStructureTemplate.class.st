@@ -42,7 +42,7 @@ CigPharoStructureTemplate >> elementName [
 		ifFalse: [ self element name ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'generating' }
 CigPharoStructureTemplate >> generateFieldDesc [
 	"the structure is a field of another structure"
 	
@@ -50,7 +50,7 @@ CigPharoStructureTemplate >> generateFieldDesc [
 		 stream << self typeName  << ' ' << self elementName ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'generating' }
 CigPharoStructureTemplate >> generateFieldsDesc [
 
 	^ String streamContents: [ :stream |
