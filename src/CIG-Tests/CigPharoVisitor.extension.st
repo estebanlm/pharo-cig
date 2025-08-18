@@ -47,7 +47,7 @@ CigPharoVisitor >> prepareForTestAsC [
 CigPharoVisitor >> prepareForTestAsCPP [
 	
 	constants := OrderedCollection new.
-	types :=  new.
+	types :=  OrderedDictionary new.
 	file := CigCppLibraryGenerator new
 		prefix: 'Gft';
 		libraryName: 'GeneratedForTest';
