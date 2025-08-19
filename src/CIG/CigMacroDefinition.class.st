@@ -5,7 +5,8 @@ Class {
 		'isBuiltin',
 		'isFunctionLike',
 		'source',
-		'isPrintable'
+		'isPrintable',
+		'isLiteral'
 	],
 	#category : 'CIG-Node',
 	#package : 'CIG',

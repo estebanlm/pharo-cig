@@ -91,3 +91,39 @@ CigPharoConstantsPoolGeneratorTest >> testGenerateConstants [
 	self assert: result MACRO_STRING equals: 'Hello, World'.
 	self assert: result MACRO_CHAR equals: 65
 ]
+
+{ #category : 'tests' }
+CigPharoConstantsPoolGeneratorTest >> testIgnoreConstantThatExpandsToAFunction [
+	| gen file unit result |
+
+	file := CigCLibraryGenerator new 
+		packageName: 'UnitToTest';
+		libraryName: 'unittotest';
+		importUnit: '
+#define MACRO_NUMBER 42
+#define MACRO_FUNCTION printf("NO")
+#define MACRO_STRING "A STRING"';
+		yourself.
+
+	unit := file translateUnit.
+	self assert: (unit elements count: [ :each | each isPrintable ]) equals: 2.
+
+]
+
+{ #category : 'tests' }
+CigPharoConstantsPoolGeneratorTest >> testIgnoreConstantThatExpandsToAMacro [
+	| gen file unit result |
+
+	file := CigCLibraryGenerator new 
+		packageName: 'UnitToTest';
+		libraryName: 'unittotest';
+		importUnit: '
+#define MACRO_NUMBER 42
+#define MACRO_FUNCTION MACRO_NUMBER
+#define MACRO_STRING "A STRING"';
+		yourself.
+
+	unit := file translateUnit.
+	self assert: (unit elements count: [ :each | each isPrintable ]) equals: 2.
+
+]
