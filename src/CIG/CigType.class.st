@@ -56,6 +56,9 @@ CigType class >> extractAnonymousLocation: aString [
 		but it can also be an array (ending on [NUM])"
 	| segments position |
 	
+	"if this is not anonymous there is nothing to extract, just answer nil"
+	(CigType isAnonymous: aString) ifFalse: [ ^ nil ].
+
 	segments := (aString substrings: ' ()').
 	"this can be an anonymous array"
 	position := segments last last = $] 

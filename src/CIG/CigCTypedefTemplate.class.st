@@ -13,6 +13,9 @@ Class {
 CigCTypedefTemplate >> encloseFFIType: aString [ 	
 	| shouldEnclose |
 	
+	"if this is a parsed array, answer it as is (it will be reparsed later as an FFIArray)"
+	(aString includes: $[) ifTrue: [ ^ aString ].
+	
 	shouldEnclose := aString includesAnyOf: '*&'. 
 	^ String streamContents: [ :stream |
 		stream << '#'.
@@ -102,14 +105,17 @@ CigCTypedefTemplate >> type [
 { #category : 'accessing' }
 CigCTypedefTemplate >> typeName [
 	| typeName |
-	
+
 	typeName := self element underlyingTypeName.
 	self element definesFunction 
 		ifTrue: [ ^ 'void*' ].
 	self element definesArray 
-		ifTrue: [  ^ (CigFunctionParser parse: typeName) name, '*'  ].
+		ifTrue: [
+			^ (CigFunctionParser parse: typeName) name asString, 
+				(typeName allButFirst: (typeName indexOf: $[) - 1) ].
 	self element isTemplateSpecialization
-		ifTrue: [ ^ self resolveTypeNameSpecialization: (typeName copyUpTo: $<) ].
+		ifTrue: [ 
+			^ self resolveTypeNameSpecialization: (typeName copyUpTo: $<) ].
 		
 	^ self resolveTypeName: typeName
 ]

@@ -36,17 +36,23 @@ CigMacroDefinition >> acceptNameGenerator: aVisitor [
 CigMacroDefinition >> fromCursor: aCursor [
 
 	super fromCursor: aCursor.
+	
 	name ifNil: [ name := aCursor displayName ].
+	
 	isBuiltin := aCursor isMacroBuiltin.
 	isFunctionLike := aCursor isMacroFunctionLike.
 
 	"fast exit to not calculate the tokens of everything"
 	isFunctionLike ifTrue: [
+		source := #().
+		isLiteral := false.
 		isPrintable := false.
 		^ self ].
-
-	aCursor withSourceTokensDo: [ :tokens :numTokens |
-		isPrintable := numTokens > 1 and: [ tokens second isIdentifier not ] ]
+	"get tokens"
+	aCursor withSourceTokensDo: [ :tokens :numTokens :unit |
+		source := tokens allButFirst collect: [ :each | unit tokenSpelling: each ].
+		isLiteral := tokens second isLiteral.
+		isPrintable := isLiteral and: [ numTokens > 1 ] ]
 ]
 
 { #category : 'testing' }
