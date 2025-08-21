@@ -209,11 +209,11 @@ CXTranslationUnit >> withTokensOfRange: range do: aBlock [
 		numTokens: numTokensHolder.
 	count := numTokensHolder value.
 	count = 0 ifTrue: [ 
-		aBlock cull: nil cull: 0.
+		aBlock cull: nil cull: 0 cull: self.
 		^ self ].
+		
 	tokens := tokensHolder arrayOfSize: count.
-	
-	^ [ aBlock cull: tokens cull: count ]
+	^ [ aBlock cull: tokens cull: count cull: self ]
 	ensure: [ 
 		self 
 			clang_disposeTokens: tokensHolder value

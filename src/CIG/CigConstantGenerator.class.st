@@ -8,6 +8,7 @@ Class {
 	#instVars : [
 		'headers',
 		'excludeMacros',
+		'excludeMatches',
 		'printHex'
 	],
 	#category : 'CIG-Base',
@@ -26,6 +27,24 @@ CigConstantGenerator >> addHeader: aString [
 CigConstantGenerator >> exclude: aString [
 
 	excludeMacros := excludeMacros copyWith: aString
+]
+
+{ #category : 'accessing - scripting' }
+CigConstantGenerator >> excludeAll: aCollection [
+
+	aCollection do: [ :each | self exclude: each ]
+]
+
+{ #category : 'accessing - scripting' }
+CigConstantGenerator >> excludeAllMatching: aString [
+	"receives a regex expression to match with the macro name"
+
+	excludeMatches := excludeMatches copyWith: aString asRegex
+]
+
+{ #category : 'accessing - scripting' }
+CigConstantGenerator >> excludeAllMatchingAnyOf: aCollection [
+	aCollection do: [ :each | self excludeAllMatching: each ]
 ]
 
 { #category : 'accessing' }
@@ -57,13 +76,15 @@ CigConstantGenerator >> initialize [
 
 	super initialize.
 	printHex := true.
-	excludeMacros := #()
+	excludeMacros := #().
+	excludeMatches := #()
 ]
 
 { #category : 'testing' }
 CigConstantGenerator >> isPrintable: aMacroDefinition [
 
 	^ (excludeMacros includes: aMacroDefinition name) not
+		and: [ excludeMatches noneSatisfy: [ :eachRegex | eachRegex matches: aMacroDefinition name ] ]
 ]
 
 { #category : 'accessing' }
