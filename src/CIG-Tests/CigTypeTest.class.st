@@ -17,6 +17,11 @@ CigTypeTest >> testExtractAnonymousLocation [
 	self 
 		assert: (CigType extractAnonymousLocation: 'union (unnamed at unit_0.h:5:5)[16]')
 		equals: 'unit_0.h:5:5'.	
+	"test not anonymous type answer nil"
+	self assert: (CigType extractAnonymousLocation: 'struct myStruct') isNil.
+	self assert: (CigType extractAnonymousLocation: 'struct myStruct[42]') isNil.
+	self assert: (CigType extractAnonymousLocation: 'int') isNil.
+	self assert: (CigType extractAnonymousLocation: 'int[42]') isNil
 ]
 
 { #category : 'tests' }

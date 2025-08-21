@@ -91,7 +91,7 @@ CigPharoTypesPoolGenerator >> toPrintableSymbol: aSymbol [
 ]
 
 { #category : 'private' }
-CigPharoTypesPoolGenerator >> valueFor: aValue in: aDictionary [ 
+CigPharoTypesPoolGenerator >> valueFor: aValue in: aDictionary [
 	| parsed type parsedType value |
 
 	logger trace: aValue.
@@ -105,7 +105,7 @@ CigPharoTypesPoolGenerator >> valueFor: aValue in: aDictionary [
 		[ CigType resolveFFIType: type strict: true ] 
 		on: CigTypeNotFound 
 		do: [ :e | type ].
-	value := 'FFIArray ofType: {3}{1}{3} size: {2}' format: { 
+	value := 'FFIArray ofType: {3}{1}{3} size: {2} requestor: self' format: { 
 		parsedType. 
 		String streamContents: [ :stream | 
 			parsed allButFirst

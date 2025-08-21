@@ -68,6 +68,19 @@ typedef struct st *stp;
 ]
 
 { #category : 'tests' }
+CigPharoTypedefTemplateTest >> testVisitTypedefWithTypedefToArray [
+	| unit element template |
+
+	unit := self newUnit: 'typedef unsigned char DES_cblock[8];'.
+	element := unit elements first.
+	template := element phTemplate.
+	
+	self 
+		assert: template generate
+		equals: 'uchar[8]'
+]
+
+{ #category : 'tests' }
 CigPharoTypedefTemplateTest >> testVisitTypedefWithTypedefToFunction [
 	| element template |
 
